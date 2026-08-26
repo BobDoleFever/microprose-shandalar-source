@@ -1,0 +1,180 @@
+Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
+00401000	thunk_FUN_00401010			0	5
+00401010	FUN_00401010	/MTGshell | Magic: The Gathering	DeckBuilderMain | FindWindowA | PostMessageA | __strnicmp	4	113
+004010aa	DeckBuilderMain		DeckBuilderMain	0	6
+004010b0	entry		GetCommandLineA | GetModuleHandleA | GetStartupInfoA | GetVersion | ___crtGetEnvironmentStringsA | ___initmbctable | __amsg_exit | __cinit | __heap_init | __ioinit | __ismbblead | __setargv | __setenvp | _exit	15	494
+00401300	__amsg_exit		__FF_MSGBANNER | __NMSG_WRITE | __exit	3	55
+00401340	__cinit		__initterm	1	66
+00401390	_exit		doexit	1	27
+004013b0	__exit		doexit	1	27
+004013d0	__cexit		doexit	1	25
+004013f0	__c_exit		doexit	1	25
+00401410	doexit		ExitProcess | GetCurrentProcess | TerminateProcess | __CrtDumpMemoryLeaks | __CrtSetDbgFlag | __initterm	6	251
+00401510	__initterm			0	49
+00401544	__global_unwind2		RtlUnwind	1	32
+00401586	__local_unwind2			1	104
+0040161a	FUN_0040161a			0	24
+00401640	__XcptFilter		UnhandledExceptionFilter | xcptlookup	2	500
+00401840	xcptlookup			0	97
+004018b0	__ismbbkalnum		x_ismbbtype	1	32
+004018d0	__ismbbkprint		x_ismbbtype	1	32
+004018f0	__ismbbkpunct		x_ismbbtype	1	32
+00401910	__ismbbalnum		x_ismbbtype	1	35
+00401940	__ismbbalpha		x_ismbbtype	1	35
+00401970	__ismbbgraph		x_ismbbtype	1	35
+004019a0	__ismbbprint		x_ismbbtype	1	35
+004019d0	__ismbbpunct		x_ismbbtype	1	32
+004019f0	__ismbblead		x_ismbbtype	1	32
+00401a10	__ismbbtrail		x_ismbbtype	1	32
+00401a30	__ismbbkana		x_ismbbtype	1	68
+00401a80	x_ismbbtype			0	110
+00401af0	__setenvp	stdenvp.c	__amsg_exit | __free_dbg | __malloc_dbg | _strlen	5	318
+00401c30	__setargv	stdargv.c	GetModuleFileNameA | __amsg_exit | __malloc_dbg | parse_cmdline	4	204
+00401d00	parse_cmdline			0	958
+004020c0	___crtGetEnvironmentStringsW	aw_env.c	FID_conflict:_memcpy | FreeEnvironmentStringsA | FreeEnvironmentStringsW | GetEnvironmentStrings | GetEnvironmentStringsW | MultiByteToWideChar | __free_dbg | __malloc_dbg | _strlen | _wcslen	10	689
+00402380	___crtGetEnvironmentStringsA	aw_env.c	FID_conflict:_memcpy | FreeEnvironmentStringsA | FreeEnvironmentStringsW | GetEnvironmentStrings | GetEnvironmentStringsW | WideCharToMultiByte | __free_dbg | __malloc_dbg	8	602
+004025e0	__setmbcp		GetCPInfo | _CPtoLCID | getSystemCP | setSBCS	4	815
+00402910	getSystemCP		GetACP | GetOEMCP	2	121
+004029a0	_CPtoLCID			0	107
+00402a40	setSBCS			0	120
+00402ac0	FUN_00402ac0			0	21
+00402ae0	___initmbctable		__setmbcp	1	21
+00402b00	__ioinit	ioinit.c	GetFileType | GetStartupInfoA | GetStdHandle | SetHandleCount | __amsg_exit | __malloc_dbg	6	808
+00402e30	__ioterm		__free_dbg	1	104
+00402ea0	__heap_init		HeapCreate | HeapDestroy | ___sbh_new_region	3	93
+00402f00	__heap_term		HeapDestroy | VirtualFree	2	93
+00403025	FUN_00403025		__local_unwind2	1	27
+00403040	__FF_MSGBANNER		__NMSG_WRITE	1	95
+004030a0	__NMSG_WRITE	<program name unknown> | Microsoft Visual C++ Runtime Library | Runtime Error!  Program:	GetModuleFileNameA | GetStdHandle | WriteFile | __CrtDbgReport | ___crtMessageBoxA | _strlen | _strncpy	9	537
+004032c0	__GET_RTERRMSG			0	109
+00403340	_malloc		__nh_malloc_dbg	1	40
+00403370	__malloc_dbg		__nh_malloc_dbg	1	46
+004033a0	__nh_malloc		__nh_malloc_dbg	1	38
+004033d0	__nh_malloc_dbg		__callnewh | __heap_alloc_dbg	2	101
+00403440	__heap_alloc		__heap_alloc_dbg	1	34
+00403470	__heap_alloc_dbg	Client hook allocation failure at file %hs line %d. | Client hook allocation failure. | Error: memory allocation: bad memory block type. | Invalid allocation size: %u bytes. | _CrtCheckMemory() | dbgheap.c	__CrtCheckMemory | __CrtDbgReport | __heap_alloc_base | _memset	5	818
+004037b0	_calloc		__calloc_dbg	1	38
+004037e0	__calloc_dbg		__malloc_dbg	1	110
+00403850	FID_conflict:__expand		__realloc_dbg	1	38
+00403880	__realloc_dbg		realloc_help	1	55
+004038c0	realloc_help	Allocation too large or negative: %u bytes. | Client hook re-allocation failure at file %hs line %d. | Client hook re-allocation failure. | Error: memory allocation: bad memory block type. | _BLOCK_TYPE(pOldBlock->nBlockUse)==_BLOCK_TYPE(nBlockUse) | _CrtCheckMemory() | _CrtIsValidHeapPointer(pUserData) | _pFirstBlock == pOldBlock | _pLastBlock == pOldBlock | dbgheap.c | fRealloc || (!fRealloc && pNewBlock == pOldBlock) | pOldBlock->nLine == IGNORE_LINE && pOldBlock->lRequest == IGNORE_REQ	__CrtCheckMemory | __CrtDbgReport | __CrtIsValidHeapPointer | __expand_base | __free_dbg | __malloc_dbg | __realloc_base | _memset	9	1409
+00403e50	FID_conflict:__expand		__expand_dbg	1	38
+00403e80	__expand_dbg		realloc_help	1	55
+00403ec0	FUN_00403ec0		__free_dbg	1	25
+00403ee0	__free_dbg	Client hook free failure. | DAMAGE: after %hs block (#%d) at 0x%08X. | DAMAGE: before %hs block (#%d) at 0x%08X. | _BLOCK_TYPE_IS_VALID(pHead->nBlockUse) | _CrtCheckMemory() | _CrtIsValidHeapPointer(pUserData) | _pFirstBlock == pHead | _pLastBlock == pHead | dbgheap.c | pHead->nBlockUse == nBlockUse | pHead->nLine == IGNORE_LINE && pHead->lRequest == IGNORE_REQ	_CheckBytes | __CrtCheckMemory | __CrtDbgReport | __CrtIsValidHeapPointer | __free_base | _memset	7	1057
+00404310	__msize		__msize_dbg	1	30
+00404330	__msize_dbg	_BLOCK_TYPE_IS_VALID(pHead->nBlockUse) | _CrtCheckMemory() | _CrtIsValidHeapPointer(pUserData) | dbgheap.c | pHead->nBlockUse == nBlockUse	__CrtCheckMemory | __CrtDbgReport | __CrtIsValidHeapPointer	3	358
+004044a0	FUN_004044a0			0	38
+004044d0	__CrtSetDbgBlockType	_BLOCK_TYPE_IS_VALID(pHead->nBlockUse) | dbgheap.c	__CrtDbgReport | __CrtIsValidHeapPointer	2	160
+00404570	FUN_00404570			0	38
+004045a0	_CheckBytes	memory check error at 0x%08X = 0x%02X, should be 0x%02X.	__CrtDbgReport	1	140
+00404630	__CrtCheckMemory	%hs allocated at file %hs(%d). | %hs located at 0x%08X is %u bytes long. | DAMAGE: after %hs block (#%d) at 0x%08X. | DAMAGE: before %hs block (#%d) at 0x%08X. | DAMAGE: on top of Free block at 0x%08X. | DAMAGED | _heapchk fails with _HEAPBADBEGIN. | _heapchk fails with _HEAPBADEND. | _heapchk fails with _HEAPBADNODE. | _heapchk fails with _HEAPBADPTR. | _heapchk fails with unknown return value!	_CheckBytes | __CrtDbgReport | __heapchk	3	873
+004049b0	__CrtSetDbgFlag			0	48
+004049e0	__CrtDoForAllClientObjects			0	105
+00404a50	__CrtIsValidPointer		IsBadReadPtr | IsBadWritePtr	2	92
+00404ab0	__CrtIsValidHeapPointer		HeapValidate | __CrtIsValidPointer | ___sbh_find_block	3	182
+00404b80	__CrtIsMemoryBlock		__CrtIsValidHeapPointer | __CrtIsValidPointer	2	255
+00404c80	FUN_00404c80			0	38
+00404cb0	__CrtMemCheckpoint	Bad memory block found at 0x%08X. | _CrtMemCheckPoint: NULL state pointer.	__CrtDbgReport	1	316
+00404df0	__CrtMemDifference	_CrtMemDifference: NULL state pointer.	__CrtDbgReport	1	312
+00404f30	__CrtMemDumpAllObjectsSince	#File Error#(%d) : | %hs(%d) : | Dumping objects -> | Object dump complete. | client block at 0x%08X, subtype %x, %u bytes long. | crt block at 0x%08X, subtype %x, %u bytes long. | normal block at 0x%08X, %u bytes long. | {%ld}	__CrtDbgReport | __CrtIsValidPointer | __printMemBlockData	3	704
+004051f0	__printMemBlockData	%.2X | Data: <%s> %s	__CrtDbgReport | __isctype | _sprintf	3	252
+004052f0	__CrtDumpMemoryLeaks	Detected memory leaks!	__CrtDbgReport | __CrtMemCheckpoint | __CrtMemDumpAllObjectsSince	3	132
+00405380	__CrtMemDumpStatistics	%ld bytes in %ld %hs Blocks. | Largest number used: %ld bytes. | Total allocations: %ld bytes.	__CrtDbgReport	1	199
+00405450	FUN_00405450			0	7
+00405460	FUN_00405460			0	224
+00405540	_strlen			0	123
+004055c0	_wcslen			0	66
+00405610	FID_conflict:_memcpy			0	285
+00405760	FUN_00405760			0	21
+00405780	__set_sbh_threshold			0	61
+004057d0	___sbh_new_region		HeapAlloc | HeapFree | VirtualAlloc | VirtualFree | _memset	5	508
+004059e0	___sbh_release_region		HeapFree | VirtualFree	2	132
+00405a70	___sbh_decommit_pages		VirtualFree | ___sbh_release_region	2	376
+00405bf0	___sbh_find_block			0	162
+00405ca0	___sbh_free_block		___sbh_decommit_pages	1	136
+00405d30	___sbh_alloc_block		VirtualAlloc | ___sbh_alloc_block_from_page | ___sbh_new_region | _memset	4	1207
+00406200	___sbh_alloc_block_from_page			0	763
+00406500	___sbh_resize_block			0	439
+004066c0	___sbh_heap_check			0	617
+00406930	___crtMessageBoxA	GetActiveWindow | GetLastActivePopup | MessageBoxA | user32.dll	GetProcAddress | LoadLibraryA	2	223
+00406a10	_strncpy			0	254
+00406b10	__CrtDbgBreak		DebugBreak	1	17
+00406b30	__CrtSetReportMode			0	126
+00406bb0	__CrtSetReportFile		GetStdHandle	1	169
+00406c60	FUN_00406c60			0	38
+00406c90	__CrtDbgReport	%s(%d) : %s | Assertion failed! | Assertion failed: | Second Chance Assertion Failed: File %s, Line %d | _CrtDbgReport: String too long or IO Error | user32.dll | wsprintfA	GetProcAddress | InterlockedDecrement | InterlockedIncrement | LoadLibraryA | OutputDebugStringA | WriteFile | _CrtMessageWindow | __CrtDbgBreak | __itoa | __snprintf | __vsnprintf | _strlen	15	998
+00407080	_CrtMessageWindow	<program name unknown> | Debug %s!  Program: %s%s%s%s%s%s%s%s%s%s%s  (Press Retry to debug the application) | Expression: | File: | Line: | Microsoft Visual C++ Debug Library | Module: | _CrtDbgReport: String too long or IO Error | dbgrpt.c | szUserMessage != NULL	GetModuleFileNameA | __CrtDbgBreak | __CrtDbgReport | ___crtMessageBoxA | __exit | __snprintf | _raise | _strlen | _strncpy	11	813
+004073b0	FUN_004073b0			0	38
+004073e0	FUN_004073e0			0	21
+00407400	__callnewh			0	62
+00407440	_memset			0	88
+004074a0	__malloc_base		__nh_malloc_base	1	34
+004074d0	__nh_malloc_base		__callnewh | __heap_alloc_base	2	150
+00407570	__heap_alloc_base		HeapAlloc | ___sbh_alloc_block	2	99
+004075e0	FUN_004075e0			0	21
+00407600	__expand_base		HeapReAlloc | ___sbh_find_block | ___sbh_resize_block	3	195
+004076d0	__realloc_base		FID_conflict:_memcpy | HeapAlloc | HeapReAlloc | ___sbh_alloc_block | ___sbh_find_block | ___sbh_free_block | ___sbh_resize_block | __callnewh | __free_base | __malloc_base	10	518
+004078e0	__free_base		HeapFree | ___sbh_find_block | ___sbh_free_block	3	105
+00407950	__heapchk		GetLastError | HeapValidate | ___sbh_heap_check	3	120
+004079d0	__heapset		__heapchk	1	21
+004079f0	_sprintf	format != NULL | sprintf.c | string != NULL	__CrtDbgReport | __flsbuf | __output	3	236
+00407ae0	__isctype		___crtGetStringTypeA	1	182
+00407ba0	__itoa		xtoa	1	88
+00407c00	xtoa			0	181
+00407cc0	__ltoa		xtoa	1	85
+00407d20	__ultoa		xtoa	1	41
+00407d50	__i64toa		x64toa	1	102
+00407dc0	x64toa		__aulldiv | __aullrem	2	216
+00407ea0	__ui64toa		x64toa	1	42
+00407ed0	__snprintf	format != NULL | sprintf.c | string != NULL	__CrtDbgReport | __flsbuf | __output	3	235
+00407fc0	__vsnprintf	format != NULL | string != NULL | vsprintf.c	__CrtDbgReport | __flsbuf | __output	3	229
+004080b0	FUN_004080b0			0	47
+004080e0	_signal		GetLastError | SetConsoleCtrlHandler | ctrlevent_capture | siglookup	3	432
+004082c0	ctrlevent_capture			0	136
+00408350	_raise		__exit | siglookup	2	475
+00408570	siglookup			0	99
+004085e0	__flsbuf	("inconsistent IOB fields", stream->_ptr - stream->_base >= 0) | _flsbuf.c | str != NULL	__CrtDbgReport | __getbuf | __isatty | __lseek | __write	5	660
+00408880	__output	ch != _T('\0') | output.c | ull)	__CrtDbgReport | __aulldiv | __aullrem | __fptrap | _strlen | _wctomb | get_int64_arg | get_int_arg | get_short_arg | write_char | write_multi_char | write_string	12	3177
+00409610	write_char		__flsbuf	1	117
+00409690	write_multi_char		write_char	1	75
+004096e0	write_string		write_char	1	87
+00409740	get_int_arg			0	30
+00409760	get_int64_arg			0	35
+00409790	get_short_arg			0	31
+004097b0	___crtGetStringTypeW	aw_str.c	FID_conflict:_memcpy | GetStringTypeA | GetStringTypeW | WideCharToMultiByte | __calloc_dbg | __free_dbg | __malloc_dbg	7	607
+00409a10	___crtGetStringTypeA	aw_str.c	GetStringTypeA | GetStringTypeW | MultiByteToWideChar | __calloc_dbg | __free_dbg	5	406
+00409bb0	__aulldiv			0	104
+00409c20	__aullrem			0	117
+00409ca0	__write		GetLastError | WriteFile | __dosmaperr | __lseek	4	744
+00409fa0	__lseek		GetLastError | SetFilePointer | __dosmaperr | __get_osfhandle	4	285
+0040a0c0	__getbuf	_getbuf.c | str != NULL	__CrtDbgReport | __malloc_dbg	2	188
+0040a180	__isatty			0	66
+0040a1d0	___initstdio	_file.c	__amsg_exit | __calloc_dbg	2	338
+0040a330	___endstdio		__fcloseall | __flushall	2	36
+0040a360	_wctomb		WideCharToMultiByte	1	198
+0040a430	FID_conflict:_memcpy			0	285
+0040a580	__dosmaperr			0	177
+0040a640	__alloc_osfhnd	osfinfo.c	__malloc_dbg	1	333
+0040a790	__set_osfhnd		SetStdHandle	1	234
+0040a890	__free_osfhnd		SetStdHandle	1	263
+0040a9b0	__get_osfhandle			0	118
+0040aa30	__open_osfhandle		GetFileType | GetLastError | __alloc_osfhnd | __dosmaperr | __set_osfhnd	5	256
+0040ab30	__fcloseall		__free_dbg | _fclose	2	187
+0040abf0	_fflush		__commit | __flush | flsall	3	126
+0040ac70	__flush		__write	1	186
+0040ad30	__flushall		flsall	1	26
+0040ad50	flsall		_fflush	1	247
+0040ae50	__fptrap		__amsg_exit	1	21
+0040ae70	_fclose	fclose.c | str != NULL	__CrtDbgReport | __close | __flush | __free_dbg | __freebuf	5	237
+0040af60	__commit		FlushFileBuffers | GetLastError | __get_osfhandle	3	217
+0040b040	__close		CloseHandle | GetLastError | __dosmaperr | __free_osfhnd | __get_osfhandle	5	267
+0040b150	__freebuf	_freebuf.c | stream != NULL	__CrtDbgReport | __free_dbg	2	138
+0040b20a	RtlUnwind		RtlUnwind	0	6
+0040b300	__strnicmp		_tolower	1	173
+0040b3b0	FUN_0040b3b0			0	22
+0040b3d0	_tolower		___crtLCMapStringA | __isctype	2	313
+0040b510	___crtLCMapStringW	aw_map.c	LCMapStringA | LCMapStringW | MultiByteToWideChar | WideCharToMultiByte | __free_dbg | __malloc_dbg | _strncpy | wcsncnt	8	760
+0040b810	wcsncnt			0	108
+0040b880	___crtLCMapStringA	aw_map.c	LCMapStringA | LCMapStringW | MultiByteToWideChar | WideCharToMultiByte | __free_dbg | __malloc_dbg | _strncnt	7	791
+0040bba0	_strncnt			0	100

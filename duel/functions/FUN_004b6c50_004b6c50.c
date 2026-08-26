@@ -1,0 +1,63 @@
+/*
+ * Decompiled function: FUN_004b6c50
+ * Entry Point: 004b6c50
+ * Size: 604 bytes
+ */
+#include "duel.h"
+
+
+undefined4 FUN_004b6c50(LPCSTR param_1)
+
+{
+  ATOM AVar1;
+  LOGFONTA *pLVar2;
+  undefined1 local_138 [264];
+  undefined4 local_30;
+  WNDCLASSA local_2c;
+  
+  local_30 = 1;
+  DAT_0060cc78 = 2;
+  DAT_00601614 = 1;
+  local_2c.style = 1;
+  local_2c.lpfnWndProc = FUN_004b6fea;
+  local_2c.cbClsExtra = 0;
+  local_2c.cbWndExtra = 4;
+  local_2c.hInstance = DAT_00664680;
+  local_2c.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
+  local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
+  local_2c.hbrBackground = GetStockObject(2);
+  local_2c.lpszMenuName = (LPCSTR)0x0;
+  local_2c.lpszClassName = param_1;
+  AVar1 = RegisterClassA(&local_2c);
+  if (AVar1 == 0) {
+    local_30 = 0;
+  }
+  FUN_004d9630(local_138,&DAT_006189a0);
+  FUN_004d9640(local_138,s__WINBK_TellUser_pic_00507048);
+  DAT_005dcdf0 = FUN_0043d713(local_138);
+  FUN_00434660(s_prompts_txt_0050706c,s_BUTTONLABELS_0050705c);
+  FUN_004d9630(&DAT_00618960,&DAT_006679f0);
+  FUN_004d9630(&DAT_00601590,&DAT_00667aea);
+  pLVar2 = (LOGFONTA *)FUN_00472731(s_TellUser_00507078,0);
+  DAT_005dcdc4 = CreateFontIndirectA(pLVar2);
+  pLVar2 = (LOGFONTA *)FUN_00472731(s_TellUser_00507084,0);
+  DAT_005dcdb8 = CreateFontIndirectA(pLVar2);
+  DAT_005dcdc8 = CreatePen(0,0,0x10000cb);
+  DAT_005dcdf4 = CreatePen(0,0,0x10000cd);
+  DAT_005dcdd0 = CreatePen(0,0,0x10000cf);
+  DAT_005dcdbc = 0x10000b6;
+  DAT_005dcdc0 = 0x10000c9;
+  DAT_005dcddc = CreateSolidBrush(0x10000cd);
+  DAT_005dcdd4 = CreatePen(0,0,0x10000cb);
+  DAT_005dcdcc = CreatePen(0,0,0x10000cf);
+  DAT_005dcdd8 = DAT_005dcdbc;
+  if (((((DAT_005dcdc4 == (HFONT)0x0) || (DAT_005dcdb8 == (HFONT)0x0)) ||
+       (DAT_005dcdc8 == (HPEN)0x0)) || ((DAT_005dcdf4 == (HPEN)0x0 || (DAT_005dcdd0 == (HPEN)0x0))))
+     || ((DAT_005dcddc == (HBRUSH)0x0 ||
+         ((DAT_005dcdd4 == (HPEN)0x0 || (DAT_005dcdcc == (HPEN)0x0)))))) {
+    local_30 = 0;
+  }
+  return local_30;
+}
+
+

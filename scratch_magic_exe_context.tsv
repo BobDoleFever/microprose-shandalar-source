@@ -1,0 +1,1925 @@
+Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
+00401000	FUN_00401000	%d,%d | BigCard small card | MAGICGAME_BigCardCardClass	BeginPaint | CardIDFromType | CopyRect | CreateFontIndirectA | CreateWindowExA | DeleteObject | EndDialog | EndPaint | FillRect | GetClientRect | GetDlgItem | GetObjectA | GetStockObject | GetWindowRect | InflateRect | MapWindowPoints | PtInRect | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetTimer | TextOutA | UpdateWindow | abs | sprintf | strlen	40	3212
+00401c91	FUN_00401c91		LoadCursorA | LoadIconA | RegisterClassA	3	146
+00401d23	FUN_00401d23			0	11
+00401d2e	FUN_00401d2e		CallWindowProcA | DefWindowProcA | GetParent | MapWindowPoints | SendMessageA	5	306
+00401e65	FUN_00401e65	\WINBK_BigCard.pic	LoadCursorA | LoadIconA | RegisterClassA | strcat | strcpy	6	219
+00401f40	FUN_00401f40			1	48
+00401f70	FUN_00401f70		BeginPaint | DefWindowProcA | DrawTextA | EndPaint | FillRect | GetClientRect | GetDC | GetDlgCtrlID | GetKeyState | GetParent | GetStockObject | GetTextExtentPointA | GetTextMetricsA | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | OffsetRect | PostMessageA | ReleaseDC | SelectObject | SendMessageA | SetBkMode | SetRect | SetTextColor | SetWindowLongA | SetWindowPos | Sleep | TextOutA | UpdateWindow | abs | free | malloc | strlen	37	4340
+00403189	FUN_00403189		GetWindowLongA | strlen	2	185
+00403250	FUN_00403250			1	955
+0040360b	FUN_0040360b	,abilities | ,artifact creature | ,attacked | ,attacking | ,attacking/blocking | ,basicland | ,blocked | ,blocking | ,can't target this | ,canuntap | ,card | ,casted | ,castresolved | ,color | ,controller | ,damaged | ,enchanted | ,owner | ,player | ,power | ,spell | ,subtype | ,tapped | ,target player | ,toughness | ,type | ,walls | ,where | ,willuntap	strcat | strcpy	5	7256
+00405277	FUN_00405277			0	249
+00405370	FUN_00405370	ACTIVATING: | CASTING: | PROCESSING: | Pick a card | Pick a player | Pick target | artifact | creature | effect | enchantment | instant | interrupt | sorcery	strcat | strcpy	4	832
+00405802	FUN_00405802	Illegal target (%s). | Illegal target.	Sleep | sprintf | strcpy | strlen	13	1737
+00405edf	FUN_00405edf			0	184
+00405f97	FUN_00405f97			0	324
+004060e0	FUN_004060e0	%[^, ] %[, ] | Uncommon | info.csv	atoi | fclose | fopen | fscanf | strcat | strcmp | strcpy | strlen	11	728
+004063b8	FUN_004063b8	master.csv	atoi | fclose | fgets | fopen | ftell	6	320
+004064f8	FUN_004064f8	%d %d %ld | concise.csv	fclose | fopen | fprintf	3	167
+0040659f	FUN_0040659f	%d %d %ld | concise.csv	fclose | fopen | fscanf	3	226
+00406681	FUN_00406681	%[^, ] %[, ] | master.csv	atoi | fclose | fopen | fscanf | fseek | strcat | strcmp | strlen	8	441
+0040683a	FUN_0040683a		strcpy | strlen	6	583
+00406a88	FUN_00406a88		strlen	2	121
+00406b01	FUN_00406b01		fclose | fopen	2	75
+00406b4c	FUN_00406b4c	%[^ ] | %d %d | .vARTIFACT | .vBLACK | .vBLUE | .vDIRECT | .vFAST | .vGREEN | .vLARGE | .vNONE | .vRED | .vWHITE | 4th Edition	_strcmpi | atoi | fclose | fopen | fscanf | sscanf | strchr | strcmp | strcpy	10	1315
+0040706f	FUN_0040706f	%[^ ] | story.txt	fopen | fscanf	3	155
+0040710a	FUN_0040710a	%[^ ] | tale.txt	fclose | fopen | fscanf | strcat	4	196
+004071ce	FUN_004071ce	%[^ ] | %d %d %s | hints.txt	fclose | fopen | fscanf | ftell | sscanf | strchr	7	589
+0040741b	FUN_0040741b	%[^ ] | hints.txt	fclose | fopen | fscanf | fseek | strcat	5	126
+00407499	FUN_00407499			2	681
+00407747	FUN_00407747			0	103
+004077ae	FUN_004077ae			0	144
+00407843	FUN_00407843		strcat | strncat	5	753
+00407b34	FUN_00407b34	, you can | BuyButtons.spr | The card seller notes:   'If you buy this | The card seller suggests:   'If you combine this | with the | you already have, you can	strcat | strcpy	12	776
+00407e40	FUN_00407e40		GetAsyncKeyState | MessageBeep | __p___mb_cur_max | __p__pctype | _isctype	5	585
+00408089	FUN_00408089			0	41
+004080b2	FUN_004080b2		memcpy	1	93
+0040810f	FUN_0040810f			0	41
+0040813d	FUN_0040813d			0	41
+0040816b	FUN_0040816b		memmove	1	57
+004081b0	FUN_004081b0	CueCard	CreateFontIndirectA | CreateSolidBrush | LoadCursorA | RegisterClassA	5	289
+004082d1	FUN_004082d1		DeleteObject | KillTimer	2	153
+0040836a	FUN_0040836a		BeginPaint | DefWindowProcA | DrawTextA | EndPaint | FillRect | GetClientRect | GetDC | GetFocus | GetSystemMetrics | GetTextExtentPoint32A | GetWindowLongA | GetWindowTextA | InvalidateRect | MoveWindow | PostMessageA | ReleaseDC | SelectObject | SetBkMode | SetFocus | SetRect | SetTextColor | SetWindowLongA | SetWindowTextA | ShowWindow | lstrlenA	27	1111
+004088d0	FUN_004088d0		GetCursorPos | IsWindowVisible | KillTimer | ScreenToClient | SendMessageA | SetTimer | ShowWindow | WindowFromPoint | abs | strcmp	10	1068
+00408e20	FUN_00408e20	\FACE_BLACK.pic | \FACE_BLUE.pic | \FACE_GREEN.pic | \FACE_MULTI.pic | \FACE_RED.pic | \FACE_WHITE.pic	CreateFontIndirectA | CreatePopupMenu | GetStockObject | LoadCursorA | RegisterClassA | strcat | strcpy	9	562
+00409052	FUN_00409052		DeleteObject | DestroyMenu	3	164
+004090f6	FUN_004090f6	Flip back to lifepoints | Help... | Target %s | Target yourself | \duel.hlp	AppendMenuA | BeginPaint | ClientToScreen | DefWindowProcA | DeleteMenu | EndPaint | FillRect | GetClientRect | GetDoubleClickTime | GetMenuItemCount | GetStockObject | GetWindowLongA | InvalidateRect | PeekMessageA | SetRect | SetWindowLongA | Sleep | TrackPopupMenu | WinHelpA | sprintf | strcat | strcpy	31	1750
+004097e2	FUN_004097e2		DPtoLP | FillRect | GetObjectA | GetStockObject | GetWindowLongA | RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetRect | SetTextAlign | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | TextOutA | strchr | strcpy | strlen	24	842
+00409b2c	FUN_00409b2c		BringWindowToTop | ShowWindow	2	327
+00409c73	FUN_00409c73		PostMessageA	1	63
+00409cb2	FUN_00409cb2			0	74
+00409d10	FUN_00409d10	statwin.dll	GetProcAddress | LoadLibraryA	2	166
+00409db6	FUN_00409db6		FreeLibrary	1	93
+00409e13	FUN_00409e13			0	41
+00409e3c	FUN_00409e3c			0	49
+00409e6d	FUN_00409e6d			0	61
+00409eb0	FUN_00409eb0			0	102
+00409f16	FUN_00409f16			1	131
+00409f99	FUN_00409f99			1	145
+0040a02a	FUN_0040a02a			1	324
+0040a16e	FUN_0040a16e	Opponent library		1	53
+0040a1a3	FUN_0040a1a3	Your Library		1	47
+0040a1d2	FUN_0040a1d2		rand	1	45
+0040a1ff	FUN_0040a1ff		rand	2	65
+0040a240	FUN_0040a240			0	21
+0040a255	FUN_0040a255			0	101
+0040a2c0	FUN_0040a2c0		GetTickCount | srand	2	69
+0040a305	FUN_0040a305			0	55
+0040a33c	FUN_0040a33c			0	51
+0040a36f	FUN_0040a36f			0	114
+0040a3e1	FUN_0040a3e1			3	65
+0040a422	FUN_0040a422			2	34
+0040a444	FUN_0040a444			4	104
+0040a4ac	FUN_0040a4ac		memcpy	1	40
+0040a4d4	FUN_0040a4d4		memcpy	1	40
+0040a4fc	FUN_0040a4fc	advfac64.pic | todpal.tr	LoadPalNoPic | RealizePalette | SelectPalette | SetFocus	7	106
+0040a566	FUN_0040a566			0	120
+0040a5de	FUN_0040a5de			3	327
+0040a725	FUN_0040a725			5	350
+0040a883	FUN_0040a883			5	218
+0040a95d	FUN_0040a95d			4	404
+0040aaf1	FUN_0040aaf1			6	264
+0040abf9	FUN_0040abf9			6	260
+0040acfd	FUN_0040acfd			3	178
+0040adaf	FUN_0040adaf			3	182
+0040ae70	FUN_0040ae70			1	407
+0040b00c	FUN_0040b00c	x:sound\button2.wav		1	50
+0040b03e	FUN_0040b03e			0	261
+0040b143	FUN_0040b143			4	389
+0040b2c8	FUN_0040b2c8			2	250
+0040b3c2	FUN_0040b3c2			0	127
+0040b441	FUN_0040b441			1	167
+0040b4e8	FUN_0040b4e8			19	771
+0040b7fa	FUN_0040b7fa	Acquired | Bought WM: | Castle) | Completed quest at | Defeated | Discovered a | Entered | Explored | Freed | JUMP! | Lost to | SPEED! | Saved | Swamp | THUNDERED on | Visited | Went to aid of | spell	strcat	10	1193
+0040bcff	FUN_0040bcff		abs	12	1147
+0040c180	FUN_0040c180			1	45
+0040c1ad	FUN_0040c1ad			3	199
+0040c274	FUN_0040c274			1	59
+0040c2af	FUN_0040c2af			1	58
+0040c2e9	FUN_0040c2e9			1	77
+0040c336	FUN_0040c336			1	75
+0040c381	FUN_0040c381			1	75
+0040c3cc	FUN_0040c3cc			2	85
+0040c421	FUN_0040c421			1	68
+0040c465	FUN_0040c465			1	96
+0040c4c5	FUN_0040c4c5			1	139
+0040c550	FUN_0040c550			1	137
+0040c5d9	FUN_0040c5d9			1	137
+0040c662	FUN_0040c662			1	101
+0040c6c7	FUN_0040c6c7			1	101
+0040c72c	FUN_0040c72c			1	53
+0040c761	FUN_0040c761			1	95
+0040c7c0	FUN_0040c7c0			1	92
+0040c81c	FUN_0040c81c			2	109
+0040c889	FUN_0040c889			2	113
+0040c8fa	FUN_0040c8fa			1	95
+0040c959	FUN_0040c959			2	115
+0040c9cc	FUN_0040c9cc			2	119
+0040ca43	FUN_0040ca43			3	268
+0040cb4f	FUN_0040cb4f			1	110
+0040cbbd	FUN_0040cbbd			0	75
+0040cc08	FUN_0040cc08			0	118
+0040cc7e	FUN_0040cc7e		_vsnprintf	5	551
+0040cea5	FUN_0040cea5			1	50
+0040ced7	FUN_0040ced7			1	50
+0040cf09	FUN_0040cf09			1	50
+0040cf3b	FUN_0040cf3b			1	50
+0040cf6d	FUN_0040cf6d			1	52
+0040cfa1	FUN_0040cfa1			1	52
+0040cfd5	FUN_0040cfd5			1	52
+0040d009	FUN_0040d009			1	52
+0040d03d	FUN_0040d03d			1	50
+0040d06f	FUN_0040d06f			1	50
+0040d0a1	FUN_0040d0a1			1	50
+0040d0d3	FUN_0040d0d3			1	50
+0040d105	FUN_0040d105			1	50
+0040d137	FUN_0040d137			1	50
+0040d169	FUN_0040d169			1	50
+0040d19b	FUN_0040d19b			1	50
+0040d1cd	FUN_0040d1cd			1	52
+0040d201	FUN_0040d201			1	52
+0040d235	FUN_0040d235			1	52
+0040d269	FUN_0040d269			1	52
+0040d29d	FUN_0040d29d			1	52
+0040d2d1	FUN_0040d2d1			1	52
+0040d305	FUN_0040d305			1	52
+0040d339	FUN_0040d339			1	52
+0040d36d	FUN_0040d36d			1	50
+0040d39f	FUN_0040d39f			1	50
+0040d3d1	FUN_0040d3d1			1	50
+0040d403	FUN_0040d403			1	50
+0040d435	FUN_0040d435			1	52
+0040d469	FUN_0040d469			1	52
+0040d49d	FUN_0040d49d			1	52
+0040d4d1	FUN_0040d4d1			1	52
+0040d510	FUN_0040d510			0	66
+0040d552	FUN_0040d552			0	74
+0040d59c	FUN_0040d59c			0	176
+0040d64c	FUN_0040d64c			0	223
+0040d72b	FUN_0040d72b			0	190
+0040d7e9	FUN_0040d7e9			0	66
+0040d82b	FUN_0040d82b			0	74
+0040d875	FUN_0040d875			0	66
+0040d8b7	FUN_0040d8b7			0	74
+0040d901	FUN_0040d901			2	72
+0040d949	FUN_0040d949			0	892
+0040dcca	FUN_0040dcca			2	338
+0040de30	FUN_0040de30	Arzakon | Buy a | For one | Found this card. | Thieves take half your amulets! | Thieves take half your gold! | You find an amulet of each color! | You get 500 gold! | You happen upon a | You may buy amulets for 200 gold pieces.  No thanks. | You may trade your | amulet I will reveal the deck of any | amulet. (you have | creature.  Never mind.  See a deck. | for a five extra life in the next duel.  Never mind.  Trade for life. | x:DuelSounds\artifact.wav | x:DuelSounds\black.wav | x:DuelSounds\blue.wav | x:DuelSounds\enchant.wav | x:DuelSounds\green.wav | x:DuelSounds\grey.wav | x:DuelSounds\instant.wav | x:DuelSounds\interupt.wav | x:DuelSounds\red.wav | x:DuelSounds\sorcery.wav | x:DuelSounds\summon.wav | x:DuelSounds\white.wav | x:Duelsounds\aswanjag.wav | x:sound\treasure.wav	_itoa | strcat | strcpy	32	3070
+0040eab1	FUN_0040eab1			3	83
+0040eb04	FUN_0040eb04		strlen	1	86
+0040eb5a	FUN_0040eb5a	Dragon | Genie | Spectre | Won These Cards | You encounter | guarding a horde of valuable spells. Will you...  Leave quietly.  Duel the creature. | warily | winbak01.pic	StopSnd | strcat | strcpy	19	835
+0040eea2	FUN_0040eea2			0	18
+0040eeb4	FUN_0040eeb4	Do you wish to trade?  Yes, I'll trade.  No Thanks | Gold pieces. | Hmmm... you can't afford this card yet. | I'll trade you | Which card do you seek? | amulet. | amulets. | for	_itoa | strcat | strcpy	18	1632
+0040f514	FUN_0040f514	Whose deck would you like to see?	strcat | strcpy	7	290
+0040f636	FUN_0040f636			0	75
+0040f681	FUN_0040f681			0	104
+0040f6e9	FUN_0040f6e9			1	164
+0040f78d	FUN_0040f78d			0	554
+0040f9b7	FUN_0040f9b7			0	130
+0040fa39	FUN_0040fa39		strcpy	3	420
+0040fbe2	FUN_0040fbe2			1	184
+0040fc9a	FUN_0040fc9a		strcpy	2	88
+0040fcf2	FUN_0040fcf2			0	11
+0040fcfd	FUN_0040fcfd	0569.pic | I see that the people of | If you seek the | Pick a spell | The wise man says: 'The people applaud your brave struggle to free Shandalar from | To assist you I shall | You should travel | amulet, travel | amulets into a duplicate of any spell you possess.' | companion in your next duel.' | creature. ' | fashion 3 | fortify you with extra food for you journeys.' | have asked for a | have asked you to defeat | mana link, travel | provide you a | reveal to you the secret deck of any | strengthen you with two extra lives in your next duel.' | tell you a tale of long long ago' | tell you of the dungeons which hold valuable spells.' | the tyranny of the Five Wizards. | to claim your reward! | wiseman3.pic	rand | strcat | strcpy	32	3913
+00410c7d	FUN_00410c7d			2	65
+00410cc0	FUN_00410cc0			2	561
+00410ef1	FUN_00410ef1			1	622
+0041115f	FUN_0041115f			1	162
+00411201	FUN_00411201			1	269
+0041130e	FUN_0041130e			1	1093
+00411753	FUN_00411753			1	341
+004118a8	FUN_004118a8			6	1776
+00411f98	FUN_00411f98	Naf's Asp takes 1 life!		5	435
+0041214b	FUN_0041214b			1	251
+00412246	FUN_00412246			2	461
+00412413	FUN_00412413			2	371
+00412586	FUN_00412586			1	260
+0041268a	FUN_0041268a	Illegal Amount...must be between 0 and life. | Spend how much life for generic mana?	Sleep	6	437
+0041283f	FUN_0041283f			2	1750
+00412f15	FUN_00412f15			2	1617
+00413570	FUN_00413570			1	761
+00413869	FUN_00413869			4	457
+00413a32	FUN_00413a32			1	376
+00413baa	FUN_00413baa			3	343
+00413d01	FUN_00413d01			1	140
+00413d8d	FUN_00413d8d			1	551
+00413fb4	FUN_00413fb4			4	700
+00414270	FUN_00414270			5	813
+0041459d	FUN_0041459d			2	519
+004147a4	FUN_004147a4			0	189
+00414875	FUN_00414875			2	210
+00414947	FUN_00414947	Natural Selection: | Next 3 (R to L) library cards | No change | Rearrange these cards | See opponent's library | See your library | Shuffle deck		4	378
+00414ac1	FUN_00414ac1			5	723
+00414d99	FUN_00414d99	MANASHORT | prompts.txt		4	448
+00414f59	FUN_00414f59			2	295
+00415080	FUN_00415080			2	126
+004150fe	FUN_004150fe	ANCESTRAL_RECALL | prompts.txt		4	412
+0041529a	FUN_0041529a	SIMULACRUM | prompts.txt		8	637
+00415517	FUN_00415517	SHATTER | prompts.txt		6	434
+004156c9	FUN_004156c9	DISENCHANT | prompts.txt		7	599
+00415920	FUN_00415920	TWIDDLE | Tap.  Untap. | prompts.txt		9	1064
+00415d48	FUN_00415d48			1	176
+00415df8	FUN_00415df8	TUNNEL | prompts.txt		7	609
+00416059	FUN_00416059			4	208
+00416129	FUN_00416129			3	249
+00416222	FUN_00416222	HOWL_FROM_BEYOND | prompts.txt		9	777
+0041652b	FUN_0041652b	BERSERK | prompts.txt		8	641
+004167ac	FUN_004167ac	RIGTHEOUSNESS | prompts.txt		8	702
+00416a6a	FUN_00416a6a	BLOODLUST | prompts.txt		9	624
+00416cda	FUN_00416cda			2	92
+00416d36	FUN_00416d36	SWORD_TO_PLOWSHARES | prompts.txt		8	484
+00416f1a	FUN_00416f1a	DEATH_WARD | Illegal target (not dying). | prompts.txt	Sleep	8	908
+004172a6	FUN_004172a6	HURKYLS_RECALL | prompts.txt		9	951
+0041765d	FUN_0041765d	prompts.txt		8	700
+00417919	FUN_00417919			1	139
+004179a4	FUN_004179a4			3	179
+00417a57	FUN_00417a57			1	178
+00417b09	FUN_00417b09			3	176
+00417bb9	FUN_00417bb9			1	221
+00417c96	FUN_00417c96	Target Creature		7	674
+00417f38	FUN_00417f38	LIGHTNING_BOLT | prompts.txt		5	189
+00417ff5	FUN_00417ff5	CRUMBLE | prompts.txt		8	607
+00418254	FUN_00418254	GIANT_GROWTH | prompts.txt		9	653
+004184e1	FUN_004184e1	UNSUMMON | prompts.txt		8	459
+004186ac	FUN_004186ac			2	126
+0041872f	FUN_0041872f			1	86
+00418785	FUN_00418785	ANY_LACE | prompts.txt		10	1231
+00418c59	FUN_00418c59			0	209
+00418d2a	FUN_00418d2a	Hacking | LANDWORDS | MAGICAL_HACK | Magical Hack | prompts.txt	strcat | strcpy	16	1942
+004194cf	FUN_004194cf			0	213
+004195a4	FUN_004195a4	COLORWORDS | SLEIGHT_OF_MIND | Sleight of Mind | Sleighting | prompts.txt	strcat | strcpy	16	1963
+00419d5e	FUN_00419d5e	BLUE_BLAST | prompts.txt		8	1250
+0041a245	FUN_0041a245			2	636
+0041a4c6	FUN_0041a4c6			3	695
+0041a782	FUN_0041a782			9	1594
+0041adc1	FUN_0041adc1			5	995
+0041b1ae	FUN_0041b1ae	RED_BLAST | prompts.txt		8	1250
+0041b695	FUN_0041b695			3	519
+0041b89c	FUN_0041b89c			2	158
+0041b93a	FUN_0041b93a			1	42
+0041b964	FUN_0041b964			1	38
+0041b98a	FUN_0041b98a	HEALING_SALVE | Illegal target (prevent damage to ONE target). | WARNING - target array overflow in HealingPotion() | prompts.txt	Sleep | sprintf	8	2213
+0041c22f	FUN_0041c22f	SAMITE_HEALER | Select the card that has damaged you. | prompts.txt		7	1704
+0041c8e1	FUN_0041c8e1	EYE_FOR_EYE | prompts.txt		6	697
+0041cb9a	FUN_0041cb9a			5	1029
+0041cf9f	FUN_0041cf9f			1	117
+0041d019	FUN_0041d019			4	402
+0041d1ab	FUN_0041d1ab	FISSURE | prompts.txt		7	614
+0041d411	FUN_0041d411		Sleep	9	1173
+0041d8a6	FUN_0041d8a6	AddType error	memcpy	2	156
+0041d942	FUN_0041d942			0	33
+0041d963	FUN_0041d963			0	106
+0041d9d2	FUN_0041d9d2			0	106
+0041da41	FUN_0041da41	Card leaving play		4	294
+0041db67	FUN_0041db67			2	972
+0041df33	FUN_0041df33			1	37
+0041df60	FUN_0041df60		LoadCursorA | RegisterClassA	2	132
+0041dfe4	FUN_0041dfe4		DefWindowProcA | DestroyIcon | GetCapture | GetClientRect | GetDlgCtrlID | GetDlgItem | GetParent | GetWindowLongA | InvalidateRect | LoadIconA | PtInRect | ReleaseCapture | SendMessageA | SetCapture | SetFocus | SetWindowLongA	17	874
+0041e370	FUN_0041e370			1	278
+0041e486	FUN_0041e486			3	508
+0041e682	FUN_0041e682			3	566
+0041e8b8	FUN_0041e8b8			5	981
+0041ec8d	FUN_0041ec8d			2	87
+0041ece4	FUN_0041ece4			0	86
+0041ed3a	FUN_0041ed3a			0	76
+0041ed86	FUN_0041ed86	x:sound\button2.wav		2	78
+0041edd4	FUN_0041edd4			1	855
+0041f12b	FUN_0041f12b			0	46
+0041f159	FUN_0041f159			0	37
+0041f17e	FUN_0041f17e			0	149
+0041f213	FUN_0041f213			0	156
+0041f2af	FUN_0041f2af			0	165
+0041f354	FUN_0041f354			1	61
+0041f391	FUN_0041f391			1	89
+0041f3ea	FUN_0041f3ea		SetCursorPos | strchr	5	2675
+0041fe70	FUN_0041fe70	x:sound\button2.wav		1	59
+0041feab	FUN_0041feab			0	28
+0041fec7	FUN_0041fec7		strlen	5	309
+0041fffc	FUN_0041fffc		strlen	7	595
+0042024f	FUN_0042024f			3	296
+0042038c	FUN_0042038c			2	1052
+004207a8	FUN_004207a8	(Empty) | Game Files | Load | Save | magic4.map | menopt.pic | optbox.pic | saveDescs	fclose | fgets | fopen | fprintf | fseek | memmove | memset | strcat | strcmp | strcpy | strlen	33	2576
+004211bd	FUN_004211bd			1	247
+004212b4	FUN_004212b4	x:sound\button2.wav		1	50
+004212f0	FUN_004212f0			2	479
+004214cf	FUN_004214cf			1	390
+00421655	FUN_00421655	x:sound\button2.wav		1	144
+004216e5	FUN_004216e5			0	261
+004217ea	FUN_004217ea			4	321
+0042192b	FUN_0042192b			2	182
+004219e1	FUN_004219e1			1	160
+00421a81	FUN_00421a81			0	177
+00421b32	FUN_00421b32	%d/%d | Attempts at Each Castle | Cities Recovered | Cities Saved | Dungeon Treasures | Ned Way the Ratiocinator | Overall Won/Loss | Quest Record | Record vs the Creatures of Shandalar | Wizard's Castles Conquered | World Magics | advfac64.pic | creatures1024.pic | creatures640.pic | creatures800.pic | prdblk.pic | statbak.pic | statbutt.spr	LoadPalNoPic | SelectObject | memset	36	3986
+00422b04	FUN_00422b04			3	1026
+00422f06	FUN_00422f06		memset	1	380
+004230bd	FUN_004230bd	WORLDMAGIC | worlbak1.pic	strcat | strcpy	13	560
+004232f0	FUN_004232f0		CloseHandle | CreateDIBSection | CreateFileMappingA | GetDC | ReleaseDC	8	555
+0042351b	FUN_0042351b	Could not open file %s | G:\NewMagic\sources\sidlib\Kimpic.c	AssertOrLog | _stricmp | fclose | fopen | strchr	13	792
+00423833	FUN_00423833	%08X LoadKimPicture (%s), file mapping:%08X	CloseHandle | OutputDebugStringA | sprintf	4	135
+004238ba	FUN_004238ba		_open	1	52
+004238ee	FUN_004238ee		_close	1	43
+00423919	FUN_00423919			0	39
+00423940	FUN_00423940		_read	1	60
+00423980	Sound_Init	magsnd	FreeLibrary | GetProcAddress | LoadLibraryA	4	353
+00423ae1	CloseSnd		FreeLibrary	2	118
+00423b57	InitSndTrack			0	60
+00423b93	CloseSndTrack			0	52
+00423bc7	StopSndTrack			0	45
+00423bf4	PlaySnd			0	69
+00423c39	PlaySndFile			0	73
+00423c82	StopSnd			0	65
+00423cc3	PauseSnd			0	48
+00423cf3	ResumeSnd			0	69
+00423d38	SetPitch			0	69
+00423d7d	GetPitch			0	69
+00423dc2	SetVol			0	69
+00423e07	GetVol			0	69
+00423e4c	SetPan			0	69
+00423e91	GetPan			0	69
+00423ed6	UpdateSnd			0	58
+00423f10	SetSndMarker			0	69
+00423f55	PlaySndMarker			0	69
+00423f9a	GetSndTime			0	65
+00423fdb	ResetSnd			0	69
+00424020	GetSndState			0	69
+00424065	GetAVISndBuff			0	66
+004240a7	ReleaseAVISndBuff			0	69
+004240ec	GetSndHWND			0	55
+00424123	IsSndLoaded			0	66
+00424165	GetLRUSnd			0	73
+004241ae	FUN_004241ae			0	58
+004241f0	FUN_004241f0		LoadCursorA | LoadIconA | RegisterClassA	3	146
+00424282	FUN_00424282		BeginPaint | CreateSolidBrush | DefWindowProcA | DeleteObject | EndPaint | FillRect | GetClientRect | GetWindowTextA | InvalidateRect | SetBkMode | SetTextAlign | SetTextColor	15	516
+004244a0	FUN_004244a0	hallback.pic		3	81
+00424500	FUN_00424500		fclose | fgets | fopen | fscanf | strcat | strcmp | strcpy | strlen	8	597
+0042475a	FUN_0042475a		abs | strlen	3	340
+004248b0	FUN_004248b0	\WINBK_Phase.pic	CreateHatchBrush | CreatePopupMenu | LoadCursorA | LoadIconA | RegisterClassA | strcat | strcpy	8	248
+004249a8	FUN_004249a8		DeleteObject | DestroyMenu	3	118
+00424a1e	FUN_00424a1e	\WINBK_PhaseCombat.pic	LoadCursorA | LoadIconA | RegisterClassA | strcat | strcpy	6	209
+00424aef	FUN_00424aef			1	48
+00424b1f	FUN_00424b1f	Cleanup phase | Discard phase | Draw phase | Help for this phase... | Help... | Main phase (combat) | Main phase (declare attack) | Main phase (post combat) | Main phase (pre combat) | Mark this phase to always stop | Run to this phase | Untap phase | Upkeep phase | Your | \WINBK_Phase.pic | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | CheckMenuItem | ClientToScreen | CreateRectRgnIndirect | DefWindowProcA | DeleteMenu | DeleteObject | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetCursorPos | GetDoubleClickTime | GetMenuItemCount | GetObjectA | GetStockObject | GetWindowLongA | InvalidateRect | LeaveCriticalSection | PeekMessageA | PostMessageA | Rectangle | RestoreDC | SaveDC | ScreenToClient | SelectClipRgn | SelectObject | SetBkMode | SetRect | SetWindowLongA | Sleep | TrackPopupMenu | WinHelpA | strcat | strcpy	52	4956
+00425ee3	FUN_00425ee3		CopyRect | PtInRect	3	1004
+004262cf	FUN_004262cf		SetRect	1	585
+00426518	FUN_00426518		CopyRect | CreateSolidBrush | DeleteObject | Ellipse | IsRectEmpty | SelectObject	9	685
+004267c5	FUN_004267c5	Assign defenders phase | Attacker fast effects phase | Blocker fast effects phase | Choose attackers phase | Help for this phase... | Help... | Main phase (post combat) | Mark this phase to always stop | Resolve 1st strike damage | Resolve normal damage | Run to this phase | \WINBK_PhaseCombat.pic | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | CheckMenuItem | ClientToScreen | CreateRectRgnIndirect | DefWindowProcA | DeleteMenu | DeleteObject | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetCursorPos | GetDoubleClickTime | GetMenuItemCount | GetObjectA | GetStockObject | GetWindowLongA | InvalidateRect | LeaveCriticalSection | PeekMessageA | PostMessageA | RestoreDC | SaveDC | ScreenToClient | SelectClipRgn | SetRect | SetWindowLongA | Sleep | TrackPopupMenu | WinHelpA | strcat | strcpy	46	4210
+0042784d	FUN_0042784d		CopyRect | PtInRect	3	445
+00427a0a	FUN_00427a0a		SetRect	1	449
+00427bcb	FUN_00427bcb		CopyRect | CreateSolidBrush | DeleteObject | Ellipse | IsRectEmpty | SelectObject	10	619
+00427e36	FUN_00427e36	Attack fast effects phase | Block fast effects phase | Choose defenders phase | Cleanup phase | Discard phase | Draw phase | Main phase (combat) | Main phase (post-combat) | Main phase (pre-combat) | Resolve 1st strike | Resolve attack | Start of next turn | Upkeep phase | next phase	strcpy	2	563
+004280cf	FUN_004280cf			0	19
+00428320	FUN_00428320			4	1278
+0042881e	FUN_0042881e			4	1340
+00428d5a	FUN_00428d5a			4	1245
+00429237	FUN_00429237	Lose 4 life.  Put back on library. | SYLVAN_LIBRARY | prompts.txt		9	1462
+004297ed	FUN_004297ed	LANDTAX | Opponent chose these basic lands: | prompts.txt		13	1675
+00429e7d	FUN_00429e7d	KISMET | prompts.txt		3	601
+0042a0d6	FUN_0042a0d6			1	243
+0042a1c9	FUN_0042a1c9	Cancel | From my graveyard.  From opponent's graveyard.  Cancel | Illegal Target | graveyard: Pick a creature	Sleep | strcat | strcpy	15	2641
+0042ac1f	FUN_0042ac1f	Card into play		3	510
+0042ae1d	FUN_0042ae1d	ANIMATE_ARTIFACT | prompts.txt		8	2008
+0042b5f5	FUN_0042b5f5			5	1209
+0042baae	FUN_0042baae			0	64
+0042baee	FUN_0042baee			0	64
+0042bb2e	FUN_0042bb2e	ANIMATE_WALL | prompts.txt		6	951
+0042bee5	FUN_0042bee5	CONTROL_MAGIC | prompts.txt		2	96
+0042bf45	FUN_0042bf45	STEAL_ARTIFACT | prompts.txt		2	96
+0042bfa5	FUN_0042bfa5			7	2442
+0042c92f	FUN_0042c92f			0	292
+0042ca53	FUN_0042ca53		memcpy	3	1040
+0042ce63	FUN_0042ce63		memcpy	3	2028
+0042d64f	FUN_0042d64f			2	1242
+0042db29	FUN_0042db29			3	502
+0042dd1f	FUN_0042dd1f	FEEDBACK | prompts.txt		7	1461
+0042e2d9	FUN_0042e2d9	BRAINWASH | prompts.txt		11	1333
+0042e80e	FUN_0042e80e			0	178
+0042e8c0	FUN_0042e8c0	SPIRIT_SHACKLE | prompts.txt		7	933
+0042ec65	FUN_0042ec65			1	314
+0042ed9f	FUN_0042ed9f	Gain life.  Take Damage. | RELIC_BIND | prompts.txt		8	1369
+0042f2f8	FUN_0042f2f8			1	915
+0042f690	FUN_0042f690			1	249
+0042f789	FUN_0042f789			0	242
+0042f87b	FUN_0042f87b	POWERLEAK | Take the 2 damage.  Pay 1 mana, take 1 damage.  Pay 2 mana. | prompts.txt		12	1562
+0042fe9a	FUN_0042fe9a	Sacrifice creature to use gate?  No  Yes		3	387
+0043001d	FUN_0043001d			1	407
+004301b4	FUN_004301b4			0	158
+00430252	FUN_00430252			5	922
+004305f1	FUN_004305f1			1	283
+0043070c	FUN_0043070c	Destroy enchanted land.  Pay 1 mana to counter.  Pay 1 life. | EROSION | prompts.txt		10	2036
+00430f0a	FUN_00430f0a	CURSED_LAND | prompts.txt		7	1326
+0043143d	FUN_0043143d			3	650
+004316cc	FUN_004316cc			2	756
+004319c5	FUN_004319c5	EVIL_PRESENCE | prompts.txt		8	1294
+00431ed3	FUN_00431ed3	LIVING_ARTIFACT | prompts.txt		12	1830
+004325fe	FUN_004325fe	BLIGHT | prompts.txt		8	1300
+00432b12	FUN_00432b12	TARGET_LAND | prompts.txt		8	1118
+00432f70	FUN_00432f70			1	231
+00433057	FUN_00433057			4	475
+00433232	FUN_00433232			1	258
+00433334	FUN_00433334			0	306
+00433466	FUN_00433466			2	438
+0043361c	FUN_0043361c			1	220
+004336f8	FUN_004336f8	Jihad color?		5	934
+00433a9e	FUN_00433a9e			0	229
+00433b83	FUN_00433b83			1	223
+00433c62	FUN_00433c62	ASPECTOFWOLF | prompts.txt		7	851
+00433fb5	FUN_00433fb5	prompts.txt		7	1401
+0043452e	FUN_0043452e			3	123
+004345a9	FUN_004345a9	SPIRITLINK | prompts.txt		7	1398
+00434b1f	FUN_00434b1f	CREATUREBOND | prompts.txt		9	1043
+00434f32	FUN_00434f32	GASEOUSFORM | prompts.txt		6	1153
+004353b3	FUN_004353b3	BACKFIRE | prompts.txt		8	1804
+00435abf	FUN_00435abf	HOLY_ARMOR | prompts.txt		12	2625
+00436500	FUN_00436500	BLESSING | prompts.txt		12	2656
+00436f60	FUN_00436f60	FIREBREATHING | prompts.txt		12	2522
+0043793a	FUN_0043793a	INVISIBILITY | prompts.txt		2	387
+00437ac2	FUN_00437ac2	prompts.txt		7	820
+00437df6	FUN_00437df6	SEEKER | prompts.txt		7	820
+0043812a	FUN_0043812a	prompts.txt		6	754
+0043841c	FUN_0043841c			3	1143
+00438893	FUN_00438893			1	258
+00438995	FUN_00438995			1	856
+00438ced	FUN_00438ced	PARALYZE | prompts.txt		7	1819
+00439408	FUN_00439408	Opponent chooses to untap: | PROCESSING Smoke: Select creature to untap		6	987
+004397e3	FUN_004397e3			2	938
+00439b92	FUN_00439b92	COCOON | prompts.txt		2	500
+00439d8b	FUN_00439d8b	BURROWING | prompts.txt		3	123
+00439e06	FUN_00439e06	WANDERLUST | prompts.txt		7	1313
+0043a32c	FUN_0043a32c	INSTILL_ENERGY | prompts.txt		9	2364
+0043ac68	FUN_0043ac68	FLOOD | prompts.txt		8	811
+0043af93	FUN_0043af93			3	212
+0043b067	FUN_0043b067			6	368
+0043b1d7	FUN_0043b1d7			1	77
+0043b224	FUN_0043b224	Pay mana?  No  Yes		6	512
+0043b424	FUN_0043b424	Lowest power is	_itoa | strcat | strcpy	7	711
+0043b6eb	FUN_0043b6eb	LANCE | prompts.txt		2	99
+0043b74e	FUN_0043b74e	FISHLIVEROIL | prompts.txt		3	123
+0043b7c9	FUN_0043b7c9			5	677
+0043ba6e	FUN_0043ba6e	HOLY_STRENGTH | prompts.txt		2	98
+0043bad0	FUN_0043bad0	GIANT_STRENGTH | prompts.txt		2	98
+0043bb32	FUN_0043bb32	IMMOLATION | prompts.txt		2	98
+0043bb94	FUN_0043bb94	DIVINE_TRANSFORMATION | prompts.txt		2	98
+0043bbf6	FUN_0043bbf6	UNHOLY_STRENGTH | prompts.txt		2	98
+0043bc58	FUN_0043bc58	WEAKNESS | prompts.txt		2	98
+0043bcba	FUN_0043bcba			5	1006
+0043c0b2	FUN_0043c0b2			0	194
+0043c174	FUN_0043c174			2	55
+0043c1ab	FUN_0043c1ab			2	55
+0043c1e2	FUN_0043c1e2			2	55
+0043c219	FUN_0043c219			2	55
+0043c250	FUN_0043c250			2	55
+0043c287	FUN_0043c287	ANY_WARD | prompts.txt		8	1646
+0043c8f5	FUN_0043c8f5	UNSTABLE_MUTATION | prompts.txt		7	2249
+0043d1c3	FUN_0043d1c3	COPY_ARTIFACT | Card into play | Illegal target (didn't enter play as an artifact). | prompts.txt	Sleep	12	2124
+0043da0f	FUN_0043da0f	TARGET_ARTIFACT | prompts.txt		7	1447
+0043dfbb	FUN_0043dfbb	Add life for 2 white mana?  No  Yes		3	315
+0043e0f6	FUN_0043e0f6	for | is swapping	strcat | strcpy	8	1697
+0043e79c	FUN_0043e79c			11	1054
+0043ebbf	FUN_0043ebbf	REGENERATION | prompts.txt		10	1503
+0043f19e	FUN_0043f19e	ETERNAL_WARRIOR | prompts.txt		7	895
+0043f51d	FUN_0043f51d	THE_BRUTE | prompts.txt		10	1498
+0043faf7	FUN_0043faf7	EARTH_BIND | prompts.txt		4	639
+0043fd7b	FUN_0043fd7b			2	55
+0043fdb2	FUN_0043fdb2			2	55
+0043fde9	FUN_0043fde9			2	55
+0043fe20	FUN_0043fe20			2	55
+0043fe57	FUN_0043fe57			2	55
+0043fe8e	FUN_0043fe8e	CIRCLE_OF_PROTECTION | prompts.txt		7	1014
+00440289	FUN_00440289	CIRCLE_OF_PROTECTION | prompts.txt		7	1027
+0044068c	FUN_0044068c	Land type? | PHANTASMAL_TERRAIN | prompts.txt		11	1213
+00440b49	FUN_00440b49			4	620
+00440db5	FUN_00440db5	WILD_GROWTH | prompts.txt		8	946
+00441167	FUN_00441167	FLIGHT | prompts.txt		7	885
+004414dc	FUN_004414dc			5	686
+0044178f	FUN_0044178f			5	686
+00441a42	FUN_00441a42			1	1480
+00442010	FUN_00442010		GetStockObject | LoadCursorA | RegisterClassA	3	145
+004420a1	FUN_004420a1	%3d/%d: %dx%d | %d big arts are in (max is %d) | %s\%03d.pic | Congratulations! | End of duel | MAGIC_PaletteClass | Magic: The Gathering | Oh well... | Palette | Pick a card to put into hand | Pick a card to put into play | Save Game | Set opponent lives tp: | Set player lives to: | These big arts are in: | Too bad | Want to play again? | \duel.hlp	CloseHandle | CreateThread | CreateWindowExA | DefWindowProcA | DestroyWindow | EnterCriticalSection | GetCursorPos | GetExitCodeThread | GetSaveFileNameA | GetSystemMetrics | GetTickCount | InvalidateRect | IsIconic | IsWindowVisible | KillTimer | LeaveCriticalSection | LockWindowUpdate | MessageBoxA | MoveWindow | PeekMessageA | PostMessageA | PostQuitMessage | SendMessageA | SetFocus | SetForegroundWindow | SetThreadPriority | SetTimer | ShowWindow | UpdateWindow | WaitForSingleObject | WinHelpA | WindowFromPoint | memcpy | rand | sprintf | srand | strcat | strcpy	67	6620
+00443b0c	FUN_00443b0c		GetTickCount | PostMessageA | srand	5	87
+00443b63	FUN_00443b63	Attack | Attack Phase Display | Full-size card | MAGICGAME_AttackClass | MAGICGAME_AttackPhaseDisplayClass | MAGICGAME_ChatClass | MAGICGAME_FaceClass | MAGICGAME_FullCardClass | MAGICGAME_GraveyardClass | MAGICGAME_HandClass | MAGICGAME_LibraryClass | MAGICGAME_LifeClass | MAGICGAME_ManaSummaryClass | MAGICGAME_PhaseDisplayClass | MAGICGAME_SpellChainClass | MAGICGAME_TerritoryClass | MAGIC_CueCardClass | MAGIC_PlayerDirectiveClass | MAGIC_TellUserClass | Oppon Chat | Oppon Face | Oppon Graveyard | Oppon Library | Oppon Life | Oppon Mana | Oppon Territory | Opponent Hand | Phase Display | Player Chat | Player Face | Player Graveyard | Player Hand | Player Library | Player Life | Player Mana | Player Territory | Spell Chain	CreateWindowExA | GetClientRect	2	1636
+004441cc	FUN_004441cc		ClientToScreen | GetClientRect | GetWindowRect | GetWindowTextA | MoveWindow | SendMessageA | ShowWindow | UpdateWindow	14	3831
+004450c3	FUN_004450c3	%s\%s.pic | GRAVE_BLACK | GRAVE_BLUE | GRAVE_GREEN | GRAVE_RED | GRAVE_WHITE | HAND_BLACK | HAND_BLUE | HAND_GREEN | HAND_RED | HAND_WHITE | LIFE_BLACK | LIFE_BLUE | LIFE_GREEN | LIFE_RED | LIFE_WHITE | TERR_BLACK | TERR_BLUE | TERR_GREEN | TERR_RED | TERR_WHITE	GetObjectA | SendMessageA | sprintf | strcat | strcpy	6	1243
+0044559e	FUN_0044559e			0	69
+004455e3	FUN_004455e3	MAGICGAME_CardClass | Still thinking... | StillThinking small card	CreateWindowExA | DrawTextA | EndDialog | FillRect | GetClientRect | GetDlgItem | GetStockObject | GetWindowRect | MapWindowPoints | OffsetRect | SelectObject | SendDlgItemMessageA | SetBkMode | SetTextColor | SetTimer	17	704
+004458b0	FUN_004458b0	Didn't expect that, did ya? | Fast Effects?... | I knew that was coming. | Interrupts?... | Triggered effects?...	strcat | strcpy	20	4135
+004468dc	FUN_004468dc			6	1142
+00446d52	FUN_00446d52			4	1260
+0044724d	FUN_0044724d			0	840
+004475a4	FUN_004475a4	Damage Dealing | Damage prevention		13	1142
+00447a1a	FUN_00447a1a			3	317
+00447b57	FUN_00447b57			9	2677
+004485d6	FUN_004485d6			1	168
+0044867e	FUN_0044867e			1	546
+004488a0	FUN_004488a0	Card(s) to Graveyard | Graveyard order | Use Regeneration Effects		3	191
+0044895f	FUN_0044895f	Card leaving play | Card(s) to Graveyard		10	1226
+00448e29	FUN_00448e29			1	785
+0044913a	FUN_0044913a			0	233
+00449223	FUN_00449223			0	121
+0044929c	FUN_0044929c			1	164
+00449340	FUN_00449340	ExpandedGraveyard | GraveyardCards	CreatePopupMenu | GetStockObject | LoadCursorA | LoadIconA | RegisterClassA	5	401
+004494d1	FUN_004494d1		DestroyMenu	1	46
+004494ff	FUN_004494ff	%s graveyard | Help... | View both antes | View the graveyard | View the out-of-play cards | Your | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | ClientToScreen | DefWindowProcA | DeleteMenu | DeleteObject | EnableMenuItem | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetDoubleClickTime | GetMenuItemCount | GetStockObject | GetWindowLongA | InvalidateRect | IsWindowVisible | LeaveCriticalSection | PeekMessageA | ReleaseCapture | SendMessageA | SetCapture | SetRect | SetWindowLongA | Sleep | TrackPopupMenu | WinHelpA | sprintf | strcat | strcpy	44	2624
+00449fbb	FUN_00449fbb		DefWindowProcA | GetCursorPos | MapWindowPoints | SendMessageA | WindowFromPoint	6	366
+0044a135	FUN_0044a135		BeginPaint | BitBlt | DefWindowProcA | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetStockObject | GetWindowLongA | InvalidateRect | IsWindowVisible | LeaveCriticalSection | SendMessageA | SetWindowLongA	17	705
+0044a402	FUN_0044a402	ExpandedGraveyard | Graveyard card | Graveyard list | GraveyardCards | Out-of-play card | Out-of-play play	BringWindowToTop | CreateWindowExA | DestroyWindow | GetClientRect | GetStockObject | GetWindowRect | MoveWindow | OffsetRect | SendMessageA | SetClassLongA | ShowWindow	13	970
+0044a7cc	FUN_0044a7cc		DestroyWindow	1	21
+0044a7e1	FUN_0044a7e1			1	83
+0044a839	FUN_0044a839			0	41
+0044a862	FUN_0044a862	%s\WINBK_Ante.pic | %s\WINBK_AnteLabel.pic | Your ante: | ante:	BeginPaint | DrawTextA | EndDialog | EndPaint | FillRect | GetClientRect | GetDC | GetDlgCtrlID | GetDlgItem | GetDlgItemTextA | GetStockObject | GetSystemMetrics | GetTextExtentPoint32A | GetWindowRect | MapWindowPoints | PtInRect | ReleaseDC | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowPos | ShowWindow | sprintf | strcat | strcpy | strlen	39	2560
+0044b26c	FUN_0044b26c		CopyRect | GetClientRect | GetDlgItem | GetWindowRect | MapWindowPoints | OffsetRect | SetRect	8	496
+0044b460	FUN_0044b460	Benguiat Bk BT | MagicMedieval | Zurich Cn BT | fonts.cv | magim___.ttf | mgraphic.exe | misc.exe | nsound.cvl | todpal.tr | tt0127m_.ttf | tt0300m_.ttf	GetTickCount | exit | srand	17	985
+0044b839	FUN_0044b839			0	18
+0044b84b	FUN_0044b84b			1	95
+0044b8aa	FUN_0044b8aa			1	48
+0044b8da	FUN_0044b8da			1	48
+0044b90a	FUN_0044b90a			2	57
+0044b943	FUN_0044b943			1	23
+0044b95a	FUN_0044b95a			0	18
+0044b96c	FUN_0044b96c			2	81
+0044b9c0	FUN_0044b9c0		CreateFontIndirectA | CreatePopupMenu | LoadCursorA | RegisterClassA	5	195
+0044ba83	FUN_0044ba83		DeleteObject | DestroyMenu	2	81
+0044bad4	FUN_0044bad4	Hand Card | Help... | MAGICGAME_CardClass | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | BringWindowToTop | ClientToScreen | CreateWindowExA | DPtoLP | DefWindowProcA | DeleteMenu | DeleteObject | DestroyWindow | DrawTextA | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetMenuItemCount | GetStockObject | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | LeaveCriticalSection | OffsetRect | RestoreDC | SaveDC | SelectObject | SendMessageA | SetBkMode | SetMapMode | SetRect | SetTextColor | SetViewportExtEx | SetWindowExtEx | SetWindowLongA | ShowWindow | TrackPopupMenu | UpdateWindow | WinHelpA | abs | free | malloc | strcat | strcpy	55	5255
+0044cfe4	FUN_0044cfe4		BringWindowToTop | GetWindowLongA | MoveWindow | SetWindowPos | UpdateWindow	6	822
+0044d31a	FUN_0044d31a		GetObjectA | SetRect	3	629
+0044d58f	FUN_0044d58f			0	139
+0044d61a	FUN_0044d61a	%s (%d) | Opponent | Your hand	InvalidateRect | SetWindowTextA | sprintf	3	93
+0044d680	FUN_0044d680			8	869
+0044da1a	FUN_0044da1a			0	11
+0044da25	FUN_0044da25		clock | memset	8	1876
+0044e17e	FUN_0044e17e			3	361
+0044e2e7	FUN_0044e2e7			6	577
+0044e528	FUN_0044e528			4	565
+0044e75d	FUN_0044e75d			3	231
+0044e844	FUN_0044e844			1	32
+0044e864	FUN_0044e864		abs	3	328
+0044e9ac	FUN_0044e9ac			1	497
+0044eb9d	FUN_0044eb9d			0	259
+0044eca0	FUN_0044eca0	*.SVG | MTG Gauntlet Save Game | Save Game	strcat | strcpy | strlen	3	341
+0044edf5	FUN_0044edf5	/AUTOSAVE | /SHANDSAVE	strcat | strcpy	3	270
+0044ef03	FUN_0044ef03	/AUTOSAVE	CopyFileA | strcat | strcpy	3	98
+0044ef70	FUN_0044ef70	OneDeck ONEDECK ONE DECK | advfac64.pic | todpal.tr	BringWindowToTop | CloseHandle | CreateThread | GetExitCodeThread | GetThreadPriority | LoadPalNoPic | OutputDebugStringA | RealizePalette | SelectPalette | SetFocus | SetForegroundWindow | SetThreadPriority | ShowWindow | WaitForSingleObject | memcpy	18	607
+0044f1de	FUN_0044f1de	OneDeck ONEDECK ONE DECK	CardTypeFromID | OutputDebugStringA | memcpy | strcpy	32	5427
+00450711	FUN_00450711			0	302
+0045083f	FUN_0045083f		CardTypeFromID	3	310
+00450975	FUN_00450975		ExitThread | PostMessageA	2	39
+004509a1	FUN_004509a1			1	71
+004509e8	FUN_004509e8	(Y/N) | BuyButtons.spr | Take | advfac64.pic | seedeck.pic | todpal.tr	LoadPalNoPic | SelectPalette | strcat | strcpy	27	2212
+00451291	FUN_00451291	AddCard error		2	186
+0045134b	FUN_0045134b			2	1837
+00451a82	FUN_00451a82			0	154
+00451b1c	FUN_00451b1c			0	406
+00451cb2	FUN_00451cb2			1	222
+00451d90	FUN_00451d90			1	176
+00451e40	FUN_00451e40	Swamp		3	461
+0045200d	FUN_0045200d			1	88
+00452065	FUN_00452065			0	77
+004520b2	FUN_004520b2			1	244
+004521a6	FUN_004521a6			1	208
+00452276	FUN_00452276		GetTickCount | rand	5	391
+004523fd	FUN_004523fd			0	97
+0045245e	FUN_0045245e			0	125
+004524db	FUN_004524db			0	118
+00452551	FUN_00452551	Special | Uncommon | info.csv	strcmp	2	318
+0045268f	FUN_0045268f			0	121
+00452708	FUN_00452708			4	82
+0045275a	FUN_0045275a			3	57
+00452793	FUN_00452793	G:\NewMagic\sources\sid\Minit.c		1	41
+004527bc	FUN_004527bc	COMBAT		3	80
+0045280c	FUN_0045280c			1	27
+00452827	FUN_00452827			0	141
+004528c0	FUN_004528c0			3	494
+00452ab3	FUN_00452ab3			1	38
+00452ad9	FUN_00452ad9			1	38
+00452aff	FUN_00452aff			1	38
+00452b25	FUN_00452b25			1	38
+00452b4b	FUN_00452b4b			1	38
+00452b71	FUN_00452b71	Which mana: 1. | Which type of mana to produce?	strcat | strcpy	8	779
+00452e81	FUN_00452e81			1	42
+00452eab	FUN_00452eab			1	42
+00452ed5	FUN_00452ed5			1	42
+00452eff	FUN_00452eff			1	42
+00452f29	FUN_00452f29			1	42
+00452f53	FUN_00452f53			1	42
+00452f7d	FUN_00452f7d			1	42
+00452fa7	FUN_00452fa7			1	42
+00452fd1	FUN_00452fd1			1	42
+00452ffb	FUN_00452ffb			1	42
+00453025	FUN_00453025			4	716
+004532f1	FUN_004532f1	What kind of mana?		5	514
+0045350d	FUN_0045350d	Damage | Desert:		6	670
+004537b0	FUN_004537b0	Illegal target (damage type). | OASIS | prompts.txt	Sleep	7	1200
+00453c60	FUN_00453c60	Elephant's Graveyard: | Regenerate		4	886
+00453fdb	FUN_00453fdb	Cancel. | Get mana. | STRIPMINE | Sacrifice to destroy a land. | prompts.txt	strcat | strcpy	11	1016
+004543d3	FUN_004543d3			3	495
+004545c7	FUN_004545c7			2	310
+00454702	FUN_00454702	Cancel. | Draw a card. | Get mana. | _ Draw a card.	strcat | strcpy	6	739
+004549ea	FUN_004549ea	Cancel. | Change to Assembly Worker. | Get mana. | MISHRAS_FACTORY | Pump Assembly Worker. | _Change to Assembly Worker. | _Get mana. | _Pump Assembly Worker. | prompts.txt	strcat | strcpy	16	3033
+004555c8	FUN_004555c8	ASSEMBLY_WORKER | Cancel. | Get mana. | Pump Assembly Worker. | Re-change to Assembly Worker. | _Get mana. | _Pump Assembly Worker. | _Re-change to Assembly Worker. | prompts.txt	strcat | strcpy	16	2960
+00456158	FUN_00456158			1	192
+00456218	FUN_00456218			3	477
+004563fa	FUN_004563fa			3	339
+00456552	FUN_00456552			1	133
+004565d7	FUN_004565d7			3	339
+0045672f	FUN_0045672f	ARENA | prompts.txt		7	1364
+00456d10	FUN_00456d10			1	38
+00456d36	FUN_00456d36			1	38
+00456d5c	FUN_00456d5c			1	38
+00456d82	FUN_00456d82			1	38
+00456da8	FUN_00456da8			1	38
+00456dce	FUN_00456dce			2	347
+00456f29	FUN_00456f29	BLACK_LOTUS | mana. | prompts.txt | to produce	strcat | strcpy	10	897
+004572aa	FUN_004572aa	TIME_VAULT | prompts.txt	rand	8	1181
+00457747	FUN_00457747			1	562
+00457979	FUN_00457979			1	566
+00457baf	FUN_00457baf			0	428
+00457d5b	FUN_00457d5b			1	268
+00457e67	FUN_00457e67	ALADDINS_LAMP | prompts.txt		11	1839
+00458596	FUN_00458596			4	322
+004586d8	FUN_004586d8			4	445
+00458895	FUN_00458895			5	882
+00458c07	FUN_00458c07			2	104
+00458c6f	FUN_00458c6f			0	63
+00458cae	FUN_00458cae			4	1030
+004590b4	FUN_004590b4	Unable to discard... Mishra's War Machine deals 3 damage.		3	506
+004592ae	FUN_004592ae	Pick a permanent	strcpy	5	554
+004594d8	FUN_004594d8	PRIMAL_CLAY | prompts.txt		5	759
+004597d4	FUN_004597d4	SHAPESHIFTER | prompts.txt		7	1329
+00459d0a	FUN_00459d0a	Launch tetravite.  Dock tetravite.		7	1041
+0045a120	FUN_0045a120			1	306
+0045a252	FUN_0045a252	TETRAVUS | prompts.txt		4	472
+0045a42a	FUN_0045a42a			3	331
+0045a575	FUN_0045a575	Illegal target (only one move per turn). | Illegal target (tetravite not related to tetravus). | TETRAVITE | prompts.txt	Sleep | strcpy	8	532
+0045a789	FUN_0045a789			0	156
+0045a825	FUN_0045a825	TRISKELION | prompts.txt		7	474
+0045a9ff	FUN_0045a9ff	URZAS_AVENGER | prompts.txt		3	1858
+0045b156	FUN_0045b156	MILLSTONE | prompts.txt		8	940
+0045b502	FUN_0045b502	CELESTIAL_PRISM | mana. | prompts.txt | to produce	strcat | strcpy	12	727
+0045b7d9	FUN_0045b7d9	FELLWAR_STONE | mana. | prompts.txt | to produce	strcat | strcpy	9	1202
+0045bc8b	FUN_0045bc8b			3	197
+0045bd50	FUN_0045bd50	ASHNODS_BATTLEGEAR | prompts.txt		10	2117
+0045c59a	FUN_0045c59a	TAWNOS_WEAPONRY | prompts.txt		10	2702
+0045d028	FUN_0045d028			1	456
+0045d1f0	FUN_0045d1f0	CANDLEABRA_OF_TAWNOS | prompts.txt	sprintf	10	1618
+0045d842	FUN_0045d842			1	77
+0045d88f	FUN_0045d88f			1	77
+0045d8dc	FUN_0045d8dc	FORCEFIELD | prompts.txt		7	1225
+0045dda5	FUN_0045dda5	DISRUPTING_SCEPTER | prompts.txt		5	716
+0045e071	FUN_0045e071			1	395
+0045e1fc	FUN_0045e1fc			0	169
+0045e2a5	FUN_0045e2a5			0	171
+0045e350	FUN_0045e350			0	34
+0045e372	FUN_0045e372			1	38
+0045e398	FUN_0045e398			1	38
+0045e3be	FUN_0045e3be			1	38
+0045e3e4	FUN_0045e3e4			1	38
+0045e40a	FUN_0045e40a			1	38
+0045e430	FUN_0045e430	%s  How many counters do you wish to spend for additional mana?  (max: %d) | Cancel. | Charge battery (add counter). | Tap to get mana.	sprintf | strcat | strcpy	17	1569
+0045ea5b	FUN_0045ea5b			3	388
+0045ebe4	FUN_0045ebe4	CONSERVATOR | prompts.txt		8	1647
+0045f258	FUN_0045f258			3	371
+0045f3cb	FUN_0045f3cb			1	38
+0045f3f1	FUN_0045f3f1			1	38
+0045f417	FUN_0045f417			1	38
+0045f43d	FUN_0045f43d			1	38
+0045f463	FUN_0045f463			1	38
+0045f489	FUN_0045f489			1	38
+0045f4af	FUN_0045f4af			3	467
+0045f682	FUN_0045f682			1	425
+0045f82b	FUN_0045f82b			7	1408
+0045fdb5	FUN_0045fdb5			1	711
+0046007c	FUN_0046007c			2	825
+004603b5	FUN_004603b5			2	301
+004604e2	FUN_004604e2			3	258
+004605e4	FUN_004605e4	EBONYHORSE | prompts.txt		9	1086
+00460a22	FUN_00460a22			4	472
+00460bfa	FUN_00460bfa			3	1095
+00461041	FUN_00461041			3	435
+004611f4	FUN_004611f4			2	412
+00461390	FUN_00461390			3	1053
+004617ad	FUN_004617ad	JANDORS_SADDLEBAGS | prompts.txt		8	1012
+00461ba1	FUN_00461ba1	JADE_MONOLITH | prompts.txt		8	920
+00461f3e	FUN_00461f3e			1	389
+004620c3	FUN_004620c3			3	460
+0046228f	FUN_0046228f			1	74
+004622d9	FUN_004622d9	AMULET_KROOG | prompts.txt		7	1012
+004626d2	FUN_004626d2			4	824
+00462a0a	FUN_00462a0a	GRAPESHOT_CATAPULT | prompts.txt		7	788
+00462d1e	FUN_00462d1e			6	608
+00462f7e	FUN_00462f7e	BRONZE_TABLET | prompts.txt		13	1952
+00463723	FUN_00463723			5	1261
+00463c10	FUN_00463c10			2	193
+00463cd1	FUN_00463cd1	ALADDIN_RING | prompts.txt		6	543
+00463ef0	FUN_00463ef0	ROD_OF_RUIN | prompts.txt		6	538
+0046410a	FUN_0046410a	Opponent chooses to untap: | PROCESSING Winter Orb: Select land to untap		6	1157
+0046458f	FUN_0046458f			0	404
+00464723	FUN_00464723			3	1029
+00464b28	FUN_00464b28			1	38
+00464b4e	FUN_00464b4e			1	38
+00464b74	FUN_00464b74			6	1108
+00464fcd	FUN_00464fcd			0	408
+00465165	FUN_00465165	FLYING_CARPET | prompts.txt		9	1181
+00465602	FUN_00465602			8	983
+004659d9	FUN_004659d9			0	64
+00465a19	FUN_00465a19			0	92
+00465a75	FUN_00465a75	HELM_OF_CHATZUK | prompts.txt		9	1063
+00465e9c	FUN_00465e9c	CORAL_HELM | prompts.txt		10	1094
+004662e2	FUN_004662e2			4	607
+00466541	FUN_00466541	TAWNOS_WAND | prompts.txt		9	1053
+0046695e	FUN_0046695e	Tap which card?	strcpy	5	349
+00466abb	FUN_00466abb			5	617
+00466d29	FUN_00466d29	Bottle of Suleiman | Call the coin flip:  Heads  Tails | Heads  Tails	strcpy	11	563
+00466f5c	FUN_00466f5c			5	320
+0046709c	FUN_0046709c	GLASSES_OF_URZA | Target Player's Hand | prompts.txt		3	718
+0046736a	FUN_0046736a			0	258
+0046746c	FUN_0046746c			3	288
+0046758c	FUN_0046758c			4	546
+004677ae	FUN_004677ae			2	203
+00467880	FUN_00467880	HAND1 | HAND2 | HAND3 | HAND4	AppendMenuA | CreatePopupMenu | LoadCursorA | LoadIconA | RegisterClassA	5	287
+0046799f	FUN_0046799f		DestroyCursor | DestroyMenu	2	201
+00467a68	FUN_00467a68	&B: Bury this card | &M: Add mana for this card | &T: Tap/untap this card | &X: Increment counters for this card | Band with which attacker? | Banding | Block which attacker? | Can't target this | Card is not controlled by owner | Damage to player | Damage: %d | Don't auto tap this card | Draw a card | Dying | First strike | Flying | Forestwalk | Help... | Illegal band | Illegal block | Is a target | Islandwalk | Mountainwalk | Original type | Plainswalk | Protection from artifacts | Protection from black | Protection from blue | Protection from green | Protection from red | Protection from white | Regenerates | Show ID tags Ctrl+T | Show all cards' summoning sickness Ctrl+U | Show full card R DblClk | Show invisible effects Ctrl+I | Summoning sickness | Swampwalk | That isn't an attacker | This card will untap | Trample | View in full card | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | BringWindowToTop | CardIDFromType | CheckMenuItem | ClientToScreen | DefWindowProcA | EndPaint | EnterCriticalSection | FillRect | FrameRect | GetClientRect | GetDC | GetDoubleClickTime | GetMenuItemCount | GetMessageTime | GetParent | GetStockObject | GetSystemMetrics | GetTickCount | GetWindow | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | IsWindowVisible | LeaveCriticalSection | ModifyMenuA | PeekMessageA | PtInRect | ReleaseDC | RemoveMenu | SendMessageA | SetRect | SetWindowLongA | SetWindowPos | Sleep | TrackPopupMenu | UpdateWindow | WinHelpA | abs | free | malloc | memcmp | memcpy | memset | sprintf | strcat | strcpy	115	12124
+0046aa75	FUN_0046aa75		GetWindowLongA | PostMessageA	4	176
+0046ab25	FUN_0046ab25		GetParent | GetWindowLongA	4	549
+0046ad4a	FUN_0046ad4a		GetWindowLongA	2	114
+0046adbc	FUN_0046adbc			1	654
+0046b04a	FUN_0046b04a	%s %d %d | %s %s	OutputDebugStringA | sprintf	2	924
+0046b3e6	FUN_0046b3e6			0	54
+0046b41c	FUN_0046b41c			0	159
+0046b4bb	FUN_0046b4bb			1	32
+0046b4db	FUN_0046b4db	+1/+1 counters: %d | Carrion counters: %d | Charge counters: %d | Clockwork (+1/+0) counters: %d | Corpse counters: %d | Doom counters: %d | Drone (+1/+1) counters: %d | Life counters: %d | Turn counters: %d | Vitality counters: %d	sprintf	1	940
+0046b887	FUN_0046b887	Damage (-0/-1) counters: %d | Mutation (-1/-1) counters: %d | Shackle (-0/-2) counters: %d	sprintf | strcpy	2	164
+0046b92b	FUN_0046b92b			0	19
+0046ba19	FUN_0046ba19	%d,%d | Times New Roman	CreateFontA | DeleteObject | RestoreDC | SaveDC | SelectObject | SetBkMode | SetTextAlign | SetTextColor | TextOutA | sprintf | strlen	11	272
+0046bb29	FUN_0046bb29		GetWindowLongA	1	125
+0046bbab	FUN_0046bbab		GetWindowLongA	2	127
+0046bc2f	FUN_0046bc2f		GetWindowLongA	2	99
+0046bc92	FUN_0046bc92		GetWindowLongA	1	41
+0046bcc0	FUN_0046bcc0	%s\%04d.WVL	CreateDIBSection | DeleteObject | GetDC | PostMessageA | ReleaseDC | memcpy | sprintf	14	620
+0046bf31	FUN_0046bf31			1	130
+0046bfc2	FUN_0046bfc2		FillRect | GetStockObject	5	221
+0046c09f	FUN_0046c09f		DeleteObject	3	271
+0046c1b3	FUN_0046c1b3		DeleteObject	1	80
+0046c203	FUN_0046c203	%s\%04d%c.WVL | %s\%04d.WVL	CreateDIBSection | DeleteObject | GetDC | PostMessageA | ReleaseDC | memcpy | sprintf	14	685
+0046c4b5	FUN_0046c4b5			0	150
+0046c54b	FUN_0046c54b		FillRect | GetStockObject	3	235
+0046c636	FUN_0046c636			3	165
+0046c6e5	FUN_0046c6e5		DeleteObject	1	372
+0046c859	FUN_0046c859		DeleteObject	1	78
+0046c8b0	FUN_0046c8b0	Sunmoon.spr | amsprite.spr | asprite.spr | castles1.spr | castles2.spr | clocknew.spr | compnew.spr | cstline1.spr | daysnew.spr | dbox.spr | ego_f.spr | ego_m.spr | endtop.pic | gsprite.spr | iconb.spr | icons.spr | land.spr | land2.spr | landtile.spr | locatn01.spr | locatn02.spr | locatn03.spr | locatn04.spr | locatn05.spr | locatn06.spr | locatn07.spr | questnew.spr | roads.spr | sego_f.spr | sland.spr | sland2.spr | tips.pic | tsprite2.spr | ttsprite.spr | worlds.spr	memcpy	8	2686
+0046d333	FUN_0046d333	BK_AMG.spr | BK_DJN.spr | BK_FWZ.spr | BK_KHT.spr | BK_LRD.spr | BK_MWZ.spr | BK_WG.spr | BU_AMG.spr | BU_DJN.spr | BU_FWZ.spr | BU_LRD.spr | BU_MWZ.spr | BU_WRM.spr | B_SFR.spr | DG_BRU.spr | DG_GWR.spr | DG_RBG.spr | DG_UWB.spr | DG_WUG.spr | G_AMG.spr | G_DJN.spr | G_FWZ.spr | G_KHT.spr | G_LRD.spr | G_MWZ.spr | G_WRM.spr | M_APE.spr | M_CEN.spr | M_CEN2.spr | M_FNG.spr | M_FWZ.spr | M_KHT.spr | M_LRD.spr | M_TRL.spr | M_TSK.spr | M_WG.spr | R_AMG.spr | R_DJN.spr | R_FWZ.spr | R_LRD.spr | R_MWZ.spr | R_WRM.spr | SBK_WG.spr | SB_AMG.spr | SB_KHT.spr | SB_LRD.spr | SB_SFT.spr | SDJN.spr | SFWZ.spr | SG_AMG.spr | SG_LRD.spr | SKHT.spr | SMWZ.spr | SM_APE.spr | SM_CEN.spr | SM_CEN2.spr | SM_FNG.spr | SM_LRD.spr | SM_TRL.spr | SM_TSK.spr | SM_WG.spr | SR_AMG.spr | SR_FWZ.spr | SR_LRD.spr | SR_WRM.spr | STRL.spr | SU_AMG.spr | SU_LRD.spr | SWRM.spr | SW_AMG.spr | SW_LRD.spr | SW_MWZ.spr | SW_WG.spr | S_DG.spr | TROLL.spr | W_AMG.spr | W_FWZ.spr | W_KHT.spr | W_LRD.spr | W_MWZ.spr | W_WG.spr		2	4866
+0046e70d	FUN_0046e70d			1	109
+0046e77a	FUN_0046e77a			3	424
+0046e922	FUN_0046e922			1	62
+0046e960	FUN_0046e960		GetTickCount | srand	5	941
+0046ed22	FUN_0046ed22		rand	6	1104
+0046f172	FUN_0046f172	spr1024\ | spr800\	strcat | strcpy	2	167
+0046f21e	FUN_0046f21e			2	211
+0046f300	FUN_0046f300			0	721
+0046f5d1	FUN_0046f5d1	Draw Card | Draw a card Phase | No more cards, opponent loses. | No more cards, you lose.	Sleep	14	1130
+0046fa40	FUN_0046fa40	DISCARD | Discard to Library.  Discard to Graveyard. | at random to discard. | prompts.txt | to discard.		9	1094
+0046fe86	FUN_0046fe86			2	202
+0046ff50	FUN_0046ff50	Illegal cast | Trying to cast | X is | casts...	_itoa | strcat | strcpy	27	2993
+00470b36	FUN_00470b36	Cast | Casting | fizzle	Sleep | strcpy	12	877
+00470ea3	FUN_00470ea3			3	408
+0047103b	FUN_0047103b	(with | Pay Upkeep costs.  Don't pay Upkeep. | X is | activates... | mana).	_itoa | strcat | strcpy	19	2358
+00471971	FUN_00471971	Activate | Tapping	strcpy	5	329
+00471aba	FUN_00471aba	Process | processes...	strcat | strcpy	8	262
+00471bc0	FUN_00471bc0			0	114
+00471c32	FUN_00471c32			0	114
+00471ca4	FUN_00471ca4			0	114
+00471d16	FUN_00471d16	Block which attacker? | Choose blockers | Illegal block.	Sleep	7	722
+00472616	FUN_00472616			1	175
+004726c5	FUN_004726c5			4	510
+004728c3	FUN_004728c3			0	66
+00472905	FUN_00472905			2	261
+00472a0a	FUN_00472a0a			3	391
+00472b91	FUN_00472b91			3	123
+00472c0c	FUN_00472c0c			6	508
+00472e08	FUN_00472e08			1	260
+00472f0c	FUN_00472f0c			7	162
+00472fae	FUN_00472fae			4	459
+00473179	FUN_00473179			8	2823
+00473cc5	FUN_00473cc5			0	121
+00473d7e	FUN_00473d7e			0	26
+00473d98	FUN_00473d98			0	209
+00473e69	FUN_00473e69			3	157
+00473f06	FUN_00473f06	++nScan<10 | G:\NewMagic\sources\sid\Magic.c | ScanCard error	assert	5	864
+00474266	FUN_00474266			3	291
+00474389	FUN_00474389			0	159
+00474428	FUN_00474428			0	182
+004744de	FUN_004744de			0	170
+00474588	FUN_00474588			3	945
+00474939	FUN_00474939			1	50
+0047496b	FUN_0047496b		CloseSndTrack | GetLRUSnd | InitSndTrack | IsSndLoaded | PlaySnd | strcat | strcpy	7	788
+00474c7f	FUN_00474c7f		InitSndTrack | StopSndTrack | strcat | strcpy	4	143
+00474d0e	FUN_00474d0e		StopSndTrack	1	16
+00474d1e	FUN_00474d1e			0	44
+00474d4a	FUN_00474d4a			0	51
+00474d7d	FUN_00474d7d		memcpy	1	1114
+004751d7	FUN_004751d7		memcpy	2	1062
+004755fd	FUN_004755fd			0	164
+004756a1	FUN_004756a1			6	1295
+00475bb0	FUN_00475bb0			0	177
+00475c61	FUN_00475c61			0	41
+00475c8a	FUN_00475c8a			2	218
+00475d64	FUN_00475d64		strcpy	4	1185
+00476205	FUN_00476205			1	74
+0047624f	FUN_0047624f			1	495
+0047643e	FUN_0047643e			0	68
+00476482	FUN_00476482			0	142
+00476510	FUN_00476510			0	357
+00476675	FUN_00476675			2	377
+004767ee	FUN_004767ee			0	470
+004769c4	FUN_004769c4			0	183
+00476a80	FUN_00476a80			1	142
+00476b0e	FUN_00476b0e			2	361
+00476c77	FUN_00476c77			0	475
+00476e60	FUN_00476e60	BUTTONLABELS | TellUser | \WINBK_TellUser.pic | prompts.txt	CreateFontIndirectA | CreatePen | CreateSolidBrush | GetStockObject | LoadCursorA | LoadIconA | RegisterClassA | strcat | strcpy	12	604
+004770bc	FUN_004770bc		DeleteObject	2	318
+004771fa	FUN_004771fa	BUTTON | MS Sans Serif | \WINBK_TellUser.pic	BeginPaint | CreateFontA | CreateWindowExA | DPtoLP | DefWindowProcA | DeleteObject | DrawTextA | EndPaint | FillRect | GetClientRect | GetStockObject | GetWindowLongA | GetWindowTextA | InvalidateRect | IsWindowVisible | LineTo | MoveToEx | OffsetRect | PostMessageA | SelectObject | SendMessageA | SetBkMode | SetMapMode | SetTextColor | SetViewportExtEx | SetWindowExtEx | SetWindowLongA | strcat | strcpy	37	2920
+00477d73	FUN_00477d73		GetClientRect | GetDC | GetTextExtentPoint32A | GetWindowRect | InvalidateRect | ReleaseDC | SetWindowPos | SetWindowTextA | ShowWindow | UpdateWindow | strlen	15	1008
+00478163	FUN_00478163		GetWindowRect | IsWindowVisible | SetWindowPos	3	172
+0047820f	FUN_0047820f		GetTextMetricsA | GetWindowLongA | GetWindowRect | IsWindowVisible | MapWindowPoints | SelectObject | SetMapMode | SetViewportExtEx | SetWindowExtEx	9	347
+00478370	FUN_00478370	%s\%04d%c.WVL | %s\%04d.WVL	CreateDIBSection | DeleteObject | GetDC | PostMessageA | ReleaseDC | memcpy | sprintf	14	743
+0047865c	FUN_0047865c			0	151
+004786f3	FUN_004786f3			1	112
+00478763	FUN_00478763		FillRect | GetStockObject	3	236
+0047884f	FUN_0047884f			3	135
+004788e0	FUN_004788e0		DeleteObject	1	374
+00478a56	FUN_00478a56		DeleteObject	1	78
+00478aa4	FUN_00478aa4			0	113
+00478b20	FUN_00478b20		GetSystemMetrics | LoadCursorA | RegisterClassA	4	181
+00478bd5	FUN_00478bd5			1	51
+00478c08	FUN_00478c08		BeginPaint | BitBlt | CopyRect | DefWindowProcA | EndPaint | FillRect | GetCapture | GetClientRect | GetObjectA | GetParent | GetStockObject | GetWindowLongA | GetWindowRect | IntersectClipRect | InvalidateRect | MapWindowPoints | OffsetViewportOrgEx | ReleaseCapture | RestoreDC | SaveDC | SendMessageA | SetCapture | SetMapMode | SetRect | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowLongA | SetWindowOrgEx | UpdateWindow	37	4271
+00479d16	FUN_00479d16		GetClientRect | GetWindowLongA	2	150
+00479dac	FUN_00479dac		GetClientRect | GetWindowLongA	2	147
+00479e3f	FUN_00479e3f		GetClientRect | GetObjectA | GetWindowLongA | OffsetRect | SetRect	5	362
+00479fb0	FUN_00479fb0			1	44
+00479fdc	FUN_00479fdc			0	29
+00479ff9	FUN_00479ff9			3	707
+0047a2e6	FUN_0047a2e6	begin.spr | magic3.map | menubak.pic	strcpy	17	1633
+0047a94c	FUN_0047a94c			1	254
+0047aa4a	FUN_0047aa4a	x:sound\button2.wav		1	50
+0047aa7c	FUN_0047aa7c			4	368
+0047abf1	FUN_0047abf1	menu2-hi.pic | menu2-norm.pic | menu2.pic		12	945
+0047afa2	FUN_0047afa2			1	245
+0047b097	FUN_0047b097	x:sound\button2.wav		1	50
+0047b0c9	FUN_0047b0c9			2	314
+0047b208	FUN_0047b208	menu3-but1.pic | menu3.pic | menu3but.pic		17	1033
+0047b616	FUN_0047b616			1	245
+0047b70b	FUN_0047b70b	x:sound\button2.wav		1	50
+0047b73d	FUN_0047b73d			3	343
+0047b899	FUN_0047b899	16faces.spr | 16facesLow.spr | Ned Way the Ratiocinator | menu4.pic | pedstls.pic	LoadPalNoPic | SelectObject | memset | strcpy | strlen	25	1112
+0047bcf1	FUN_0047bcf1			2	371
+0047be64	FUN_0047be64	Enter Your Name | namepick.pic		10	540
+0047c080	FUN_0047c080			1	245
+0047c175	FUN_0047c175	x:sound\button2.wav		1	50
+0047c1a7	FUN_0047c1a7	16faces.spr | 16facesLow.spr		3	87
+0047c1fe	FUN_0047c1fe	advfac64.pic | pedstls.pic		5	255
+0047c2fd	FUN_0047c2fd			3	99
+0047c360	FUN_0047c360		memmove | strcat | strcpy | strlen	4	716
+0047c640	FUN_0047c640	%s\Poison.pic	CreateFontIndirectA | CreatePopupMenu | LoadCursorA | RegisterClassA | sprintf	7	244
+0047c734	FUN_0047c734		DeleteObject | DestroyMenu	3	118
+0047c7aa	FUN_0047c7aa	%s life points%s | %s\Poison.pic | Flip over to face | Help... | Target %s | Target yourself | Your | \duel.hlp | and poison counters	AppendMenuA | BeginPaint | BitBlt | ClientToScreen | DefWindowProcA | DeleteMenu | DeleteObject | DrawTextA | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetDoubleClickTime | GetMenuItemCount | GetStockObject | GetWindowLongA | InvalidateRect | LeaveCriticalSection | OffsetRect | PeekMessageA | RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetRect | SetTextColor | SetViewportExtEx | SetWindowExtEx | SetWindowLongA | Sleep | TrackPopupMenu | WinHelpA | sprintf | strcat | strcpy | wsprintfA	50	3059
+0047d3cf	FUN_0047d3cf		PostMessageA	1	63
+0047d40e	FUN_0047d40e			0	74
+0047d460	FUN_0047d460	AttackMinimized | AttackSwordShield | \WINBK_Attack.pic | \WINBK_AttackBones.pic | \WINBK_AttackMin.pic | \WINBK_AttackRats.pic | \WINBK_AttackShield.pic | \WINBK_AttackSword.pic	CreatePen | CreatePopupMenu | CreateSolidBrush | LoadCursorA | RegisterClassA | strcat | strcpy	8	1020
+0047d85c	FUN_0047d85c		DeleteObject | DestroyMenu	3	548
+0047da80	FUN_0047da80	&Minimize | AttackMinimized | AttackSwordShield | Card in attack | Help... | MAGICGAME_CardClass | MAGICGAME_ScrollbarClass | \WINBK_Attack.pic | \duel.hlp	AppendMenuA | BringWindowToTop | ClientToScreen | CopyRect | CreateWindowExA | DefWindowProcA | DeleteMenu | DeleteObject | DestroyWindow | DrawTextA | FillRect | GetClientRect | GetDlgItem | GetMenuItemCount | GetObjectA | GetParent | GetStockObject | GetSystemMetrics | GetWindowDC | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | LineTo | LoadBitmapA | MapWindowPoints | MoveToEx | MoveWindow | OffsetRect | PostMessageA | ReleaseDC | ScreenToClient | ScrollWindow | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetRect | SetTextColor | SetWindowLongA | SetWindowPos | ShowWindow | TrackPopupMenu | UpdateWindow | WinHelpA | free | malloc | strcat | strcpy	73	14661
+00481491	FUN_00481491		DestroyWindow	3	245
+00481586	FUN_00481586	LayoutAttackCards	AdjustWindowRect | CopyRect | GetClientRect | GetDlgItem | GetObjectA | GetStockObject | GetSystemMetrics | GetWindowLongA | GetWindowRect | IsWindowVisible | MoveWindow | SendMessageA | SetWindowPos | ShowWindow | UpdateWindow	22	2708
+0048201a	FUN_0048201a		GetWindowLongA | GetWindowRect | MapWindowPoints | SetRect	4	578
+0048225c	FUN_0048225c			2	91
+004822b7	FUN_004822b7	\WINBK_AttackShield.pic | \WINBK_AttackSword.pic	BeginPaint | DefWindowProcA | DrawTextA | EndPaint | FillRect | GetClientRect | GetDlgItem | GetObjectA | GetStockObject | GetWindowDC | GetWindowRect | GetWindowTextA | LineTo | MapWindowPoints | MoveToEx | OffsetRect | ReleaseDC | RestoreDC | SaveDC | SelectObject | SendMessageA | SetActiveWindow | SetBkMode | SetMapMode | SetRect | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | strcat | strcpy	38	2732
+00482d6f	FUN_00482d6f	's attack | Your attack	SetWindowTextA | strcat | strcpy	5	103
+00482dd6	FUN_00482dd6	&Restore | Help... | Minimized attack window | \WINBK_AttackMin.pic	AppendMenuA | ClientToScreen | DefWindowProcA | DeleteMenu | FillRect | GetClientRect | GetMenuItemCount | GetStockObject | IntersectClipRect | SendMessageA | SetRect | ShowWindow | TrackPopupMenu | strcat | strcpy	19	855
+00483139	FUN_00483139		GetWindowLongA	3	688
+004833e9	FUN_004833e9		GetWindowLongA	3	417
+00483590	FUN_00483590			3	204
+0048365c	FUN_0048365c			0	64
+0048369c	FUN_0048369c	ATTACK | CHARGE! | Cancel | Concede | HEALING | MAIN2 | Our Hero | UNTAP | UPKEEP | cards | combat2.pic	_itoa | strcat | strcpy	19	3951
+00484668	FUN_00484668		strcpy	2	41
+00484691	FUN_00484691			0	167
+00484738	FUN_00484738	dungbutt.spr	strcpy	12	386
+00484c45	FUN_00484c45	A.creature | Artifact | Creature | Enchantment | Game effect | Instant | Interrupt | Sorcery	strcat	1	263
+00484df9	FUN_00484df9			1	52
+00484e2d	FUN_00484e2d			1	142
+00484ebb	FUN_00484ebb			0	18
+00484ecd	FUN_00484ecd			1	292
+00485005	FUN_00485005			0	57
+00485040	FUN_00485040			0	64
+00485229	FUN_00485229			0	11
+00485234	FUN_00485234		_itoa | strcat	4	398
+004853c2	FUN_004853c2	My Ante | Opponent's Ante		3	226
+004854a4	FUN_004854a4	-YES-	strcpy	6	353
+00485605	FUN_00485605			4	168
+004856b0	FUN_004856b0	%d/%d | 's ANTE. | (first clue) | (second clue) | (third clue) | )  carried over to the next duel. | . Will you...  Take the cards.  Take the dungeon clue. | 40 Food | A spell from my deck? | Answer a riddle. | Better Luck Next Time! | Castle! | Castle? | Change ante card. | Duel Anyway | Extra FOOD! | Extra GOLD! | First Strike | Gold | I thank your for your mercy granted. Would you like... | Jewel | Lost this card | Mind Control | Opponent Ante | Pay | Pick a card | Pick a spell | Prdblk.pic | Secrets from the | Swamp | TELEPORTED! | The Evil | The location of WORLDMAGIC cards? | The people are disappointed you could manage no better than a draw against the slimy | Those who enter the domain of the Mighty | Those who near the stronghold of the Mighty | Those who would challenge the Great | Which WM spell do you seek... | Why don't you try this deck! | Will you...  Accept tribute for your mercy? | Will you...  Duel | Wizard for Supremacy of | Wizard has sent | Wizard must pay for the privilege. | Wizard tremble in fear of your visage. | Wizard will be met with the firmest resistance. | Won these cards. | Won this Amulet. | You are | You get | You get first move in the next duel. | You have already destroyed the | You have already gathered all of the WORLDMAGIC SPELLS! | You have defeated the slimy | You won | Your Ante | a duplicate card of your choice! | advfac64.pic | and | any card of your choice! | dbox.spr | dbox2.spr | decks\0 | endplak.pic | gold. | has | in the next duel. | lives in next duel. | losedul2.pic | may be found in | most trusted servant to | must...  Duel | prdblk.pic | prdblu.pic | prdfrma.pic | prdfrmb.pic | prdgrn.pic | prdrd.pic | prdwt.pic | says the | summons | test your strength | who inhabit the domain of the Mighty | winbak01.pic | winbak02.pic | x:sound\dsummon.wav | x:sound\treasure.wav | you must...  Duel | your lives (	GetSndState | LoadPalNoPic | SelectPalette | StopSnd | _itoa | abs | strcat | strcpy	86	14542
+00488f92	FUN_00488f92		strcat	1	73
+00488fdb	FUN_00488fdb		strcmp	5	429
+00489188	FUN_00489188	advfac64.pic | faces\%03d.pic | prdblk.pic | prdfrmb.pic | prdfrmc.pic	sprintf	15	1192
+00489630	FUN_00489630			1	88
+00489690	FUN_00489690			1	46
+004896be	FUN_004896be			1	82
+00489710	FUN_00489710			1	56
+00489748	FUN_00489748		_itoa | strcpy	16	1359
+00489c9c	FUN_00489c9c		strlen	8	1310
+0048a1ba	FUN_0048a1ba			1	116
+0048a2a5	FUN_0048a2a5			1	147
+0048a338	FUN_0048a338			1	148
+0048a3cc	FUN_0048a3cc			3	803
+0048a6ef	FUN_0048a6ef			2	1344
+0048ac2f	FUN_0048ac2f			1	684
+0048aee0	FUN_0048aee0			0	59
+0048b950	FUN_0048b950			1	579
+0048bba0	FUN_0048bba0			0	487
+0048bda1	FUN_0048bda1			0	208
+0048be80	FUN_0048be80			0	488
+0048c070	FUN_0048c070			0	1619
+0048c6d0	FUN_0048c6d0			0	80
+0048c72a	FUN_0048c72a	D:MAGIC0.SVE | Error Loading Save Game File:EXITING	exit | strcpy	8	387
+0048c8b2	FUN_0048c8b2	(EMPTY)	_close | _open | strcat | strcpy	5	180
+0048c970	FUN_0048c970	D:MAGIC0.SVE | Disk Full. | Game NOT saved. | Game has been saved. | Press key to continue. | Write access denied.	strcat | strcpy	9	319
+0048caaf	FUN_0048caaf	... save in progress.	strcat | strcpy	3	69
+0048caf4	FUN_0048caf4		_errno | _write	2	71
+0048cb40	FUN_0048cb40	D:MAGIC0.SVE	GetCurrentDirectoryA | tolower	2	84
+0048cdf5	FUN_0048cdf5			0	18
+0048ce07	FUN_0048ce07	File Error:	SelectObject | _close | _open | strcat | strcpy	15	640
+0048d087	FUN_0048d087	Error writing map file. | File Error:	_close | _open | strcat | strcpy	8	466
+0048d259	FUN_0048d259	Ned Way the Ratiocinator	strcpy	2	3524
+0048e01d	FUN_0048e01d		OutputDebugStringA | _read	3	132
+0048e0a1	FUN_0048e0a1			1	77
+0048e0ee	FUN_0048e0ee			1	26
+0048e108	FUN_0048e108			1	26
+0048e122	FUN_0048e122		_close | _open	4	157
+0048e1bf	FUN_0048e1bf		_close | _open	4	239
+0048e2b0	FUN_0048e2b0		strlen	1	86
+0048e306	FUN_0048e306			6	1882
+0048ea81	FUN_0048ea81			2	91
+0048eadc	FUN_0048eadc			2	396
+0048ec68	FUN_0048ec68	x:sound\button2.wav		1	50
+0048ec9a	FUN_0048ec9a			0	106
+0048ed04	FUN_0048ed04			0	231
+0048edeb	FUN_0048edeb			0	82
+0048ee42	FUN_0048ee42			4	389
+0048efc7	FUN_0048efc7			1	231
+0048f0ae	FUN_0048f0ae			5	374
+0048f224	FUN_0048f224			1	287
+0048f343	FUN_0048f343	x:sound\button2.wav		1	50
+0048f375	FUN_0048f375			3	430
+0048f523	FUN_0048f523	+Life | -Life | 1deck | Castle) | dun_bar.pic | dung_bd.pic | xArtifacts | xColor | xInstants | xRules	strcat | strcpy	35	5156
+0049094c	FUN_0049094c			0	84
+004909a0	FUN_004909a0			1	51
+004909d3	FUN_004909d3	decks\0 | decks\0179.dck	_itoa | strcat | strcpy	5	271
+00490ae2	FUN_00490ae2			1	287
+00490c01	FUN_00490c01	x:sound\button2.wav		1	50
+00490c33	FUN_00490c33			1	278
+00490d49	FUN_00490d49	x:sound\button2.wav		1	50
+00490d7b	FUN_00490d7b	cinfopce.pic | cityinfo.pic | infobar.pic		23	4071
+00491d8f	FUN_00491d8f	Artifacts | Cards | Castle | Creatures | Enchantments | Fast Effects | Land | Sorceries	strcat | strcpy | strlen	12	1320
+004922dc	FUN_004922dc			0	194
+0049239e	FUN_0049239e	5thwiz.pic | Pick a card - %d left | Shandalar is free! Prepare to face the final challenge. | The people rejoice!  Life is good! | Will you take this card...     Yes     No | You have defeated all five wizards! | You have defeated the dreaded | You have protected the plane of Shandalar for the next | You may take any three different | Your battles so far will banish the evil Planeswalker Arzakon for | advfac64.pic | cards. | evil creatures oppress | freed! | mtgend.avi | the good people of Shandalar. | todpal.tr | tradscrn.pic | will banish it for 10 additional years. Good Luck! | wingame.pic | wizard.  No longer shall | years. | years. Each life it loses in the Final Battle	BringWindowToTop | DeckBuilderMain | LoadPalNoPic | RealizePalette | SelectPalette | SetFocus | SetForegroundWindow | StopSnd | _itoa | exit | sprintf | strcat | strcpy	51	2323
+00492cb1	FUN_00492cb1			8	302
+00492ddf	FUN_00492ddf	-Contains | -East | -Life losses carried over. | -No artifacts allowed. | -No instants or interrupts allowed. | -No special rules. | -North | -One deck for all duels. | -Remaining life added to next duel. | -South | -West | Castle) | Creatures: | Dungeon Rules: | Location: | advfac64.pic | cards allowed. | clueback.pic | cluebutn.pic | creatures. | large | permanently in effect. | small	LoadPalNoPic | strcat | strcpy	39	2808
+004938e0	FUN_004938e0	Duplicate short name found in catalogs %s entry %d and %s entry %d ShortName value 0x%08lx | G:\NewMagic\sources\NedCard\Catalog.c | Too many open Catalogs: Max %d	AssertOrLog | fopen | fread | malloc | strcpy	5	588
+00493b2c	FUN_00493b2c		fclose | free	2	190
+00493bea	FUN_00493bea			0	70
+00493c3a	FUN_00493c3a		bsearch	2	124
+00493cb6	FUN_00493cb6		fread | fseek | malloc	4	172
+00493d62	FUN_00493d62		_splitpath | strcat	2	235
+00493e50	FUN_00493e50		malloc	1	29
+00493e70	FUN_00493e70	%d - %d %d %d	fclose | fgets | fopen | fread | sscanf | strchr	12	519
+00494080	FUN_00494080			0	58
+004940c0	FUN_004940c0			1	85
+00494120	FUN_00494120		malloc	3	224
+00494200	FUN_00494200		atoi | strcspn | strspn	4	153
+004942a0	FUN_004942a0		free	2	106
+00494310	FUN_00494310			0	105
+00494380	FUN_00494380			0	98
+004943f0	FUN_004943f0			1	325
+00494540	FUN_00494540			1	324
+00494690	FUN_00494690			1	81
+004946f0	FUN_004946f0			1	93
+00494820	FUN_00494820		free	6	984
+00494c00	FUN_00494c00			0	38
+00494c30	FUN_00494c30	G:\NewMagic\sources\NedCard\Palette.c | deltas[EVal] != NULL	assert | malloc	2	311
+004950b0	FUN_004950b0		free	3	864
+00495410	FUN_00495410			1	25
+00495430	FUN_00495430	Couldn't create the app-wide memory DC or bitmap | Couldn't create the palette | Couldn't find raw card data file %s | Couldn't find raw special card data file %s or the number of cards in it didn't match CARDS.DAT | Couldn't initialize for card drawing | Couldn't initialize for utility drawing | Not enough system resources to determine display color depth | \CARDS.DAT | \CardArt | \Duel.dat | \DuelArt | \DuelSounds | \Faces | \LEGACY.CSV | \PlayDeck | \SaveGame	GetDC | GetDeviceCaps | GetSystemMetrics | ReleaseDC | _chdir | _mkdir | sprintf | strcat | strcpy | strlen	19	1017
+00495829	FUN_00495829			9	136
+004958b1	FUN_004958b1	Duel couldn't run | Opponent	MessageBoxA | strcpy	3	167
+00495958	FUN_00495958	Couldn't create the main window | Hand1 | Hand2 | Hand3 | Hand4 | MAGICGAME_MainClass | Magic | Main: creating windows | Main: initializing critical sections | SwordWait	CloseSnd | CreateWindowExA | DeleteCriticalSection | DestroyCursor | GdiFlush | GetCurrentThread | GetMessageA | GetSystemMetrics | GetTickCount | InitializeCriticalSection | LoadCursorA | OutputDebugStringA | SHAppBarMessage | SetThreadPriority | Sound_Init | srand | strcat	24	902
+00495cde	FUN_00495cde		DispatchMessageA | IsWindowVisible | SendMessageA | TranslateAcceleratorA | TranslateMessage	8	526
+00495eec	FUN_00495eec		GetCursorPos | GetSystemMetrics | GetWindowRect | IsWindowVisible | KillTimer | SetTimer | SetWindowPos	7	408
+0049608e	FUN_0049608e	MAGICGAME_AttackClass | MAGICGAME_AttackPhaseDisplayClass | MAGICGAME_BigCardCardClass | MAGICGAME_BigCardChoiceClass | MAGICGAME_CardClass | MAGICGAME_ChatClass | MAGICGAME_FaceClass | MAGICGAME_FullCardClass | MAGICGAME_GraveyardClass | MAGICGAME_HandClass | MAGICGAME_LibraryClass | MAGICGAME_LifeClass | MAGICGAME_MainClass | MAGICGAME_ManaSummaryClass | MAGICGAME_PhaseDisplayClass | MAGICGAME_ScrollbarClass | MAGICGAME_SpellChainClass | MAGICGAME_TerritoryClass | MAGICTHEME_IconButtonClass | MAGIC_CueCardClass | MAGIC_PaletteClass | MAGIC_PlayerDirectiveClass | MAGIC_TellUserClass	Ordinal_17	24	418
+00496230	FUN_00496230	MAGICGAME_AttackClass | MAGICGAME_AttackPhaseDisplayClass | MAGICGAME_BigCardCardClass | MAGICGAME_BigCardChoiceClass | MAGICGAME_CardClass | MAGICGAME_ChatClass | MAGICGAME_FaceClass | MAGICGAME_FullCardClass | MAGICGAME_GraveyardClass | MAGICGAME_HandClass | MAGICGAME_LibraryClass | MAGICGAME_LifeClass | MAGICGAME_ManaSummaryClass | MAGICGAME_PhaseDisplayClass | MAGICGAME_ScrollbarClass | MAGICGAME_SpellChainClass | MAGICGAME_TerritoryClass | MAGIC_CueCardClass | MAGIC_TellUserClass		19	258
+00496332	FUN_00496332			0	37
+0049635c	FUN_0049635c			1	134
+004963e7	FUN_004963e7	KimDebug	CreateWindowExA | GetStockObject | LoadCursorA | RegisterClassA	4	176
+00496497	FUN_00496497	LISTBOX	CreateWindowExA | DefWindowProcA | InvalidateRect | KillTimer | MoveWindow | SendMessageA | ShowWindow	7	484
+004966a0	FUN_004966a0		CardTypeFromID	1	304
+00496ccf	FUN_00496ccf			2	81
+00496d20	FUN_00496d20			1	16
+00496d30	FUN_00496d30		CopyRect | LPtoDP | RestoreDC | SaveDC | SetMapMode | SetRect | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx	14	383
+00496eaf	FUN_00496eaf			4	83
+00496f10	FUN_00496f10		BringWindowToTop | SetFocus | ShowWindow	3	80
+00496f60	FUN_00496f60		SetFocus | ShowWindow	2	68
+00496fa4	FUN_00496fa4			2	408
+0049713c	FUN_0049713c	x:sound\button2.wav		1	50
+0049716e	FUN_0049716e	Colorless | buyAny.spr | tradscrn.pic	_itoa | strcat | strcpy	30	4152
+004981b5	FUN_004981b5	Artifacts | Black | Common: | Enchantments | Fast creatures | Fast effects | Green | Large creatures | Rare: | Sorceries | Total | Uncommon: | White | cards)	_itoa | strcat | strcpy	10	1904
+004989a9	FUN_004989a9		_itoa | strcat	3	111
+00498a18	FUN_00498a18	?  0  1  2  3  4  5  6  7  8+ | Correct | Plainswalk  Flying  Banding  Trample  First Strike  Regeneration | The correct answer is: | WRONG | What is the power rating of the | What is the total casting cost of the | What is the toughness of the | What special ability does the | Which of these spells | ability | and | generic mana to cast | has a power of | has a toughness of | has banding ability | has first strike ability | has flying ability | has forestwalk | has islandwalk | has mountainwalk | has plainswalk | has regeneration ability | has swampwalk | has trample ability | have?  Swampwalk  Islandwalk  Forestwalk  Mountainwalk | requires	_itoa | strcat | strcpy	11	3133
+00499720	FUN_00499720		CreatePopupMenu | GetStockObject | LoadCursorA | RegisterClassA	4	152
+004997b8	FUN_004997b8		DestroyMenu	1	46
+004997e6	FUN_004997e6	Expand text box | Help for this card... | Help... | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | BringWindowToTop | CheckMenuItem | ClientToScreen | DefWindowProcA | DeleteMenu | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetCursorPos | GetMenuItemCount | GetParent | GetStockObject | GetTickCount | GetWindowLongA | InvalidateRect | KillTimer | LeaveCriticalSection | SendMessageA | SetRect | SetTimer | SetWindowLongA | SetWindowPos | ShowWindow | Sleep | TrackPopupMenu | WinHelpA | WindowFromPoint | abs | strcat | strcpy	49	4913
+0049ae00	FUN_0049ae00	%s\Abilities.pic | %s\CantTarget.pic | %s\CardBack.pic | %s\CardCounters.pic | %s\CardSets.pic | %s\Damage.pic | %s\Dying.pic | %s\ManaStripes.pic | %s\ManaSymbols.pic | %s\Summon.pic | %s\Target.pic | %s\WillUntap.pic | BigCardPT | BigCardSubtitle | BigCardText | BigCardTitle | COLORWORDS | Damage | IDTag | LANDWORDS | SmallCardPT | SmallCardTitle | \Magim___.TTF | \Magis___.TTF | \Tt0085m_.TTF | \Tt0127m_.TTF | \Tt0298m_.TTF | \Tt0299m_.TTF | \Tt0300m_.TTF | prompts.txt	AddFontResourceA | CreateFontIndirectA | CreatePen | CreateSolidBrush | sprintf | strcat | strcpy	12	2805
+0049b8f5	FUN_0049b8f5	\Magim___.TTF | \Magis___.TTF | \Tt0085m_.TTF | \Tt0127m_.TTF | \Tt0298m_.TTF | \Tt0299m_.TTF | \Tt0300m_.TTF	DeleteObject | RemoveFontResourceA | strcat | strcpy	5	2066
+0049c107	FUN_0049c107			1	677
+0049c3ac	FUN_0049c3ac	%s\%s.pic | CARDBK_AntiquitiesLand | CARDBK_ArabianNightsLand | CARDBK_Artifact | CARDBK_Black | CARDBK_BlackLand | CARDBK_Blue | CARDBK_BlueLand | CARDBK_DarklandsLand | CARDBK_FallenEmpiresLand | CARDBK_Gold | CARDBK_Green | CARDBK_GreenLand | CARDBK_LegendsLand | CARDBK_Red | CARDBK_RedLand | CARDBK_Special | CARDBK_White | CARDBK_WhiteLand	sprintf | strcpy	3	794
+0049c6cb	FUN_0049c6cb		FillRect | GetStockObject | SetRect	4	252
+0049c7c7	FUN_0049c7c7	%s %s | Enchantment | Forest | Illus. %s | Island | Mountain | Plains | Swamp	CopyRect | CreateSolidBrush | DeleteObject | DrawTextA | FillRect | GetObjectA | GetStockObject | GetTextMetricsA | LPtoDP | OffsetRect | RestoreDC | RoundRect | SaveDC | SelectObject | SetBkMode | SetMapMode | SetRect | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | sprintf | strcat | strcmp | strcpy | strlen | wsprintfA	42	4215
+0049d843	FUN_0049d843		memcpy | strcpy	9	576
+0049da83	FUN_0049da83		GetObjectA | SetRect	3	398
+0049dc11	FUN_0049dc11		SetTextAlign	3	196
+0049dcd5	FUN_0049dcd5		GetCharABCWidthsA | GetCharWidthA | GetTextMetricsA	3	213
+0049ddaa	FUN_0049ddaa		strcpy	1	519
+0049dfb1	FUN_0049dfb1	REGULAR	CreateFontIndirectA | DeleteObject | GetCharABCWidthsA | GetStockObject | GetTextAlign | GetTextMetricsA | RestoreDC | SaveDC | SelectObject | SetTextAlign | TextOutA | memcpy | strcpy | strlen	16	736
+0049e291	FUN_0049e291		GetObjectA | SetRect	3	682
+0049e53b	FUN_0049e53b		IntersectClipRect | RestoreDC | SaveDC	4	129
+0049e5bc	FUN_0049e5bc		DPtoLP | Ellipse | GetStockObject | GetTextExtentPoint32A | GetTextMetricsA | IntersectClipRect | LPtoDP | RestoreDC | SaveDC | SelectObject | SetRect | TextOutA | strlen	14	1594
+0049ebf6	FUN_0049ebf6		CardIDFromType | memcpy	9	435
+0049eda9	FUN_0049eda9	(Black) | (Blue) | (Green) | (Red) | (White) | +%d/+%d | +%d/+0 | +0/+%d | +0/+|X | +|X/+0 | +|X/+|X | -%d/-%d | -|X/-|X | Damage: %d | First strike | Hunting: %s | Trample | and | banding | first strike | flying | forestwalk | islandwalk | mountainwalk | plainswalk | swampwalk | trample	sprintf | strcat | strcpy	16	2852
+0049f8cd	FUN_0049f8cd		GetStockObject | Rectangle | RestoreDC | SaveDC | SelectObject | SetMapMode | SetRect | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx	18	662
+0049fb63	FUN_0049fb63	Forest | Island | Mountain | Plains | Swamp	FillRect | GetObjectA | GetStockObject | SetRect | strcmp	7	900
+0049fee7	FUN_0049fee7		RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetTextAlign | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | TextOutA | strcat | strlen | wsprintfA	15	490
+004a00d1	FUN_004a00d1		RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetTextAlign | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | TextOutA | sprintf | strlen	14	361
+004a023a	FUN_004a023a		DPtoLP | DrawTextA | OffsetRect | RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetTextAlign | SetTextColor | SetViewportExtEx | SetWindowExtEx | sprintf	15	344
+004a0392	FUN_004a0392		SetRect	1	212
+004a0466	FUN_004a0466		DPtoLP | DrawTextA | OffsetRect | RestoreDC | SaveDC | SelectObject | SetBkColor | SetBkMode | SetMapMode | SetTextColor | SetViewportExtEx | SetWindowExtEx | sprintf	14	548
+004a068a	FUN_004a068a		GetObjectA | SetRect	4	385
+004a080b	FUN_004a080b		CopyRect | GetObjectA | SetRect	3	446
+004a09c9	FUN_004a09c9		GetObjectA | SetRect	3	823
+004a0d00	FUN_004a0d00		GetObjectA | RestoreDC | SaveDC	5	663
+004a0f97	FUN_004a0f97		CopyRect | GetObjectA | SetRect	3	611
+004a11fa	FUN_004a11fa		RestoreDC | SaveDC | SelectObject | SetBkColor | SetBkMode | SetMapMode | SetTextAlign | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | TextOutA | strcpy | strlen	15	445
+004a13b7	FUN_004a13b7		RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetTextAlign | SetTextColor | SetViewportExtEx | SetViewportOrgEx | SetWindowExtEx | SetWindowOrgEx | TextOutA | strcpy | strlen	14	424
+004a155f	FUN_004a155f	(Black) | (Blue) | (Green) | (Red) | (White) | Activation | Damage: %d | Hunting: %s	sprintf | strcat | strcpy	17	1541
+004a1b64	FUN_004a1b64	Activation	strcpy	9	677
+004a1e09	FUN_004a1e09	Activation | Upkeep	GetStockObject | Rectangle | RestoreDC | SaveDC | SelectObject | memcpy	33	1528
+004a2401	FUN_004a2401		GetObjectA | IntersectClipRect | OffsetRect | RestoreDC | SaveDC | SetRect	13	759
+004a26f8	FUN_004a26f8			1	135
+004a277f	FUN_004a277f			1	135
+004a2806	FUN_004a2806		CreateHatchBrush | DeleteObject | GetStockObject | Rectangle | SelectObject | SetBkMode | SetROP2	7	153
+004a289f	FUN_004a289f		RestoreDC | SaveDC	3	294
+004a29c5	FUN_004a29c5		CreatePen | DeleteObject | GetStockObject | Rectangle | RestoreDC | SaveDC | SelectObject	7	150
+004a2a5b	FUN_004a2a5b			2	72
+004a2aa3	FUN_004a2aa3		SetRect	1	219
+004a2b7e	FUN_004a2b7e			0	592
+004a2dce	FUN_004a2dce		atoi | strncmp	2	270
+004a2edc	FUN_004a2edc			0	11
+004a2ef0	FUN_004a2ef0	%d %s | CaveBkgd.pic | Found %d Gold | Found %d Gold and bag with | Found This Card | Jewels | Wizard! | You are unceremoniously booted from the stronghold of the Mighty | You get | dungbutt.spr | in the next duel! | staceybk.pic | x:sound\damb1.wav | x:sound\dambloop.wav | x:sound\dice.wav | x:sound\dsummon.wav | x:sound\findcard.wav | x:sound\scroll.wav | x:sound\treasure.wav	CloseSndTrack | SetFocus | SetSndMarker | StopSnd | memcpy | rand | sprintf | strcat | strcpy | strlen	54	4766
+004a41fd	FUN_004a41fd			3	1379
+004a4760	FUN_004a4760			1	271
+004a486f	FUN_004a486f			6	472
+004a4a47	FUN_004a4a47	in effect.	strcat | strcpy	19	2575
+004a554b	FUN_004a554b			0	59
+004a5586	FUN_004a5586			0	125
+004a5603	FUN_004a5603			0	287
+004a5722	FUN_004a5722	Exploring the Castle... | Exploring the Dungeon... | Lost this card | advfac64.pic | has a | losedul2.pic | starts in play! | x:sound\dambloop.wav | x:sound\dngnduel.wav | you encounter	CloseSndTrack | GetSndState | LoadPalNoPic | SetSndMarker | StopSnd | strcat | strcpy	27	1834
+004a5e4c	FUN_004a5e4c	) Lives | First Move	_itoa | strcat	3	304
+004a5f7c	FUN_004a5f7c			3	96
+004a5fdc	FUN_004a5fdc			2	60
+004a6018	FUN_004a6018		strcpy	6	246
+004a610e	FUN_004a610e		abs	5	397
+004a62a0	FUN_004a62a0			0	208
+004a6370	FUN_004a6370		CheckDlgButton | EndDialog | GetDlgItem | IsDlgButtonChecked | SendDlgItemMessageA | SendMessageA | SetFocus | SetWindowLongA | SetWindowTextA	11	1581
+004a69c8	FUN_004a69c8		SendMessageA	1	845
+004a6d20	FUN_004a6d20			2	408
+004a6eb8	FUN_004a6eb8			0	104
+004a6fef	FUN_004a6fef	ASWANJAGUAR | prompts.txt		13	1486
+004a75bd	FUN_004a75bd			2	147
+004a7650	FUN_004a7650			0	203
+004a771b	FUN_004a771b			1	249
+004a7814	FUN_004a7814			7	529
+004a7a25	FUN_004a7a25			4	424
+004a7bcd	FUN_004a7bcd			1	312
+004a7d05	FUN_004a7d05			1	311
+004a7e3c	FUN_004a7e3c			1	238
+004a7f2a	FUN_004a7f2a			6	487
+004a8111	FUN_004a8111	activates Tawnos's Wand effect! | casts Berserk! | casts Twiddle!  Tap.  Untap. | fizzles attempting Tawnos's Wand effect! | made an error!	Sleep | strcpy	15	3040
+004a8d46	FUN_004a8d46	fizzle	Sleep	8	658
+004a8fd8	FUN_004a8fd8			1	351
+004a9137	FUN_004a9137	Bottle of Suleiman | Call the coin flip:  Heads  Tails | Sinbad draws... | activates Aladdin's Ring effect! | activates Bottle of Suleiman effect! | activates Disrupting Sceptre effect! | activates Millstone effect! | activates Nevinyrral's Disk effect! | activates Pandora's Box effect! | activates Sinbad effect! | activates The Hive effect! | activates Time Elemental effect! | casts Ancestral Recall! | casts Crumble! | casts Disenchant! | casts Fissure! | casts Fog effect! | casts Healing Salve! | casts Twiddle to | made an error! | untap.	strcat | strcpy	22	2076
+004a99a0	FUN_004a99a0		abs	10	3718
+004aa830	FUN_004aa830	G:\NewMagic\sources\sid\Ai.c | ScWilly>=0	assert | memcpy	3	698
+004aaaea	FUN_004aaaea		memcpy	2	631
+004aad61	FUN_004aad61		memcpy	1	583
+004aafa8	FUN_004aafa8		memcpy	1	583
+004ab1ef	FUN_004ab1ef			0	37
+004ab214	FUN_004ab214			1	119
+004ab28b	FUN_004ab28b			0	211
+004ab35e	FUN_004ab35e			0	75
+004ab3a9	FUN_004ab3a9			0	74
+004ab3f3	FUN_004ab3f3			0	108
+004ab45f	FUN_004ab45f			0	177
+004ab510	FUN_004ab510			0	21
+004ab525	FUN_004ab525			0	45
+004ab552	FUN_004ab552		_itoa | memset | strcat	9	2722
+004abff4	FUN_004abff4			5	2380
+004ac940	FUN_004ac940	... | ...target | Cast | Player	_itoa | strcat | strcpy	4	575
+004acb7f	FUN_004acb7f			0	155
+004acc20	FUN_004acc20	Start of duel	CardIDFromType | PostMessageA | UpdateWindow	8	538
+004ace3a	FUN_004ace3a	%s won the toss | Would you like to: | You won the coin toss. | and has chosen to draw first. | and will play first.	EndDialog | FillRect | GetClientRect | GetDC | GetDlgCtrlID | GetDlgItem | GetDlgItemTextA | GetFocus | GetStockObject | GetTextExtentPoint32A | GetWindowLongA | InvalidateRect | IsWindowVisible | KillTimer | ReleaseDC | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetTimer | SetWindowLongA | SetWindowPos | ShowWindow | sprintf | strlen	37	2167
+004ad6c5	FUN_004ad6c5	%s\WINBK_StartDuel2.pic | %s\WINBK_StartDuelButtonDepressed.pic | %s\WINBK_StartDuelButtonNormal.pic	sprintf	2	182
+004ad77b	FUN_004ad77b			1	77
+004ad7c8	FUN_004ad7c8	%s ante: | %s did not take a mulligan | %s has all land and will take a mulligan | %s has chosen to take a mulligan | %s has no land and chose to take a mulligan | %s will start first | You will take the first turn | Your ante: | decided not to take a mulligan | will also take a mulligan	BeginPaint | BringWindowToTop | EnableWindow | EndDialog | EndPaint | FillRect | GetClientRect | GetDC | GetDlgCtrlID | GetDlgItem | GetDlgItemTextA | GetFocus | GetStockObject | GetTextExtentPoint32A | GetWindowLongA | GetWindowRect | InvalidateRect | IsWindowVisible | MapWindowPoints | MoveWindow | PtInRect | ReleaseDC | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetTimer | SetWindowLongA | SetWindowPos | ShowWindow | Sleep | UpdateWindow | sprintf | strcat | strcpy | strlen	48	3680
+004ae632	FUN_004ae632	%s\WINBK_StartDuel.pic | %s\WINBK_StartDuelButtonDepressed.pic | %s\WINBK_StartDuelButtonDisabled.pic | %s\WINBK_StartDuelButtonNormal.pic	sprintf	2	228
+004ae716	FUN_004ae716			1	99
+004ae779	FUN_004ae779	The duel is a draw | You won!	KillTimer | strcat | strcpy	5	298
+004ae8a3	FUN_004ae8a3	%s  That was round %d  Your record is %d/%d/%d	KillTimer | sprintf	3	242
+004ae995	FUN_004ae995	Next Round | Quit Gauntlet | Your next draw: | next draw:	BeginPaint | EndDialog | EndPaint | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetFocus | GetStockObject | GetWindowLongA | GetWindowRect | InvalidateRect | MapWindowPoints | PtInRect | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowLongA | ShowWindow | UpdateWindow | abs | strcat | strcpy	35	2915
+004af4fd	FUN_004af4fd	%s\WINBK_EndDuel.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	230
+004af5e3	FUN_004af5e3		DeleteObject	2	93
+004af640	FUN_004af640		EnterCriticalSection | KillTimer | LeaveCriticalSection | SendMessageA | UpdateWindow	6	293
+004af765	FUN_004af765		EnterCriticalSection | ExitThread | GetCursorPos | InvalidateRect | IsWindowVisible | LeaveCriticalSection | PostMessageA | SendMessageA | WindowFromPoint | strcpy	12	737
+004afa46	FUN_004afa46		SendMessageA	1	35
+004afa69	FUN_004afa69	ShowListCard	CardIDFromType | LoadCursorA | LoadIconA | RegisterClassA | strcpy	5	445
+004afc26	FUN_004afc26	List Card | ShowListCard	AdjustWindowRect | CreateWindowExA | DefWindowProcA | DrawTextA | EndDialog | FillRect | GetClientRect | GetDC | GetScrollPos | GetScrollRange | GetStockObject | GetSystemMetrics | GetTextExtentPoint32A | GetWindowDC | GetWindowLongA | GetWindowRect | GetWindowTextA | LineTo | MapWindowPoints | MoveToEx | OffsetRect | ReleaseDC | ScrollWindow | SelectObject | SendMessageA | SetBkMode | SetFocus | SetRect | SetScrollPos | SetScrollRange | SetTextColor | SetWindowLongA | SetWindowPos | SetWindowTextA | strlen	39	4316
+004b0d24	FUN_004b0d24		CreatePen | CreateSolidBrush | GetStockObject	3	237
+004b0e11	FUN_004b0e11		DeleteObject	1	111
+004b0e80	FUN_004b0e80		BeginPaint | BitBlt | DefWindowProcA | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetDlgCtrlID | GetParent | GetStockObject | GetWindowLongA | InvalidateRect | LeaveCriticalSection | SendMessageA | SetWindowLongA	20	1026
+004b128e	FUN_004b128e			0	19
+004b137d	FUN_004b137d		CardIDFromType | IsWindowVisible | SendMessageA	3	137
+004b1406	FUN_004b1406			0	16
+004b1416	FUN_004b1416			0	452
+004b15df	FUN_004b15df		CheckDlgButton | EndDialog | GetDlgItem | GetWindowLongA | IsDlgButtonChecked | SendMessageA | SetDlgItemTextA | SetFocus | SetWindowLongA | ShowWindow	11	912
+004b1974	FUN_004b1974			0	87
+004b19d0	FUN_004b19d0		EndDialog | GetDlgItem | SendMessageA | SetDlgItemTextA | SetFocus | SetWindowLongA	7	355
+004b1b38	FUN_004b1b38			0	94
+004b1b9b	FUN_004b1b9b		BitBlt | EndDialog | EnterCriticalSection | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetDlgItemInt | GetFocus | GetStockObject | GetWindowLongA | InvalidateRect | LeaveCriticalSection | RestoreDC | SaveDC | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemInt | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowLongA | ShowWindow	31	1344
+004b20e5	FUN_004b20e5		CallWindowProcA	1	148
+004b2183	FUN_004b2183	%s\WINBK_QuestN.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	221
+004b2260	FUN_004b2260		DeleteObject	2	93
+004b22bd	FUN_004b22bd			0	698
+004b257c	FUN_004b257c	&Forest | &Island | &Mountain | &Plains | &Swamp | Generic (&X)	BitBlt | CreateSolidBrush | DeleteObject | EndDialog | EnterCriticalSection | FillRect | FrameRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetFocus | GetStockObject | GetWindowLongA | GetWindowRect | InvalidateRect | IsWindowVisible | LeaveCriticalSection | MapWindowPoints | RestoreDC | SaveDC | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowLongA | ShowWindow	36	3363
+004b32d1	FUN_004b32d1	%s\QUESTMANA_Black.pic | %s\QUESTMANA_Blue.pic | %s\QUESTMANA_Gray.pic | %s\QUESTMANA_Green.pic | %s\QUESTMANA_Red.pic | %s\QUESTMANA_White.pic | %s\WINBK_QuestMana.pic | %s\WINBK_QuestManaSelection.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	557
+004b34fe	FUN_004b34fe		DeleteObject	2	182
+004b35b4	FUN_004b35b4		GetDlgItem | GetWindowRect | InflateRect | MapWindowPoints | UnionRect	5	451
+004b3777	FUN_004b3777			0	193
+004b3847	FUN_004b3847	&Black | &Green | &White | Bl&ue	BitBlt | CheckDlgButton | CheckRadioButton | EnableWindow | EndDialog | EnterCriticalSection | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetFocus | GetStockObject | GetWindowLongA | GetWindowRect | InvalidateRect | LeaveCriticalSection | MapWindowPoints | PtInRect | RestoreDC | SaveDC | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowLongA | SetWindowTextA | ShowWindow	37	2379
+004b4197	FUN_004b4197	%s\WINBK_ChangeText.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	221
+004b4274	FUN_004b4274		DeleteObject	2	93
+004b42d1	FUN_004b42d1			0	11
+004b42dc	FUN_004b42dc		CardIDFromType | EnterCriticalSection | LeaveCriticalSection | memcmp | memcpy	5	1891
+004b4a3f	FUN_004b4a3f	Align Attack/Spell | CD struct | Refresh	EnterCriticalSection | GetStockObject | InvalidateRect | IsWindowVisible | KillTimer | LeaveCriticalSection | SendMessageA | ShowWindow | UpdateWindow	22	2402
+004b53a1	FUN_004b53a1			0	37
+004b53c6	FUN_004b53c6		GetTickCount	1	39
+004b53ed	FUN_004b53ed		GetTickCount	1	64
+004b542d	FUN_004b542d			0	16
+004b543d	FUN_004b543d			0	16
+004b544d	FUN_004b544d	Choose defenders	SendMessageA	2	180
+004b5501	FUN_004b5501			1	62
+004b553f	FUN_004b553f		BringWindowToTop | GetCursorPos | GetSystemMetrics | SetWindowPos | SetWindowTextA | ShowWindow	7	526
+004b574d	FUN_004b574d		KillTimer	3	252
+004b584e	FUN_004b584e		EnterCriticalSection | LeaveCriticalSection | SendMessageA | memcpy	4	139
+004b58d9	FUN_004b58d9		SendMessageA	1	64
+004b5919	FUN_004b5919			0	78
+004b5967	FUN_004b5967		EnterCriticalSection | LeaveCriticalSection	3	114
+004b59d9	FUN_004b59d9		EnterCriticalSection | LeaveCriticalSection	3	109
+004b5a46	FUN_004b5a46		EnterCriticalSection | LeaveCriticalSection	3	114
+004b5ab8	FUN_004b5ab8		EnterCriticalSection | LeaveCriticalSection	3	183
+004b5b6f	FUN_004b5b6f		EnterCriticalSection | LeaveCriticalSection	3	110
+004b5bdd	FUN_004b5bdd		EnterCriticalSection | LeaveCriticalSection	3	110
+004b5c4b	FUN_004b5c4b		EnterCriticalSection | LeaveCriticalSection	3	112
+004b5cbb	FUN_004b5cbb			2	110
+004b5d2e	FUN_004b5d2e		EnterCriticalSection | LeaveCriticalSection	3	182
+004b5de4	FUN_004b5de4		EnterCriticalSection | LeaveCriticalSection	3	400
+004b5f74	FUN_004b5f74		EnterCriticalSection | LeaveCriticalSection	3	175
+004b6023	FUN_004b6023		EnterCriticalSection | LeaveCriticalSection	3	280
+004b613b	FUN_004b613b			2	108
+004b61ac	FUN_004b61ac		EnterCriticalSection | LeaveCriticalSection	3	110
+004b621a	FUN_004b621a		EnterCriticalSection | LeaveCriticalSection	3	110
+004b6288	FUN_004b6288		EnterCriticalSection | LeaveCriticalSection	3	206
+004b6356	FUN_004b6356		EnterCriticalSection | LeaveCriticalSection	3	110
+004b63c4	FUN_004b63c4		EnterCriticalSection | LeaveCriticalSection	3	110
+004b6432	FUN_004b6432		EnterCriticalSection | LeaveCriticalSection	3	109
+004b649f	FUN_004b649f		EnterCriticalSection | LeaveCriticalSection	3	109
+004b650c	FUN_004b650c		EnterCriticalSection | LeaveCriticalSection	3	161
+004b65ad	FUN_004b65ad			0	18
+004b65bf	FUN_004b65bf			2	100
+004b6623	FUN_004b6623			2	115
+004b6696	FUN_004b6696		EnterCriticalSection | LeaveCriticalSection	4	168
+004b673e	FUN_004b673e		EnterCriticalSection | LeaveCriticalSection	3	109
+004b67ab	FUN_004b67ab		EnterCriticalSection | LeaveCriticalSection	3	132
+004b682f	FUN_004b682f		EnterCriticalSection | LeaveCriticalSection	3	132
+004b68b3	FUN_004b68b3		EnterCriticalSection | LeaveCriticalSection	3	263
+004b69ba	FUN_004b69ba	PLAINS | PLAINSs	EnterCriticalSection | LeaveCriticalSection | strcat | strcpy	5	494
+004b6ba8	FUN_004b6ba8		EnterCriticalSection | LeaveCriticalSection | memcpy	4	179
+004b6c5b	FUN_004b6c5b		EnterCriticalSection | LeaveCriticalSection	3	109
+004b6cc8	FUN_004b6cc8		EnterCriticalSection | LeaveCriticalSection	3	109
+004b6d35	FUN_004b6d35		EnterCriticalSection | LeaveCriticalSection	3	112
+004b6da5	FUN_004b6da5		EnterCriticalSection | LeaveCriticalSection	3	150
+004b6e3b	FUN_004b6e3b		EnterCriticalSection | LeaveCriticalSection	3	112
+004b6eab	FUN_004b6eab		EnterCriticalSection | LeaveCriticalSection	3	110
+004b6f19	FUN_004b6f19			0	48
+004b6f49	FUN_004b6f49			0	93
+004b6fa6	FUN_004b6fa6		EnterCriticalSection | LeaveCriticalSection	3	102
+004b700c	FUN_004b700c		EnterCriticalSection | LeaveCriticalSection	3	102
+004b7072	FUN_004b7072		EnterCriticalSection | LeaveCriticalSection | memcpy	4	140
+004b70fe	FUN_004b70fe		EnterCriticalSection | LeaveCriticalSection | memcpy	4	140
+004b718a	FUN_004b718a		EnterCriticalSection | LeaveCriticalSection | memcpy	4	163
+004b722d	FUN_004b722d		EnterCriticalSection | LeaveCriticalSection | memcpy	4	163
+004b72d0	FUN_004b72d0		EnterCriticalSection | LeaveCriticalSection | memcpy	4	163
+004b7373	FUN_004b7373		EnterCriticalSection | LeaveCriticalSection | memcpy	3	91
+004b73ce	FUN_004b73ce		CardIDFromType | EnterCriticalSection | LeaveCriticalSection	3	227
+004b74b1	FUN_004b74b1		EnterCriticalSection | LeaveCriticalSection	2	73
+004b74fa	FUN_004b74fa		EnterCriticalSection | LeaveCriticalSection | memcpy	4	117
+004b756f	FUN_004b756f		EnterCriticalSection | LeaveCriticalSection	2	53
+004b75a4	FUN_004b75a4		EnterCriticalSection | LeaveCriticalSection	2	52
+004b75d8	FUN_004b75d8		EnterCriticalSection | LeaveCriticalSection	2	81
+004b7629	FUN_004b7629		EnterCriticalSection | LeaveCriticalSection	2	52
+004b765d	FUN_004b765d		EnterCriticalSection | LeaveCriticalSection	2	73
+004b76a6	FUN_004b76a6		memcpy | strcpy	3	423
+004b784d	FUN_004b784d			0	74
+004b7897	FUN_004b7897	%s lose %d life | %s loses %d life | %s\WINBK_ManaBurn.pic | Mana Burn!	DrawTextA | EndDialog | FillRect | GetClientRect | GetDlgItem | GetStockObject | GetWindowRect | MapWindowPoints | OffsetRect | SelectObject | SendDlgItemMessageA | SetBkMode | SetTextColor | SetTimer | ShowWindow | sprintf | strcpy	23	1180
+004b7d38	FUN_004b7d38		InvalidateRect | KillTimer | StopSnd | rand | strcpy	5	176
+004b7de8	FUN_004b7de8	%s\COINTOSS_Heads.AVI | %s\COINTOSS_Tails.AVI	AdjustWindowRect | EndDialog | FillRect | GetClientRect | GetDC | GetDlgCtrlID | GetDlgItem | GetTextExtentPoint32A | GetWindowLongA | GetWindowRect | KillTimer | MCIWndCreateA | MoveWindow | PostMessageA | ReleaseDC | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemTextA | SetFocus | SetTextColor | SetTimer | sprintf | strlen	30	1277
+004b82ea	FUN_004b82ea		CreateSolidBrush	1	36
+004b830e	FUN_004b830e		DeleteObject	1	31
+004b832d	FUN_004b832d		CardIDFromType	1	234
+004b8421	FUN_004b8421	(max %d)	BeginPaint | EndDialog | EndPaint | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetDlgItemInt | GetFocus | GetStockObject | GetWindowLongA | GetWindowRect | InvalidateRect | MapWindowPoints | PtInRect | SendDlgItemMessageA | SendMessageA | SetBkMode | SetDlgItemInt | SetDlgItemTextA | SetFocus | SetTextColor | SetWindowLongA | ShowWindow | sprintf	34	2205
+004b8cc3	FUN_004b8cc3	%s\WINBK_Fireball.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	221
+004b8da0	FUN_004b8da0		DeleteObject	2	93
+004b8dfd	FUN_004b8dfd			0	80
+004b8e4d	FUN_004b8e4d	Damage | Hunting: %s	CardIDFromType | sprintf | strcpy	6	657
+004b90de	FUN_004b90de		strcat	2	60
+004b9120	FUN_004b9120	ManaPool | \WINBK_ManaPool.pic	CreateFontIndirectA | CreatePopupMenu | LoadCursorA | RegisterClassA | strcat | strcpy	8	238
+004b920e	FUN_004b920e		DeleteObject | DestroyMenu	3	118
+004b9284	FUN_004b9284	%s: amount of %s | Artifact | Black | Green | Help... | Spend 1 mana: %s | White | \WINBK_ManaPool.pic | \duel.hlp | artifact | black | green | mana pool | white	AppendMenuA | BeginPaint | BitBlt | ClientToScreen | DPtoLP | DefWindowProcA | DeleteMenu | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetCursorPos | GetDoubleClickTime | GetMenuItemCount | GetStockObject | GetWindowLongA | InvalidateRect | IsRectEmpty | LeaveCriticalSection | MapWindowPoints | PeekMessageA | PostMessageA | PtInRect | RestoreDC | SaveDC | SelectObject | SetBkMode | SetMapMode | SetRect | SetTextAlign | SetTextColor | SetViewportExtEx | SetWindowExtEx | SetWindowLongA | Sleep | TextOutA | TrackPopupMenu | WinHelpA | free | lstrlenA | malloc | sprintf | strcat | strcpy | wsprintfA	53	5153
+004ba6b6	FUN_004ba6b6		GetClientRect | SetRect	3	472
+004ba890	FUN_004ba890	Which color to use that choice as?		26	4252
+004bb9f3	FUN_004bb9f3			1	422
+004bbb99	FUN_004bbb99			1	506
+004bbd93	FUN_004bbd93			1	507
+004bbf8e	FUN_004bbf8e			0	155
+004bc029	FUN_004bc029	%c(%d so far) | %c(%d so far, max %d) | , tap | ACTIVATING: | CASTING: | PROCESSING:	sprintf | strcat | strcpy | strlen	6	1018
+004bc423	FUN_004bc423	, max | , tap | ACTIVATING: | CASTING: | PROCESSING: | X (now | and | mana.	_itoa | abs | strcat | strcpy	7	675
+004bc72e	FUN_004bc72e			9	2311
+004bd035	FUN_004bd035			0	522
+004bd23f	FUN_004bd23f			6	426
+004bd3e9	FUN_004bd3e9			2	112
+004bd459	FUN_004bd459			0	151
+004bd4f0	FUN_004bd4f0			0	110
+004bd563	FUN_004bd563			0	71
+004bd5af	FUN_004bd5af			0	47
+004bd5e3	FUN_004bd5e3			0	154
+004bd682	FUN_004bd682			0	114
+004bd6f9	FUN_004bd6f9	(or none) X is | Tap a forest. | Tap a mountain. | Tap a plains. | Tap a swamp. | Tap an island. | Tap any land.	_itoa | strcat | strcpy	14	2684
+004be192	FUN_004be192			2	169
+004be240	FUN_004be240			0	31
+004be25f	FUN_004be25f			0	248
+004be357	FUN_004be357			1	109
+004be3c4	FUN_004be3c4			1	123
+004be43f	FUN_004be43f			0	92
+004be49b	FUN_004be49b			0	138
+004be525	FUN_004be525			0	137
+004be5ae	FUN_004be5ae			0	149
+004be643	FUN_004be643		_itoa | abs | strcat	26	3048
+004bf23a	FUN_004bf23a			3	633
+004bf4b3	FUN_004bf4b3	Defeat | Find | First Move | Go East to | Go North to | Go South to | Go West to | Mana Link | Next Duel: | Return to | Take card to | Take letter to | The people of | are sorry their quest was not completed. | attacking | lives | mana stone:	_itoa | strcat | strcpy	20	2929
+004c003d	FUN_004c003d	Defeat | Find | First Move | Go East to | Go North to | Go South to | Go West to | Mana Link | Next Duel: | Return to | Take card to | Take letter to | attacking | lives | mana stone:	_itoa | strcat | strcpy	12	1380
+004c05ba	FUN_004c05ba	advinter800.pic		4	293
+004c06df	FUN_004c06df			4	2074
+004c0efe	FUN_004c0efe	Castle | Village	abs | strcat | strcpy	19	4369
+004c207a	FUN_004c207a			1	497
+004c2270	FUN_004c2270	x:sound\button2.wav		1	50
+004c22a2	FUN_004c22a2			0	158
+004c2340	FUN_004c2340			3	371
+004c24b3	FUN_004c24b3	Castle | cards | mapback.pic | mapbttns.pic	strcat | strcpy | strlen	47	5604
+004c3aa1	FUN_004c3aa1			0	51
+004c3ad4	FUN_004c3ad4			0	69
+004c3b19	FUN_004c3b19	Village	strcat	1	138
+004c3ba3	FUN_004c3ba3			0	33
+004c3bc4	FUN_004c3bc4			0	33
+004c3be5	FUN_004c3be5			0	119
+004c3c5c	FUN_004c3c5c	%d/%d		9	1459
+004c4210	FUN_004c4210		memset	6	2676
+004c4c84	FUN_004c4c84		abs | memset	17	4933
+004c5fc9	FUN_004c5fc9		memcpy | memset	15	6879
+004c7aa8	FUN_004c7aa8			3	317
+004c7be5	FUN_004c7be5		memcpy	3	388
+004c7d69	FUN_004c7d69			0	2276
+004c864d	FUN_004c864d	%s: Assign %sdamage to blockers, %d points left | %s: Assign damage to attackers, %d points left | Assign %d %sdamage | Assign %d damage | Illegal target (gasseous form) | Illegal target (wrong attack group) | trample	Sleep | sprintf	20	6381
+004c9f3a	FUN_004c9f3a			0	78
+004c9f88	FUN_004c9f88			0	243
+004ca07b	FUN_004ca07b			0	94
+004ca0d9	FUN_004ca0d9		memset	5	1595
+004ca714	FUN_004ca714			3	1150
+004cab92	FUN_004cab92			0	467
+004cad65	FUN_004cad65			0	96
+004cadc5	FUN_004cadc5			0	96
+004cae25	FUN_004cae25		PostMessageA	1	34
+004cae47	FUN_004cae47			1	518
+004cb04d	FUN_004cb04d			1	393
+004cb1d6	FUN_004cb1d6			0	237
+004cb2d0	FUN_004cb2d0			0	21
+004cbad0	FUN_004cbad0			0	52
+004cbb04	FUN_004cbb04			0	47
+004cbb33	FUN_004cbb33			2	106
+004cbba7	FUN_004cbba7			0	48
+004cbbd7	FUN_004cbbd7			0	48
+004cbc07	FUN_004cbc07			0	47
+004cbc36	FUN_004cbc36			0	47
+004cbc65	FUN_004cbc65			1	106
+004cbcd9	CardTypeFromID			0	137
+004cbd67	CardIDFromType			0	61
+004cbda9	CardInDeck			0	44
+004cbdda	SetCardInDeck			0	54
+004cbe10	FUN_004cbe10			0	66
+004cbe57	FUN_004cbe57			0	283
+004cbf72	FUN_004cbf72			0	94
+004cbfd0	FUN_004cbfd0			0	131
+004cc053	FUN_004cc053			0	111
+004cc0c7	FUN_004cc0c7			0	48
+004cc0f7	FUN_004cc0f7			0	48
+004cc127	FUN_004cc127			0	92
+004cc188	FUN_004cc188			0	48
+004cc1b8	FUN_004cc1b8			0	48
+004cc1e8	FUN_004cc1e8	Swamp		0	110
+004cc25b	FUN_004cc25b			0	108
+004cc2cc	FUN_004cc2cc			0	108
+004cc33d	FUN_004cc33d			0	135
+004cc3c4	FUN_004cc3c4			1	52
+004cc3f8	FUN_004cc3f8			1	53
+004cc42d	FUN_004cc42d		strcpy	2	40
+004cc455	FUN_004cc455			1	69
+004cc49a	FUN_004cc49a			1	71
+004cc4e1	FUN_004cc4e1			1	41
+004cc50a	FUN_004cc50a			2	99
+004cc56d	FUN_004cc56d	selects:	strcat | strcpy	5	595
+004cc7c5	FUN_004cc7c5			2	79
+004cc814	FUN_004cc814			2	107
+004cc87f	FUN_004cc87f			2	95
+004cc8de	FUN_004cc8de			2	95
+004cc93d	FUN_004cc93d			1	65
+004cc97e	FUN_004cc97e			2	71
+004cc9c5	FUN_004cc9c5		SendMessageA	6	734
+004ccca3	FUN_004ccca3			2	565
+004cced8	FUN_004cced8			0	631
+004cd14f	FUN_004cd14f			2	73
+004cd198	FUN_004cd198			2	57
+004cd1d1	FUN_004cd1d1			1	61
+004cd20e	FUN_004cd20e	decks\0016.dck | decks\0076.dck | decks\0102.dck | decks\0150.dck | decks\0283.dck | title.pic		7	452
+004cd3eb	FUN_004cd3eb			0	592
+004cd63b	FUN_004cd63b	Could Not Initialize Dave's Extra Cool Timer | Could Not Load Dave's Extra Cool Timer | G:\NewMagic\sources\sid\glue.c | \\.\MPStime.VXD	AssertOrLog | CreateFileA | DeviceIoControl	3	168
+004cd6e3	FUN_004cd6e3		DeviceIoControl	1	50
+004cd715	FUN_004cd715			1	21
+004cd72a	FUN_004cd72a			1	53
+004cd760	FUN_004cd760	SpellMinimized | \WINBK_SpellChain.pic | \WINBK_SpellMin.pic | \WINBK_SpellMushrooms.pic | \WINBK_SpellSnails.pic	CreatePen | CreatePopupMenu | CreateSolidBrush | LoadCursorA | RegisterClassA | SetRect | strcat | strcpy	9	673
+004cda01	FUN_004cda01		DeleteObject | DestroyMenu	3	334
+004cdb4f	FUN_004cdb4f	&Minimize | Help... | MAGICGAME_ScrollbarClass | SpellMinimized | \WINBK_SpellChain.pic | \duel.hlp	AppendMenuA | BringWindowToTop | ClientToScreen | CopyRect | CreateWindowExA | DefWindowProcA | DeleteMenu | DeleteObject | DestroyWindow | DrawTextA | FillRect | GetClientRect | GetDlgItem | GetMenuItemCount | GetObjectA | GetStockObject | GetSystemMetrics | GetWindowDC | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | LineTo | LoadBitmapA | MapWindowPoints | MoveToEx | MoveWindow | OffsetRect | PostMessageA | ReleaseDC | ScrollWindow | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetRect | SetTextColor | SetWindowLongA | ShowWindow | TrackPopupMenu | UpdateWindow | WinHelpA | free | malloc | strcat | strcpy	64	7402
+004cf8b6	FUN_004cf8b6		GetWindowLongA	2	175
+004cf965	FUN_004cf965		DestroyWindow | GetWindowLongA | SetWindowLongA | memcpy	4	333
+004cfab2	FUN_004cfab2			1	125
+004cfb2f	FUN_004cfb2f	MAGICGAME_CardClass | Spell Card | Spell Target Card	CreateWindowExA | DestroyWindow | GetWindowLongA | SetWindowLongA | memcpy	5	569
+004cfd68	FUN_004cfd68		DestroyWindow | GetWindowLongA	2	229
+004cfe4d	FUN_004cfe4d	MAGICGAME_CardClass | Spell Target Card	CreateWindowExA | DestroyWindow | GetWindowLongA | memcpy	4	397
+004cffda	FUN_004cffda		AdjustWindowRect | CopyRect | GetDlgItem | GetWindowLongA | GetWindowRect | IsWindowVisible | MoveWindow | SendMessageA | SetRect | ShowWindow | UpdateWindow	12	1550
+004d05e8	FUN_004d05e8		CopyRect	1	26
+004d0602	FUN_004d0602	&Restore | Help... | Minimized spell chain | \WINBK_SpellMin.pic	AppendMenuA | ClientToScreen | DefWindowProcA | DeleteMenu | FillRect | GetClientRect | GetMenuItemCount | GetStockObject | IntersectClipRect | SendMessageA | SetRect | ShowWindow | TrackPopupMenu | strcat | strcpy	19	855
+004d0965	FUN_004d0965		IsWindowVisible | SendMessageA	2	88
+004d09bd	FUN_004d09bd		IsWindowVisible | SendMessageA	2	112
+004d0a30	FUN_004d0a30			0	18
+004d0a42	FUN_004d0a42			2	645
+004d0cdb	FUN_004d0cdb	changes color to	strcat | strcpy	8	959
+004d109a	FUN_004d109a	Add random power. | Cancel. | Gain first strike. | Power increased by | _Add random power. | _Gain first strike.	_itoa | strcat | strcpy	11	3109
+004d1cc4	FUN_004d1cc4	Sinbad draws...		4	332
+004d1e10	FUN_004d1e10			9	796
+004d212c	FUN_004d212c	Swap cards.  Lose 10 life.  Concede game. | randomly chooses...		7	1247
+004d2610	FUN_004d2610	XENIC_POLTERGEIST | prompts.txt		8	970
+004d29da	FUN_004d29da	VESUVAN_DOPPELGANGER | prompts.txt		4	573
+004d2c17	FUN_004d2c17	.  Mimic different creature. | Mimic	strcat | strcpy	5	273
+004d2d28	FUN_004d2d28			0	258
+004d2e2a	FUN_004d2e2a			0	322
+004d2f6c	FUN_004d2f6c			0	322
+004d30ae	FUN_004d30ae			1	150
+004d3144	FUN_004d3144			1	101
+004d31a9	FUN_004d31a9			0	128
+004d3229	FUN_004d3229			1	99
+004d328c	FUN_004d328c			1	158
+004d332a	FUN_004d332a			1	531
+004d353d	FUN_004d353d			1	528
+004d374d	FUN_004d374d			1	528
+004d395d	FUN_004d395d			2	960
+004d3d1d	FUN_004d3d1d			0	101
+004d3d82	FUN_004d3d82			0	125
+004d3dff	FUN_004d3dff			1	418
+004d3fa1	FUN_004d3fa1			0	248
+004d4099	FUN_004d4099			0	373
+004d420e	FUN_004d420e	How much damage to redirect to you? | PERSONAL_INCARNATION | prompts.txt		7	1364
+004d4762	FUN_004d4762	ALI_FROM_CAIRO | Illegal target (prevent damage to controller of Ali). | is doin' his thing. | prompts.txt	Sleep | sprintf	7	1469
+004d4d1f	FUN_004d4d1f			1	596
+004d4f73	FUN_004d4f73			4	1715
+004d5626	FUN_004d5626			4	1528
+004d5c1e	FUN_004d5c1e			6	1907
+004d6391	FUN_004d6391			1	111
+004d6400	FUN_004d6400			3	774
+004d6706	FUN_004d6706			4	313
+004d683f	FUN_004d683f			3	661
+004d6ad4	FUN_004d6ad4			3	367
+004d6c43	FUN_004d6c43			3	319
+004d6d82	FUN_004d6d82			1	247
+004d6e79	FUN_004d6e79			1	492
+004d7065	FUN_004d7065	GAEAS_LIEGE | prompts.txt		8	1727
+004d7724	FUN_004d7724			0	87
+004d777b	FUN_004d777b			1	274
+004d788d	FUN_004d788d			0	69
+004d78d2	FUN_004d78d2			1	212
+004d79a6	FUN_004d79a6			1	117
+004d7a1b	FUN_004d7a1b	Regenerate Sedge Troll.  Don't regenerate.		4	333
+004d7b68	FUN_004d7b68			1	77
+004d7bb5	FUN_004d7bb5	Regenerate Living Wall.  Don't regenerate.		3	171
+004d7c60	FUN_004d7c60			4	560
+004d7e90	FUN_004d7e90			2	579
+004d80d3	FUN_004d80d3			2	168
+004d817b	FUN_004d817b			5	1616
+004d87cb	FUN_004d87cb			4	1665
+004d8e4c	FUN_004d8e4c			4	1685
+004d94e1	FUN_004d94e1			4	1564
+004d9afd	FUN_004d9afd	Opponent's Hand | Randomly chose this creature to discard.		7	1153
+004d9f7e	FUN_004d9f7e	TIME_ELEMENTAL | prompts.txt		10	1284
+004da482	FUN_004da482	NORTHERN_PALADIN | prompts.txt		10	982
+004da858	FUN_004da858	ROYAL_ASSASSIN | prompts.txt		6	504
+004daa50	FUN_004daa50	DWARVEN_DTEAM | prompts.txt		4	449
+004dac11	FUN_004dac11	KING_SULEIMAN | prompts.txt		4	613
+004dae76	FUN_004dae76			3	430
+004db024	FUN_004db024	NETTLING_IMP | prompts.txt		4	989
+004db401	FUN_004db401			4	1224
+004db8c9	FUN_004db8c9			2	339
+004dba1c	FUN_004dba1c	SORCERESS_QUEEN | prompts.txt		8	1471
+004dbfdb	FUN_004dbfdb			3	746
+004dc2ca	FUN_004dc2ca	STONE_GIANT | prompts.txt		8	1021
+004dc6c7	FUN_004dc6c7	DWARVEN_WARRIORS | prompts.txt		7	806
+004dc9ed	FUN_004dc9ed	CAVE_PEOPLE | prompts.txt		10	1124
+004dce51	FUN_004dce51	PRADESH_GYPSIES | prompts.txt		9	1258
+004dd33b	FUN_004dd33b			2	754
+004dd632	FUN_004dd632	SAMITE_HEALER | prompts.txt		5	861
+004dd98f	FUN_004dd98f			2	869
+004ddcf4	FUN_004ddcf4			1	349
+004dde51	FUN_004dde51			0	169
+004ddefa	FUN_004ddefa			0	81
+004ddf4b	FUN_004ddf4b			0	77
+004ddf98	FUN_004ddf98			3	199
+004de05f	FUN_004de05f			0	84
+004de0b3	FUN_004de0b3			1	77
+004de100	FUN_004de100			1	192
+004de1c0	FUN_004de1c0	Erg Raiders take 2 life!		2	414
+004de35e	FUN_004de35e			2	308
+004de492	FUN_004de492			2	939
+004de83d	FUN_004de83d			2	972
+004dec09	FUN_004dec09	FOREST | LEVIATHAN | MOUNTAIN | PLAINS | SWAMP | island | prompts.txt		7	610
+004dee6b	FUN_004dee6b	Pick a land.	strcpy	4	343
+004defc2	FUN_004defc2			1	136
+004df04a	FUN_004df04a	BROTHERS_OF_FIRE | prompts.txt		7	450
+004df20c	FUN_004df20c			3	264
+004df314	FUN_004df314	CRIMSON_MANTICORE | prompts.txt		9	868
+004df678	FUN_004df678	PRODIGAL_SORCERER | prompts.txt		4	578
+004df8ba	FUN_004df8ba			5	612
+004dfb23	FUN_004dfb23			4	529
+004dfd39	FUN_004dfd39	PIRATE_SHIP | prompts.txt		5	347
+004dfe94	FUN_004dfe94			2	244
+004dff88	FUN_004dff88			2	175
+004e0037	FUN_004e0037			0	176
+004e00e7	FUN_004e00e7	Untap Island Fish.  Don't untap.		4	718
+004e03b5	FUN_004e03b5			2	265
+004e04be	FUN_004e04be			2	194
+004e0580	FUN_004e0580			2	565
+004e07b5	FUN_004e07b5			3	247
+004e08ac	FUN_004e08ac			2	175
+004e095b	FUN_004e095b			4	348
+004e0ab7	FUN_004e0ab7	ORCISH_ARTILLERY | prompts.txt		5	357
+004e0c1c	FUN_004e0c1c	PSIONIC_ENTITY | prompts.txt		6	580
+004e0e60	FUN_004e0e60			3	368
+004e0fd0	FUN_004e0fd0			0	382
+004e114e	FUN_004e114e			4	385
+004e12cf	FUN_004e12cf			1	1614
+004e191d	FUN_004e191d			1	270
+004e1a2b	FUN_004e1a2b			1	269
+004e1b38	FUN_004e1b38	Pay 2 mana.  Lose 3 life.		4	340
+004e1c8c	FUN_004e1c8c			1	266
+004e1d96	FUN_004e1d96			1	214
+004e1e6c	FUN_004e1e6c			1	161
+004e1f0d	FUN_004e1f0d			0	190
+004e1fcb	FUN_004e1fcb	Force of Nature deals 8 damage!		2	310
+004e2101	FUN_004e2101			2	433
+004e22b2	FUN_004e22b2	BIRDS_OF_PARADISE | mana. | prompts.txt | to produce	strcat | strcpy	9	988
+004e268e	FUN_004e268e	Cosmic Horror deals 7 damage!		3	435
+004e2841	FUN_004e2841	LORD_OF_THE_PIT | Lord of the Pit deals 7 damage! | prompts.txt		7	856
+004e2b99	FUN_004e2b99			0	230
+004e2c7f	FUN_004e2c7f	Pay mana.  Sacrifice Land.		6	873
+004e2fe8	FUN_004e2fe8			1	320
+004e3128	FUN_004e3128			0	93
+004e3185	FUN_004e3185			1	366
+004e32f3	FUN_004e32f3	is returning from the grave.		7	497
+004e34e4	FUN_004e34e4			2	127
+004e3563	FUN_004e3563			2	129
+004e35e4	FUN_004e35e4			3	332
+004e3730	FUN_004e3730			1	91
+004e378b	FUN_004e378b	Grow new Hydra head.  Never mind. | Restore Hydra Head.  Never mind.		4	970
+004e3b55	FUN_004e3b55	ALIBABA | prompts.txt		8	753
+004e3e46	FUN_004e3e46	LEY_DRUID | prompts.txt		7	766
+004e4144	FUN_004e4144			1	355
+004e42ac	FUN_004e42ac			3	604
+004e4508	FUN_004e4508	Cancel | Pick an artifact		5	582
+004e474e	FUN_004e474e			2	185
+004e4807	FUN_004e4807	VENOM | prompts.txt		8	1959
+004e4fae	FUN_004e4fae			2	992
+004e538e	FUN_004e538e			2	583
+004e55d5	FUN_004e55d5			2	568
+004e580d	FUN_004e580d			2	287
+004e592c	FUN_004e592c			3	269
+004e5a39	FUN_004e5a39			3	1026
+004e5e3b	FUN_004e5e3b	RADJAN_SPIRIT | prompts.txt		7	875
+004e61a6	FUN_004e61a6	HURR_JACKAL | prompts.txt		7	932
+004e654a	FUN_004e654a			1	151
+004e65e1	FUN_004e65e1			0	210
+004e66b3	FUN_004e66b3			1	184
+004e676b	FUN_004e676b			0	118
+004e67e1	FUN_004e67e1			1	186
+004e689b	FUN_004e689b			0	120
+004e6913	FUN_004e6913			0	101
+004e6978	FUN_004e6978			0	52
+004e69ac	FUN_004e69ac			2	300
+004e6add	FUN_004e6add			1	285
+004e6bff	FUN_004e6bff			3	461
+004e6dcc	FUN_004e6dcc			2	300
+004e6efd	FUN_004e6efd			1	285
+004e701f	FUN_004e701f			3	142
+004e70ad	FUN_004e70ad			2	300
+004e71de	FUN_004e71de			1	285
+004e7300	FUN_004e7300			3	142
+004e73a0	FUN_004e73a0	Shandalar Materializing... | advfac64.pic | advinter800.pic | dbox.spr	GdiGetBatchLimit | GdiSetBatchLimit | LoadPalNoPic | clock	49	1405
+004e7936	FUN_004e7936			4	276
+004e7a6f	FUN_004e7a6f		abs	2	756
+004e7da1	FUN_004e7da1			3	326
+004e7f51	FUN_004e7f51	Ready to Quit?  No.  Yes. | advfac64.pic | x:sound\bcastle.wav | x:sound\gcastle.wav | x:sound\locmus0.wav | x:sound\locmus1.wav | x:sound\locmus10.wav | x:sound\locmus11.wav | x:sound\locmus12.wav | x:sound\locmus13.wav | x:sound\locmus14.wav | x:sound\locmus15.wav | x:sound\locmus16.wav | x:sound\locmus17.wav | x:sound\locmus18.wav | x:sound\locmus19.wav | x:sound\locmus2.wav | x:sound\locmus3.wav | x:sound\locmus4.wav | x:sound\locmus5.wav | x:sound\locmus6.wav | x:sound\locmus7.wav | x:sound\locmus8.wav | x:sound\locmus9.wav | x:sound\rcastle.wav | x:sound\tmplmus1.wav | x:sound\ucastle.wav | x:sound\wcastle.wav	CloseSndTrack | DeckBuilderMain | LoadPalNoPic | PlaySndMarker | SetSndMarker | SetVol | StopSnd | abs | strcpy	49	5122
+004e93df	FUN_004e93df		abs	19	4945
+004ea7a6	FUN_004ea7a6			0	248
+004ea8df	FUN_004ea8df			0	128
+004ea97c	FUN_004ea97c			1	157
+004eaa19	FUN_004eaa19		strlen	2	131
+004eaa9c	FUN_004eaa9c		strcat	1	176
+004eabb2	FUN_004eabb2	x:sound\archmage.wav | x:sound\djinn.wav | x:sound\dragon.wav | x:sound\fewiz.wav | x:sound\flyer.wav | x:sound\knight.wav | x:sound\lord.wav | x:sound\malewiz.wav | x:sound\troll.wav | x:sound\wyrm.wav	CloseSndTrack	3	340
+004ead33	FUN_004ead33			1	99
+004ead96	FUN_004ead96			1	33
+004eadb7	FUN_004eadb7	advfac64.pic	LoadPalNoPic	1	46
+004eade5	FUN_004eade5	--- NEWS FLASH --- | Wizard sends | newsback.pic | to attack | x:sound\newsflash.wav	strcat | strcpy	19	1279
+004eb2f9	FUN_004eb2f9	--- NEWS FLASH --- | In retaliation for your effrontery the Great | Wizard sends | newsback.pic | to attack | x:sound\newsflash.wav	strcat | strcpy	19	1302
+004eb824	FUN_004eb824	! He casts the spell of Dominion | ! He needs | ! She casts the spell of Dominion | ! She needs | --- NEWS FLASH --- The Evil | The Evil Planeswalker Arzakon and his Minion the Evil | Wizard have attained Dominion over the plane of Shandalar | Wizard taps | Your Righteous Quest has Failed | Your mana tap here is lost. | more mana taps to cast the Spell of Dominion! | newsback.pic | uth-arz.pic | x:sound\newsflash.wav	_itoa | exit | strcat | strcpy	24	1208
+004ebcdc	FUN_004ebcdc		CloseSndTrack | PlaySnd | memset	4	134
+004ebd62	FUN_004ebd62		PlaySnd | memset	2	104
+004ebdca	FUN_004ebdca		PlaySnd | memset	2	80
+004ebe1a	FUN_004ebe1a		PlaySnd | memset	2	71
+004ebe61	FUN_004ebe61		SetSndMarker | memset	3	94
+004ebebf	FUN_004ebebf		StopSnd	1	44
+004ebeeb	FUN_004ebeeb	x:sound\bcastle.wav | x:sound\gcastle.wav | x:sound\rcastle.wav | x:sound\ucastle.wav | x:sound\wcastle.wav | x:sound\wingame.wav	CloseSndTrack	4	231
+004ebfef	FUN_004ebfef		CloseSndTrack	3	102
+004ec055	FUN_004ec055	x:sound\bbird1.wav | x:sound\bland1.wav | x:sound\bland2.wav | x:sound\gbird1.wav | x:sound\gland1.wav | x:sound\kbird1.wav | x:sound\kland1.wav | x:sound\kland2.wav | x:sound\rbird1.wav | x:sound\rland1.wav | x:sound\wbird1.wav | x:sound\wland1.wav	CloseSndTrack	4	680
+004ec32f	FUN_004ec32f	x:sound\bbird1.wav | x:sound\bwalkl.wav | x:sound\bwalkr.wav | x:sound\gbird1.wav | x:sound\gwalkl.wav | x:sound\gwalkr.wav | x:sound\kbird1.wav | x:sound\kwalkl.wav | x:sound\kwalkr.wav | x:sound\rbird1.wav | x:sound\rwalkl.wav | x:sound\rwalkr.wav | x:sound\wbird1.wav | x:sound\wwalkl.wav | x:sound\wwalkr.wav		1	266
+004ec439	FUN_004ec439		GetDriveTypeA | fclose | fopen | strcat	4	190
+004ec4fc	FUN_004ec4fc	sound\locmus1.wav	_getcwd	2	113
+004ec572	FUN_004ec572		InitSndTrack | free	2	76
+004ec5be	FUN_004ec5be		InitSndTrack | _getcwd	4	156
+004ec65a	FUN_004ec65a			0	115
+004ec6ea	FUN_004ec6ea			1	271
+004ec7f9	FUN_004ec7f9			2	405
+004ec98e	FUN_004ec98e	advfac64.pic | todpal.tr	BringWindowToTop | GetThreadPriority | LoadPalNoPic | RealizePalette | SelectPalette | SetFocus | SetForegroundWindow | SetThreadPriority	13	841
+004eccd7	FUN_004eccd7	The Evil Planeswalker Arzakon and his Gruesome Minions | You have no power for even an Ante ! | Your Righteous Quest has Failed | have worn you down | uth-arz.pic	exit | strcat	13	509
+004ecee0	FUN_004ecee0	Yes, I'm sure	AppendMenuA | CreatePopupMenu | LoadCursorA | RegisterClassA	4	180
+004ecf94	FUN_004ecf94		DestroyMenu	1	81
+004ecfe5	FUN_004ecfe5	+10 to your/oppon's LIFE L/AltL | About... | Arrange opponent's cards DblClk | Arrange your cards DblClk | Concede | DRAW a card into your/oppon's hand D/AltD | Duel Options... | Flash small cards on repaint F | Go to: %s | Help... | In-play Card | MAGICGAME_CardClass | Minimize | Player Card | Put a specific card IN PLAY (your/oppon's territory) G/AltG | Put a specific card into your/oppon's HAND H/AltH | Save game S | Save game... Ctrl+S | Show ID tags Ctrl+T | Show Kim debug window K | Show all cards' summoning sickness Ctrl+U | Show art on cards A | Show invisible effects Ctrl+I | Show opponent's hand F8 | Show opponent's library F9 | Show player,card and # on library I | Show the palette P | Show your library F10 | Tie (draw) T | Turn off cheats F12 | Which arts are in? Z | Win W | \duel.hlp	AppendMenuA | BringWindowToTop | CheckMenuItem | ClientToScreen | CreateWindowExA | DefWindowProcA | DeleteObject | DestroyWindow | FillRect | GetClientRect | GetDlgCtrlID | GetMenuItemCount | GetStockObject | GetWindowLongA | GetWindowRect | InvalidateRect | IsWindowVisible | MapWindowPoints | PostMessageA | RemoveMenu | SendMessageA | SetRect | SetWindowLongA | SetWindowPos | ShowWindow | Sleep | TrackPopupMenu | WinHelpA | free | malloc | sprintf | strcat | strcpy	54	7254
+004eed47	FUN_004eed47		GetClientRect | GetWindowLongA | SendMessageA | SetWindowPos	4	263
+004eee4e	FUN_004eee4e		BringWindowToTop | GetClientRect | GetWindow | GetWindowLongA | SendMessageA | SetWindowPos	10	529
+004ef05f	FUN_004ef05f		GetClientRect	1	252
+004ef15b	FUN_004ef15b		GetClientRect	4	1264
+004ef64b	FUN_004ef64b		GetWindowLongA | SendMessageA	5	245
+004ef740	FUN_004ef740		GetWindowLongA | SendMessageA	4	265
+004ef849	FUN_004ef849		GetWindowLongA	3	295
+004ef970	FUN_004ef970		GetWindowLongA	3	171
+004efa20	FUN_004efa20		GetWindowLongA	3	154
+004efaba	FUN_004efaba		GetWindowLongA	2	129
+004efb3b	FUN_004efb3b		EndDialog | FillRect | GetClientRect | GetStockObject | SetBkMode | SetTextColor	6	259
+004efd50	FUN_004efd50	ACTIVATING: | CASTING: | PROCESSING:	strcat | strcpy	8	1932
+004f04e0	FUN_004f04e0		CreateFontIndirectA | LoadCursorA | LoadIconA | RegisterClassA	5	183
+004f0597	FUN_004f0597		DeleteObject	1	46
+004f05c5	FUN_004f05c5		BeginPaint | DefWindowProcA | DrawTextA | EndPaint | GetClientRect | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | KillTimer | SelectObject | SendMessageA | SetBkMode | SetMapMode | SetTextColor | SetTimer | SetViewportExtEx | SetWindowExtEx | SetWindowLongA | SetWindowPos | SetWindowTextA | ShowWindow	24	1007
+004f09c0	FUN_004f09c0			0	138
+004f0a4a	FUN_004f0a4a			1	172
+004f0af6	FUN_004f0af6			1	90
+004f0b50	FUN_004f0b50			1	576
+004f0d90	FUN_004f0d90			0	88
+004f0de8	FUN_004f0de8			0	95
+004f0e47	FUN_004f0e47	F1: all cards, F2: active cards, F3: inactive cards, F5: ANALYZE | Sell | for | gold? (Y/N)	SellPrice | _itoa | strcat | strcpy	23	1899
+004f15c0	FUN_004f15c0	MedArt.cat | SmallArt.cat	EnterCriticalSection | LeaveCriticalSection | OutputDebugStringA | _splitpath | _strlwr	8	841
+004f1910	FUN_004f1910		LeaveCriticalSection	1	14
+004f1920	FUN_004f1920	G:\NewMagic\sources\NedCard\haar.c | wavelet pieces has illegal value: %d	AssertOrLog | free | malloc	7	836
+004f1cfa	FUN_004f1cfa			0	283
+004f1e20	FUN_004f1e20			0	45
+004f1e50	FUN_004f1e50		__allshl	1	110
+004f1ec0	FUN_004f1ec0			0	11
+004f1ecb	FUN_004f1ecb		malloc	2	416
+004f207a	FUN_004f207a			0	136
+004f2110	FUN_004f2110			0	10
+004f211a	FUN_004f211a			0	140
+004f21d0	FUN_004f21d0			0	11
+004f21db	FUN_004f21db		malloc	1	549
+004f2400	FUN_004f2400			2	431
+004f27c0	FUN_004f27c0			5	1153
+004f2c50	FUN_004f2c50		free	4	140
+004f2d30	FUN_004f2d30		GetDC | ReleaseDC | SetDIBitsToDevice | free | malloc	7	292
+004f2e60	FUN_004f2e60	Couldn't bring up the Load Decks dialog	DialogBoxParamA | MessageBoxA | strcpy	3	246
+004f2f56	FUN_004f2f56	%s\%s.dck | LISTBOX | \*.DCK	CheckRadioButton | CreateWindowExA | EndDialog | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetStockObject | IsDlgButtonChecked | SendDlgItemMessageA | SendMessageA | SetBkMode | SetFocus | fclose | fgetc | fopen | sprintf | strcat | strcpy | strlen	23	1561
+004f3579	FUN_004f3579		CardTypeFromID	1	775
+004f3880	FUN_004f3880		InitializeCriticalSection	2	93
+004f38dd	FUN_004f38dd		DeleteCriticalSection	2	65
+004f391e	FUN_004f391e		GetModuleFileNameA | strrchr	2	55
+004f3955	FUN_004f3955		GdiFlush | RealizePalette | SelectPalette | SetDIBColorTable | SetStretchBltMode	5	79
+004f39a4	FUN_004f39a4		CreateCompatibleDC | CreateDIBSection | DeleteDC | DeleteObject | GetDC | ReleaseDC | SelectObject	9	387
+004f3b2c	FUN_004f3b2c		DeleteDC | DeleteObject	2	51
+004f3b5f	FUN_004f3b5f		GetObjectA	2	104
+004f3bc7	FUN_004f3bc7		EnterCriticalSection | GetObjectA | LeaveCriticalSection | SelectObject | StretchBlt	6	330
+004f3d11	FUN_004f3d11		GetObjectA | IntersectClipRect | RestoreDC | SaveDC | SetRect	6	280
+004f3e29	FUN_004f3e29		GetObjectA	2	129
+004f3eaa	FUN_004f3eaa		EnterCriticalSection | GetObjectA | LeaveCriticalSection | RestoreDC | SaveDC | SelectObject | StretchBlt	8	379
+004f4025	FUN_004f4025	%08X LoadDIBSection (%s)	FindResourceA | LoadResource | LockResource | OutputDebugStringA | sprintf	6	193
+004f40e6	FUN_004f40e6	%08X LoadDIBSectionFromFile (%s)	CloseHandle | CreateFileA | CreateFileMappingA | MapViewOfFile | OutputDebugStringA | UnmapViewOfFile | sprintf	8	257
+004f41e7	FUN_004f41e7		CloseHandle | CreateDIBSection | CreateFileMappingA | GetDC | ReleaseDC | SetBitmapDimensionEx | SetDIBits | free | malloc | memcpy	11	795
+004f4548	FUN_004f4548	%08x DestroyDIBSection (file mapping: %08x)	CloseHandle | DeleteObject | GetObjectA | OutputDebugStringA | sprintf	5	146
+004f45da	FUN_004f45da	\DUEL.plogpal | \DUELPALall.TR	CreatePalette | GetPaletteEntries | SetPaletteEntries | strcat | strcpy	6	753
+004f48cb	FUN_004f48cb		DeleteObject	2	38
+004f48f1	FUN_004f48f1		CopyRect	3	417
+004f4a92	FUN_004f4a92		__p___mb_cur_max | __p__pctype | _isctype | _strnicmp | strcat | strcpy | strlen | strncmp	8	591
+004f4ce1	FUN_004f4ce1		__p___mb_cur_max | __p__pctype | _isctype | _strnicmp | strlen | strncmp	6	461
+004f4eb3	FUN_004f4eb3		GetDC | GetTextMetricsA | GetWindowTextA | ReleaseDC | SelectObject | SendMessageA | strcpy	9	261
+004f4fb8	FUN_004f4fb8		DefWindowProcA | LoadCursorA | SetCursor	3	134
+004f5048	FUN_004f5048	DISPLAY	CreateDCA | DeleteDC | FillRect | SetBkMode | SetRect | SetTextColor | Sleep | TextOutA | strlen	9	191
+004f5107	FUN_004f5107		CopyRect | DrawFocusRect | DrawTextA | FillRect | GetStockObject | GetTextExtentPoint32A | GetWindowTextA | LineTo | MoveToEx | OffsetRect | SelectObject | SendMessageA | SetBkMode | SetTextColor | strlen	16	974
+004f54d5	FUN_004f54d5		CopyRect | DrawFocusRect | DrawTextA | GetTextExtentPoint32A | GetWindowTextA | OffsetRect | SelectObject | SendMessageA | SetBkMode | SetTextColor | strlen	13	567
+004f570c	FUN_004f570c		EnumChildWindows	1	28
+004f5728	FUN_004f5728		SetWindowLongA	2	65
+004f5769	FUN_004f5769		CallWindowProcA | GetParent | SendMessageA	5	309
+004f589e	FUN_004f589e	Button	GetClassNameA | strcmp	2	72
+004f58eb	FUN_004f58eb	Fonts | MS Sans Serif	GetPrivateProfileIntA | GetPrivateProfileStringA | memcpy | strcat | strcpy	5	268
+004f59f7	FUN_004f59f7		GetWindow | IsWindowVisible | SetWindowPos	5	383
+004f5b76	FUN_004f5b76		IsWindowVisible	1	131
+004f5bf9	FUN_004f5bf9		SetWindowPos	3	190
+004f5cbc	FUN_004f5cbc			0	94
+004f5d1a	FUN_004f5d1a		EnumChildWindows | GetDC | GetWindowLongA | GetWindowThreadProcessId | InvalidateRect | RealizePalette | ReleaseDC | SelectPalette | UnrealizeObject	9	421
+004f5ec4	FUN_004f5ec4		GetParent | SendMessageA	2	84
+004f5f20	FUN_004f5f20			0	305
+004f6060	FUN_004f6060			0	278
+004f6180	FUN_004f6180	Blank | black | forest | green | island | mountain | plains | swamp | white	_strcmpi | fclose | fopen | fread | malloc | strcpy	7	2434
+004f6b02	FUN_004f6b02		free	1	49
+004f6b33	FUN_004f6b33		CloseHandle | CreateFileA | GetFileSize | ReadFile | malloc | sscanf | strchr	8	597
+004f6d88	FUN_004f6d88		free	1	49
+004f6db9	FUN_004f6db9		strchr	1	205
+004f6e90	FUN_004f6e90			8	701
+004f714d	FUN_004f714d			2	355
+004f72b0	FUN_004f72b0	BALANCE | prompts.txt	strcpy	8	936
+004f7658	FUN_004f7658	BRAINGEYSER | prompts.txt		5	529
+004f7869	FUN_004f7869	Neither player has enough library to draw new hand, duel is a tie.	Sleep	8	529
+004f7a7a	FUN_004f7a7a	Darkpact: Swap ante | Swap my ante | Swap opponent's ante		3	380
+004f7bf6	FUN_004f7bf6			4	283
+004f7d11	FUN_004f7d11	Ante an additional card.  No additional ante.		3	477
+004f7eee	FUN_004f7eee			6	323
+004f8031	FUN_004f8031			6	521
+004f823a	FUN_004f823a			1	91
+004f8295	FUN_004f8295			3	140
+004f8321	FUN_004f8321	ENERGYTAP | prompts.txt		8	849
+004f8672	FUN_004f8672	STREAMOFLIFE | prompts.txt		5	572
+004f88ae	FUN_004f88ae			2	237
+004f899b	FUN_004f899b	FOREST | ISLAND | PLAINS | SWAMP | VOLCANIC_ERUPTION | mountain | prompts.txt	sprintf	14	1852
+004f90d7	FUN_004f90d7			7	540
+004f92f3	FUN_004f92f3			7	541
+004f9510	FUN_004f9510			2	237
+004f95fd	FUN_004f95fd			3	314
+004f9737	FUN_004f9737	ASHESTOASHES | prompts.txt		8	1153
+004f9bbd	FUN_004f9bbd	DESERT_TWISTER | prompts.txt		7	679
+004f9e64	FUN_004f9e64	WINTER_BLAST | prompts.txt	sprintf	12	1471
+004fa423	FUN_004fa423			0	149
+004fa4b8	FUN_004fa4b8			0	206
+004fa586	FUN_004fa586	FIREBALL | prompts.txt	sprintf	19	3166
+004fb1e4	FUN_004fb1e4	DETONATE | prompts.txt		8	906
+004fb573	FUN_004fb573	Opponent flip | Repeating since a tails came up. | Your flip		4	322
+004fb6b5	FUN_004fb6b5	WORDOFBINDING | prompts.txt	sprintf	10	1311
+004fbbd4	FUN_004fbbd4	Cancel | RAISEDEAD | prompts.txt		6	1103
+004fc023	FUN_004fc023	Drafna's Restoration: | My graveyard | Opponent's graveyard | Pick an artifact		5	706
+004fc2e5	FUN_004fc2e5	Cancel | REGROWTH | prompts.txt		6	889
+004fc65e	FUN_004fc65e	Pick an artifact		4	576
+004fc89e	FUN_004fc89e	DEMONIC_TUTOR | prompts.txt		11	711
+004fcb7a	FUN_004fcb7a	UNTAMED_WILDS | prompts.txt		9	880
+004fceea	FUN_004fceea	Shuffle library.  Don't shuffle. | VISIONS | prompts.txt		6	561
+004fd11b	FUN_004fd11b	Pick an artifact		8	692
+004fd3cf	FUN_004fd3cf	MINDTWIST | prompts.txt		5	533
+004fd5e4	FUN_004fd5e4		strcpy	5	608
+004fd844	FUN_004fd844	Pick a creature		4	380
+004fd9c0	FUN_004fd9c0		abs	1	274
+004fdad2	FUN_004fdad2		abs	2	334
+004fdc20	FUN_004fdc20		abs	2	299
+004fdd4b	FUN_004fdd4b			2	237
+004fde38	FUN_004fde38			3	314
+004fdf72	FUN_004fdf72			2	237
+004fe05f	FUN_004fe05f	PYROTECHNICS | prompts.txt		9	1568
+004fe67f	FUN_004fe67f	DISINTEGRATE | prompts.txt		7	642
+004fe901	FUN_004fe901			3	181
+004fe9b6	FUN_004fe9b6	DRAIN_LIFE | prompts.txt		9	1451
+004fef61	FUN_004fef61	STONE_RAIN | prompts.txt		6	542
+004ff17f	FUN_004ff17f	DRAIN_POWER | prompts.txt		4	492
+004ff36b	FUN_004ff36b			2	228
+004ff450	FUN_004ff450		LockWindowUpdate | SendMessageA	9	374
+004ff5c6	FUN_004ff5c6		CheckDlgButton | CheckRadioButton | EnableWindow | EndDialog | FillRect | GetClientRect | GetDlgCtrlID | GetDlgItem | GetFocus | GetStockObject | InvalidateRect | IsDlgButtonChecked | SendMessageA | SetBkMode | SetFocus | SetTextColor	24	2001
+004ffd9c	FUN_004ffd9c	%s\WINBK_Options.pic	CreatePen | CreateSolidBrush | GetStockObject | sprintf	5	230
+004ffe82	FUN_004ffe82		DeleteObject	2	93
+004ffedf	FUN_004ffedf	CoolKimCheats | DirectiveTracksMouse | ExpandTextBoxOnBigCard | HolyMoly | Layout | PhaseStoppers | PlayerTerritoryColor | PlayerTerritoryType | SeeNextDrawsAtEndOfDuel | ShowAbilitiesOnCards | ShowAllCardsSummonSickness | ShowCueCards | ShowIDTagsOnCards | ShowInvisibleEffectCards | ShowPowerToughnessOnCards | Software\MicroProse\Magic: The Gathering\DuelOptions	RegOpenKeyExA | RegQueryValueExA | sscanf | strcmp	4	1918
+0050065d	FUN_0050065d	DirectiveTracksMouse | ExpandTextBoxOnBigCard | Layout | PhaseStoppers | PlayerTerritoryColor | PlayerTerritoryType | SeeNextDrawsAtEndOfDuel | ShowAbilitiesOnCards | ShowAllCardsSummonSickness | ShowCueCards | ShowIDTagsOnCards | ShowInvisibleEffectCards | ShowPowerToughnessOnCards | Software\MicroProse\Magic: The Gathering\DuelOptions	RegCloseKey | RegCreateKeyExA | RegFlushKey | RegSetValueExA | strlen | wsprintfA	6	1022
+00500a5b	FUN_00500a5b	Difficulty | Match | OpponentDeck | PlayerDeck | Software\MicroProse\Magic: The Gathering\GauntletOptions	RegCloseKey | RegOpenKeyExA | RegQueryValueExA | sprintf | sscanf	5	634
+00500cd5	FUN_00500cd5	Difficulty | Match | OpponentDeck | PlayerDeck | Software\MicroProse\Magic: The Gathering\GauntletOptions	RegCloseKey | RegCreateKeyExA | RegFlushKey | RegSetValueExA | strlen | wsprintfA	6	418
+00500e80	WinMain	/MTGshell | Could not start timer | Couldn't register the classes | G:\NewMagic\sources\sid\Test.c | Magic: Shandalar | Magic: The Gathering | Magic: The Gathering Shandalar already running | ShandalarMainClass | Timer failed to initialize! | advinter.pic | advinter1024.pic | advinter800.pic	AssertOrLog | CreateThread | CreateWindowExA | DeleteCriticalSection | DispatchMessageA | DuplicateHandle | FindWindowA | GetCurrentProcess | GetCurrentThread | GetDC | GetDeviceCaps | GetMessageA | GetStockObject | GetTickCount | InitializeCriticalSection | LoadCursorA | MessageBoxA | PostMessageA | RegisterClassA | SetSystemPaletteUse | ShowWindow | Sound_Init | TranslateMessage | __p___argv | _atexit | _chdir | _strnicmp | srand | strcpy | strrchr | timeBeginPeriod | timeSetEvent	35	1337
+005013be	FUN_005013be	Current Palette | ShowPaletteClass	BringWindowToTop | CloseSnd | DefWindowProcA | FindWindowExA | PostQuitMessage | ShowWindow | UpdateSnd | UpdateWindow	11	652
+00501671	FUN_00501671		DuplicateHandle | GetCurrentProcess | GetCurrentThread | UpdateSnd	4	136
+005016f9	FUN_005016f9			0	40
+00501721	FUN_00501721			0	21
+00501736	FUN_00501736			0	52
+0050176a	FUN_0050176a		timeEndPeriod | timeKillEvent	2	35
+0050178d	FUN_0050178d		SetSystemPaletteUse	1	25
+005017a6	FUN_005017a6	sound\locmus1.wav		1	74
+005017f0	FUN_005017f0			0	118
+00501870	AssertOrLog	%s%s | Assertion Error | File-> %s, Line-> %d | Please call MPS Customer Support 1-510-522-1164 | \assertFile.txt	MessageBoxA | _vsnprintf | ctime | exit | fclose | fopen | fprintf | sprintf | strcat | strcpy | strlen | time	12	304
+005019a0	FUN_005019a0	%s%s | Assertion Error | File-> %s, Line-> %d | Please call MPS Customer Support 1-510-522-1164 | \assertFile.txt	MessageBoxA | _vsnprintf | ctime | fclose | fopen | fprintf | sprintf | strcat | strcpy | strlen | time	11	290
+00501ad0	FUN_00501ad0		LoadCursorA | RegisterClassA	2	132
+00501b54	FUN_00501b54	#%3d: %3d,%3d,%3d | #%3d: not in palette	BeginPaint | CreateSolidBrush | DefWindowProcA | DeleteObject | EndPaint | FillRect | GetClientRect | GetPaletteEntries | GetWindowLongA | InvalidateRect | OffsetRect | PtInRect | SetRect | SetWindowLongA | ShowWindow | TextOutA | sprintf | strlen	19	1002
+00501f50	FUN_00501f50	'Deal with this, rat-boy.' | 'Didn't expect that, did ya?' | 'Give up, you're doomed.' | 'Gotcha!' | 'I just love doing that.' | 'I knew that was coming.' | 'Oooh, I'm scared.' | 'Ouch, that hurt.' | 'Take that, troll-face.' | 'Where'd you get that card.' | , play land | Assign Attackers | Assign Blockers | Band with other attacker? | Begin Upkeep | Cancel error | Choose Attackers | Choose Defenders | Choose attackers. | Choose blockers. | Combat phase: Choose attackers. | Combat phase: Choose blockers. | Combat phase: choose attackers. | Discard Phase | Draw Phase | End Upkeep | End of Combat | End of Turn | Illegal attacker. | Main Phase | Main phase (after combat): cast spells | Main phase (before combat): cast spells | Paused: Discard phase | Paused: Untap phase | Pay for attacker | Untap effects? | Upkeep Phase | phase: %3d num tries: %4d mtime %4d calls %d	CardTypeFromID | OutputDebugStringA | Sleep | abs | sprintf | strcat | strcpy	77	15607
+00505c74	FUN_00505c74			0	172
+00505d20	FUN_00505d20			1	287
+00505e3f	FUN_00505e3f			0	104
+00505ea7	FUN_00505ea7	: Cleanup phase | : Combat damage resolution | : Discard phase | : Draw phase | : First strike damage resolution | : Main phase | : Untap phase | : Upkeep phase | Paused	strcat | strcpy	3	386
+00506029	FUN_00506029			3	207
+00506102	FUN_00506102			5	431
+005062b1	FUN_005062b1			1	220
+0050638d	FUN_0050638d			0	105
+005063f6	FUN_005063f6			1	238
+005064e9	FUN_005064e9			2	139
+00506580	FUN_00506580	' from | , you must pay | 0028.pic | 0246.pic | 0335.pic | 0364.pic | 0737.pic | Insufficient Funds | Lost this card | The Mighty | The keeper is pleased to receive his brother's letter. | The people are glad to be rid of the pesky | The people are pleased to receive the | The village is glad to be rid of the pesky | This place is ruled by the | To release the WORLDMAGIC spell ' | Travel | WORLDMAGIC | Well... No.  Yes, enter the castle. | Which card do you seek? | Who dares to challenge the Mighty | Will you take this card...     Yes     No | Will you...  Never mind  Pay the gold. | Wizard You must duel | Wizard's ANTE | Wizard? Are you brave enough to enter my castle? | You are rewarded with | You are rewarded with a fine | You create a mana link here. | Your ANTE | amulet | amulet and a mana link. | amulet. | celeb.pic | city.pic | costs | fine | gold pieces. | is freed! The people rejoice. | losedul2.pic | of your choice. | spell. You are rewarded with a fine | to free the city.  Never mind.  Duel the creature. | village.pic | worlbak1.pic | x:sound\manalink.wav | x:sound\reward.wav	CloseSndTrack | StopSnd | _itoa | strcat | strcpy	56	5505
+00507b1a	FUN_00507b1a	x:sound\button2.wav		1	42
+00507b44	FUN_00507b44			2	322
+00507c86	FUN_00507c86	/Card Hints | Begin a Quest | Buy 10 food for %d gold | Buy Cards%s | Edit deck/Sell cards | Leave the village | Speak to Wise Man | Trade %s Amulets for %s. | x:sound\button.wav	CloseSndTrack | StopSnd | sprintf | strcpy	31	4024
+00508c3e	FUN_00508c3e	city.pic | village.pic		3	153
+00508cd7	FUN_00508cd7	. He will give you a mana link and | . He will reward you with | Accept the Quest  Never mind. | Defeat the | Dragon | Take a | Take this message | The people have no new quest for you. | You failed to complete your last quest for this village. | You have | a mana link. | amulet. | amulets. | city.pic | days to complete the quest. | to my brother, the keeper of | to the keeper of | village.pic | which has been menacing our village. Return here and I will reward you with | wiseman3.pic	_itoa | strcat | strcpy	21	1671
+0050935e	FUN_0050935e			4	441
+00509517	FUN_00509517	Buy for %d gold?   (Y/N) | BuyButtons.spr | Cards for Sale | buycards.pic | city.pic | gold | village.pic	_itoa | memset | sprintf | strcat	40	2749
+00509fd4	FUN_00509fd4	city.pic | village.pic		5	145
+0050a065	FUN_0050a065	city.pic | village.pic | x:sound\button2.wav	DeckBuilderMain	7	152
+0050a0fd	FUN_0050a0fd	city.pic | village.pic | x:sound\button2.wav		5	126
+0050a17b	FUN_0050a17b	city.pic | village.pic | x:sound\button2.wav		5	126
+0050a1f9	FUN_0050a1f9	city.pic | village.pic		4	105
+0050a262	FUN_0050a262	city.pic | village.pic | x:sound\button2.wav		6	126
+0050a2e0	FUN_0050a2e0		strcpy	8	241
+0050a73e	FUN_0050a73e	artifacts | cards | creatures | enchantments | fast effects | land | sorceries	strcat	3	331
+0050a8ae	SellPrice			4	273
+0050a9bf	FUN_0050a9bf		abs	3	1228
+0050aef6	FUN_0050aef6	North | South	strcat	1	199
+0050afbd	FUN_0050afbd			1	79
+0050b00c	FUN_0050b00c			2	240
+0050b0fc	FUN_0050b0fc			0	164
+0050b1a0	FUN_0050b1a0	spell	strcat	3	102
+0050b206	FUN_0050b206		SetRect	7	472
+0050b3de	FUN_0050b3de		SetRect	7	480
+0050b5be	FUN_0050b5be		SetRect	3	161
+0050b65f	FUN_0050b65f			8	865
+0050b9d5	FUN_0050b9d5			5	442
+0050bba0	FUN_0050bba0	ShuffleCard	AppendMenuA | CreatePopupMenu | GetStockObject | LoadCursorA | LoadIconA | RegisterClassA	6	310
+0050bcd6	FUN_0050bcd6		DestroyMenu	1	81
+0050bd27	FUN_0050bd27	%s library | Count library cards | Help... | ShuffleCard | Your | \duel.hlp	AppendMenuA | BeginPaint | BitBlt | ClientToScreen | CreateWindowExA | DefWindowProcA | DestroyWindow | EndPaint | EnterCriticalSection | FillRect | GetClientRect | GetMenuItemCount | GetStockObject | GetSystemMetrics | GetWindowLongA | GetWindowRect | InvalidateRect | LeaveCriticalSection | ModifyMenuA | RemoveMenu | SelectObject | SetBkMode | SetRect | SetTextColor | SetWindowLongA | Sleep | TextOutA | TrackPopupMenu | UpdateWindow | WinHelpA | sprintf | strcat | strcpy | strlen	40	2798
+0050c82b	FUN_0050c82b			1	41
+0050c854	FUN_0050c854		DefWindowProcA | GetClientRect	5	179
+0050ce18	GetSaveFileNameA		GetSaveFileNameA	0	6
+0050ce66	MCIWndCreateA		MCIWndCreateA	0	6
+0050ce6c	DeckBuilderMain		DeckBuilderMain	0	6
+0050ce80	FUN_0050ce80			0	3
+0050ce90	FUN_0050ce90			1	21
+0050ceb0	thunk_FUN_0050cef0			0	5
+0050cec0	FUN_0050cec0			2	38
+0050cef0	FUN_0050cef0		CreatePalette | GetDeviceCaps | RealizePalette | SelectPalette | SetStretchBltMode | _itoa | malloc	8	440
+0050d0b0	FUN_0050d0b0	Cannot explicitly allocate page 0 | Create File Mapping failed: page %d | G:\NewMagic\sources\sidlib\lib.c | Graphic Page number out of range: %d | WM_CREATE CreateDIBSection	AssertOrLog | CreateCompatibleDC | CreateDIBSection | CreateFileMappingA | RealizePalette | SelectObject | SelectPalette | SetStretchBltMode | _itoa | malloc	11	483
+0050d2a0	FUN_0050d2a0	Cannot explicitly Deallocate page 0 | G:\NewMagic\sources\sidlib\lib.c | Graphic Page number out of range: %d	AssertOrLog | CloseHandle | DeleteDC | DeleteObject | GetStockObject | RealizePalette | SelectObject | free	8	200
+0050d370	FUN_0050d370	Cannot explicitly Deallocate page 0 | G:\NewMagic\sources\sidlib\lib.c | Graphic Page number out of range: %d	AssertOrLog | CloseHandle | DeleteDC | DeleteObject | GetStockObject | RealizePalette | SelectObject | free	8	227
+0050d4a0	FUN_0050d4a0			0	64
+0050d4e0	FUN_0050d4e0		BitBlt	1	63
+0050d520	FUN_0050d520		BitBlt	1	55
+0050d560	FUN_0050d560		CreateBrushIndirect | DeleteObject | FillRect	3	152
+0050d6f0	FUN_0050d6f0		GetPixel	1	198
+0050da40	FUN_0050da40		GetPixel	1	199
+0050db10	FUN_0050db10		CreatePen | DeleteObject | LineTo | MoveToEx | SelectObject	5	157
+0050dbb0	FUN_0050dbb0		SetPixelV	1	121
+0050dc30	FUN_0050dc30		CreateSolidBrush | DeleteObject | FillRect	3	176
+0050dce0	FUN_0050dce0		BitBlt | SetDIBitsToDevice | memmove	5	853
+0050e040	FUN_0050e040		BitBlt | SetDIBitsToDevice	4	582
+0050e290	FUN_0050e290		StretchBlt	1	91
+0050e2f0	FUN_0050e2f0	G:\NewMagic\sources\sidlib\lib.c | MScaledRectCopy only works on memory pages!	AssertOrLog | memmove	4	1021
+0050e6f0	FUN_0050e6f0			0	109
+0050e760	FUN_0050e760		SetDIBitsToDevice	2	232
+0050e850	FUN_0050e850	G:\NewMagic\sources\sidlib\lib.c | GetLine not implemented for page 0	AssertOrLog	1	96
+0050e8b0	FUN_0050e8b0	Current Palette | ShowPaletteClass	AnimatePalette | FindWindowExA | InvalidateRect | RealizePalette | SetDIBColorTable | UpdateWindow	6	735
+0050eb90	FUN_0050eb90		_write	1	132
+0050ec20	FUN_0050ec20		GetDC | ReleaseDC | SetDIBitsToDevice | free	5	104
+0050ec90	FUN_0050ec90		malloc	1	123
+0050ed10	FUN_0050ed10		free	1	22
+0050edf0	FUN_0050edf0	Can not load more than %d fonts | File %s could not be opened: EXITING | G:\NewMagic\sources\sidlib\text.c	AssertOrLog | fclose | fopen | fread | fseek	6	253
+0050eef0	FUN_0050eef0		CreateBitmap | CreateCompatibleDC | DeleteObject | fread | free | fseek | malloc	7	497
+0050f0f0	FUN_0050f0f0	Can not load more than %d fonts | File %s could not be opened: EXITING | G:\NewMagic\sources\sidlib\text.c	AssertOrLog | fopen | fread | fseek	5	237
+0050f1e0	FUN_0050f1e0		AddFontResourceA | CreateFontA	2	197
+0050f2e0	FUN_0050f2e0		CreateFontIndirectA | DeleteObject | GetObjectA	3	108
+0050f350	FUN_0050f350		DeleteObject | RemoveFontResourceA	2	59
+0050f390	FUN_0050f390		GetCharABCWidthsA | GetDC | ReleaseDC | SelectObject	4	172
+0050f440	FUN_0050f440		GetCharABCWidthsA | GetDC | GetTextExtentPoint32A | ReleaseDC | SelectObject	5	458
+0050f610	FUN_0050f610		GetCharABCWidthsA | GetDC | GetTextExtentPoint32A | ReleaseDC | SelectObject	5	304
+0050f740	FUN_0050f740			0	32
+0050f760	FUN_0050f760		SelectObject | SetBkMode | SetTextColor | TextOutA	4	187
+0050f820	FUN_0050f820		BitBlt | GetCharABCWidthsA | GetDC | ReleaseDC | SelectObject | SetBkColor | SetBkMode | SetTextColor | TextOutA	9	978
+0050fc00	FUN_0050fc00		malloc	1	25
+0050fc20	FUN_0050fc20		_expand	1	46
+0050fc50	FUN_0050fc50		free	1	17
+0050fc70	FUN_0050fc70		_msize | fclose | fopen | fwrite	4	70
+0050fcc0	FUN_0050fcc0	Could not open Sprite File %s | G:\NewMagic\sources\sidlib\sprite.c	AssertOrLog | _filelength | _fileno | fclose | fopen | fread | malloc	7	141
+0050fd50	FUN_0050fd50	Could not open Sprite File %s | G:\NewMagic\sources\sidlib\sprite.c	AssertOrLog | _filelength | _fileno | fclose | fopen | fread | malloc	7	149
+0050fdf0	FUN_0050fdf0			1	154
+0050fe90	FUN_0050fe90		memchr	3	841
+005101e0	FUN_005101e0			2	384
+00510360	FUN_00510360			3	752
+00510650	FUN_00510650			2	1181
+00510b70	FUN_00510b70	Error Opening File %s | G:\NewMagic\sources\sidlib\Fileio.c	AssertOrLog | _close | _open | _stricmp | fclose | fopen | strchr	13	610
+00510de0	FUN_00510de0			1	25
+00510e20	FUN_00510e20			1	25
+00510e40	LoadPalNoPic			1	22
+00510e60	FUN_00510e60			1	25
+00510fc0	FUN_00510fc0			0	350
+00511120	FUN_00511120			0	364
+005112b0	FUN_005112b0			4	747
+005115a0	FUN_005115a0			3	784
+00511930	FUN_00511930		CreateCompatibleBitmap | CreateCompatibleDC | CreateSolidBrush | DeleteDC | DeleteObject | FillRect | SelectObject	8	172
+005119e0	FUN_005119e0		BitBlt | GetPixel | SetPixelV | rand	4	425
+00511b90	FUN_00511b90		BitBlt | GetPixel | SetPixelV | rand	4	461
+00511d60	FUN_00511d60		CreateCompatibleBitmap | CreateCompatibleDC | CreateSolidBrush | DeleteDC | DeleteObject | FillRect | SelectObject	8	182
+00511e20	FUN_00511e20		BitBlt | GetPixel | GetTickCount | SetPixel | free | malloc	6	846
+005121d0	FUN_005121d0			0	6
+005121e0	FUN_005121e0			0	6
+005121f0	FUN_005121f0		ShowCursor	1	9
+00512200	FUN_00512200		ShowCursor	1	9
+00512210	FUN_00512210			0	16
+00512220	FUN_00512220			0	1
+00512230	FUN_00512230	%s Not a 256 color palettized pcx file | Error Opening File %s | G:\NewMagic\sources\sidlib\Pcxw.c	AssertOrLog | GlobalAlloc | GlobalFree | GlobalHandle | GlobalLock | GlobalUnlock | fclose | fgetc | fopen	10	608
+00512500	FUN_00512500	%s Not a pcx file | %s Not a version 5 pcx file | %s is not in a recognizable format | G:\NewMagic\sources\sidlib\Pcxw.c	AssertOrLog | fread | fseek	3	421
+005126b0	FUN_005126b0		fgetc	1	132
+00512740	FUN_00512740	Error Opening File %s | G:\NewMagic\sources\sidlib\Pcxw.c	AssertOrLog | fclose | fopen | fwrite	7	422
+005129a0	FUN_005129a0		fwrite	1	293
+00512b50	FUN_00512b50		fwrite	1	66
+00512ba0	FUN_00512ba0		_close | _open	3	95
+00512c00	FUN_00512c00		_close | _open	4	130
+00512c90	FUN_00512c90			0	13
+00512c9d	FUN_00512c9d		_close | _lseek | _tell | _write | free | malloc	10	1364
+00513200	FUN_00513200			1	664
+005134a0	FUN_005134a0			0	109
+00513510	FUN_00513510			0	204
+005135e0	FUN_005135e0		_write	1	170
+00513820	FUN_00513820	ShowPaletteClass	CreateSolidBrush | LoadCursorA | LoadIconA | RegisterClassA	4	131
+005138b0	FUN_005138b0	Current Palette | ShowPaletteClass	AdjustWindowRect | CreateWindowExA	2	121
+00513a70	FUN_00513a70		CreatePenIndirect | DeleteObject | LineTo | MoveToEx | SelectObject	5	140
+00513afc	strlen		strlen	0	6
+00513b02	sprintf		sprintf	0	6
+00513b08	abs		abs	0	6
+00513b0e	strcat		strcat	0	6
+00513b14	strcpy		strcpy	0	6
+00513b2c	strcmp		strcmp	0	6
+00513b80	memcpy		memcpy	0	6
+00513b98	_vsnprintf		_vsnprintf	0	6
+00513b9e	memset		memset	0	6
+00513bbc	clock		clock	0	6
+00513bd0	FUN_00513bd0			0	47
+00513c00	memcmp		memcmp	0	6
+00513c50	__allshl			0	31
+00513c80	__onexit		GetVersion | Sleep | __dllonexit | _onexit	4	208
+00513d50	_atexit		__onexit	1	48
+00513da0	entry		GetModuleHandleA | GetStartupInfoA | WinMain | __getmainargs | __p__acmdln | __p__commode | __p__fmode | __set_app_type | __setargv | __setdefaultprecision | __setusermatherr | exit | initterm	13	510
+00513fde	_write		_write	0	6
+00514008	__dllonexit		__dllonexit	0	6
+00514022	initterm		initterm	0	6
+00514030	__setdefaultprecision		_controlfp	1	29
+00514060	FUN_00514060			0	18
+00514080	__setargv			0	11
+005140a4	_controlfp		_controlfp	0	6
+00514128	_chdir		_chdir	0	6
+0070d000	FUN_0070d000			2	396
+0070d245	FUN_0070d245			0	112
+0070d2b5	FUN_0070d2b5			0	75
+0070d300	FUN_0070d300			1	146
+0070d392	FUN_0070d392			1	242
+0070d484	FUN_0070d484			1	36

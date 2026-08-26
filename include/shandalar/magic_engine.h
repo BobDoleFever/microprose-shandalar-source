@@ -1,0 +1,153 @@
+/*
+ * shandalar/magic_engine.h - MicroProse Core Turn Engine & State Machine
+ * Original Author: Sid Meier (sid/Magic.c)
+ * Comments follow Simplified Technical English (ASD-STE100) rules.
+ */
+#ifndef SHANDALAR_MAGIC_ENGINE_H
+#define SHANDALAR_MAGIC_ENGINE_H
+
+#include "types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*
+ * Match Turn Phases.
+ * Identifies the current step in a player turn.
+ */
+typedef enum TurnPhase {
+    PHASE_UNTAP    = 0, /* Untap step: Untap lands, creatures, and artifacts. */
+    PHASE_UPKEEP   = 1, /* Upkeep step: Pay upkeep costs and check triggers. */
+    PHASE_DRAW     = 2, /* Draw step: Active player draws a card from library. */
+    PHASE_MAIN_1   = 3, /* Pre-combat main phase: Cast spells and play lands. */
+    PHASE_COMBAT   = 4, /* Combat phase: Declare attackers, declare blockers, apply damage. */
+    PHASE_MAIN_2   = 5, /* Post-combat main phase: Cast remaining spells. */
+    PHASE_DISCARD  = 6, /* Discard step: Discard cards down to maximum hand size. */
+    PHASE_CLEANUP  = 7  /* Cleanup step: Remove temporary damage and end-of-turn effects. */
+} TurnPhase;
+
+/*
+ * Card Slot Status Bitflags.
+ * Used in g_CardSlot_Flags to track card state on the battlefield.
+ */
+typedef enum CardStatusFlags {
+    STATUS_TAPPED          = 0x0001, /* Card is tapped (turned sideways). */
+    STATUS_SUMMONING_SICK  = 0x0002, /* Creature has summoning sickness. */
+    STATUS_ATTACKING       = 0x0004, /* Creature is currently attacking. */
+    STATUS_BLOCKING        = 0x0008, /* Creature is currently blocking. */
+    STATUS_ENCHANTED       = 0x0010, /* Card has an attached aura/enchantment. */
+    STATUS_DESTROYED       = 0x0020  /* Card is marked for graveyard destruction. */
+} CardStatusFlags;
+
+/*
+ * Core Magic Engine API Functions
+ */
+
+/*
+ * Magic_ScanCards
+ * Purpose: Scan all active cards on the battlefield for state changes and triggers.
+ * Procedure:
+ * 1. Increment the recursion depth counter and check that depth is less than 10.
+ * 2. Count active card slots for Player 0 and Player 1.
+ * 3. Call the card script action callback for each active card.
+ * 4. Update status flags and trigger pending continuous effects.
+ * Parameter phase_id: The identifier of the current game phase.
+ */
+void Magic_ScanCards(int phase_id);
+
+/*
+ * Magic_TriggerCardEvent
+ * Purpose: Execute a card script function with the specified event code.
+ * Parameter player_id: Index of the player (0 or 1).
+ * Parameter card_slot: Index of the card slot (0 to 79).
+ * Parameter event_code: The event identifier to pass to the card script.
+ * Returns: Result code from the card script callback.
+ */
+int Magic_TriggerCardEvent(int player_id, int card_slot, int event_code, uint32_t extra_arg1, uint32_t extra_arg2);
+
+/*
+ * Magic_ResolveSpellStack
+ * Purpose: Resolve the top spell or activated ability on the resolution stack.
+ * Procedure:
+ * 1. Check if the spell stack contains any active entries.
+ * 2. Execute the spell effect function.
+ * 3. Move resolved spell card to the graveyard or battlefield.
+ * 4. Decrement the stack depth counter.
+ */
+void Magic_ResolveSpellStack(void);
+
+/*
+ * Magic_PayManaCost
+ * Purpose: Check and deduct required mana from the active player mana pool.
+ * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+ */
+int Magic_PayManaCost(int player_id, int color_mask, int total_cost);
+
+/*
+ * Magic_TapCardForMana
+ * Purpose: Tap an untapped land or artifact to add mana to the player pool.
+ * Parameter player_id: Index of the player (0 or 1).
+ * Parameter card_slot: Index of the card slot (0 to 79).
+ */
+void Magic_TapCardForMana(int player_id, int card_slot);
+
+/*
+ * Magic_UntapTurnPhase
+ * Purpose: Execute the Untap step for the active player.
+ * Untaps all tapped lands, creatures, and artifacts that can untap.
+ */
+void Magic_UntapTurnPhase(void);
+
+/*
+ * Magic_UpkeepPhase
+ * Purpose: Execute the Upkeep step for the active player.
+ * Checks for upkeep triggers and prompts the player for upkeep costs.
+ */
+void Magic_UpkeepPhase(void);
+
+/*
+ * Magic_DrawCardPhase
+ * Purpose: Execute the Draw step for the active player.
+ * Moves the top card of the active player library into their hand.
+ */
+void Magic_DrawCardPhase(void);
+
+/*
+ * Magic_MainTurnPhase
+ * Purpose: Execute the Main phase.
+ * Grants priority to the active player to cast spells and play lands.
+ */
+void Magic_MainTurnPhase(void);
+
+/*
+ * Magic_CombatPhase
+ * Purpose: Execute the Combat phase.
+ * Manages Declare Attackers, Declare Blockers, and Combat Damage steps.
+ */
+void Magic_CombatPhase(void);
+
+/*
+ * Magic_EndTurnPhase
+ * Purpose: Execute the End of Turn step.
+ * Checks end-of-turn triggers and switches active player turn.
+ */
+void Magic_EndTurnPhase(void);
+
+/*
+ * Magic_DiscardToHandSize
+ * Purpose: Force player to discard cards if hand size exceeds maximum (7 cards).
+ */
+void Magic_DiscardToHandSize(int player_id);
+
+/*
+ * Magic_CleanupPhase
+ * Purpose: Remove temporary damage and reset continuous until-end-of-turn modifiers.
+ */
+void Magic_CleanupPhase(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* SHANDALAR_MAGIC_ENGINE_H */

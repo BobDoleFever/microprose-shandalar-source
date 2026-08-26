@@ -1,0 +1,4 @@
+Address,OldName,NewName
+00401010,FUN_00401010,DeckBuilder_CheckExistingInstance
+004010aa,FUN_004010aa,DeckBuilder_MainEntry
+0040161a,FUN_0040161a,DeckBuilder_InitSubsystems

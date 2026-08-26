@@ -1,0 +1,243 @@
+Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
+10001005	thunk_FUN_1000a058			0	5
+1000100a	thunk_FUN_1000ac3f			0	5
+1000100f	thunk_FUN_10006d86			0	5
+10001014	thunk_FUN_100080e7			0	5
+1000101e	thunk_FUN_10004e94			0	5
+10001023	thunk_FUN_10007083			0	5
+10001028	thunk_FUN_100095b0			0	5
+1000102d	status_show			0	5
+10001037	thunk_FUN_10001f30			0	5
+1000103c	thunk_FUN_10001722			0	5
+10001041	thunk_FUN_1000b760			0	5
+1000104b	thunk_FUN_10004afa			0	5
+10001050	thunk_FUN_1000432f			0	5
+1000105a	thunk_FUN_1000245c			0	5
+1000105f	thunk_FUN_1000268a			0	5
+1000106e	thunk_FUN_10004407			0	5
+10001082	thunk_FUN_100035b2			0	5
+10001087	thunk_FUN_100058cd			0	5
+1000108c	thunk_FUN_100014b0			0	5
+1000109b	thunk_FUN_10002be9			0	5
+100010a0	thunk_FUN_10002f86			0	5
+100010a5	thunk_FUN_10006870			0	5
+100010af	thunk_FUN_10007805			0	5
+100010b4	thunk_FUN_10001cdc			0	5
+100010be	thunk_FUN_1000b6e0			0	5
+100010c3	thunk_FUN_10006b3f			0	5
+100010c8	GetWeight		GetWeight	0	5
+100010cd	thunk_FUN_10009bda			0	5
+100010d2	thunk_FUN_100099ba			0	5
+100010dc	thunk_FUN_10008419			0	5
+100010e1	thunk_FUN_100097f0			0	5
+100010e6	thunk_FUN_100023fd			0	5
+100010eb	thunk_FUN_1000a2e4			0	5
+10001104	thunk_FUN_10003472			0	5
+10001109	thunk_FUN_1000735d			0	5
+1000110e	GetWeight		GetWeight	0	5
+10001118	thunk_FUN_10001c1a			0	5
+1000111d	thunk_FUN_1000b710			0	5
+10001122	thunk_FUN_100042d0			0	5
+1000112c	thunk_FUN_100041b0			0	5
+10001131	thunk_FUN_10009de4			0	5
+10001136	thunk_FUN_10007c74			0	5
+1000113b	thunk_FUN_1000310f			0	5
+10001140	thunk_FUN_1000308a			0	5
+10001145	status_init			0	5
+1000114a	thunk_FUN_1000814f			0	5
+1000114f	thunk_FUN_10009530			0	5
+10001159	thunk_FUN_100049cf			0	5
+1000115e	thunk_FUN_100099ff			0	5
+10001163	thunk_FUN_10004200			0	5
+1000116d	thunk_FUN_10003303			0	5
+10001181	thunk_FUN_10009ace			0	5
+10001186	thunk_FUN_100042a0			0	5
+1000118b	thunk_FUN_1000acc2			0	5
+10001190	thunk_FUN_10006212			0	5
+10001195	thunk_FUN_10009e72			0	5
+1000119f	thunk_FUN_10009a89			0	5
+100011a4	thunk_FUN_10009640			0	5
+100011a9	thunk_FUN_100016c1			0	5
+100011b3	thunk_FUN_1000435f			0	5
+100011b8	thunk_FUN_100017b0			0	5
+100011c2	thunk_FUN_10009865			0	5
+100011c7	thunk_FUN_100097b0			0	5
+100011d1	play_video			0	5
+100011e0	thunk_FUN_10001685			0	5
+100011e5	thunk_FUN_100065ce			0	5
+100011ea	thunk_FUN_10004250			0	5
+100011ef	thunk_FUN_1000ad09			0	5
+100011f4	thunk_FUN_10009b0f			0	5
+100011f9	thunk_FUN_1000a9b8			0	5
+100011fe	thunk_FUN_10005d98			0	5
+10001203	thunk_FUN_10009824			0	5
+10001208	thunk_FUN_10004512			0	5
+1000120d	thunk_FUN_1000160f			0	5
+10001217	thunk_FUN_100059af			0	5
+1000121c	thunk_FUN_10007d32			0	5
+10001226	thunk_FUN_10009580			0	5
+1000122b	thunk_FUN_10009a44			0	5
+10001230	thunk_FUN_1000353c			0	5
+10001235	thunk_FUN_10004481			0	5
+1000123a	thunk_FUN_10009766			0	5
+1000123f	thunk_FUN_10007b3b			0	5
+1000124e	CPrintPreviewState		CPrintPreviewState	0	5
+10001253	thunk_FUN_10009500			0	5
+100014b0	FUN_100014b0	magsnd	FreeLibrary | GetProcAddress | LoadLibraryA	4	351
+1000160f	FUN_1000160f		FreeLibrary	2	118
+10001685	FUN_10001685			0	60
+100016c1	FUN_100016c1			0	52
+100016f5	FUN_100016f5			0	45
+10001722	FUN_10001722			0	69
+10001767	FUN_10001767			0	73
+100017b0	FUN_100017b0			0	65
+100017f1	FUN_100017f1			0	48
+10001821	FUN_10001821			0	69
+10001866	FUN_10001866			0	69
+100018ab	FUN_100018ab			0	69
+100018f0	FUN_100018f0			0	69
+10001935	FUN_10001935			0	69
+1000197a	FUN_1000197a			0	69
+100019bf	FUN_100019bf			0	69
+10001a04	FUN_10001a04			0	58
+10001a3e	FUN_10001a3e			0	69
+10001a83	FUN_10001a83			0	69
+10001ac8	FUN_10001ac8			0	65
+10001b09	FUN_10001b09			0	69
+10001b4e	FUN_10001b4e			0	69
+10001b93	FUN_10001b93			0	66
+10001bd5	FUN_10001bd5			0	69
+10001c1a	FUN_10001c1a			0	55
+10001c51	FUN_10001c51			0	66
+10001c93	FUN_10001c93			0	73
+10001cdc	FUN_10001cdc			0	58
+10001f30	FUN_10001f30	STATWINCLASS	GetStockObject | LoadCursorA | LoadIconA | RegisterClassA | UnregisterClassA | operator_new	12	583
+100021a3	FUN_100021a3	':statwin\		2	97
+10002209	FUN_10002209			8	474
+100023fd	FUN_100023fd		DispatchMessageA | PeekMessageA | TranslateMessage	3	67
+10002440	FUN_10002440			1	28
+1000245c	FUN_1000245c		DispatchMessageA | PeekMessageA | TranslateMessage	4	161
+100024fd	FUN_100024fd	':statwin\ | statscrn.wav		12	397
+1000268a	FUN_1000268a	':statwin\ | statscrn.wav | statwin\ | wht-mask.bmp	CPrintPreviewState | GetCurrentProcess | GetPriorityClass | SendMessageA | SetPriorityClass | Sleep | operator_new	27	1327
+10002be9	FUN_10002be9	STATWINCLASS | statscrn.wav	CreateWindowExA | DestroyWindow | DispatchMessageA | GetSystemMetrics | PeekMessageA | SetFocus | SetForegroundWindow | ShowWindow | TranslateMessage | UpdateWindow	14	335
+10002d38	FUN_10002d38		DefWindowProcA | GetDC | InvalidateRect | ReleaseDC | SetSystemPaletteUse	6	532
+10002f86	FUN_10002f86	G:\NewMagic\tstvid\statwin.cpp	DrawDibClose | DrawDibDraw | DrawDibOpen | GetDC | ReleaseDC | _CrtDbgReport	8	260
+1000308a	FUN_1000308a		memset	4	133
+1000310f	FUN_1000310f	':statwin\ | statwin\	CPrintPreviewState | Sleep	16	466
+100032e1	FUN_100032e1			1	9
+100032f4	FUN_100032f4			0	15
+10003303	FUN_10003303		CPrintPreviewState | GetSystemMetrics	8	333
+10003450	FUN_10003450			1	9
+10003463	FUN_10003463			0	15
+10003472	FUN_10003472		GetDriveTypeA | fclose | fopen | strcat	4	197
+1000353c	FUN_1000353c	statwin\water.avi	_getcwd	2	113
+100035b2	FUN_100035b2	a:statwin\water.avi	_getcwd | fclose | fopen	4	192
+10003677	FUN_10003677		EndDialog	1	295
+100037ad	FUN_100037ad	STATWINCLASS	CreateWindowExA | DestroyWindow | GetSystemMetrics | SetWindowLongA | ShowWindow | Sleep	14	445
+1000396a	FUN_1000396a		DefWindowProcA | InvalidateRect	2	332
+100041b0	FUN_100041b0		operator_delete	2	57
+10004200	FUN_10004200		operator_new	1	64
+10004250	FUN_10004250		operator_delete	2	57
+100042a0	FUN_100042a0			0	28
+100042d0	FUN_100042d0			0	28
+10004300	FUN_10004300			1	21
+10004315	FUN_10004315			1	26
+1000432f	FUN_1000432f		strcat | strcpy	2	48
+1000435f	FUN_1000435f			0	163
+10004407	FUN_10004407			0	122
+10004481	FUN_10004481		operator_delete	2	145
+10004512	FUN_10004512	statwin\ | wizbg.bmp	CPrintPreviewState | memcpy | operator_delete | operator_new	16	1140
+100049ab	FUN_100049ab			1	9
+100049be	FUN_100049be			0	17
+100049cf	FUN_100049cf			5	289
+10004afa	FUN_10004afa	G:\NewMagic\tstvid\statclas.cpp | pbibkgrnd | pbits | statscrn.tmp | statwin\	CPrintPreviewState | CloseHandle | CreateFileA | DeleteFileA | WriteFile | assert	16	888
+10004e72	FUN_10004e72			1	9
+10004e85	FUN_10004e85			0	15
+10004e94	FUN_10004e94	G:\NewMagic\tstvid\statclas.cpp | nBytesRead == nBytesToRead | pbits | pclrs && pbibkgrnd | statscrn.tmp | statwin\	CPrintPreviewState | CloseHandle | CreateFileA | DeleteFileA | GetSystemMetrics | ReadFile | assert | memcpy | operator_delete | operator_new	18	2567
+100058ab	FUN_100058ab			1	9
+100058be	FUN_100058be			0	15
+100058cd	FUN_100058cd		operator_delete	2	204
+10005999	FUN_10005999			0	22
+100059af	FUN_100059af	S-wwizr.bmp | S-wwizy.bmp | statwin\	CPrintPreviewState | operator_new	5	959
+10005d98	FUN_10005d98	S-wwizr.bmp | S-wwizy.bmp | statwin\	CPrintPreviewState | operator_new	6	1104
+10006212	FUN_10006212	1skulls.bmp | statwin\	CPrintPreviewState | operator_new	7	724
+10006500	FUN_10006500			0	157
+100065ce	FUN_100065ce	1skulls.bmp | statwin\	CPrintPreviewState | memset | operator_new	7	648
+10006870	FUN_10006870	W-mana.bmp | statwin\	CPrintPreviewState | operator_new	4	693
+10006b3f	FUN_10006b3f	statwin\ | wht-sprt.bmp	CPrintPreviewState | operator_new	5	423
+10006d00	FUN_10006d00		OffsetRect | SetRect | UnionRect	4	134
+10006d86	FUN_10006d86	S-wmsk.tmp | W-mmask.tmp | statwin\ | wht-mask.bmp	CPrintPreviewState	10	702
+10007044	FUN_10007044			1	9
+1000704d	FUN_1000704d			1	9
+10007056	FUN_10007056			1	9
+1000705f	FUN_1000705f			1	9
+10007072	FUN_10007072			0	17
+10007083	FUN_10007083	W-mana.bmp | statwin\	CPrintPreviewState | operator_new	4	704
+1000735d	FUN_1000735d	S-wwizr.bmp | S-wwizy.bmp | statwin\ | wht-sprt.bmp	CPrintPreviewState | operator_new	10	1115
+100077d8	FUN_100077d8			1	9
+100077e1	FUN_100077e1			1	9
+100077f4	FUN_100077f4			0	17
+10007805	FUN_10007805	S-wmsk.tmp | S-wwizy.bmp | W-mmask.tmp | statwin\	CPrintPreviewState | operator_new	5	780
+10007b3b	FUN_10007b3b		CPrintPreviewState | operator_new	6	290
+10007c74	FUN_10007c74		IntersectRect	1	190
+10007d32	FUN_10007d32	S-wwizr.bmp | S-wwizy.bmp | statwin\	CPrintPreviewState | operator_new	5	907
+100080e7	FUN_100080e7			1	104
+1000814f	FUN_1000814f	1skulls.bmp | statwin\	CPrintPreviewState | memset | operator_new	7	688
+10008419	FUN_10008419			1	124
+10009500	FUN_10009500			0	34
+10009530	FUN_10009530			0	59
+10009580	FUN_10009580		GetWeight	1	30
+100095b0	FUN_100095b0		GetWeight	1	30
+100095e0	GetWeight			0	31
+10009610	GetWeight			0	31
+10009640	FUN_10009640	magvid	FreeLibrary | GetProcAddress | LoadLibraryA	4	294
+10009766	FUN_10009766		FreeLibrary	2	74
+100097b0	FUN_100097b0			0	64
+100097f0	FUN_100097f0			0	52
+10009824	FUN_10009824			0	65
+10009865	FUN_10009865			0	65
+100098a6	FUN_100098a6			0	69
+100098eb	FUN_100098eb			0	69
+10009930	FUN_10009930			0	73
+10009979	FUN_10009979			0	65
+100099ba	FUN_100099ba			0	69
+100099ff	FUN_100099ff			0	69
+10009a44	FUN_10009a44			0	69
+10009a89	FUN_10009a89			0	69
+10009ace	FUN_10009ace			0	65
+10009b0f	FUN_10009b0f			0	65
+10009b50	FUN_10009b50			0	69
+10009b95	FUN_10009b95			0	69
+10009bda	FUN_10009bda			0	58
+10009d90	CPrintPreviewState			0	84
+10009de4	FUN_10009de4		free | operator_delete	2	142
+10009e72	FUN_10009e72		free | malloc | memset	4	486
+1000a058	FUN_1000a058		free | malloc | memcpy	4	237
+1000a145	FUN_1000a145			1	365
+1000a2bc	FUN_1000a2bc			0	40
+1000a2e4	FUN_1000a2e4	KPlay error | Not a Windows DIB.	CloseHandle | CreateFileA | GetLastError | MessageBoxA | ReadFile | free | malloc | memcpy | memset	10	1348
+1000a85a	FUN_1000a85a		CloseHandle | CreateFileA | WriteFile	8	350
+1000a9b8	FUN_1000a9b8			1	37
+1000a9dd	FUN_1000a9dd		GetNearestPaletteIndex | GetPaletteEntries | GetWeight	8	610
+1000ac3f	FUN_1000ac3f		GetWeight	3	131
+1000acc2	FUN_1000acc2		GetWeight	2	71
+1000ad09	FUN_1000ad09		GetWeight | memmove	6	1113
+1000b162	FUN_1000b162			0	109
+1000b6e0	FUN_1000b6e0			0	36
+1000b710	FUN_1000b710		operator_delete	1	62
+1000b760	FUN_1000b760			0	61
+1000b8ba	DrawDibClose		DrawDibClose	0	6
+1000b8c0	DrawDibDraw		DrawDibDraw	0	6
+1000b8c6	DrawDibOpen		DrawDibOpen	0	6
+1000b8d6	operator_delete		operator_delete	0	6
+1000b8dc	operator_new		operator_new	0	6
+1000b8e8	memset		memset	0	6
+1000b8fa	strcat		strcat	0	6
+1000b900	strcpy		strcpy	0	6
+1000b906	memcpy		memcpy	0	6
+1000b930	__CRT_INIT@12	crtdll.c	GetVersion | GlobalAlloc | GlobalFree | free_dbg | initterm | malloc_dbg	6	505
+1000bb30	entry		__CRT_INIT@12	2	313
+1000bc70	__onexit		GetVersion | Sleep | __dllonexit | _onexit	4	208
+1000bd40	_atexit		__onexit	1	48
+1000bd76	initterm		initterm	0	6
+1000bd82	__dllonexit		__dllonexit	0	6

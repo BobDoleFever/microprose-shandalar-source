@@ -1,0 +1,55 @@
+/*
+ * Decompiled function: Mem_AllocOrFree_004d9630
+ * Entry Point: 004d9630
+ * Size: 7 bytes
+ */
+#include "duel.h"
+
+
+uint * Mem_AllocOrFree_004d9630(uint *arg1,uint *arg2)
+
+{
+  byte bVar1;
+  uint uVar2;
+  uint uVar3;
+  uint *puVar4;
+  
+  puVar4 = arg1;
+  while (((uint)arg2 & 3) != 0) {
+    bVar1 = (byte)*arg2;
+    uVar3 = (uint)bVar1;
+    arg2 = (uint *)((int)arg2 + 1);
+    if (bVar1 == 0) goto LAB_004d9718;
+    *(byte *)puVar4 = bVar1;
+    puVar4 = (uint *)((int)puVar4 + 1);
+  }
+  do {
+    uVar2 = *arg2;
+    uVar3 = *arg2;
+    arg2 = arg2 + 1;
+    if (((uVar2 ^ 0xffffffff ^ uVar2 + 0x7efefeff) & 0x81010100) != 0) {
+      if ((char)uVar3 == '\0') {
+LAB_004d9718:
+        *(byte *)puVar4 = (byte)uVar3;
+        return arg1;
+      }
+      if ((char)(uVar3 >> 8) == '\0') {
+        *(short *)puVar4 = (short)uVar3;
+        return arg1;
+      }
+      if ((uVar3 & 0xff0000) == 0) {
+        *(short *)puVar4 = (short)uVar3;
+        *(byte *)((int)puVar4 + 2) = 0;
+        return arg1;
+      }
+      if ((uVar3 & 0xff000000) == 0) {
+        *puVar4 = uVar3;
+        return arg1;
+      }
+    }
+    *puVar4 = uVar3;
+    puVar4 = puVar4 + 1;
+  } while( true );
+}
+
+

@@ -1,0 +1,130 @@
+Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
+10001000	thunk_FUN_10005a46			0	5
+10001005	thunk_FUN_1000460c			0	5
+1000100a	thunk_FUN_1000667b			0	5
+1000100f	thunk_FUN_1000458d			0	5
+10001014	SetSndMarker			0	5
+10001019	GetSndState			0	5
+1000101e	PlaySnd			0	5
+10001023	thunk_FUN_1000394f			0	5
+10001028	UnloadAllSnds			0	5
+1000102d	thunk_FUN_1000219c			0	5
+10001032	GetAVISndBuff			0	5
+10001037	ReleaseAVISndBuff			0	5
+1000103c	StopAllSnds			0	5
+10001041	ResetSnd			0	5
+10001046	GetLRUSnd			0	5
+1000104b	thunk_FUN_10002900			0	5
+10001050	InitSnd			0	5
+10001055	SetVol			0	5
+1000105a	thunk_FUN_10004534			0	5
+1000105f	GetSndTime			0	5
+10001064	thunk_FUN_1000630c			0	5
+10001069	thunk_FUN_10006830			0	5
+1000106e	thunk_FUN_100046fb			0	5
+10001073	thunk_FUN_1000681e			0	5
+10001078	PlayMidiFile			0	5
+1000107d	PlaySndMarker			0	5
+10001082	thunk_FUN_10005abe			0	5
+10001087	GetSndHWND			0	5
+1000108c	thunk_FUN_1000405a			0	5
+10001091	thunk_FUN_10006622			0	5
+1000109b	thunk_FUN_10005d4a			0	5
+100010a0	GetPitch			0	5
+100010a5	thunk_FUN_10004788			0	5
+100010aa	PlaySndFile			0	5
+100010af	GetVol			0	5
+100010b4	thunk_FUN_10006e80			0	5
+100010b9	thunk_FUN_10003a41			0	5
+100010be	thunk_FUN_10006540			0	5
+100010c3	thunk_FUN_1000207f			0	5
+100010c8	UnloadSnd			0	5
+100010cd	IsSndLoaded			0	5
+100010d2	StopSnd			0	5
+100010d7	thunk_FUN_1000192c			0	5
+100010dc	SetPan			0	5
+100010e1	thunk_FUN_100055b0			0	5
+100010e6	SetPitch			0	5
+100010eb	thunk_FUN_10005f0c			0	5
+100010f0	UpdateSnd			0	5
+100010f5	thunk_FUN_1000560f			0	5
+100010fa	thunk_FUN_100043c4			0	5
+100010ff	thunk_FUN_10005dff			0	5
+10001104	ReleaseSnd			0	5
+10001109	LoadSnd			0	5
+10001113	thunk_FUN_10004665			0	5
+10001118	GetPan			0	5
+10001240	FUN_10001240		DirectSoundCreate | InitializeCriticalSection | ReleaseSnd	4	374
+100013b6	FUN_100013b6		DeleteCriticalSection | UnloadAllSnds	3	114
+10001428	FUN_10001428			0	21
+1000143d	FUN_1000143d			7	679
+100016e4	FUN_100016e4		EnterCriticalSection | LeaveCriticalSection	7	356
+10001848	FUN_10001848		EnterCriticalSection | LeaveCriticalSection | UnloadSnd	3	75
+10001893	FUN_10001893		EnterCriticalSection | LeaveCriticalSection	3	153
+1000192c	FUN_1000192c		UnloadSnd	5	800
+10001c4c	FUN_10001c4c		EnterCriticalSection | LeaveCriticalSection | UnloadSnd	8	1075
+1000207f	FUN_1000207f			3	285
+1000219c	FUN_1000219c			1	285
+100022b9	FUN_100022b9			2	208
+10002389	FUN_10002389		EnterCriticalSection | LeaveCriticalSection	4	237
+10002476	FUN_10002476		EnterCriticalSection | LeaveCriticalSection	4	549
+1000269b	FUN_1000269b		EnterCriticalSection | LeaveCriticalSection	2	522
+100028a5	FUN_100028a5		EnterCriticalSection | LeaveCriticalSection | StopSnd	3	91
+10002900	FUN_10002900			1	572
+10002b3c	FUN_10002b3c			0	18
+10002b4e	FUN_10002b4e		EnterCriticalSection | LeaveCriticalSection	2	262
+10002c54	FUN_10002c54			0	18
+10002c66	FUN_10002c66		EnterCriticalSection | LeaveCriticalSection	2	503
+10002e62	FUN_10002e62			0	18
+10002e74	FUN_10002e74		EnterCriticalSection | LeaveCriticalSection	2	273
+10002f85	FUN_10002f85			0	18
+10002f97	FUN_10002f97		EnterCriticalSection | LeaveCriticalSection | SetVol | UnloadSnd	6	335
+100030e6	FUN_100030e6		EnterCriticalSection | LeaveCriticalSection | PostMessageA | ftol	4	664
+1000337e	FUN_1000337e		EnterCriticalSection | LeaveCriticalSection	2	192
+1000343e	FUN_1000343e			0	18
+10003450	FUN_10003450		EnterCriticalSection | LeaveCriticalSection	2	142
+100034de	FUN_100034de		EnterCriticalSection | LeaveCriticalSection	2	245
+100035d3	FUN_100035d3	G:\NewMagic\tstvid\snd.cpp	EnterCriticalSection | LeaveCriticalSection | _CrtDbgReport	3	491
+100037be	FUN_100037be	G:\NewMagic\tstvid\snd.cpp	EnterCriticalSection | LeaveCriticalSection | _CrtDbgReport	3	401
+1000394f	FUN_1000394f		mmioSetInfo	3	242
+10003a41	FUN_10003a41		EnterCriticalSection | LeaveCriticalSection | memmove | memset | mmioAdvance | mmioGetInfo | mmioSeek | mmioSetInfo	9	1561
+1000405a	FUN_1000405a		AVIStreamRead	2	874
+100043c4	FUN_100043c4			0	348
+10004534	FUN_10004534			0	89
+1000458d	FUN_1000458d			0	127
+1000460c	FUN_1000460c			0	89
+10004665	FUN_10004665			0	127
+100046e4	FUN_100046e4		UpdateSnd	1	23
+100046fb	FUN_100046fb		timeBeginPeriod | timeEndPeriod | timeGetDevCaps | timeSetEvent	4	141
+10004788	FUN_10004788		EnterCriticalSection | LeaveCriticalSection | timeEndPeriod | timeKillEvent	4	95
+100055b0	FUN_100055b0		fclose | fopen	3	95
+1000560f	FUN_1000560f		memset | mmioAdvance | mmioAscend | mmioClose | mmioDescend | mmioGetInfo | mmioOpenA | mmioRead | operator_delete | operator_new | strcpy | strlen	14	1079
+10005a46	FUN_10005a46		mmioClose | operator_delete	2	120
+10005abe	FUN_10005abe		fread | fseek | operator_delete	6	652
+10005d4a	FUN_10005d4a		mmioAdvance | mmioGetInfo | mmioSeek	4	181
+10005dff	FUN_10005dff		fread | fseek | ftell	3	269
+10005f0c	FUN_10005f0c		AVIStreamRead | memset | mmioAdvance | mmioGetInfo | mmioRead	10	1024
+1000630c	FUN_1000630c		AVIStreamRead	4	564
+10006540	FUN_10006540		memset | operator_delete | operator_new	3	221
+10006622	FUN_10006622		operator_delete	1	89
+1000667b	FUN_1000667b		AVIStreamInfoA | AVIStreamRead | AVIStreamReadFormat	4	419
+1000681e	FUN_1000681e			0	18
+10006830	FUN_10006830		AVIStreamRead | memmove | mmioSetInfo	3	345
+10006e80	FUN_10006e80			0	36
+10006f20	AVIStreamRead		AVIStreamRead	0	6
+10006f26	AVIStreamReadFormat		AVIStreamReadFormat	0	6
+10006f2c	AVIStreamInfoA		AVIStreamInfoA	0	6
+10006f32	DirectSoundCreate		DirectSoundCreate	0	6
+10006f38	ftol		ftol	0	6
+10006f46	memset		memset	0	6
+10006f5e	operator_delete		operator_delete	0	6
+10006f64	operator_new		operator_new	0	6
+10006f6a	strcpy		strcpy	0	6
+10006f70	strlen		strlen	0	6
+10006f90	__CRT_INIT@12	crtdll.c	GetVersion | GlobalAlloc | GlobalFree | free_dbg | initterm | malloc_dbg	6	505
+10007190	entry		_DllMain@12 | __CRT_INIT@12	2	313
+100072d0	__onexit		GetVersion | Sleep | __dllonexit | _onexit	4	208
+100073a0	_atexit		__onexit	1	48
+100073d6	initterm		initterm	0	6
+100073f0	_DllMain@12		DisableThreadLibraryCalls	1	56
+10007428	__dllonexit		__dllonexit	0	6
