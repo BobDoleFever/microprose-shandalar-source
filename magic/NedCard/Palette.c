@@ -83,7 +83,7 @@ undefined4 Palette_AllocErrorDiffusionTable(int arg1,int arg2)
  */
 
 
-undefined4 Palette_DitherScanline(int arg_1,int arg_2,int arg_3,int arg_4,int arg_5,int arg_6)
+undefined4 Palette_DitherScanline(int player,int card_slot,int arg_3,int arg_4,int arg_5,int arg_6)
 
 {
   short *psVar1;
@@ -112,7 +112,7 @@ undefined4 Palette_DitherScanline(int arg_1,int arg_2,int arg_3,int arg_4,int ar
   int local_18 [6];
   
   local_4c = 1;
-  local_3c = &DAT_0052a238 + arg_1 * 0xc0;
+  local_3c = &DAT_0052a238 + player * 0xc0;
   if (DAT_0054b324 == 0) {
     iVar7 = -0x200;
     do {
@@ -131,7 +131,7 @@ LAB_0049510c:
     } while (iVar7 < 0x200);
     DAT_0054b324 = 1;
   }
-  if (arg_1 != DAT_0052afc0) {
+  if (player != DAT_0052afc0) {
     puVar16 = &DAT_00675ed0;
     do {
       if ((void *)*puVar16 != (void *)0x0) {
@@ -140,8 +140,8 @@ LAB_0049510c:
       }
       puVar16 = puVar16 + 1;
     } while (puVar16 < &DAT_00675fd4);
-    Palette_AllocErrorDiffusionTable(arg_1,0x675ed0);
-    DAT_0052afc0 = arg_1;
+    Palette_AllocErrorDiffusionTable(player,0x675ed0);
+    DAT_0052afc0 = player;
   }
   puVar16 = &DAT_0064b8c0;
   piVar10 = local_18 + 1;
@@ -157,7 +157,7 @@ LAB_0049510c:
     *piVar10 = (int)puVar17;
     piVar10 = piVar11;
   } while (piVar11 < &stack0x00000000);
-  iVar7 = *(int *)(&DAT_0052a1c0 + arg_1 * 4);
+  iVar7 = *(int *)(&DAT_0052a1c0 + player * 4);
   if (0 < arg_4) {
     local_38 = arg_4;
     local_18[0] = arg_6 + arg_5 * 3;
@@ -210,8 +210,8 @@ LAB_0049510c:
         }
         iVar13 = iVar13 + local_40;
       }
-      Palette_RotateDitherBuffers(local_18 + 1,*(int *)(&DAT_0052a1e8 + arg_1 * 4));
-      puVar16 = (undefined4 *)(local_18[*(int *)(&DAT_0052a1e8 + arg_1 * 4)] + -0x28);
+      Palette_RotateDitherBuffers(local_18 + 1,*(int *)(&DAT_0052a1e8 + player * 4));
+      puVar16 = (undefined4 *)(local_18[*(int *)(&DAT_0052a1e8 + player * 4)] + -0x28);
       for (iVar8 = (arg_5 + 10U & 0x1fffffff) * 2; iVar8 != 0; iVar8 = iVar8 + -1) {
         *puVar16 = 0;
         puVar16 = puVar16 + 1;
@@ -220,9 +220,9 @@ LAB_0049510c:
         *(undefined1 *)puVar16 = 0;
         puVar16 = (undefined4 *)((int)puVar16 + 1);
       }
-      if (arg_2 != 0) {
+      if (card_slot != 0) {
         local_4c = -local_4c;
-        local_3c = &DAT_0052a238 + ((uint)(local_4c == -1) * 9 + arg_1) * 0xc0;
+        local_3c = &DAT_0052a238 + ((uint)(local_4c == -1) * 9 + player) * 0xc0;
       }
       arg_3 = arg_3 + local_18[0];
       local_38 = local_38 + -1;
@@ -406,19 +406,19 @@ void Palette_Subsystem_00495829(void)
  */
 
 
-int Palette_Subsystem_004958b1(int arg_1)
+int Palette_Subsystem_004958b1(int player)
 
 {
   char local_7d8 [2000];
   int local_8;
   
   DAT_006fe410 = 1;
-  DAT_006a49e8 = arg_1;
-  if (arg_1 == -1) {
+  DAT_006a49e8 = player;
+  if (player == -1) {
     strcpy(&DAT_006ff310,s_Opponent_0052b208);
   }
   else {
-    strcpy(&DAT_006ff310,&DAT_00522600 + arg_1 * 0x44);
+    strcpy(&DAT_006ff310,&DAT_00522600 + player * 0x44);
   }
   local_8 = Palette_Subsystem_00495958(local_7d8);
   if (local_8 == -2) {
@@ -508,8 +508,8 @@ undefined4 Palette_Subsystem_00495958(char *str_1)
   }
   else {
     g_MainAppHwnd =
-         CreateWindowExA(0,s_MAGICGAME_MainClass_0052b29c,s_Magic_0052b294,local_60,1,0,DAT_00522458
-                         ,DAT_0052245c,_hwndScreen,(HMENU)0x0,g_AppHInstance,(LPVOID)0x0);
+         CreateWindowExA(0,s_MAGICGAME_MainClass_0052b29c,s_Magic_0052b294,local_60,1,0,g_DisplayScreenWidth
+                         ,g_DisplayScreenHeight,_hwndScreen,(HMENU)0x0,g_AppHInstance,(LPVOID)0x0);
   }
   if (g_MainAppHwnd == (HWND)0x0) {
     local_40 = 0;
@@ -567,7 +567,7 @@ undefined4 Palette_Subsystem_00495958(char *str_1)
  */
 
 
-void Palette_Subsystem_00495cde(MSG *arg_1)
+void Palette_Subsystem_00495cde(MSG *player)
 
 {
   int iVar1;
@@ -576,35 +576,35 @@ void Palette_Subsystem_00495cde(MSG *arg_1)
   uint uVar4;
   WPARAM local_8;
   
-  iVar1 = TranslateAcceleratorA(g_MainAppHwnd,DAT_006ff4b0,arg_1);
-  if ((iVar1 == 0) && (iVar1 = Palette_Subsystem_00495eec((int *)arg_1,0x4b), iVar1 == 0)) {
+  iVar1 = TranslateAcceleratorA(g_MainAppHwnd,DAT_006ff4b0,player);
+  if ((iVar1 == 0) && (iVar1 = Palette_Subsystem_00495eec((int *)player,0x4b), iVar1 == 0)) {
     if (((DAT_006b1578 == 0) ||
         (((BVar2 = IsWindowVisible(DAT_007006b0), BVar2 == 0 ||
-          (LVar3 = SendMessageA(DAT_007006b0,0x402,0,0), LVar3 == 0)) || (arg_1->message != 0x102)))
-        ) || (((arg_1->wParam != 0x20 && (arg_1->wParam != 0xd)) && (arg_1->wParam != 0x1b)))) {
-      iVar1 = FUN_004088d0((int *)arg_1);
+          (LVar3 = SendMessageA(DAT_007006b0,0x402,0,0), LVar3 == 0)) || (player->message != 0x102)))
+        ) || (((player->wParam != 0x20 && (player->wParam != 0xd)) && (player->wParam != 0x1b)))) {
+      iVar1 = FUN_004088d0((int *)player);
       if ((iVar1 == 0) &&
-         (((Palette_Util_00496332(arg_1->hwnd,arg_1->message,arg_1->wParam,arg_1->lParam),
-           arg_1->message != 0x201 && (arg_1->message != 0x204)) || (DAT_006b1578 != 0)))) {
-        TranslateMessage(arg_1);
-        DispatchMessageA(arg_1);
+         (((Palette_Util_00496332(player->hwnd,player->message,player->wParam,player->lParam),
+           player->message != 0x201 && (player->message != 0x204)) || (DAT_006b1578 != 0)))) {
+        TranslateMessage(player);
+        DispatchMessageA(player);
       }
     }
     else {
       uVar4 = SendMessageA(DAT_007006b0,0x402,0,0);
       local_8 = 0xfffffc18;
       if (((uVar4 & 2) == 0) || ((uVar4 & 1) == 0)) {
-        if ((arg_1->wParam == 0xd) || (arg_1->wParam == 0x20)) {
+        if ((player->wParam == 0xd) || (player->wParam == 0x20)) {
           local_8 = 0;
         }
-        else if ((arg_1->wParam == 0x1b) && ((uVar4 & 1) != 0)) {
+        else if ((player->wParam == 0x1b) && ((uVar4 & 1) != 0)) {
           local_8 = DAT_0068a710;
         }
       }
-      else if (arg_1->wParam == 0xd) {
+      else if (player->wParam == 0xd) {
         local_8 = DAT_00695ecc;
       }
-      else if (arg_1->wParam == 0x1b) {
+      else if (player->wParam == 0x1b) {
         local_8 = DAT_0068a710;
       }
       if (local_8 != 0xfffffc18) {
@@ -775,19 +775,19 @@ undefined4 Palette_Util_00496332(void)
  */
 
 
-undefined4 Palette_Subsystem_0049635c(HWND arg_1,uint y,HWND arg_3,undefined4 arg_4)
+undefined4 Palette_Subsystem_0049635c(HWND player,uint y,HWND arg_3,undefined4 arg_4)
 
 {
   undefined4 uVar1;
   
   if (y == 0x30f) {
-    uVar1 = FUN_004f5d1a(arg_1,0x30f,arg_3,arg_4);
+    uVar1 = GDI_RealizePaletteTree_Magic(player,0x30f,arg_3,arg_4);
   }
   else if ((y < 0x310) || (0x311 < y)) {
     uVar1 = 0;
   }
   else {
-    uVar1 = FUN_004f5d1a(arg_1,y,arg_3,arg_4);
+    uVar1 = GDI_RealizePaletteTree_Magic(player,y,arg_3,arg_4);
   }
   return uVar1;
 }
@@ -1108,7 +1108,7 @@ undefined4 Palette_Subsystem_00496fa4(int arg1,int arg2)
       Sprite_DrawScaled((int *)g_DisplaySurfaceBackBuffer,*(int *)(arg1 + 0x10),
                         *(int *)(arg1 + 0x14),*(int *)(arg1 + 0x18),*(int *)(arg1 + 0x1c),
                         iRam0064a0b8);
-      FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,*(uint *)(arg1 + 0x10),*(int *)(arg1 + 0x14),
+      Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,*(uint *)(arg1 + 0x10),*(int *)(arg1 + 0x14),
                    *(uint *)(arg1 + 0x18),*(DWORD *)(arg1 + 0x1c),(int *)g_DisplaySurfaceScreen,
                    *(int *)(arg1 + 0x10),*(int *)(arg1 + 0x14));
       if (*(int *)(arg1 + 0x28) != 0) {
@@ -1133,11 +1133,11 @@ undefined4 Palette_Subsystem_00496fa4(int arg1,int arg2)
  */
 
 
-undefined4 Palette_Subsystem_0049713c(int arg_1)
+undefined4 Palette_Subsystem_0049713c(int player)
 
 {
   Glue_Subsystem_004ebcdc(s_x_sound_button2_wav_0052b83c,0xf,100,100,0);
-  DAT_0054b34c = *(undefined4 *)(arg_1 + 0x2c);
+  DAT_0054b34c = *(undefined4 *)(player + 0x2c);
   return 0;
 }
 
@@ -1152,7 +1152,7 @@ undefined4 Palette_Subsystem_0049713c(int arg_1)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int arg_5)
+uint Palette_Color_0049716e(undefined4 player,uint card_slot,uint arg_3,int arg_4,int arg_5)
 
 {
   int iVar1;
@@ -1190,12 +1190,12 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
   int local_8;
   
   local_10 = 1;
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if (arg_4 != 0) {
-    FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_tradscrn_pic_0052b850,(short *)0x0);
-    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                       (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
-    FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+    FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_tradscrn_pic_0052b850,(short *)0x0);
+    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                       (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+    FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                  (int *)g_DisplaySurfaceScreen,0,0);
   }
   if (arg_5 != 0) {
@@ -1224,8 +1224,8 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
       arg_3 = 0x30;
     }
   }
-  if ((arg_2 != 0) && (arg_4 != 0)) {
-    _DAT_0052b730 = FUN_00473cc5((byte)arg_2);
+  if ((card_slot != 0) && (arg_4 != 0)) {
+    _DAT_0052b730 = Card_ColorMaskToColorIndex((byte)card_slot);
   }
   if (arg_4 != 0) {
     DAT_0052b738 = 0xffffffff;
@@ -1291,7 +1291,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
     uVar6 = Ai_Util_004c3bc4(0xe8);
     FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,uVar6,iVar5,uVar4,DVar3,piVar8,iVar2,iVar1);
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0x16,0x140,0x34);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0x16,0x140,0x34);
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
     iVar1 = Ai_Util_004c3ba3(0x6b);
     iVar2 = Ai_Util_004c3ba3(0x45);
@@ -1302,7 +1302,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
         if (_DAT_0052b730 == 0) {
           local_14c = 0x1b;
         }
-        else if (arg_2 == 0) {
+        else if (card_slot == 0) {
           local_14c = 0x62;
         }
         else {
@@ -1314,7 +1314,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
         if (local_12c == _DAT_0052b730) {
           local_150 = 0x1b;
         }
-        else if (arg_2 == 0) {
+        else if (card_slot == 0) {
           local_150 = 0x62;
         }
         else {
@@ -1374,9 +1374,9 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
       local_13c = 6;
     }
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 1;
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xff,0xfe,0x1ce);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xff,0xfe,0x1ce);
     for (local_12c = 0; (int)local_12c < 5; local_12c = local_12c + 1) {
-      FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xff,local_12c * 0x23 + 0x131,0x1ce);
+      Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xff,local_12c * 0x23 + 0x131,0x1ce);
     }
     iVar1 = Ai_Util_004c3ba3(0x11e);
     local_20 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
@@ -1390,7 +1390,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
     local_8 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
     for (local_12c = 0; (int)local_12c < g_MasterCardCount + -0x29; local_12c = local_12c + 1) {
       if (((_DAT_0052b730 != 0) || (local_13c != 6)) ||
-         (iVar1 = FUN_0040a305((int)(char)(&DAT_0051aed4)[local_12c * 0x34],1,3), iVar1 == local_140
+         (iVar1 = Math_Clamp((int)(char)(&DAT_0051aed4)[local_12c * 0x34],1,3), iVar1 == local_140
          )) {
         local_14 = (uint)(char)(&DAT_0051aebe)[local_12c * 0x34];
         if (local_14 == 0) {
@@ -1401,7 +1401,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
                (uint)(byte)(&g_MasterCardColorTable)[local_12c * 0x34]) != 0)) &&
              ((((&DAT_0051aed1)[local_12c * 0x34] & 9) == 0 || (DAT_0067b9a4 != 0)))) &&
             ((iVar1 = FUN_00485005(local_12c), iVar1 != 0 &&
-             ((arg_2 == 0 || ((local_14 & arg_2) != 0)))))) &&
+             ((card_slot == 0 || ((local_14 & card_slot) != 0)))))) &&
            (((arg_3 == 0 || ((arg_3 & (byte)(&g_MasterCardColorTable)[local_12c * 0x34]) != 0)) &&
             (((&g_MasterCardColorTable)[local_12c * 0x34] != 'B' || (local_13c != 6)))))) {
           local_144 = 0;
@@ -1461,7 +1461,7 @@ uint Palette_Color_0049716e(undefined4 arg_1,uint arg_2,uint arg_3,int arg_4,int
     if (0 < DAT_0054b34c) {
       FUN_0041f391();
       Mem_AllocOrFree_0050fc50(DAT_0064a0b0);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Palette_Subsystem_00496eaf();
       return 0xffffffff;
     }
@@ -1469,7 +1469,7 @@ LAB_00497f4a:
     iVar5 = DAT_007039c4;
     iVar2 = DAT_0067bda8;
     iVar1 = DAT_0067bda4;
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Pic_Subsystem_0044b8da();
     iVar7 = Ai_Util_004c3ba3(0x66);
     if ((((iVar7 / 2 < iVar2) && (iVar7 = Ai_Util_004c3ba3(0x146), iVar2 < iVar7 / 2)) &&
@@ -1496,7 +1496,7 @@ LAB_00497f4a:
       iVar2 = Ai_Util_004c3bc4(0xac);
       if (iVar1 < iVar2) {
         if (((-1 < (int)uVar4) && ((int)uVar4 < 6)) &&
-           ((arg_2 == 0 || (local_138 = (byte)uVar4, 1 << (local_138 & 0x1f) == arg_2)))) {
+           ((card_slot == 0 || (local_138 = (byte)uVar4, 1 << (local_138 & 0x1f) == card_slot)))) {
           DAT_0052b738 = 0xffffffff;
           local_10 = 1;
           _DAT_0052b730 = uVar4;
@@ -1514,7 +1514,7 @@ LAB_00497f4a:
     else {
       iVar5 = Ai_Util_004c3ba3(0x96);
       if ((iVar5 / 2 < iVar2) &&
-         (iVar1 = (iVar2 - local_c) / local_8 + (iVar1 / ((int)DAT_00522458 / 2)) * local_20,
+         (iVar1 = (iVar2 - local_c) / local_8 + (iVar1 / ((int)g_DisplayScreenWidth / 2)) * local_20,
          iVar1 < local_24)) {
         DAT_0052b738 = auStack_124[iVar1];
       }
@@ -1531,7 +1531,7 @@ LAB_00497f4a:
  */
 
 
-void Palette_Subsystem_004981b5(int arg_1)
+void Palette_Subsystem_004981b5(int player)
 
 {
   byte arg_1_00;
@@ -1591,7 +1591,7 @@ void Palette_Subsystem_004981b5(int arg_1)
           }
         }
       }
-      local_2c = FUN_00473cc5(arg_1_00);
+      local_2c = Card_ColorMaskToColorIndex(arg_1_00);
       switch((&g_MasterCardColorTable)[local_18 * 0x34]) {
       case 1:
         aiStack_10c[local_2c] = aiStack_10c[local_2c] + 1;
@@ -1627,7 +1627,7 @@ void Palette_Subsystem_004981b5(int arg_1)
       }
     }
   }
-  if (arg_1 != 0) {
+  if (player != 0) {
     FUN_0050d560(0,0);
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
     local_1c = 0x10;
@@ -1643,9 +1643,9 @@ void Palette_Subsystem_004981b5(int arg_1)
     FUN_0040c2e9(s_Green_0052b8ac,0xf0,local_20,0xff);
     FUN_0040c2e9(&DAT_0052b8b4,0x110,local_20,0xff);
     FUN_0040c2e9(s_White_0052b8b8,0x130,local_20,0xff);
-    Surface_DrawLine((int *)g_DisplaySurfaceScreen,0,local_20 * 2 + 0x18,DAT_00522458 + -1,
+    Surface_DrawLine((int *)g_DisplaySurfaceScreen,0,local_20 * 2 + 0x18,g_DisplayScreenWidth + -1,
                      local_20 * 2 + 0x18,0xf4);
-    Surface_DrawLine((int *)g_DisplaySurfaceScreen,0x130,0,0x130,DAT_0052245c + -1,0xf4);
+    Surface_DrawLine((int *)g_DisplaySurfaceScreen,0x130,0,0x130,g_DisplayScreenHeight + -1,0xf4);
     local_20 = 0x20;
     FUN_0040c381(&DAT_0052b8c0,local_1c,0x20,0xff);
     Palette_Subsystem_004989a9(local_f0[0],0x80,local_20,0xff);
@@ -1755,7 +1755,7 @@ bool Palette_Subsystem_00498a18(void)
   local_14 = 5;
   do {
     local_50 = 0;
-    uVar1 = FUN_0040a1d2(10);
+    uVar1 = Math_RandomRange(10);
     switch(uVar1) {
     case 0:
       local_44 = 0;
@@ -1790,7 +1790,7 @@ bool Palette_Subsystem_00498a18(void)
 switchD_00498acb_default:
     do {
       do {
-        iVar2 = FUN_0040a1d2(g_MasterCardCount + -0x29);
+        iVar2 = Math_RandomRange(g_MasterCardCount + -0x29);
         if (((&g_MasterCardColorTable)[iVar2 * 0x34] & 2) == 0) {
           if (local_44 != 2) goto switchD_00498acb_default;
         }
@@ -1835,7 +1835,7 @@ switchD_00498acb_default:
       }
       local_50 = local_50 + 1;
       if (bVar5) {
-        iVar3 = FUN_0040a1d2(4);
+        iVar3 = Math_RandomRange(4);
         if (DAT_0067f380 <= iVar3) {
           local_38 = 0;
           goto LAB_00498ff5;
@@ -1876,7 +1876,7 @@ switchD_00498acb_default:
         else {
           strcat(&g_OverworldWorldState,s_Swamp_0051aea9 + iVar2 * 0x34);
           strcat(&g_OverworldWorldState,s___0_1_2_3_4_5_6_7_8__0052ba50);
-          local_c = FUN_0040a305(local_10,0,8);
+          local_c = Math_Clamp(local_10,0,8);
           local_3c = FUN_00489710(&g_OverworldWorldState,0x50,100);
         }
         Glue_Subsystem_004eadb7(1);
@@ -1891,7 +1891,7 @@ switchD_00498acb_default:
   } while( true );
 LAB_00498ff5:
   if (local_14 <= local_38) {
-    local_c = FUN_0040a1d2(local_14);
+    local_c = Math_RandomRange(local_14);
     aiStack_34[local_c] = iVar2;
     strcpy(&g_OverworldWorldState,s_Which_of_these_spells_0052ba80);
     switch(local_44) {
@@ -1910,7 +1910,7 @@ LAB_00498ff5:
       pcVar4 = _itoa((int)(char)(&DAT_0051aebf)[iVar2 * 0x34],&DAT_0054b350,10);
       strcat(&g_OverworldWorldState,pcVar4);
       strcat(&g_OverworldWorldState,&DAT_0052bac8);
-      iVar3 = FUN_00473cc5((&DAT_0051aebe)[iVar2 * 0x34]);
+      iVar3 = Card_ColorMaskToColorIndex((&DAT_0051aebe)[iVar2 * 0x34]);
       pcVar4 = (char *)Mem_AllocOrFree_00473d7e(iVar3);
       strcat(&g_OverworldWorldState,pcVar4);
       strcat(&g_OverworldWorldState,s_and_0052bacc);
@@ -1969,7 +1969,7 @@ LAB_0049971a:
 LAB_00499001:
   do {
     do {
-      local_8 = FUN_0040a1d2(g_MasterCardCount + -0x29);
+      local_8 = Math_RandomRange(g_MasterCardCount + -0x29);
       if (((&g_MasterCardColorTable)[local_8 * 0x34] & 2) == 0) {
         if (local_44 != 2) goto LAB_00499001;
       }
@@ -2162,7 +2162,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint uMsg,int *wParam,int *lParam)
       }
       else {
         bVar1 = Ai_Subsystem_004b6356(local_10,local_18);
-        local_298 = FUN_00473cc5(bVar1);
+        local_298 = Card_ColorMaskToColorIndex(bVar1);
       }
       if (local_14 != local_284) {
         InvalidateRect(hwnd,(RECT *)0x0,0);
@@ -2175,7 +2175,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint uMsg,int *wParam,int *lParam)
       GetClientRect(hwnd,&local_294);
       local_2dc = BeginPaint(hwnd,&local_2d8);
       if (local_2dc != (HDC)0x0) {
-        FUN_004f3955(local_2dc);
+        GDI_RealizeAndFlushPalette_Magic(local_2dc);
         if (DAT_0068a674 != 0) {
           pHVar7 = GetStockObject(0);
           FillRect(local_2dc,&local_294,pHVar7);
@@ -2462,7 +2462,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint uMsg,int *wParam,int *lParam)
       return 0;
     }
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      LVar13 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar13 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar13;
     }
   }
@@ -2498,7 +2498,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint uMsg,int *wParam,int *lParam)
       }
       else {
         bVar1 = Ai_Subsystem_004b6356(local_10,local_18);
-        local_24 = FUN_00473cc5(bVar1);
+        local_24 = Card_ColorMaskToColorIndex(bVar1);
       }
       if (local_20 != local_14) {
         InvalidateRect(hwnd,(RECT *)0x0,0);
@@ -2757,123 +2757,123 @@ void Palette_Subsystem_0049b8f5(void)
   strcat(local_110,s__Tt0300m__TTF_0052be74);
   RemoveFontResourceA(local_110);
   if (DAT_0054b9a0 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b9a0);
+    GDI_DestroyDIBSection_Magic(DAT_0054b9a0);
     DAT_0054b9a0 = (HANDLE)0x0;
   }
   if (DAT_0054b734 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b734);
+    GDI_DestroyDIBSection_Magic(DAT_0054b734);
     DAT_0054b734 = (HANDLE)0x0;
   }
   if (DAT_0054b9ac != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b9ac);
+    GDI_DestroyDIBSection_Magic(DAT_0054b9ac);
     DAT_0054b9ac = (HANDLE)0x0;
   }
   if (DAT_0054b580 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b580);
+    GDI_DestroyDIBSection_Magic(DAT_0054b580);
     DAT_0054b580 = (HANDLE)0x0;
   }
   if (DAT_0054b960 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b960);
+    GDI_DestroyDIBSection_Magic(DAT_0054b960);
     DAT_0054b960 = (HANDLE)0x0;
   }
   if (DAT_0054b59c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b59c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b59c);
     DAT_0054b59c = (HANDLE)0x0;
   }
   if (DAT_0054b740 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b740);
+    GDI_DestroyDIBSection_Magic(DAT_0054b740);
     DAT_0054b740 = (HANDLE)0x0;
   }
   if (DAT_0054b3cc != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3cc);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3cc);
     DAT_0054b3cc = (HANDLE)0x0;
   }
   if (DAT_0054b598 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b598);
+    GDI_DestroyDIBSection_Magic(DAT_0054b598);
     DAT_0054b598 = (HANDLE)0x0;
   }
   if (DAT_0054b98c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b98c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b98c);
     DAT_0054b98c = (HANDLE)0x0;
   }
   if (DAT_0054b3d8 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3d8);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3d8);
     DAT_0054b3d8 = (HANDLE)0x0;
   }
   if (DAT_0054b920 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b920);
+    GDI_DestroyDIBSection_Magic(DAT_0054b920);
     DAT_0054b920 = (HANDLE)0x0;
   }
   if (DAT_0054b384 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b384);
+    GDI_DestroyDIBSection_Magic(DAT_0054b384);
     DAT_0054b384 = (HANDLE)0x0;
   }
   if (DAT_0054b3c4 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3c4);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3c4);
     DAT_0054b3c4 = (HANDLE)0x0;
   }
   if (DAT_0054b984 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b984);
+    GDI_DestroyDIBSection_Magic(DAT_0054b984);
     DAT_0054b984 = (HANDLE)0x0;
   }
   if (DAT_0054b99c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b99c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b99c);
     DAT_0054b99c = (HANDLE)0x0;
   }
   if (DAT_0054b990 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b990);
+    GDI_DestroyDIBSection_Magic(DAT_0054b990);
     DAT_0054b990 = (HANDLE)0x0;
   }
   if (DAT_0054b594 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b594);
+    GDI_DestroyDIBSection_Magic(DAT_0054b594);
     DAT_0054b594 = (HANDLE)0x0;
   }
   if (DAT_0054b96c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b96c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b96c);
     DAT_0054b96c = (HANDLE)0x0;
   }
   if (DAT_0054b3c8 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3c8);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3c8);
     DAT_0054b3c8 = (HANDLE)0x0;
   }
   if (DAT_0054b590 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b590);
+    GDI_DestroyDIBSection_Magic(DAT_0054b590);
     DAT_0054b590 = (HANDLE)0x0;
   }
   if (DAT_0054b748 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b748);
+    GDI_DestroyDIBSection_Magic(DAT_0054b748);
     DAT_0054b748 = (HANDLE)0x0;
   }
   if (DAT_0054b584 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b584);
+    GDI_DestroyDIBSection_Magic(DAT_0054b584);
     DAT_0054b584 = (HANDLE)0x0;
   }
   if (DAT_0054b8f4 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b8f4);
+    GDI_DestroyDIBSection_Magic(DAT_0054b8f4);
     DAT_0054b8f4 = (HANDLE)0x0;
   }
   if (DAT_0054b924 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b924);
+    GDI_DestroyDIBSection_Magic(DAT_0054b924);
     DAT_0054b924 = (HANDLE)0x0;
   }
   if (DAT_0054b388 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b388);
+    GDI_DestroyDIBSection_Magic(DAT_0054b388);
     DAT_0054b388 = (HANDLE)0x0;
   }
   if (DAT_0054b998 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b998);
+    GDI_DestroyDIBSection_Magic(DAT_0054b998);
     DAT_0054b998 = (HANDLE)0x0;
   }
   if (DAT_0054b378 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b378);
+    GDI_DestroyDIBSection_Magic(DAT_0054b378);
     DAT_0054b378 = (HANDLE)0x0;
   }
   if (DAT_0054b974 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b974);
+    GDI_DestroyDIBSection_Magic(DAT_0054b974);
     DAT_0054b974 = (HANDLE)0x0;
   }
   if (DAT_0054b968 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b968);
+    GDI_DestroyDIBSection_Magic(DAT_0054b968);
     DAT_0054b968 = (HANDLE)0x0;
   }
   if (DAT_0054b8e4 != (HGDIOBJ)0x0) {
@@ -2954,75 +2954,75 @@ void Palette_Subsystem_0049c107(void)
 
 {
   if (DAT_0054b384 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b384);
+    GDI_DestroyDIBSection_Magic(DAT_0054b384);
     DAT_0054b384 = (HANDLE)0x0;
   }
   if (DAT_0054b3c4 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3c4);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3c4);
     DAT_0054b3c4 = (HANDLE)0x0;
   }
   if (DAT_0054b984 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b984);
+    GDI_DestroyDIBSection_Magic(DAT_0054b984);
     DAT_0054b984 = (HANDLE)0x0;
   }
   if (DAT_0054b99c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b99c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b99c);
     DAT_0054b99c = (HANDLE)0x0;
   }
   if (DAT_0054b990 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b990);
+    GDI_DestroyDIBSection_Magic(DAT_0054b990);
     DAT_0054b990 = (HANDLE)0x0;
   }
   if (DAT_0054b594 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b594);
+    GDI_DestroyDIBSection_Magic(DAT_0054b594);
     DAT_0054b594 = (HANDLE)0x0;
   }
   if (DAT_0054b96c != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b96c);
+    GDI_DestroyDIBSection_Magic(DAT_0054b96c);
     DAT_0054b96c = (HANDLE)0x0;
   }
   if (DAT_0054b3c8 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b3c8);
+    GDI_DestroyDIBSection_Magic(DAT_0054b3c8);
     DAT_0054b3c8 = (HANDLE)0x0;
   }
   if (DAT_0054b590 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b590);
+    GDI_DestroyDIBSection_Magic(DAT_0054b590);
     DAT_0054b590 = (HANDLE)0x0;
   }
   if (DAT_0054b748 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b748);
+    GDI_DestroyDIBSection_Magic(DAT_0054b748);
     DAT_0054b748 = (HANDLE)0x0;
   }
   if (DAT_0054b584 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b584);
+    GDI_DestroyDIBSection_Magic(DAT_0054b584);
     DAT_0054b584 = (HANDLE)0x0;
   }
   if (DAT_0054b8f4 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b8f4);
+    GDI_DestroyDIBSection_Magic(DAT_0054b8f4);
     DAT_0054b8f4 = (HANDLE)0x0;
   }
   if (DAT_0054b924 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b924);
+    GDI_DestroyDIBSection_Magic(DAT_0054b924);
     DAT_0054b924 = (HANDLE)0x0;
   }
   if (DAT_0054b388 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b388);
+    GDI_DestroyDIBSection_Magic(DAT_0054b388);
     DAT_0054b388 = (HANDLE)0x0;
   }
   if (DAT_0054b998 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b998);
+    GDI_DestroyDIBSection_Magic(DAT_0054b998);
     DAT_0054b998 = (HANDLE)0x0;
   }
   if (DAT_0054b378 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b378);
+    GDI_DestroyDIBSection_Magic(DAT_0054b378);
     DAT_0054b378 = (HANDLE)0x0;
   }
   if (DAT_0054b974 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b974);
+    GDI_DestroyDIBSection_Magic(DAT_0054b974);
     DAT_0054b974 = (HANDLE)0x0;
   }
   if (DAT_0054b968 != (HANDLE)0x0) {
-    FUN_004f4548(DAT_0054b968);
+    GDI_DestroyDIBSection_Magic(DAT_0054b968);
     DAT_0054b968 = (HANDLE)0x0;
   }
   return;
@@ -3037,7 +3037,7 @@ void Palette_Subsystem_0049c107(void)
  */
 
 
-undefined4 Palette_Subsystem_0049c3ac(int *arg_1)
+undefined4 Palette_Subsystem_0049c3ac(int *player)
 
 {
   undefined4 uVar1;
@@ -3045,62 +3045,62 @@ undefined4 Palette_Subsystem_0049c3ac(int *arg_1)
   char local_170 [264];
   char local_68 [100];
   
-  if (arg_1 == (int *)0x0) {
+  if (player == (int *)0x0) {
     uVar1 = 0;
   }
-  else if (*arg_1 == 0) {
-    if (arg_1 == &DAT_0054b384) {
+  else if (*player == 0) {
+    if (player == &DAT_0054b384) {
       strcpy(local_68,s_CARDBK_Green_0052be84);
     }
-    else if (arg_1 == &DAT_0054b3c4) {
+    else if (player == &DAT_0054b3c4) {
       strcpy(local_68,s_CARDBK_White_0052be94);
     }
-    else if (arg_1 == &DAT_0054b984) {
+    else if (player == &DAT_0054b984) {
       strcpy(local_68,s_CARDBK_Blue_0052bea4);
     }
-    else if (arg_1 == &DAT_0054b99c) {
+    else if (player == &DAT_0054b99c) {
       strcpy(local_68,s_CARDBK_Black_0052beb0);
     }
-    else if (arg_1 == &DAT_0054b990) {
+    else if (player == &DAT_0054b990) {
       strcpy(local_68,s_CARDBK_Red_0052bec0);
     }
-    else if (arg_1 == &DAT_0054b594) {
+    else if (player == &DAT_0054b594) {
       strcpy(local_68,s_CARDBK_Gold_0052becc);
     }
-    else if (arg_1 == &DAT_0054b96c) {
+    else if (player == &DAT_0054b96c) {
       strcpy(local_68,s_CARDBK_Artifact_0052bed8);
     }
-    else if (arg_1 == &DAT_0054b3c8) {
+    else if (player == &DAT_0054b3c8) {
       strcpy(local_68,s_CARDBK_GreenLand_0052bee8);
     }
-    else if (arg_1 == &DAT_0054b590) {
+    else if (player == &DAT_0054b590) {
       strcpy(local_68,s_CARDBK_WhiteLand_0052befc);
     }
-    else if (arg_1 == &DAT_0054b748) {
+    else if (player == &DAT_0054b748) {
       strcpy(local_68,s_CARDBK_BlueLand_0052bf10);
     }
-    else if (arg_1 == &DAT_0054b584) {
+    else if (player == &DAT_0054b584) {
       strcpy(local_68,s_CARDBK_BlackLand_0052bf20);
     }
-    else if (arg_1 == &DAT_0054b8f4) {
+    else if (player == &DAT_0054b8f4) {
       strcpy(local_68,s_CARDBK_RedLand_0052bf34);
     }
-    else if (arg_1 == &DAT_0054b924) {
+    else if (player == &DAT_0054b924) {
       strcpy(local_68,s_CARDBK_DarklandsLand_0052bf44);
     }
-    else if (arg_1 == &DAT_0054b388) {
+    else if (player == &DAT_0054b388) {
       strcpy(local_68,s_CARDBK_FallenEmpiresLand_0052bf5c);
     }
-    else if (arg_1 == &DAT_0054b998) {
+    else if (player == &DAT_0054b998) {
       strcpy(local_68,s_CARDBK_AntiquitiesLand_0052bf78);
     }
-    else if (arg_1 == &DAT_0054b378) {
+    else if (player == &DAT_0054b378) {
       strcpy(local_68,s_CARDBK_LegendsLand_0052bf90);
     }
-    else if (arg_1 == &DAT_0054b974) {
+    else if (player == &DAT_0054b974) {
       strcpy(local_68,s_CARDBK_ArabianNightsLand_0052bfa4);
     }
-    else if (arg_1 == &DAT_0054b968) {
+    else if (player == &DAT_0054b968) {
       strcpy(local_68,s_CARDBK_Special_0052bfc0);
     }
     else {
@@ -3109,9 +3109,9 @@ undefined4 Palette_Subsystem_0049c3ac(int *arg_1)
     if (local_68[0] != '\0') {
       sprintf(local_170,s__s__s_pic_0052bfd4,&DAT_006808d0,local_68);
       iVar2 = Pic_Load_00423833(local_170);
-      *arg_1 = iVar2;
+      *player = iVar2;
     }
-    if (*arg_1 == 0) {
+    if (*player == 0) {
       uVar1 = 0;
     }
     else {
@@ -3175,7 +3175,7 @@ void Palette_Subsystem_0049c6cb(HDC hdc,RECT *arg2)
 
 
 undefined4
-Palette_Subsystem_0049c7c7(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,uint arg_5,int arg_6)
+Palette_Subsystem_0049c7c7(HDC hdc,int *card_slot,WPARAM *arg_3,int arg_4,uint arg_5,int arg_6)
 
 {
   HGDIOBJ pvVar1;
@@ -3221,7 +3221,7 @@ Palette_Subsystem_0049c7c7(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,uint arg_5
   tagRECT local_24;
   tagRECT local_14;
   
-  if (((hdc == (HDC)0x0) || (arg_2 == (int *)0x0)) || (arg_3 == (WPARAM *)0x0)) {
+  if (((hdc == (HDC)0x0) || (card_slot == (int *)0x0)) || (arg_3 == (WPARAM *)0x0)) {
     local_6c = 0;
   }
   else {
@@ -3230,9 +3230,9 @@ Palette_Subsystem_0049c7c7(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,uint arg_5
     local_2c = 300;
     SetMapMode(hdc,7);
     SetWindowExtEx(hdc,local_c4,local_2c,(LPSIZE)0x0);
-    SetViewportExtEx(hdc,arg_2[2] - *arg_2,arg_2[3] - arg_2[1],(LPSIZE)0x0);
+    SetViewportExtEx(hdc,card_slot[2] - *card_slot,card_slot[3] - card_slot[1],(LPSIZE)0x0);
     SetWindowOrgEx(hdc,local_c4 / 2,local_2c / 2,(LPPOINT)0x0);
-    SetViewportOrgEx(hdc,*arg_2 + (arg_2[2] - *arg_2) / 2,arg_2[1] + (arg_2[3] - arg_2[1]) / 2,
+    SetViewportOrgEx(hdc,*card_slot + (card_slot[2] - *card_slot) / 2,card_slot[1] + (card_slot[3] - card_slot[1]) / 2,
                      (LPPOINT)0x0);
     local_44 = 6;
     local_28 = 6;
@@ -3542,10 +3542,10 @@ Palette_Subsystem_0049c7c7(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,uint arg_5
 
 
 undefined4
-Palette_Subsystem_0049d843(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5,uint arg_6,int arg_7)
+Palette_Subsystem_0049d843(HDC hdc,int *card_slot,int arg_3,int arg_4,int arg_5,uint arg_6,int arg_7)
 
 {
-  byte arg_1;
+  byte player;
   undefined4 uVar1;
   char local_2a0 [500];
   int local_ac;
@@ -3556,7 +3556,7 @@ Palette_Subsystem_0049d843(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5,uint
   int local_c;
   int local_8;
   
-  if (((hdc == (HDC)0x0) || (arg_2 == (int *)0x0)) || (arg_3 == 0)) {
+  if (((hdc == (HDC)0x0) || (card_slot == (int *)0x0)) || (arg_3 == 0)) {
     uVar1 = 0;
   }
   else {
@@ -3567,8 +3567,8 @@ Palette_Subsystem_0049d843(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5,uint
     else {
       memcpy(local_a4,&DAT_006b3070 + local_8 * 0x98,0x98);
       local_ac = local_94;
-      arg_1 = Ai_Subsystem_004b6356(arg_4,arg_5);
-      local_a8 = FUN_00473cc5(arg_1);
+      player = Ai_Subsystem_004b6356(arg_4,arg_5);
+      local_a8 = Card_ColorMaskToColorIndex(player);
       if (((((local_ac == 1) || (local_ac == 8)) ||
            ((local_ac == 7 || ((local_ac == 5 || (local_ac == 2)))))) ||
           ((local_ac == 6 && (local_a8 != 0)))) || ((local_ac == 3 && (local_a8 != 0)))) {
@@ -3593,7 +3593,7 @@ Palette_Subsystem_0049d843(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5,uint
       Ai_Subsystem_004b69ba(arg_4,arg_5,local_2a0);
       local_30 = local_2a0;
       local_c = FUN_00478aa4(local_8,arg_4,arg_5);
-      uVar1 = Palette_Subsystem_0049c7c7(hdc,arg_2,local_a4,local_c,arg_6,arg_7);
+      uVar1 = Palette_Subsystem_0049c7c7(hdc,card_slot,local_a4,local_c,arg_6,arg_7);
     }
   }
   return uVar1;
@@ -3608,7 +3608,7 @@ Palette_Subsystem_0049d843(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5,uint
  */
 
 
-void Palette_Subsystem_0049da83(int arg_1,int arg_2,uint arg_3)
+void Palette_Subsystem_0049da83(int player,int card_slot,uint arg_3)
 
 {
   undefined1 local_44 [4];
@@ -3622,7 +3622,7 @@ void Palette_Subsystem_0049da83(int arg_1,int arg_2,uint arg_3)
   int local_c;
   int local_8;
   
-  if ((((((arg_1 != 0) && (arg_2 != 0)) && ((arg_3 & 0x800) == 0)) &&
+  if ((((((player != 0) && (card_slot != 0)) && ((arg_3 & 0x800) == 0)) &&
        ((arg_3 != 0xffffffff && ((arg_3 & 0x10) == 0)))) &&
       (((arg_3 & 0x80) == 0 && (DAT_0054b580 != (HANDLE)0x0)))) &&
      (((arg_3 & 0x2e) != 0 || ((arg_3 & 0x100) != 0)))) {
@@ -3653,11 +3653,11 @@ void Palette_Subsystem_0049da83(int arg_1,int arg_2,uint arg_3)
       local_20 = 0;
     }
     local_c = local_24 + local_20;
-    local_8 = *(int *)(arg_2 + 0xc) - *(int *)(arg_2 + 4);
+    local_8 = *(int *)(card_slot + 0xc) - *(int *)(card_slot + 4);
     local_28 = (local_8 * local_24) / local_3c;
-    SetRect(&local_1c,*(int *)(arg_2 + 8) - local_28,*(int *)(arg_2 + 4),*(int *)(arg_2 + 8),
-            *(int *)(arg_2 + 4) + local_8);
-    FUN_004f3eaa((HDC)arg_1,&local_1c.left,DAT_0054b580,local_24,local_2c,local_20,0,local_c,0);
+    SetRect(&local_1c,*(int *)(card_slot + 8) - local_28,*(int *)(card_slot + 4),*(int *)(card_slot + 8),
+            *(int *)(card_slot + 4) + local_8);
+    FUN_004f3eaa((HDC)player,&local_1c.left,DAT_0054b580,local_24,local_2c,local_20,0,local_c,0);
   }
   return;
 }
@@ -3671,7 +3671,7 @@ void Palette_Subsystem_0049da83(int arg_1,int arg_2,uint arg_3)
  */
 
 
-void Palette_Subsystem_0049dc11(HDC hdc,int arg_2,char *str_3)
+void Palette_Subsystem_0049dc11(HDC hdc,int card_slot,char *str_3)
 
 {
   UINT align;
@@ -3683,7 +3683,7 @@ void Palette_Subsystem_0049dc11(HDC hdc,int arg_2,char *str_3)
   int local_10;
   int local_c;
   
-  if (((hdc != (HDC)0x0) && (arg_2 != 0)) && (str_3 != (char *)0x0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != 0)) && (str_3 != (char *)0x0)) {
     local_20 = (int)*str_3;
     local_1c = (int)str_3[1];
     local_c = (int)str_3[8];
@@ -3693,8 +3693,8 @@ void Palette_Subsystem_0049dc11(HDC hdc,int arg_2,char *str_3)
     Palette_Subsystem_0049ddaa(&local_20,local_34);
     align = SetTextAlign(hdc,2);
     Palette_Subsystem_0049dfb1
-              (hdc,*(int *)(arg_2 + 8),*(int *)(arg_2 + 4),
-               *(int *)(arg_2 + 0xc) - *(int *)(arg_2 + 4),local_34);
+              (hdc,*(int *)(card_slot + 8),*(int *)(card_slot + 4),
+               *(int *)(card_slot + 0xc) - *(int *)(card_slot + 4),local_34);
     SetTextAlign(hdc,align);
   }
   return;
@@ -3857,7 +3857,7 @@ int Palette_Subsystem_0049ddaa(int *arg1,char *str_2)
  */
 
 
-uint Palette_Subsystem_0049dfb1(HDC hdc,int arg_2,int arg_3,LONG arg_4,char *str_5)
+uint Palette_Subsystem_0049dfb1(HDC hdc,int card_slot,int arg_3,LONG arg_4,char *str_5)
 
 {
   uint uVar1;
@@ -3935,22 +3935,22 @@ uint Palette_Subsystem_0049dfb1(HDC hdc,int arg_2,int arg_3,LONG arg_4,char *str
     }
     if (((byte)local_50 & 6) == 6) {
       iVar4 = Palette_Subsystem_0049dcd5(hdc,str_5);
-      arg_2 = arg_2 - iVar4 / 2;
+      card_slot = card_slot - iVar4 / 2;
     }
     else if ((local_50 & 2) != 0) {
       iVar4 = Palette_Subsystem_0049dcd5(hdc,str_5);
-      arg_2 = arg_2 - iVar4;
+      card_slot = card_slot - iVar4;
     }
     SetTextAlign(hdc,0);
     for (; *str_5 != '\0'; str_5 = str_5 + 1) {
       if ((*str_5 < -0x12) || ((uint)(int)*str_5 < 0x80000000)) {
         GetCharABCWidthsA(hdc,(int)*str_5,(int)*str_5,&local_10);
-        TextOutA(hdc,arg_2,arg_3,str_5,1);
-        arg_2 = local_10.abcC + local_10.abcB + arg_2 + local_10.abcA;
+        TextOutA(hdc,card_slot,arg_3,str_5,1);
+        card_slot = local_10.abcC + local_10.abcB + card_slot + local_10.abcA;
       }
       else {
-        Palette_Subsystem_0049e291((int)hdc,*str_5,arg_2,arg_3,local_98,local_54);
-        arg_2 = arg_2 + local_98;
+        Palette_Subsystem_0049e291((int)hdc,*str_5,card_slot,arg_3,local_98,local_54);
+        card_slot = card_slot + local_98;
       }
     }
     SetTextAlign(hdc,local_50);
@@ -3974,7 +3974,7 @@ uint Palette_Subsystem_0049dfb1(HDC hdc,int arg_2,int arg_3,LONG arg_4,char *str
  */
 
 
-void Palette_Subsystem_0049e291(int arg_1,char arg_2,int arg_3,int arg_4,int arg_5,int arg_6)
+void Palette_Subsystem_0049e291(int player,char card_slot,int arg_3,int arg_4,int arg_5,int arg_6)
 
 {
   undefined1 local_3c [4];
@@ -3986,67 +3986,67 @@ void Palette_Subsystem_0049e291(int arg_1,char arg_2,int arg_3,int arg_4,int arg
   tagRECT local_18;
   int local_8;
   
-  if (((arg_1 != 0) && (-0x13 < arg_2)) && (arg_2 < '\0')) {
+  if (((player != 0) && (-0x13 < card_slot)) && (card_slot < '\0')) {
     GetObjectA(DAT_0054b9ac,0x18,local_3c);
     local_20 = local_34;
     local_24 = local_34;
     local_8 = local_38 - local_34;
-    if (arg_2 == -0x10) {
+    if (card_slot == -0x10) {
       local_1c = 0;
     }
-    else if (arg_2 == -0xf) {
+    else if (card_slot == -0xf) {
       local_1c = local_34;
     }
-    else if (arg_2 == -0xe) {
+    else if (card_slot == -0xe) {
       local_1c = local_34 * 2;
     }
-    else if (arg_2 == -0xd) {
+    else if (card_slot == -0xd) {
       local_1c = local_34 * 3;
     }
-    else if (arg_2 == -0xc) {
+    else if (card_slot == -0xc) {
       local_1c = local_34 << 2;
     }
-    else if (arg_2 == -0xb) {
+    else if (card_slot == -0xb) {
       local_1c = local_34 * 5;
     }
-    else if (arg_2 == -10) {
+    else if (card_slot == -10) {
       local_1c = local_34 * 6;
     }
-    else if (arg_2 == -9) {
+    else if (card_slot == -9) {
       local_1c = local_34 * 7;
     }
-    else if (arg_2 == -8) {
+    else if (card_slot == -8) {
       local_1c = local_34 << 3;
     }
-    else if (arg_2 == -7) {
+    else if (card_slot == -7) {
       local_1c = local_34 * 9;
     }
-    else if (arg_2 == -6) {
+    else if (card_slot == -6) {
       local_1c = local_34 * 10;
     }
-    else if (arg_2 == -0x11) {
+    else if (card_slot == -0x11) {
       local_1c = local_34 * 0xb;
     }
-    else if (arg_2 == -5) {
+    else if (card_slot == -5) {
       local_1c = local_34 * 0xc;
     }
-    else if (arg_2 == -4) {
+    else if (card_slot == -4) {
       local_1c = local_34 * 0xd;
     }
-    else if (arg_2 == -3) {
+    else if (card_slot == -3) {
       local_1c = local_34 * 0xe;
     }
-    else if (arg_2 == -2) {
+    else if (card_slot == -2) {
       local_1c = local_34 * 0xf;
     }
-    else if (arg_2 == -1) {
+    else if (card_slot == -1) {
       local_1c = local_34 << 4;
     }
-    else if (arg_2 == -0x12) {
+    else if (card_slot == -0x12) {
       local_1c = local_34 * 0x11;
     }
     SetRect(&local_18,arg_3,arg_4,arg_5 + arg_3,arg_6 + arg_4);
-    FUN_004f3eaa((HDC)arg_1,&local_18.left,DAT_0054b9ac,local_20,local_24,local_1c,0,local_8,0);
+    FUN_004f3eaa((HDC)player,&local_18.left,DAT_0054b9ac,local_20,local_24,local_1c,0,local_8,0);
   }
   return;
 }
@@ -4060,19 +4060,19 @@ void Palette_Subsystem_0049e291(int arg_1,char arg_2,int arg_3,int arg_4,int arg
  */
 
 
-undefined4 Palette_Subsystem_0049e53b(HDC hdc,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_0049e53b(HDC hdc,int card_slot,int arg_3)
 
 {
   undefined4 uVar1;
   int nSavedDC;
   
-  if (((hdc == (HDC)0x0) || (arg_2 == 0)) || (arg_3 == 0)) {
+  if (((hdc == (HDC)0x0) || (card_slot == 0)) || (arg_3 == 0)) {
     uVar1 = 0;
   }
   else {
     nSavedDC = SaveDC(hdc);
     IntersectClipRect(hdc,0,0,1,1);
-    uVar1 = Palette_Subsystem_0049e5bc(hdc,(int *)arg_2,(char *)arg_3,0);
+    uVar1 = Palette_Subsystem_0049e5bc(hdc,(int *)card_slot,(char *)arg_3,0);
     RestoreDC(hdc,nSavedDC);
   }
   return uVar1;
@@ -4264,10 +4264,10 @@ uint Palette_Subsystem_0049e5bc(HDC hdc,int *y,char *str_3,int height)
  */
 
 
-void Palette_Subsystem_0049ebf6(HDC hdc,RECT *arg_2,int arg_3,int arg_4)
+void Palette_Subsystem_0049ebf6(HDC hdc,RECT *card_slot,int arg_3,int arg_4)
 
 {
-  int arg_1;
+  int player;
   int iVar1;
   int local_b0;
   int local_ac;
@@ -4277,17 +4277,17 @@ void Palette_Subsystem_0049ebf6(HDC hdc,RECT *arg_2,int arg_3,int arg_4)
   int local_c;
   uint local_8;
   
-  if ((hdc != (HDC)0x0) && (arg_2 != (RECT *)0x0)) {
+  if ((hdc != (HDC)0x0) && (card_slot != (RECT *)0x0)) {
     local_8 = Ai_Subsystem_004b6d35(arg_3,arg_4);
-    arg_1 = Ai_Subsystem_004cbd67(local_8);
-    if ((DAT_006ff2dc == arg_1) &&
+    player = Ai_Subsystem_004cbd67(local_8);
+    if ((DAT_006ff2dc == player) &&
        (iVar1 = Ai_Subsystem_004b6e3b(arg_3,arg_4), iVar1 == DAT_006a3f74)) {
-      Palette_Subsystem_0049c6cb(hdc,arg_2);
+      Palette_Subsystem_0049c6cb(hdc,card_slot);
     }
     else {
       Ai_Subsystem_004b6da5(&local_b0,arg_3,arg_4);
-      local_c = FUN_00478aa4(arg_1,local_b0,local_ac);
-      memcpy(local_a4,&DAT_006b3070 + arg_1 * 0x98,0x98);
+      local_c = FUN_00478aa4(player,local_b0,local_ac);
+      memcpy(local_a4,&DAT_006b3070 + player * 0x98,0x98);
       local_a8 = Ai_Subsystem_004b6356(arg_3,arg_4);
       if ((local_a8 & 2) == 0) {
         if ((local_a8 & 0x20) == 0) {
@@ -4312,7 +4312,7 @@ void Palette_Subsystem_0049ebf6(HDC hdc,RECT *arg_2,int arg_3,int arg_4)
       else {
         local_94 = 1;
       }
-      Palette_Subsystem_0049c7c7(hdc,&arg_2->left,local_a4,local_c,2,DAT_006fe430);
+      Palette_Subsystem_0049c7c7(hdc,&card_slot->left,local_a4,local_c,2,DAT_006fe430);
     }
   }
   return;
@@ -4327,10 +4327,10 @@ void Palette_Subsystem_0049ebf6(HDC hdc,RECT *arg_2,int arg_3,int arg_4)
  */
 
 
-void Palette_Subsystem_0049eda9(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5)
+void Palette_Subsystem_0049eda9(HDC hdc,int *card_slot,int arg_3,int arg_4,int arg_5)
 
 {
-  byte arg_1;
+  byte player;
   undefined4 uVar1;
   int iVar2;
   uint uVar3;
@@ -4376,15 +4376,15 @@ void Palette_Subsystem_0049eda9(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
   undefined4 local_c;
   uint local_8;
   
-  if ((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) {
+  if ((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) {
     local_b0 = Ai_Subsystem_004b6023(&local_ac,arg_4,arg_5);
     local_8 = local_b0 >> 0x10;
     local_a0 = local_b0 & 0xffff;
     if (arg_3 == DAT_00695e94) {
       uVar1 = Ai_Subsystem_004b59d9(arg_4,arg_5);
       sprintf(&DAT_0054b928,s_Damage___d_0052c05c,uVar1);
-      arg_1 = Ai_Subsystem_004b6356(arg_4,arg_5);
-      local_b4 = FUN_00473cc5(arg_1);
+      player = Ai_Subsystem_004b6356(arg_4,arg_5);
+      local_b4 = Card_ColorMaskToColorIndex(player);
       if (local_b4 == 1) {
         strcat(&DAT_0054b928,s__Black__0052c068);
       }
@@ -4572,7 +4572,7 @@ void Palette_Subsystem_0049eda9(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
     local_20 = 0;
     local_44 = 0;
     local_c = 0;
-    Palette_Subsystem_0049c7c7(hdc,arg_2,&local_a0,local_8,2,DAT_006fe430);
+    Palette_Subsystem_0049c7c7(hdc,card_slot,&local_a0,local_8,2,DAT_006fe430);
   }
   return;
 }
@@ -4586,7 +4586,7 @@ void Palette_Subsystem_0049eda9(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
  */
 
 
-void Palette_Subsystem_0049f8cd(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,int arg_5)
+void Palette_Subsystem_0049f8cd(HDC hdc,int *card_slot,WPARAM *arg_3,int arg_4,int arg_5)
 
 {
   HGDIOBJ h;
@@ -4601,23 +4601,23 @@ void Palette_Subsystem_0049f8cd(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,int a
   int local_1c;
   int local_8;
   
-  if (((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) && (arg_3 != (WPARAM *)0x0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) && (arg_3 != (WPARAM *)0x0)) {
     local_8 = SaveDC(hdc);
     SetMapMode(hdc,8);
     SetWindowExtEx(hdc,200,0x118,(LPSIZE)0x0);
-    SetViewportExtEx(hdc,arg_2[2] - *arg_2,arg_2[3] - arg_2[1],(LPSIZE)0x0);
+    SetViewportExtEx(hdc,card_slot[2] - *card_slot,card_slot[3] - card_slot[1],(LPSIZE)0x0);
     SetWindowOrgEx(hdc,0,0,(LPPOINT)0x0);
-    SetViewportOrgEx(hdc,*arg_2,arg_2[1],(LPPOINT)0x0);
-    Palette_Subsystem_0049fb63(hdc,(RECT *)arg_2,(int)arg_3);
-    Palette_Subsystem_004a11fa(hdc,arg_2,(char *)arg_3[2],0,1);
+    SetViewportOrgEx(hdc,*card_slot,card_slot[1],(LPPOINT)0x0);
+    Palette_Subsystem_0049fb63(hdc,(RECT *)card_slot,(int)arg_3);
+    Palette_Subsystem_004a11fa(hdc,card_slot,(char *)arg_3[2],0,1);
     h = GetStockObject(5);
     SelectObject(hdc,h);
     SelectObject(hdc,DAT_0054b964);
     Rectangle(hdc,0,0,200,0x118);
     if (DAT_00695ea4 != 0) {
       SetMapMode(hdc,1);
-      local_28 = arg_2[2] - *arg_2;
-      local_2c = arg_2[3] - arg_2[1];
+      local_28 = card_slot[2] - *card_slot;
+      local_2c = card_slot[3] - card_slot[1];
       local_30 = (local_28 * 0x12) / 0xe4;
       local_34 = (local_2c * 0xb) / 100 + (local_2c * 8) / 100 + -2;
       local_1c = ((local_28 * 0xd3) / 0xe4 - local_30) + 1;
@@ -4649,7 +4649,7 @@ void Palette_Subsystem_0049f8cd(HDC hdc,int *arg_2,WPARAM *arg_3,int arg_4,int a
  */
 
 
-void Palette_Subsystem_0049fb63(HDC hdc,RECT *arg_2,int arg_3)
+void Palette_Subsystem_0049fb63(HDC hdc,RECT *card_slot,int arg_3)
 
 {
   int iVar1;
@@ -4662,7 +4662,7 @@ void Palette_Subsystem_0049fb63(HDC hdc,RECT *arg_2,int arg_3)
   undefined4 local_c;
   undefined4 local_8;
   
-  if (((hdc != (HDC)0x0) && (arg_2 != (RECT *)0x0)) && (arg_3 != 0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != (RECT *)0x0)) && (arg_3 != 0)) {
     if (*(int *)(arg_3 + 0x10) == 1) {
       local_20 = &DAT_0054b99c;
     }
@@ -4754,7 +4754,7 @@ void Palette_Subsystem_0049fb63(HDC hdc,RECT *arg_2,int arg_3)
     Palette_Subsystem_0049c3ac(local_20);
     if (*local_20 == 0) {
       hbr = GetStockObject(0);
-      FillRect(hdc,arg_2,hbr);
+      FillRect(hdc,card_slot,hbr);
     }
     else {
       GetObjectA((HANDLE)*local_20,0x18,local_38);
@@ -4835,7 +4835,7 @@ void Palette_Subsystem_0049fee7(HDC hdc,int *y,uint width,uint height)
  */
 
 
-void Palette_Subsystem_004a00d1(HDC hdc,int *arg_2,undefined4 arg_3)
+void Palette_Subsystem_004a00d1(HDC hdc,int *card_slot,undefined4 arg_3)
 
 {
   size_t sVar1;
@@ -4844,13 +4844,13 @@ void Palette_Subsystem_004a00d1(HDC hdc,int *arg_2,undefined4 arg_3)
   int local_c;
   int local_8;
   
-  if ((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) {
+  if ((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) {
     local_8 = SaveDC(hdc);
     SetMapMode(hdc,8);
     SetWindowExtEx(hdc,100,0x8c,(LPSIZE)0x0);
-    SetViewportExtEx(hdc,arg_2[2] - *arg_2,arg_2[3] - arg_2[1],(LPSIZE)0x0);
+    SetViewportExtEx(hdc,card_slot[2] - *card_slot,card_slot[3] - card_slot[1],(LPSIZE)0x0);
     SetWindowOrgEx(hdc,0,0,(LPPOINT)0x0);
-    SetViewportOrgEx(hdc,*arg_2,arg_2[1],(LPPOINT)0x0);
+    SetViewportOrgEx(hdc,*card_slot,card_slot[1],(LPPOINT)0x0);
     sprintf(local_1c,&DAT_0052c1f8,arg_3);
     SelectObject(hdc,DAT_0054b58c);
     SetTextAlign(hdc,10);
@@ -4877,7 +4877,7 @@ void Palette_Subsystem_004a00d1(HDC hdc,int *arg_2,undefined4 arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a023a(HDC hdc,int arg_2,undefined4 arg_3)
+undefined4 Palette_Subsystem_004a023a(HDC hdc,int card_slot,undefined4 arg_3)
 
 {
   undefined4 uVar1;
@@ -4885,12 +4885,12 @@ undefined4 Palette_Subsystem_004a023a(HDC hdc,int arg_2,undefined4 arg_3)
   char local_1c [8];
   tagRECT local_14;
   
-  if ((hdc == (HDC)0x0) || (arg_2 == 0)) {
+  if ((hdc == (HDC)0x0) || (card_slot == 0)) {
     uVar1 = 0;
   }
   else {
     nSavedDC = SaveDC(hdc);
-    Palette_Subsystem_004a0392(&local_14,(int *)arg_2);
+    Palette_Subsystem_004a0392(&local_14,(int *)card_slot);
     uVar1 = FUN_004f3e29(hdc,&local_14,DAT_0054b9a0);
     sprintf(local_1c,&DAT_0052c1fc,arg_3);
     SelectObject(hdc,DAT_0054b380);
@@ -4954,7 +4954,7 @@ void Palette_Subsystem_004a0392(LPRECT arg1,int *arg2)
  */
 
 
-void Palette_Subsystem_004a0466(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5)
+void Palette_Subsystem_004a0466(HDC hdc,int *card_slot,int arg_3,int arg_4,int arg_5)
 
 {
   int iVar1;
@@ -4962,14 +4962,14 @@ void Palette_Subsystem_004a0466(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
   int local_18;
   tagRECT local_14;
   
-  if ((((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) && ((arg_3 == 0 || (arg_3 == 1)))) &&
+  if ((((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) && ((arg_3 == 0 || (arg_3 == 1)))) &&
      (((arg_4 != -1 && (arg_5 != 0)) && (iVar1 = Ai_Subsystem_004b5d2e(arg_3,arg_4), iVar1 == 1))))
   {
     local_18 = SaveDC(hdc);
-    local_14.left = *arg_2 + ((arg_2[2] - *arg_2) * 0x50) / 100;
-    local_14.top = arg_2[1];
-    local_14.right = *arg_2 + ((arg_2[2] - *arg_2) * 0x5f) / 100;
-    local_14.bottom = arg_2[1] + ((arg_2[3] - arg_2[1]) * 0xe) / 100;
+    local_14.left = *card_slot + ((card_slot[2] - *card_slot) * 0x50) / 100;
+    local_14.top = card_slot[1];
+    local_14.right = *card_slot + ((card_slot[2] - *card_slot) * 0x5f) / 100;
+    local_14.bottom = card_slot[1] + ((card_slot[3] - card_slot[1]) * 0xe) / 100;
     SetMapMode(hdc,8);
     SetWindowExtEx(hdc,local_14.right - local_14.left,0x14,(LPSIZE)0x0);
     SetViewportExtEx(hdc,local_14.right - local_14.left,local_14.bottom - local_14.top,(LPSIZE)0x0);
@@ -5065,7 +5065,7 @@ undefined4 Palette_Subsystem_004a068a(int x,int y,int width,int height)
  */
 
 
-void Palette_Subsystem_004a080b(LPRECT arg_1,int *arg_2,int arg_3)
+void Palette_Subsystem_004a080b(LPRECT player,int *card_slot,int arg_3)
 
 {
   int local_58;
@@ -5082,20 +5082,20 @@ void Palette_Subsystem_004a080b(LPRECT arg_1,int *arg_2,int arg_3)
   int local_c;
   int local_8;
   
-  if (arg_1 != (LPRECT)0x0) {
-    if (arg_2 == (int *)0x0) {
-      SetRect(arg_1,0,0,0,0);
+  if (player != (LPRECT)0x0) {
+    if (card_slot == (int *)0x0) {
+      SetRect(player,0,0,0,0);
     }
     else if (arg_3 == 0) {
-      SetRect(arg_1,0,0,0,0);
+      SetRect(player,0,0,0,0);
     }
     else {
       SetRect(&local_24,0,0,0,0);
       if (DAT_0054b734 != (HANDLE)0x0) {
-        local_14 = *arg_2 + ((arg_2[2] - *arg_2) * 7) / 100;
-        local_c = arg_2[2] - ((arg_2[2] - *arg_2) * 10) / 100;
-        local_10 = arg_2[1] + ((arg_2[3] - arg_2[1]) * 8) / 100;
-        local_8 = arg_2[1] + ((arg_2[3] - arg_2[1]) * 0x23) / 100;
+        local_14 = *card_slot + ((card_slot[2] - *card_slot) * 7) / 100;
+        local_c = card_slot[2] - ((card_slot[2] - *card_slot) * 10) / 100;
+        local_10 = card_slot[1] + ((card_slot[3] - card_slot[1]) * 8) / 100;
+        local_8 = card_slot[1] + ((card_slot[3] - card_slot[1]) * 0x23) / 100;
         GetObjectA(DAT_0054b734,0x18,local_4c);
         local_30 = local_48;
         local_34 = local_44 / 0x18;
@@ -5108,7 +5108,7 @@ void Palette_Subsystem_004a080b(LPRECT arg_1,int *arg_2,int arg_3)
         SetRect(&local_24,local_14,local_10,(arg_3 + -1) * local_58 + local_28 + local_14,
                 local_10 + local_2c);
       }
-      CopyRect(arg_1,&local_24);
+      CopyRect(player,&local_24);
     }
   }
   return;
@@ -5123,7 +5123,7 @@ void Palette_Subsystem_004a080b(LPRECT arg_1,int *arg_2,int arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,int arg_5)
+undefined4 Palette_Subsystem_004a09c9(int player,int *card_slot,int arg_3,int arg_4,int arg_5)
 
 {
   int yTop;
@@ -5146,7 +5146,7 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
   int local_18;
   tagRECT local_14;
   
-  if ((arg_1 == 0) || (arg_2 == (int *)0x0)) {
+  if ((player == 0) || (card_slot == (int *)0x0)) {
     local_5c = 0;
   }
   else if (arg_4 + arg_3 + arg_5 == 0) {
@@ -5159,12 +5159,12 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
     GetObjectA(DAT_0054b734,0x18,local_58);
     local_34 = local_54;
     local_40 = local_50 / 0x18;
-    local_2c = arg_2[3] - arg_2[1];
-    local_20 = (arg_2[2] - *arg_2) / 3;
-    local_18 = *arg_2;
+    local_2c = card_slot[3] - card_slot[1];
+    local_20 = (card_slot[2] - *card_slot) / 3;
+    local_18 = *card_slot;
     local_28 = local_20 + local_18;
     local_30 = local_20 + local_28;
-    yTop = arg_2[1];
+    yTop = card_slot[1];
     local_38 = local_50 - local_40;
     local_1c = (local_54 * local_2c) / local_40;
     for (local_6c = local_1c; (local_20 < (arg_5 + -1) * local_6c + local_1c && (2 < local_6c));
@@ -5174,7 +5174,7 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
     for (local_3c = 0; local_3c < arg_5; local_3c = local_3c + 1) {
       local_24 = local_40 * 0x14;
       SetRect(&local_14,local_60,yTop,local_1c + local_60,local_2c + yTop);
-      FUN_004f3eaa((HDC)arg_1,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
+      FUN_004f3eaa((HDC)player,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
       local_60 = local_60 - local_6c;
     }
     for (local_6c = local_1c; (local_20 < (arg_4 + -1) * local_6c + local_1c && (2 < local_6c));
@@ -5184,7 +5184,7 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
     for (local_3c = 0; local_3c < arg_4; local_3c = local_3c + 1) {
       local_24 = local_40 * 0x16;
       SetRect(&local_14,local_60,yTop,local_1c + local_60,local_2c + yTop);
-      FUN_004f3eaa((HDC)arg_1,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
+      FUN_004f3eaa((HDC)player,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
       local_60 = local_60 - local_6c;
     }
     for (local_6c = local_1c; (local_20 < (arg_3 + -1) * local_6c + local_1c && (2 < local_6c));
@@ -5194,7 +5194,7 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
     for (local_3c = 0; local_3c < arg_3; local_3c = local_3c + 1) {
       local_24 = local_40 * 0x15;
       SetRect(&local_14,local_60,yTop,local_1c + local_60,local_2c + yTop);
-      FUN_004f3eaa((HDC)arg_1,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
+      FUN_004f3eaa((HDC)player,&local_14.left,DAT_0054b734,local_34,local_40,0,local_24,0,local_38);
       local_60 = local_60 - local_6c;
     }
     local_5c = 1;
@@ -5211,7 +5211,7 @@ undefined4 Palette_Subsystem_004a09c9(int arg_1,int *arg_2,int arg_3,int arg_4,i
  */
 
 
-void Palette_Subsystem_004a0d00(HDC hdc,undefined4 *arg_2,uint arg_3)
+void Palette_Subsystem_004a0d00(HDC hdc,undefined4 *card_slot,uint arg_3)
 
 {
   int arg_5;
@@ -5264,7 +5264,7 @@ void Palette_Subsystem_004a0d00(HDC hdc,undefined4 *arg_2,uint arg_3)
   local_5c[0xf] = 9;
   local_5c[0x10] = 10;
   local_ac[0x11] = 0x11;
-  if (((hdc != (HDC)0x0) && (arg_2 != (undefined4 *)0x0)) && (arg_3 != 0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != (undefined4 *)0x0)) && (arg_3 != 0)) {
     local_c0 = SaveDC(hdc);
     if (DAT_0054b960 != (HANDLE)0x0) {
       GetObjectA(DAT_0054b960,0x18,local_dc);
@@ -5272,11 +5272,11 @@ void Palette_Subsystem_004a0d00(HDC hdc,undefined4 *arg_2,uint arg_3)
       arg_5 = local_d4 / (int)(local_ac[0x11] + 1);
       local_8 = 0;
       local_b4 = local_d4 - arg_5;
-      local_b0 = *arg_2;
-      local_c4 = arg_2[3] - arg_5;
+      local_b0 = *card_slot;
+      local_c4 = card_slot[3] - arg_5;
       for (local_bc = 0; local_bc < (int)local_ac[0x11]; local_bc = local_bc + 1) {
         if ((arg_3 & local_ac[local_bc]) != 0) {
-          Palette_Subsystem_004a0f97(&local_18,local_ac[local_bc],arg_2,arg_3);
+          Palette_Subsystem_004a0f97(&local_18,local_ac[local_bc],card_slot,arg_3);
           local_ac[0x12] = 0;
           local_ac[0x13] = local_5c[local_bc] * arg_5;
           FUN_004f3eaa(hdc,&local_18.left,DAT_0054b960,local_b8,arg_5,0,local_ac[0x13],local_8,
@@ -5298,7 +5298,7 @@ void Palette_Subsystem_004a0d00(HDC hdc,undefined4 *arg_2,uint arg_3)
  */
 
 
-void Palette_Subsystem_004a0f97(LPRECT arg_1,uint y,int *width,uint height)
+void Palette_Subsystem_004a0f97(LPRECT player,uint y,int *width,uint height)
 
 {
   undefined1 local_94 [4];
@@ -5333,12 +5333,12 @@ void Palette_Subsystem_004a0f97(LPRECT arg_1,uint y,int *width,uint height)
   local_64[0xf] = 0x8000;
   local_64[0x10] = 0x10000;
   local_64[0x11] = 0x11;
-  if (arg_1 != (LPRECT)0x0) {
+  if (player != (LPRECT)0x0) {
     if (width == (int *)0x0) {
-      SetRect(arg_1,0,0,0,0);
+      SetRect(player,0,0,0,0);
     }
     else if (height == 0) {
-      SetRect(arg_1,0,0,0,0);
+      SetRect(player,0,0,0,0);
     }
     else {
       local_74 = ((width[2] - *width) * 0x11) / 100;
@@ -5368,7 +5368,7 @@ void Palette_Subsystem_004a0f97(LPRECT arg_1,uint y,int *width,uint height)
           }
         }
       }
-      CopyRect(arg_1,&local_1c);
+      CopyRect(player,&local_1c);
     }
   }
   return;
@@ -5383,7 +5383,7 @@ void Palette_Subsystem_004a0f97(LPRECT arg_1,uint y,int *width,uint height)
  */
 
 
-void Palette_Subsystem_004a11fa(HDC hdc,int *arg_2,char *str_3,int arg_4,int arg_5)
+void Palette_Subsystem_004a11fa(HDC hdc,int *card_slot,char *str_3,int arg_4,int arg_5)
 
 {
   size_t sVar1;
@@ -5391,14 +5391,14 @@ void Palette_Subsystem_004a11fa(HDC hdc,int *arg_2,char *str_3,int arg_4,int arg
   char local_6c [100];
   int local_8;
   
-  if (((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) && (str_3 != (char *)0x0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) && (str_3 != (char *)0x0)) {
     strcpy(local_6c,str_3);
     local_8 = SaveDC(hdc);
     SetMapMode(hdc,8);
     SetWindowExtEx(hdc,200,0x118,(LPSIZE)0x0);
-    SetViewportExtEx(hdc,arg_2[2] - *arg_2,arg_2[3] - arg_2[1],(LPSIZE)0x0);
+    SetViewportExtEx(hdc,card_slot[2] - *card_slot,card_slot[3] - card_slot[1],(LPSIZE)0x0);
     SetWindowOrgEx(hdc,0,0,(LPPOINT)0x0);
-    SetViewportOrgEx(hdc,*arg_2,arg_2[1],(LPPOINT)0x0);
+    SetViewportOrgEx(hdc,*card_slot,card_slot[1],(LPPOINT)0x0);
     if (arg_4 == 0) {
       local_70 = DAT_0054b57c;
     }
@@ -5438,7 +5438,7 @@ void Palette_Subsystem_004a11fa(HDC hdc,int *arg_2,char *str_3,int arg_4,int arg
  */
 
 
-void Palette_Subsystem_004a13b7(HDC hdc,int *arg_2,int arg_3,undefined4 arg_4,int arg_5)
+void Palette_Subsystem_004a13b7(HDC hdc,int *card_slot,int arg_3,undefined4 arg_4,int arg_5)
 
 {
   size_t sVar1;
@@ -5447,13 +5447,13 @@ void Palette_Subsystem_004a13b7(HDC hdc,int *arg_2,int arg_3,undefined4 arg_4,in
   COLORREF local_c;
   int local_8;
   
-  if (((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) && (arg_3 != 0)) {
+  if (((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) && (arg_3 != 0)) {
     local_8 = SaveDC(hdc);
     SetMapMode(hdc,8);
     SetWindowExtEx(hdc,200,0x118,(LPSIZE)0x0);
-    SetViewportExtEx(hdc,arg_2[2] - *arg_2,arg_2[3] - arg_2[1],(LPSIZE)0x0);
+    SetViewportExtEx(hdc,card_slot[2] - *card_slot,card_slot[3] - card_slot[1],(LPSIZE)0x0);
     SetWindowOrgEx(hdc,0,0,(LPPOINT)0x0);
-    SetViewportOrgEx(hdc,*arg_2,arg_2[1],(LPPOINT)0x0);
+    SetViewportOrgEx(hdc,*card_slot,card_slot[1],(LPPOINT)0x0);
     if (arg_5 == 0) {
       local_74 = DAT_0054b57c;
     }
@@ -5493,10 +5493,10 @@ void Palette_Subsystem_004a13b7(HDC hdc,int *arg_2,int arg_3,undefined4 arg_4,in
  */
 
 
-void Palette_Subsystem_004a155f(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5)
+void Palette_Subsystem_004a155f(HDC hdc,int *card_slot,int arg_3,int arg_4,int arg_5)
 
 {
-  byte arg_1;
+  byte player;
   undefined4 uVar1;
   int iVar2;
   uint uVar3;
@@ -5533,15 +5533,15 @@ void Palette_Subsystem_004a155f(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
   undefined4 local_c;
   uint local_8;
   
-  if ((hdc != (HDC)0x0) && (arg_2 != (int *)0x0)) {
+  if ((hdc != (HDC)0x0) && (card_slot != (int *)0x0)) {
     local_b0 = Ai_Subsystem_004b6023(&local_ac,arg_4,arg_5);
     local_8 = local_b0 >> 0x10;
     local_a0 = local_b0 & 0xffff;
     if (DAT_00695e94 == arg_3) {
       uVar1 = Ai_Subsystem_004b59d9(arg_4,arg_5);
       sprintf(&DAT_0054b390,s_Damage___d_0052c208,uVar1);
-      arg_1 = Ai_Subsystem_004b6356(arg_4,arg_5);
-      local_b4 = FUN_00473cc5(arg_1);
+      player = Ai_Subsystem_004b6356(arg_4,arg_5);
+      local_b4 = Card_ColorMaskToColorIndex(player);
       if (local_b4 == 1) {
         strcat(&DAT_0054b390,s__Black__0052c214);
       }
@@ -5627,12 +5627,12 @@ void Palette_Subsystem_004a155f(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
     local_20 = 0;
     local_44 = 0;
     local_c = 0;
-    Palette_Subsystem_0049f8cd(hdc,arg_2,&local_a0,local_8,1);
-    Palette_Subsystem_004a2401(hdc,arg_2,arg_4,arg_5);
+    Palette_Subsystem_0049f8cd(hdc,card_slot,&local_a0,local_8,1);
+    Palette_Subsystem_004a2401(hdc,card_slot,arg_4,arg_5);
     iVar2 = Ai_Subsystem_004b65bf(arg_4,arg_5);
     uVar3 = (uint)(iVar2 == arg_4);
     iVar2 = Ai_Subsystem_004b673e(arg_4,arg_5);
-    Palette_Subsystem_004a11fa(hdc,arg_2,local_98,iVar2,uVar3);
+    Palette_Subsystem_004a11fa(hdc,card_slot,local_98,iVar2,uVar3);
     if (DAT_00695e94 == arg_3) {
       uVar3 = Ai_Subsystem_004b6c5b(arg_4,arg_5);
       local_f4 = 0;
@@ -5643,7 +5643,7 @@ void Palette_Subsystem_004a155f(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
         local_f4 = local_f4 | 0x80;
       }
       if ((DAT_006fe42c != 0) && (local_f4 != 0)) {
-        Palette_Subsystem_004a0d00(hdc,arg_2,local_f4);
+        Palette_Subsystem_004a0d00(hdc,card_slot,local_f4);
       }
     }
   }
@@ -5660,7 +5660,7 @@ void Palette_Subsystem_004a155f(HDC hdc,int *arg_2,int arg_3,int arg_4,int arg_5
 
 
 void Palette_Subsystem_004a1b64
-               (HDC hdc,RECT *arg_2,int arg_3,int arg_4,int arg_5,int arg_6,int arg_7)
+               (HDC hdc,RECT *card_slot,int arg_3,int arg_4,int arg_5,int arg_6,int arg_7)
 
 {
   int iVar1;
@@ -5694,11 +5694,11 @@ void Palette_Subsystem_004a1b64
   undefined4 local_c;
   uint local_8;
   
-  if ((hdc != (HDC)0x0) && (arg_2 != (RECT *)0x0)) {
+  if ((hdc != (HDC)0x0) && (card_slot != (RECT *)0x0)) {
     if ((DAT_006ff2dc == arg_3) &&
        (iVar1 = Ai_Subsystem_004b6e3b(arg_4,arg_5), iVar1 == DAT_006a3f74)) {
-      Palette_Subsystem_0049c6cb(hdc,arg_2);
-      Palette_Subsystem_004a11fa(hdc,&arg_2->left,s_Activation_0052c264,0,1);
+      Palette_Subsystem_0049c6cb(hdc,card_slot);
+      Palette_Subsystem_004a11fa(hdc,&card_slot->left,s_Activation_0052c264,0,1);
     }
     else {
       local_a8 = Ai_Subsystem_004b6023(local_b0,arg_4,arg_5);
@@ -5740,12 +5740,12 @@ void Palette_Subsystem_004a1b64
       local_20 = 0;
       local_44 = 0;
       local_c = 0;
-      Palette_Subsystem_0049f8cd(hdc,&arg_2->left,&local_a0,local_8,1);
-      Palette_Subsystem_004a2401(hdc,&arg_2->left,arg_6,arg_7);
+      Palette_Subsystem_0049f8cd(hdc,&card_slot->left,&local_a0,local_8,1);
+      Palette_Subsystem_004a2401(hdc,&card_slot->left,arg_6,arg_7);
       iVar1 = Ai_Subsystem_004b65bf(arg_4,arg_5);
       arg_5_00 = (uint)(iVar1 == arg_4);
       iVar1 = Ai_Subsystem_004b673e(arg_4,arg_5);
-      Palette_Subsystem_004a11fa(hdc,&arg_2->left,local_98,iVar1,arg_5_00);
+      Palette_Subsystem_004a11fa(hdc,&card_slot->left,local_98,iVar1,arg_5_00);
     }
   }
   return;
@@ -5763,7 +5763,7 @@ void Palette_Subsystem_004a1b64
 void Palette_Subsystem_004a1e09(HDC hdc,int *y,int width,int height)
 
 {
-  byte arg_1;
+  byte player;
   uint uVar1;
   uint width_00;
   int iVar2;
@@ -5796,8 +5796,8 @@ void Palette_Subsystem_004a1e09(HDC hdc,int *y,int width,int height)
     local_a8 = SaveDC(hdc);
     memcpy(&local_a4,&DAT_006b3070 + local_8 * 0x98,0x98);
     local_b0 = local_94;
-    arg_1 = Ai_Subsystem_004b6356(width,height);
-    local_ac = FUN_00473cc5(arg_1);
+    player = Ai_Subsystem_004b6356(width,height);
+    local_ac = Card_ColorMaskToColorIndex(player);
     if (((((local_b0 == 1) || (local_b0 == 8)) ||
          ((local_b0 == 7 || ((local_b0 == 5 || (local_b0 == 2)))))) ||
         ((local_b0 == 6 && (local_ac != 0)))) || ((local_b0 == 3 && (local_ac != 0)))) {
@@ -6080,7 +6080,7 @@ uint Palette_Subsystem_004a289f(HDC hdc,int *y,int width,int height)
  */
 
 
-void Palette_Subsystem_004a29c5(HDC hdc,int *arg_2,int arg_3)
+void Palette_Subsystem_004a29c5(HDC hdc,int *card_slot,int arg_3)
 
 {
   HPEN h;
@@ -6093,7 +6093,7 @@ void Palette_Subsystem_004a29c5(HDC hdc,int *arg_2,int arg_3)
     SelectObject(hdc,h);
     h_00 = GetStockObject(5);
     SelectObject(hdc,h_00);
-    Rectangle(hdc,*arg_2,arg_2[1],arg_2[2],arg_2[3]);
+    Rectangle(hdc,*card_slot,card_slot[1],card_slot[2],card_slot[3]);
     RestoreDC(hdc,nSavedDC);
   }
   DeleteObject(h);
@@ -6109,14 +6109,14 @@ void Palette_Subsystem_004a29c5(HDC hdc,int *arg_2,int arg_3)
  */
 
 
-void Palette_Subsystem_004a2a5b(undefined4 arg_1,int *arg_2,byte arg_3)
+void Palette_Subsystem_004a2a5b(undefined4 player,int *card_slot,byte arg_3)
 
 {
   tagRECT local_14;
   
   if (((arg_3 & 1) != 0) && ((arg_3 & 2) != 0)) {
-    Palette_Subsystem_004a2aa3(&local_14,arg_2);
-    FUN_004f3e29(arg_1,&local_14,DAT_0054b3d8);
+    Palette_Subsystem_004a2aa3(&local_14,card_slot);
+    FUN_004f3e29(player,&local_14,DAT_0054b3d8);
   }
   return;
 }
@@ -6161,78 +6161,78 @@ void Palette_Subsystem_004a2aa3(LPRECT arg1,int *arg2)
  */
 
 
-undefined4 Palette_Subsystem_004a2b7e(int arg_1)
+undefined4 Palette_Subsystem_004a2b7e(int player)
 
 {
   undefined4 local_8;
   
-  if (arg_1 == 0x1d7) {
+  if (player == 0x1d7) {
     local_8 = 0;
   }
-  else if (arg_1 == 0x244) {
+  else if (player == 0x244) {
     local_8 = 1;
   }
-  else if (arg_1 == 0x248) {
+  else if (player == 0x248) {
     local_8 = 2;
   }
-  else if (arg_1 == 0x296) {
+  else if (player == 0x296) {
     local_8 = 3;
   }
-  else if (arg_1 == 0x2fd) {
+  else if (player == 0x2fd) {
     local_8 = 4;
   }
-  else if (arg_1 == 0x354) {
+  else if (player == 0x354) {
     local_8 = 5;
   }
-  else if (arg_1 == 0x1e4) {
+  else if (player == 0x1e4) {
     local_8 = 6;
   }
-  else if (arg_1 == 0x26) {
+  else if (player == 0x26) {
     local_8 = 6;
   }
-  else if (arg_1 == 0xf6) {
+  else if (player == 0xf6) {
     local_8 = 7;
   }
-  else if (arg_1 == 0x34) {
+  else if (player == 0x34) {
     local_8 = 8;
   }
-  else if (arg_1 == 0x120) {
+  else if (player == 0x120) {
     local_8 = 9;
   }
-  else if (arg_1 == 0x7b) {
+  else if (player == 0x7b) {
     local_8 = 10;
   }
-  else if (arg_1 == 0x80) {
+  else if (player == 0x80) {
     local_8 = 0xb;
   }
-  else if (arg_1 == 0x5e) {
+  else if (player == 0x5e) {
     local_8 = 0xc;
   }
-  else if (arg_1 == 0x353) {
+  else if (player == 0x353) {
     local_8 = 0xc;
   }
-  else if (arg_1 == 0x92) {
+  else if (player == 0x92) {
     local_8 = 0xd;
   }
-  else if (arg_1 == 0x2e0) {
+  else if (player == 0x2e0) {
     local_8 = 0xe;
   }
-  else if (arg_1 == 0xd7) {
+  else if (player == 0xd7) {
     local_8 = 0xf;
   }
-  else if (arg_1 == 0xdc) {
+  else if (player == 0xdc) {
     local_8 = 0x10;
   }
-  else if (arg_1 == 0x367) {
+  else if (player == 0x367) {
     local_8 = 0x11;
   }
-  else if (arg_1 == 0x21a) {
+  else if (player == 0x21a) {
     local_8 = 0x12;
   }
-  else if (arg_1 == 0x216) {
+  else if (player == 0x216) {
     local_8 = 0x13;
   }
-  else if (arg_1 == 0xf8) {
+  else if (player == 0xf8) {
     local_8 = 6;
   }
   else {
@@ -6316,7 +6316,7 @@ void Palette_Util_004a2edc(void)
  */
 
 
-undefined4 Palette_Subsystem_004a2ef0(int arg_1)
+undefined4 Palette_Subsystem_004a2ef0(int player)
 
 {
   bool bVar1;
@@ -6355,17 +6355,17 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
   local_c = s_x_sound_damb1_wav_0052c370;
   local_18 = 0;
   local_8 = 0;
-  if (arg_1 < 5) {
-    FUN_0040b3c2(4,arg_1);
+  if (player < 5) {
+    FUN_0040b3c2(4,player);
   }
   else {
-    FUN_0040b3c2(3,arg_1);
+    FUN_0040b3c2(3,player);
   }
   DAT_00649c1c = 0;
   FUN_0040a2c0();
   Palette_Subsystem_004a5f7c();
-  *(int *)(&DAT_0067f018 + arg_1 * 0x30) = *(int *)(&DAT_0067f018 + arg_1 * 0x30) + 1;
-  DAT_0054bd24 = arg_1;
+  *(int *)(&DAT_0067f018 + player * 0x30) = *(int *)(&DAT_0067f018 + player * 0x30) + 1;
+  DAT_0054bd24 = player;
   DAT_006498fc = 0;
   for (local_2c = 0; local_2c < 0xd; local_2c = local_2c + 1) {
     for (local_24 = 0; local_24 < 0xf; local_24 = local_24 + 1) {
@@ -6373,12 +6373,12 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
       *(uint *)(&DAT_0054ba18 + local_2c * 0x34 + local_24 * 4) = uVar2 & 3;
     }
   }
-  if (arg_1 < 5) {
+  if (player < 5) {
     Sprite_LoadCount(&DAT_006786b0,
-                     (&PTR_s_dungeon3_spr_0052c2b0)[(char)(&DAT_0067f00c)[arg_1 * 0x30]],0x3c);
+                     (&PTR_s_dungeon3_spr_0052c2b0)[(char)(&DAT_0067f00c)[player * 0x30]],0x3c);
   }
   else {
-    iVar4 = FUN_0040a1d2(3);
+    iVar4 = Math_RandomRange(3);
     Sprite_LoadAll(&DAT_006786b0,(&PTR_s_dungeon1_spr_0052c2a8)[iVar4]);
   }
   Glue_Subsystem_004ebe61(s_x_sound_dambloop_wav_0052c384,100);
@@ -6392,7 +6392,7 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
   DAT_0054be38 = local_444;
   for (local_10 = 0; local_10 < 5; local_10 = local_10 + 1) {
     do {
-      switch((((byte)(&DAT_0067f00d)[arg_1 * 0x30] & 0x80) >> 6) + local_10) {
+      switch((((byte)(&DAT_0067f00d)[player * 0x30] & 0x80) >> 6) + local_10) {
       case 0:
         local_50 = 4;
         break;
@@ -6414,8 +6414,8 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
       case 6:
         local_50 = 0x12;
       }
-      if (arg_1 < 5) {
-        uVar3 = FUN_0040a1d2(6);
+      if (player < 5) {
+        uVar3 = Math_RandomRange(6);
         switch(uVar3) {
         case 0:
           local_50 = 10;
@@ -6439,14 +6439,14 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
           local_50 = 0x12;
         }
       }
-      uVar3 = Glue_Subsystem_004ea97c((int)(char)(&DAT_0067f00c)[arg_1 * 0x30],local_50);
+      uVar3 = Glue_Subsystem_004ea97c((int)(char)(&DAT_0067f00c)[player * 0x30],local_50);
       *(undefined4 *)(&DAT_0054ba00 + local_10 * 4) = uVar3;
     } while (*(int *)(&DAT_0054ba00 + local_10 * 4) == 0);
     FUN_0046e70d(local_10,local_10 + 8);
     Sprite_Load_BK_AMG_0046d333(*(undefined4 *)(&DAT_0054ba00 + local_10 * 4),local_10,local_10 + 8)
     ;
-    if ((arg_1 < 5) && (local_10 == 4)) {
-      uVar3 = Glue_Subsystem_004ea97c((int)(char)(&DAT_0067f00c)[arg_1 * 0x30],0x14);
+    if ((player < 5) && (local_10 == 4)) {
+      uVar3 = Glue_Subsystem_004ea97c((int)(char)(&DAT_0067f00c)[player * 0x30],0x14);
       *(undefined4 *)(&DAT_0054ba00 + local_10 * 4) = uVar3;
     }
     *(undefined4 *)(&DAT_0067f2d0 + local_10 * 0x14) = 0xffffffff;
@@ -6483,11 +6483,11 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
   DAT_00649904 = 0xc;
   DAT_00649dbc = 1;
   do {
-    iVar4 = FUN_0040a1d2(7);
+    iVar4 = Math_RandomRange(7);
     local_20 = iVar4 * 2;
-    iVar4 = FUN_0040a1d2(6);
+    iVar4 = Math_RandomRange(6);
     local_28 = iVar4 * 2;
-    iVar4 = FUN_0040a1d2(2);
+    iVar4 = Math_RandomRange(2);
     if (iVar4 == 0) {
       local_28 = local_28 + 1;
     }
@@ -6503,10 +6503,10 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
   } while (local_38 < 2);
   DAT_0054bd2c = DAT_0054bd2c + -1;
   Palette_Subsystem_004a5603(DAT_0054bd28,DAT_0054bd2c);
-  Palette_Subsystem_004a4a47(0,1,arg_1);
+  Palette_Subsystem_004a4a47(0,1,player);
   Ai_Subsystem_004cd1d1();
-  Palette_Subsystem_004a4a47(0,0,arg_1);
-  local_3c = FUN_0040a1d2(0x5a);
+  Palette_Subsystem_004a4a47(0,0,player);
+  local_3c = Math_RandomRange(0x5a);
   local_3c = local_3c + 0x5a;
   Mem_AllocOrFree_005016f9();
   local_38 = 1;
@@ -6515,37 +6515,37 @@ undefined4 Palette_Subsystem_004a2ef0(int arg_1)
     if (local_3c < iVar4) {
       if ((local_c[0xc] != '5') || (local_18 == 0)) {
         do {
-          local_30 = FUN_0040a1d2(5);
+          local_30 = Math_RandomRange(5);
           local_30 = local_30 + 0x31;
         } while (local_c[0xc] == local_30);
         local_c[0xc] = (char)local_30;
         Pic_Subsystem_00423b93(0x65);
         Glue_Subsystem_004ec5be(local_c,0x65,0);
-        iVar4 = FUN_0040a1d2(100);
+        iVar4 = Math_RandomRange(100);
         iVar4 = iVar4 + -0x32;
         iVar8 = 100;
-        iVar5 = FUN_0040a1d2(0x14);
+        iVar5 = Math_RandomRange(0x14);
         Glue_Subsystem_004ebd62(0x65,iVar5 + 0x50,iVar8,iVar4);
         if ((local_c[0xc] == '5') && (local_18 == 0)) {
-          local_18 = FUN_0040a1d2(3);
+          local_18 = Math_RandomRange(3);
           local_18 = local_18 + 2;
-          local_3c = FUN_0040a1d2(0x1e);
+          local_3c = Math_RandomRange(0x1e);
           local_3c = local_3c + 0x3c;
         }
         else {
-          local_3c = FUN_0040a1d2(0x5a);
+          local_3c = Math_RandomRange(0x5a);
           local_3c = local_3c + 0x78;
         }
         Mem_AllocOrFree_005016f9();
         goto LAB_004a36e4;
       }
       local_18 = local_18 + -1;
-      iVar4 = FUN_0040a1d2(100);
+      iVar4 = Math_RandomRange(100);
       iVar4 = iVar4 + -0x32;
       iVar8 = 100;
-      iVar5 = FUN_0040a1d2(0x14);
+      iVar5 = Math_RandomRange(0x14);
       Glue_Subsystem_004ebd62(0x65,iVar5 + 0x50,iVar8,iVar4);
-      local_3c = FUN_0040a1d2(0x3c);
+      local_3c = Math_RandomRange(0x3c);
       local_3c = local_3c + 0x1e;
       Mem_AllocOrFree_005016f9();
     }
@@ -6607,7 +6607,7 @@ LAB_004a36e4:
               Glue_Subsystem_004ebcdc(s_x_sound_dice_wav_0052c3bc,0xf,100,100,0);
               uVar2 = rand();
               if ((uVar2 & 1) == 0) goto LAB_004a38ef;
-              iVar4 = FUN_0040a1d2(3);
+              iVar4 = Math_RandomRange(3);
               DAT_006498fc = DAT_006498fc + iVar4 + 1U;
               uVar2 = iVar4 + 1U;
               while( true ) {
@@ -6619,7 +6619,7 @@ LAB_004a36e4:
 LAB_004a38ef:
                 do {
                   do {
-                    iVar4 = FUN_0040a1d2(500);
+                    iVar4 = Math_RandomRange(500);
                     local_34 = *(uint *)(&deck + iVar4 * 4);
                   } while ((int)local_34 < 6);
                 } while (((local_34 & 0x4000) != 0) ||
@@ -6628,7 +6628,7 @@ LAB_004a38ef:
               }
               FUN_004896be(&g_OverworldWorldState,100,0x50);
               *(undefined4 *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) = 0x101;
-              Palette_Subsystem_004a4a47(0,0,arg_1);
+              Palette_Subsystem_004a4a47(0,0,player);
               break;
             case 2:
               Glue_Subsystem_004ebcdc(s_x_sound_scroll_wav_0052c3f0,0xf,100,100,0);
@@ -6643,19 +6643,19 @@ LAB_004a38ef:
               else {
                 *(undefined4 *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) = 0x101;
               }
-              Palette_Subsystem_004a4a47(0,0,arg_1);
+              Palette_Subsystem_004a4a47(0,0,player);
               break;
             case 3:
             case 4:
             case 5:
             case 6:
-              iVar4 = Palette_Subsystem_004a5722(arg_1,local_34 - 3,0);
+              iVar4 = Palette_Subsystem_004a5722(player,local_34 - 3,0);
               if (iVar4 == 0) {
                 *(undefined4 *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) = 0;
                 local_14 = DAT_0054bd28;
                 local_1c = DAT_0054bd2c;
                 local_40 = 0;
-                if (((&DAT_0067f014)[arg_1 * 0x30] & 1) != 0) {
+                if (((&DAT_0067f014)[player * 0x30] & 1) != 0) {
                   local_38 = 0;
                   local_8 = 1;
                   Ai_Subsystem_004c05ba();
@@ -6666,17 +6666,17 @@ LAB_004a38ef:
                 *(undefined4 *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) = 0x101;
                 FUN_0040b3c2(2,*(uint *)(&DAT_0054b9f4 + local_34 * 4) | 0x80);
               }
-              Palette_Subsystem_004a4a47(0,0,arg_1);
+              Palette_Subsystem_004a4a47(0,0,player);
               break;
             case 7:
               local_4c = 0;
               do {
-                local_34 = FUN_0040a1d2(3);
-                if (*(int *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30) != -1) break;
+                local_34 = Math_RandomRange(3);
+                if (*(int *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30) != -1) break;
                 local_4c = local_4c + 1;
               } while (local_4c < 100);
-              if (*(int *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30) == -1) {
-                iVar4 = FUN_0040a1d2(100);
+              if (*(int *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30) == -1) {
+                iVar4 = Math_RandomRange(100);
                 iVar4 = iVar4 * (DAT_0067f380 + 2) + 100;
                 bVar1 = false;
                 iVar4 = iVar4 - iVar4 % 10;
@@ -6684,7 +6684,7 @@ LAB_004a38ef:
                 Gold = Gold + iVar4;
                 sprintf(&g_OverworldWorldState,s_Found__d_Gold_and_bag_with_0052c46c,iVar4);
                 for (local_460 = 1; local_460 < 6; local_460 = local_460 + 1) {
-                  iVar5 = FUN_0040a1d2(2);
+                  iVar5 = Math_RandomRange(2);
                   if (iVar5 != 0) {
                     uVar3 = Mem_AllocOrFree_00473d7e(local_460);
                     pcVar7 = s__d__s_0052c488;
@@ -6710,28 +6710,28 @@ LAB_004a38ef:
               else {
                 Glue_Subsystem_004ebcdc(s_x_sound_findcard_wav_0052c418,0xf,100,100,0);
                 FUN_0040acfd(s_staceybk_pic_0052c430);
-                FUN_0040b3c2(0x13,*(uint *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30) | 0x10000);
-                FUN_0050b3de(*(int *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30),0x22,0x53,0x4b,
+                FUN_0040b3c2(0x13,*(uint *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30) | 0x10000);
+                FUN_0050b3de(*(int *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30),0x22,0x53,0x4b,
                              0x70,1,&DAT_0052c440);
-                FUN_0040d4d1((int)g_DisplaySurfaceScreen,0x1b,0x90,0x93);
-                FUN_0040a3e1();
+                Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0x1b,0x90,0x93);
+                App_ProcessPendingMessages();
                 Ai_Subsystem_004cd1d1();
-                Palette_Subsystem_004a4a47(0,0,arg_1);
+                Palette_Subsystem_004a4a47(0,0,player);
                 iVar4 = Pic_Subsystem_00451e40
-                                  (*(uint *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30));
+                                  (*(uint *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30));
                 *(uint *)(&deck + iVar4 * 4) = *(uint *)(&deck + iVar4 * 4) | 0x4000;
-                *(undefined4 *)(&DAT_0067eff0 + local_34 * 4 + arg_1 * 0x30) = 0xffffffff;
+                *(undefined4 *)(&DAT_0067eff0 + local_34 * 4 + player * 0x30) = 0xffffffff;
               }
               *(undefined4 *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) = 0x101;
-              Palette_Subsystem_004a4a47(0,0,arg_1);
+              Palette_Subsystem_004a4a47(0,0,player);
               break;
             case 0xf:
-              if (arg_1 < 5) {
+              if (player < 5) {
                 Mem_AllocOrFree_0050fc50(DAT_0054ba14);
                 Mem_AllocOrFree_0050fc50(DAT_006786b0);
-                iVar4 = Palette_Subsystem_004a5722(arg_1,4,1);
+                iVar4 = Palette_Subsystem_004a5722(player,4,1);
                 if (iVar4 != 0) {
-                  Action_PromptTarget_0049239e(arg_1);
+                  Action_PromptTarget_0049239e(player);
                 }
                 Ai_Subsystem_004c05ba();
                 Palette_Subsystem_004a5fdc();
@@ -6743,19 +6743,19 @@ LAB_004a38ef:
             }
             Palette_Subsystem_004a5603(local_14,local_1c);
             if (DAT_0054be2c != 0) {
-              Palette_Subsystem_004a4a47(0,0,arg_1);
+              Palette_Subsystem_004a4a47(0,0,player);
             }
             SetFocus(_hwndScreen);
           }
           if (local_40 != 0) {
             Palette_Subsystem_004a486f(local_40,0);
           }
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           DAT_0054bd28 = local_14;
           DAT_0054bd2c = local_1c;
           Palette_Subsystem_004a5603(local_14,local_1c);
           if (DAT_0054be2c != 0) {
-            Palette_Subsystem_004a4a47(0,0,arg_1);
+            Palette_Subsystem_004a4a47(0,0,player);
           }
           if ((DAT_0054bd28 == local_48) && (DAT_0054bd2c == local_44)) {
             local_38 = 0;
@@ -6765,10 +6765,10 @@ LAB_004a38ef:
     }
 LAB_004a403e:
     if (local_38 == 0) {
-      if (arg_1 < 5) {
+      if (player < 5) {
         if (local_8 != 0) {
           strcpy(&g_OverworldWorldState,s_You_are_unceremoniously_booted_f_0052c4ac);
-          pcVar7 = (char *)Mem_AllocOrFree_00473d7e(arg_1 + 1);
+          pcVar7 = (char *)Mem_AllocOrFree_00473d7e(player + 1);
           strcat(&g_OverworldWorldState,pcVar7);
           strcat(&g_OverworldWorldState,s_Wizard__0052c4f0);
           Glue_Subsystem_004ebcdc(s_x_sound_dsummon_wav_0052c4fc,0xf,100,100,0);
@@ -6776,22 +6776,22 @@ LAB_004a403e:
         }
       }
       else {
-        FUN_0040c889(0x40,*(int *)(&DAT_0067f000 + arg_1 * 0x30),
-                     *(int *)(&DAT_0067f004 + arg_1 * 0x30));
-        *(uint *)(&DAT_0067f010 + arg_1 * 0x30) =
-             *(uint *)(&DAT_0067f010 + arg_1 * 0x30) & 0xfffffffe;
-        *(uint *)(&DAT_0067f010 + arg_1 * 0x30) = *(uint *)(&DAT_0067f010 + arg_1 * 0x30) | 6;
+        FUN_0040c889(0x40,*(int *)(&DAT_0067f000 + player * 0x30),
+                     *(int *)(&DAT_0067f004 + player * 0x30));
+        *(uint *)(&DAT_0067f010 + player * 0x30) =
+             *(uint *)(&DAT_0067f010 + player * 0x30) & 0xfffffffe;
+        *(uint *)(&DAT_0067f010 + player * 0x30) = *(uint *)(&DAT_0067f010 + player * 0x30) | 6;
         do {
           do {
-            local_20 = FUN_0040a1d2(0x40);
-            local_28 = FUN_0040a1d2(0x40);
+            local_20 = Math_RandomRange(0x40);
+            local_28 = Math_RandomRange(0x40);
             FUN_0040c7c0(local_20,local_28);
-            iVar4 = FUN_0040c761(local_20,local_28);
+            iVar4 = Surface_GetPixelColor(local_20, local_28);
           } while (iVar4 == 0);
           uVar2 = FUN_0040c7c0(local_20,local_28);
         } while ((uVar2 & 0x30) != 0);
-        *(uint *)(&DAT_0067f000 + arg_1 * 0x30) = local_20;
-        *(uint *)(&DAT_0067f004 + arg_1 * 0x30) = local_28;
+        *(uint *)(&DAT_0067f000 + player * 0x30) = local_20;
+        *(uint *)(&DAT_0067f004 + player * 0x30) = local_28;
         FUN_0040c81c(0x40,local_20,local_28);
       }
       DAT_00627a7c = 0;
@@ -6823,7 +6823,7 @@ int Palette_Subsystem_004a41fd(void)
   char cVar1;
   char cVar2;
   int iVar3;
-  int arg_2;
+  int card_slot;
   int arg_3;
   int local_30;
   int local_2c;
@@ -6926,12 +6926,12 @@ int Palette_Subsystem_004a41fd(void)
                   == 0) && ((char)(&DAT_0054bd68)[local_18 + local_10 * 0xd] < cVar1)) &&
                ('\a' < (char)(&DAT_0054bd68)[local_18 + local_10 * 0xd])) {
               arg_3 = 6;
-              arg_2 = 0;
+              card_slot = 0;
               cVar2 = (&DAT_0054bd68)[local_18 + local_10 * 0xd];
-              iVar3 = FUN_0040a1d2(6);
-              local_1c = FUN_0040a305(((int)((cVar2 - local_28) + (cVar2 - local_28 >> 0x1f & 3U))
-                                      >> 2) + -2 + iVar3 + local_2c + local_30,arg_2,arg_3);
-              iVar3 = FUN_0040a1d2(DAT_0067f380 + 3);
+              iVar3 = Math_RandomRange(6);
+              local_1c = Math_Clamp(((int)((cVar2 - local_28) + (cVar2 - local_28 >> 0x1f & 3U))
+                                      >> 2) + -2 + iVar3 + local_2c + local_30,card_slot,arg_3);
+              iVar3 = Math_RandomRange(DAT_0067f380 + 3);
               if (iVar3 == 0) {
                 local_1c = 1;
               }
@@ -6956,7 +6956,7 @@ int Palette_Subsystem_004a41fd(void)
  */
 
 
-void Palette_Subsystem_004a4760(int arg_1,int arg_2,int arg_3)
+void Palette_Subsystem_004a4760(int player,int card_slot,int arg_3)
 
 {
   int arg_3_00;
@@ -6966,10 +6966,10 @@ void Palette_Subsystem_004a4760(int arg_1,int arg_2,int arg_3)
   
   arg_3_00 = arg_3 + 1;
   arg_3._0_1_ = (undefined1)arg_3_00;
-  (&DAT_0054bd68)[arg_2 + arg_1 * 0xd] = (undefined1)arg_3;
+  (&DAT_0054bd68)[card_slot + player * 0xd] = (undefined1)arg_3;
   for (local_10 = 1; local_10 < 9; local_10 = local_10 + 2) {
-    arg_1_00 = *(int *)(&DAT_00522378 + local_10 * 4) + arg_1;
-    arg_2_00 = *(int *)(&DAT_005223e0 + local_10 * 4) + arg_2;
+    arg_1_00 = *(int *)(&DAT_00522378 + local_10 * 4) + player;
+    arg_2_00 = *(int *)(&DAT_005223e0 + local_10 * 4) + card_slot;
     if (((*(int *)(&DAT_00649c20 + arg_2_00 * 4 + arg_1_00 * 0x34) != 0) &&
         ((((&DAT_0054bd68)[arg_2_00 + arg_1_00 * 0xd] == '\0' ||
           (arg_3_00 < (char)(&DAT_0054bd68)[arg_2_00 + arg_1_00 * 0xd])) && (-1 < arg_1_00)))) &&
@@ -7033,7 +7033,7 @@ void Palette_Subsystem_004a486f(int arg1,int arg2)
                ((int)((&DAT_005223e4)[arg1 - 2U & 7] * 0x10 +
                      ((&DAT_005223e4)[arg1 - 2U & 7] * 0x10 >> 0x1f & 7U)) >> 3);
     FUN_00501736(5);
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
   }
   return;
 }
@@ -7047,7 +7047,7 @@ void Palette_Subsystem_004a486f(int arg1,int arg2)
  */
 
 
-void Palette_Subsystem_004a4a47(int arg_1,int arg_2,int arg_3)
+void Palette_Subsystem_004a4a47(int player,int card_slot,int arg_3)
 
 {
   int iVar1;
@@ -7069,7 +7069,7 @@ void Palette_Subsystem_004a4a47(int arg_1,int arg_2,int arg_3)
   int local_c;
   int local_8;
   
-  if (arg_2 == 0) {
+  if (card_slot == 0) {
     *(undefined4 *)g_DisplaySurfaceScreen = 1;
   }
   iVar1 = Ai_Util_004c3ba3(0xf0);
@@ -7112,7 +7112,7 @@ void Palette_Subsystem_004a4a47(int arg_1,int arg_2,int arg_3)
   for (local_14 = 0xe; -1 < local_14; local_14 = local_14 + -1) {
     for (local_1c = 0; (int)local_1c < 0xd; local_1c = local_1c + 1) {
       Palette_Subsystem_004a554b(local_14,local_1c,&local_24,&local_28);
-      if ((arg_1 == 0) && (((&DAT_00649c21)[local_1c * 4 + local_14 * 0x34] & 1) == 0)) {
+      if ((player == 0) && (((&DAT_00649c21)[local_1c * 4 + local_14 * 0x34] & 1) == 0)) {
         if ((((-1 < local_24) && (-1 < local_28)) && (local_24 < 0x241)) &&
            ((local_28 < 0x191 && (*(int *)(&DAT_00649c20 + local_1c * 4 + local_14 * 0x34) == 0))))
         {
@@ -7241,7 +7241,7 @@ void Palette_Subsystem_004a4a47(int arg_1,int arg_2,int arg_3)
       }
     }
   }
-  if ((arg_2 != 0) && (*(int *)(&DAT_0067effc + arg_3 * 0x30) != -1)) {
+  if ((card_slot != 0) && (*(int *)(&DAT_0067effc + arg_3 * 0x30) != -1)) {
     local_20 = Pic_Subsystem_0045268f(*(int *)(&DAT_0067effc + arg_3 * 0x30));
     strcpy(&g_OverworldWorldState,s_Swamp_0051aea9 + local_20 * 0x34);
     strcat(&g_OverworldWorldState,s_in_effect__0052c518);
@@ -7258,12 +7258,12 @@ void Palette_Subsystem_004a4a47(int arg_1,int arg_2,int arg_3)
     FUN_0040c381(&g_OverworldWorldState,0x76,0x20,0x1b);
   }
   *(undefined4 *)g_DisplaySurfaceScreen = 0;
-  if (arg_2 == 0) {
-    FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+  if (card_slot == 0) {
+    FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                  (int *)g_DisplaySurfaceScreen,0,0);
   }
   else {
-    FUN_0050e040((int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c,
+    FUN_0050e040((int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                  (int *)g_DisplaySurfaceBackBuffer,0,0);
   }
   iVar1 = (&DAT_00679424)[DAT_0052c2a0 * 5];
@@ -7312,8 +7312,8 @@ void Palette_Subsystem_004a5586(int x,int y,int *width,int *height)
   int iVar2;
   int iVar3;
   
-  iVar1 = (x * 0x280) / DAT_00522458;
-  iVar2 = ((y * 3 + -0x30) * 0xa0) / DAT_0052245c;
+  iVar1 = (x * 0x280) / g_DisplayScreenWidth;
+  iVar2 = ((y * 3 + -0x30) * 0xa0) / g_DisplayScreenHeight;
   iVar3 = (iVar1 + 0x60) / 2 - (iVar2 + -0x110);
   *width = (int)(iVar3 + (iVar3 >> 0x1f & 0x1fU)) >> 5;
   iVar1 = iVar2 + -0x110 + (iVar1 + 0x60) / 2;
@@ -7370,7 +7370,7 @@ void Palette_Subsystem_004a5603(int arg1,int arg2)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
+int Palette_Subsystem_004a5722(int player,int card_slot,int arg_3)
 
 {
   char cVar1;
@@ -7389,37 +7389,37 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
   
   for (local_14 = 0; local_14 < 500; local_14 = local_14 + 1) {
     local_10 = *(uint *)(&deck + local_14 * 4) & 0xfff;
-    if ((((&DAT_0067f014)[arg_1 * 0x30] & 0x80) != 0) &&
+    if ((((&DAT_0067f014)[player * 0x30] & 0x80) != 0) &&
        (_DAT_0063ee14 = 0, ((&g_MasterCardColorTable)[local_10 * 0x34] & 0x30) != 0)) {
       *(uint *)(&deck + local_14 * 4) = *(uint *)(&deck + local_14 * 4) | 0x8000;
     }
-    if ((((&DAT_0067f014)[arg_1 * 0x30] & 0x40) != 0) &&
+    if ((((&DAT_0067f014)[player * 0x30] & 0x40) != 0) &&
        (_DAT_0063ee14 = 0, ((&g_MasterCardColorTable)[local_10 * 0x34] & 0x40) != 0)) {
       *(uint *)(&deck + local_14 * 4) = *(uint *)(&deck + local_14 * 4) | 0x8000;
     }
-    if ((((&DAT_0067f014)[arg_1 * 0x30] & 0x10) != 0) &&
+    if ((((&DAT_0067f014)[player * 0x30] & 0x10) != 0) &&
        (_DAT_0063ee14 = 0,
-       1 << ((&DAT_0067f00c)[arg_1 * 0x30] & 0x1f) == (int)(char)(&DAT_0051aebe)[local_10 * 0x34]))
+       1 << ((&DAT_0067f00c)[player * 0x30] & 0x1f) == (int)(char)(&DAT_0051aebe)[local_10 * 0x34]))
     {
       *(uint *)(&deck + local_14 * 4) = *(uint *)(&deck + local_14 * 4) | 0x8000;
     }
   }
-  DAT_006b2d64 = (int)(char)(&DAT_0067f00c)[arg_1 * 0x30];
-  if (*(int *)(&DAT_0067effc + arg_1 * 0x30) != -1) {
-    DAT_0068a64c = Pic_Subsystem_0045268f(*(int *)(&DAT_0067effc + arg_1 * 0x30));
+  DAT_006b2d64 = (int)(char)(&DAT_0067f00c)[player * 0x30];
+  if (*(int *)(&DAT_0067effc + player * 0x30) != -1) {
+    DAT_0068a64c = Pic_Subsystem_0045268f(*(int *)(&DAT_0067effc + player * 0x30));
   }
-  local_c = *(LPVOID *)(&DAT_0054ba00 + arg_2 * 4);
+  local_c = *(LPVOID *)(&DAT_0054ba00 + card_slot * 4);
   DAT_00695df0 = (int)(char)(&DAT_00522629)[(int)local_c * 0x44];
   DAT_0063ee24 = 0;
-  if (arg_2 != 4) {
+  if (card_slot != 4) {
     _g_PlayerLifeTotals = 0x10;
   }
-  if (arg_1 < 5) {
+  if (player < 5) {
     DAT_00695df0 = 2;
-    local_18 = arg_2 + DAT_0067f380 + -3;
+    local_18 = card_slot + DAT_0067f380 + -3;
     if (-1 < local_18) {
-      cVar1 = (&DAT_0067f00c)[arg_1 * 0x30];
-      iVar2 = FUN_0040a305(local_18,0,2);
+      cVar1 = (&DAT_0067f00c)[player * 0x30];
+      iVar2 = Math_Clamp(local_18,0,2);
       DAT_006b2fe0 = Pic_Subsystem_0045268f
                                (*(int *)(&DAT_00527f10 + (cVar1 * 3 + -3) * 4 + iVar2 * 4));
     }
@@ -7429,7 +7429,7 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
   arg_2_00 = Pic_Subsystem_0045268f(*(int *)(&DAT_0052262c + (int)local_c * 0x44));
   FUN_004909d3((int)local_c,arg_2_00,width,iVar2);
   Glue_Subsystem_004ebcdc(s_x_sound_dngnduel_wav_0052c528,0xf,100,100,0);
-  if (arg_1 < 5) {
+  if (player < 5) {
     strcpy(&g_OverworldWorldState,s_Exploring_the_Castle____0052c540);
   }
   else {
@@ -7439,8 +7439,8 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
   Glue_Subsystem_004eaa19((int)local_c,1,0);
   strcat(&g_OverworldWorldState,&DAT_0052c588);
   if (DAT_006b2fe0 != -1) {
-    cVar1 = (&DAT_0067f00c)[arg_1 * 0x30];
-    iVar2 = FUN_0040a305(local_18,0,2);
+    cVar1 = (&DAT_0067f00c)[player * 0x30];
+    iVar2 = Math_Clamp(local_18,0,2);
     local_18 = *(int *)(&DAT_00527f10 + (cVar1 * 3 + -3) * 4 + iVar2 * 4);
     strcat(&g_OverworldWorldState,&DAT_0052c58c);
     Glue_Subsystem_004eaa19((int)local_c,0,0);
@@ -7451,7 +7451,7 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
   }
   if (DAT_0068a64c != -1) {
     strcat(&g_OverworldWorldState,&DAT_0052c59c);
-    iVar2 = Pic_Subsystem_0045268f(*(int *)(&DAT_0067effc + arg_1 * 0x30));
+    iVar2 = Pic_Subsystem_0045268f(*(int *)(&DAT_0067effc + player * 0x30));
     strcat(&g_OverworldWorldState,s_Swamp_0051aea9 + iVar2 * 0x34);
     strcat(&g_OverworldWorldState,s_starts_in_play__0052c5a0);
   }
@@ -7463,7 +7463,7 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
   Glue_Subsystem_004eccd7();
   do {
     do {
-      local_18 = FUN_0040a1d2(500);
+      local_18 = Math_RandomRange(500);
     } while (*(int *)(&deck + local_18 * 4) == -1);
   } while ((((&DAT_00702151)[local_18 * 4] & 0x40) != 0) ||
           ((*(uint *)(&deck + local_18 * 4) & 0xfff) < 5));
@@ -7498,26 +7498,26 @@ int Palette_Subsystem_004a5722(int arg_1,int arg_2,int arg_3)
         strcpy(&g_OverworldWorldState,s_Lost_this_card_0052c5c4);
         Mem_AllocOrFree_00510e20(1,s_losedul2_pic_0052c5d4);
         Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                           (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                           (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
         str_5 = &g_OverworldWorldState;
         arg_4 = 1;
         iVar2 = Ai_Util_004c3bc4(10);
-        iVar2 = FUN_0040a1d2(iVar2);
+        iVar2 = Math_RandomRange(iVar2);
         iVar2 = iVar2 + 0x50;
         iVar3 = Ai_Util_004c3bc4(10);
-        iVar3 = FUN_0040a1d2(iVar3);
+        iVar3 = Math_RandomRange(iVar3);
         FUN_0050b206(DAT_006b2d90,iVar3 + local_14 * 0x62 + 0x21,iVar2,arg_4,str_5);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Ai_Subsystem_004cd1d1();
         FUN_00489630((&DAT_006b2d90)[local_14]);
       }
     }
   }
-  if (((&DAT_0067f014)[arg_1 * 0x30] & 1) != 0) {
+  if (((&DAT_0067f014)[player * 0x30] & 1) != 0) {
     DAT_006498fc = DAT_006498fc + (g_PlayerCreatureCount - DAT_00627868);
     DAT_00627a7c = 0;
   }
-  if (((&DAT_0067f014)[arg_1 * 0x30] & 2) != 0) {
+  if (((&DAT_0067f014)[player * 0x30] & 2) != 0) {
     DAT_00627a7c = 0;
     DAT_006498fc = 0;
   }
@@ -7582,10 +7582,10 @@ void Palette_Subsystem_004a5f7c(void)
 {
   undefined4 arg2;
   
-  arg2 = FUN_0050d0b0(9,DAT_00522458,0x81,8);
+  arg2 = FUN_0050d0b0(9,g_DisplayScreenWidth,0x81,8);
   FUN_0050d370(9,arg2);
   *(undefined4 *)(PTR_DAT_0052c2ec + 0x20) = 1;
-  FUN_0050dce0((int *)g_DisplaySurfaceWork,0,0,DAT_00522458,0x80,(int *)PTR_DAT_0052c2ec,0,0);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceWork,0,0,g_DisplayScreenWidth,0x80,(int *)PTR_DAT_0052c2ec,0,0);
   return;
 }
 
@@ -7601,7 +7601,7 @@ void Palette_Subsystem_004a5f7c(void)
 void Palette_Subsystem_004a5fdc(void)
 
 {
-  FUN_0050dce0((int *)PTR_DAT_0052c2ec,0,0,DAT_00522458,0x80,(int *)g_DisplaySurfaceWork,0,0);
+  Surface_BlitToDevice((int *)PTR_DAT_0052c2ec,0,0,g_DisplayScreenWidth,0x80,(int *)g_DisplaySurfaceWork,0,0);
   FUN_0050d2a0(9);
   return;
 }
@@ -7652,7 +7652,7 @@ void Palette_Subsystem_004a6018(void)
 undefined4 Palette_Subsystem_004a610e(int arg1,int arg2)
 
 {
-  int arg_1;
+  int player;
   undefined4 uVar1;
   int arg_1_00;
   int local_44 [10];
@@ -7680,16 +7680,16 @@ undefined4 Palette_Subsystem_004a610e(int arg1,int arg2)
     Palette_Subsystem_004a554b(DAT_0054bd28,DAT_0054bd2c,&local_18,&local_1c);
     local_18 = Ai_Util_004c3bc4(local_18);
     local_1c = Ai_Util_004c3bc4(local_1c);
-    arg_1 = arg1 - local_18;
+    player = arg1 - local_18;
     arg_1_00 = local_1c - arg2;
-    local_10 = abs(arg_1);
+    local_10 = abs(player);
     local_14 = abs(arg_1_00);
-    if ((arg_1 < 0) || (arg_1_00 < 0)) {
-      if ((arg_1 < 0) || (-1 < arg_1_00)) {
-        if ((arg_1 < 0) && (arg_1_00 < 0)) {
+    if ((player < 0) || (arg_1_00 < 0)) {
+      if ((player < 0) || (-1 < arg_1_00)) {
+        if ((player < 0) && (arg_1_00 < 0)) {
           local_c = 4;
         }
-        else if ((arg_1 < 0) && (-1 < arg_1_00)) {
+        else if ((player < 0) && (-1 < arg_1_00)) {
           local_c = 6;
         }
       }
@@ -7717,16 +7717,16 @@ undefined4 Palette_Subsystem_004a610e(int arg1,int arg2)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-int Palette_Subsystem_004a62a0(undefined4 arg_1,int arg_2,int arg_3)
+int Palette_Subsystem_004a62a0(undefined4 player,int card_slot,int arg_3)
 
 {
   INT_PTR IVar1;
   int local_10;
   int local_c;
   
-  _DAT_0052c638 = arg_1;
-  if (arg_2 != -1) {
-    _DAT_0052c630 = arg_2;
+  _DAT_0052c638 = player;
+  if (card_slot != -1) {
+    _DAT_0052c630 = card_slot;
   }
   if (arg_3 != -1) {
     _DAT_0052c634 = arg_3;
@@ -7774,7 +7774,7 @@ undefined4 Palette_Subsystem_004a6370(HWND hwnd,uint uMsg,uint wParam,byte *lPar
   
   if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      uVar5 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      uVar5 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return uVar5;
     }
     if (uMsg == 0x110) {
@@ -7963,7 +7963,7 @@ undefined4 Palette_Subsystem_004a6370(HWND hwnd,uint uMsg,uint wParam,byte *lPar
  */
 
 
-void Palette_Subsystem_004a69c8(HWND hwnd,byte arg_2,byte arg_3)
+void Palette_Subsystem_004a69c8(HWND hwnd,byte card_slot,byte arg_3)
 
 {
   bool bVar1;
@@ -7977,11 +7977,11 @@ void Palette_Subsystem_004a69c8(HWND hwnd,byte arg_2,byte arg_3)
     bVar1 = false;
     bVar2 = false;
     bVar3 = false;
-    if (((((((arg_2 & 2) == 0) || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 1)) &&
-          (((arg_2 & 0x20) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 8)))) &&
-         (((arg_2 & 4) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 2)))) &&
-        (((arg_2 & 0x10) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 7)))) &&
-       (((arg_2 & 8) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 5)))) {
+    if (((((((card_slot & 2) == 0) || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 1)) &&
+          (((card_slot & 0x20) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 8)))) &&
+         (((card_slot & 4) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 2)))) &&
+        (((card_slot & 0x10) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 7)))) &&
+       (((card_slot & 8) == 0 || (*(int *)(&DAT_006b3080 + local_8 * 0x98) != 5)))) {
       if ((*(int *)(&DAT_006b3080 + local_8 * 0x98) == 4) ||
          (((*(int *)(&DAT_006b3080 + local_8 * 0x98) == 0 ||
            (*(int *)(&DAT_006b3080 + local_8 * 0x98) == 3)) ||
@@ -8028,7 +8028,7 @@ void Palette_Subsystem_004a69c8(HWND hwnd,byte arg_2,byte arg_3)
  */
 
 
-int Palette_Subsystem_004a6d20(int arg_1,int arg_2,int arg_3)
+int Palette_Subsystem_004a6d20(int player,int card_slot,int arg_3)
 
 {
   int iVar1;
@@ -8062,7 +8062,7 @@ int Palette_Subsystem_004a6d20(int arg_1,int arg_2,int arg_3)
         if (((&g_MasterCardColorTable)
              [*(int *)(&g_CardSlot_CardId + local_14 * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
         {
-          uVar2 = Glue_Subsystem_004d0a42(arg_1,arg_2);
+          uVar2 = Glue_Subsystem_004d0a42(player,card_slot);
           if ((*(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + local_8 * 0x5b20) & uVar2) == 0
              ) {
             local_10 = 1;
@@ -8085,13 +8085,13 @@ LAB_004a6d5f:
  */
 
 
-int Palette_Subsystem_004a6eb8(int arg_1)
+int Palette_Subsystem_004a6eb8(int player)
 
 {
   int local_8;
   
   local_8 = -1;
-  switch(arg_1) {
+  switch(player) {
   case 8:
   case 0x11:
   case 0x4a:
@@ -8099,7 +8099,7 @@ int Palette_Subsystem_004a6eb8(int arg_1)
   case 0x5a:
   case 0x6a:
   case 0x94:
-    local_8 = arg_1 + 1;
+    local_8 = player + 1;
     break;
   case 9:
   case 0x12:
@@ -8108,7 +8108,7 @@ int Palette_Subsystem_004a6eb8(int arg_1)
   case 0x5b:
   case 0x6b:
   case 0x95:
-    local_8 = arg_1 + -1;
+    local_8 = player + -1;
     break;
   case 10:
   case 0xb:
@@ -8292,7 +8292,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
         (((&g_MasterCardColorTable)
           [*(int *)(&g_CardSlot_CardId + target_id * 0x120 + spell_id * 0x5b20) * 0x34] & 2) == 0))
        && ((((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0 &&
-           (iVar2 = FUN_0040d949(spell_id,3,2), iVar2 != 0)))) {
+           (iVar2 = Font_DrawString(spell_id, 3, 2), iVar2 != 0)))) {
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0x10;
@@ -8306,7 +8306,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       arg_12 = 0;
       arg_11 = 0;
       arg_10 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      iVar2 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11,arg_12,arg_13,uVar1,
+      iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11,arg_12,arg_13,uVar1,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
         return 1;
@@ -8410,7 +8410,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
  */
 
 
-int Palette_Subsystem_004a75bd(int arg_1)
+int Palette_Subsystem_004a75bd(int player)
 
 {
   int arg2;
@@ -8418,13 +8418,13 @@ int Palette_Subsystem_004a75bd(int arg_1)
   int local_8;
   
   local_8 = 0;
-  while ((local_8 < 500 && (*(int *)(&DAT_0069e730 + local_8 * 4 + arg_1 * 2000) != -1))) {
+  while ((local_8 < 500 && (*(int *)(&DAT_0069e730 + local_8 * 4 + player * 2000) != -1))) {
     local_8 = local_8 + 1;
   }
-  arg2 = FUN_0040a1d2(local_8);
-  local_c = Palette_Subsystem_004a7650(arg_1,arg2);
+  arg2 = Math_RandomRange(local_8);
+  local_c = Palette_Subsystem_004a7650(player,arg2);
   if (local_c == 0) {
-    local_c = Palette_Subsystem_004a7650(arg_1,0);
+    local_c = Palette_Subsystem_004a7650(player,0);
   }
   return local_c;
 }
@@ -8469,22 +8469,22 @@ int Palette_Subsystem_004a7650(int arg1,int arg2)
  */
 
 
-int Palette_Subsystem_004a771b(int arg_1,int arg_2,undefined4 arg_3)
+int Palette_Subsystem_004a771b(int player,int card_slot,undefined4 arg_3)
 
 {
   int iVar1;
   
-  iVar1 = FUN_00410cc0(arg_1,arg_2,DAT_006fefac,arg_1,arg_2);
+  iVar1 = Card_ApplyTriggerEffect(player, card_slot, DAT_006fefac, player, card_slot);
   if (iVar1 != -1) {
-    *(uint *)(&g_CardSlot_Abilities1 + iVar1 * 0x120 + arg_1 * 0x5b20) =
-         *(uint *)(&g_CardSlot_Abilities1 + iVar1 * 0x120 + arg_1 * 0x5b20) | 0x20;
-    *(undefined4 *)(&g_CardSlot_ConvertedManaCost + iVar1 * 0x120 + arg_1 * 0x5b20) = arg_3;
-    if (arg_1 != 0) {
-      *(uint *)(&g_CardSlot_Flags + iVar1 * 0x120 + arg_1 * 0x5b20) =
-           *(uint *)(&g_CardSlot_Flags + iVar1 * 0x120 + arg_1 * 0x5b20) | 0x1000;
+    *(uint *)(&g_CardSlot_Abilities1 + iVar1 * 0x120 + player * 0x5b20) =
+         *(uint *)(&g_CardSlot_Abilities1 + iVar1 * 0x120 + player * 0x5b20) | 0x20;
+    *(undefined4 *)(&g_CardSlot_ConvertedManaCost + iVar1 * 0x120 + player * 0x5b20) = arg_3;
+    if (player != 0) {
+      *(uint *)(&g_CardSlot_Flags + iVar1 * 0x120 + player * 0x5b20) =
+           *(uint *)(&g_CardSlot_Flags + iVar1 * 0x120 + player * 0x5b20) | 0x1000;
     }
-    (&g_CardSlot_DamageReceived)[arg_1 * 0x5b20 + arg_2 * 0x120] = (undefined1)arg_1;
-    *(int *)(&g_CardSlot_TypeFlags + arg_1 * 0x5b20 + arg_2 * 0x120) = iVar1;
+    (&g_CardSlot_DamageReceived)[player * 0x5b20 + card_slot * 0x120] = (undefined1)player;
+    *(int *)(&g_CardSlot_TypeFlags + player * 0x5b20 + card_slot * 0x120) = iVar1;
   }
   return iVar1;
 }
@@ -8498,16 +8498,16 @@ int Palette_Subsystem_004a771b(int arg_1,int arg_2,undefined4 arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a7814(int arg_1,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_004a7814(int player,int card_slot,int arg_3)
 
 {
   int iVar1;
   undefined4 uVar2;
   
   if (arg_3 == 0x73) {
-    iVar1 = FUN_0040d949(arg_1,7,2);
+    iVar1 = Font_DrawString(player,7,2);
     if ((iVar1 == 0) ||
-       ((*(uint *)(&g_CardSlot_Flags + arg_1 * 0x5b20 + arg_2 * 0x120) & 0x20014) != 0)) {
+       ((*(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) & 0x20014) != 0)) {
       uVar2 = 0;
     }
     else {
@@ -8520,30 +8520,30 @@ undefined4 Palette_Subsystem_004a7814(int arg_1,int arg_2,int arg_3)
     uVar2 = 0;
   }
   else {
-    if ((arg_3 == 0x6d) && (iVar1 = Palette_Subsystem_004a7d05(arg_1,arg_2), iVar1 != 0)) {
-      Ai_CalcManaRequirement_004ba890(arg_1,0,2);
+    if ((arg_3 == 0x6d) && (iVar1 = Palette_Subsystem_004a7d05(player,card_slot), iVar1 != 0)) {
+      Ai_CalcManaRequirement_004ba890(player,0,2);
       if (g_ActivePlayer != 1) {
-        Ai_CalcManaRequirement_004ba890(arg_1,4,-1);
+        Ai_CalcManaRequirement_004ba890(player,4,-1);
       }
       if (g_ActivePlayer != 1) {
-        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + arg_1 * 0x5b20 + arg_2 * 0x120) =
+        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120) =
              g_TurnCounter;
-        *(uint *)(&g_CardSlot_Flags + arg_1 * 0x5b20 + arg_2 * 0x120) =
-             *(uint *)(&g_CardSlot_Flags + arg_1 * 0x5b20 + arg_2 * 0x120) | 0x10;
+        *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) =
+             *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) | 0x10;
       }
     }
     if ((arg_3 == 0x72) &&
-       (0 < *(int *)(&g_CardSlot_ConvertedManaCost + arg_1 * 0x5b20 + arg_2 * 0x120))) {
+       (0 < *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120))) {
       if (g_IsAiThinking != 1) {
         Magic_UpkeepPhase(0x27);
       }
       Palette_Subsystem_004a7a25
                 (g_DialogPromptHwnd,g_DuelArenaHwnd,
-                 *(int *)(&g_CardSlot_ConvertedManaCost + arg_1 * 0x5b20 + arg_2 * 0x120));
+                 *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120));
       *(undefined4 *)
        (&g_CardSlot_ConvertedManaCost +
-       *(int *)(&g_CardSlot_TapState + arg_1 * 0x5b20 + arg_2 * 0x120) * 0x5b20 +
-       *(int *)(&g_CardSlot_SicknessState + arg_1 * 0x5b20 + arg_2 * 0x120) * 0x120) = 0;
+       *(int *)(&g_CardSlot_TapState + player * 0x5b20 + card_slot * 0x120) * 0x5b20 +
+       *(int *)(&g_CardSlot_SicknessState + player * 0x5b20 + card_slot * 0x120) * 0x120) = 0;
     }
     uVar2 = 0;
   }
@@ -8559,7 +8559,7 @@ undefined4 Palette_Subsystem_004a7814(int arg_1,int arg_2,int arg_3)
  */
 
 
-int Palette_Subsystem_004a7a25(int arg_1,int arg_2,int arg_3)
+int Palette_Subsystem_004a7a25(int player,int card_slot,int arg_3)
 
 {
   int local_514;
@@ -8567,10 +8567,10 @@ int Palette_Subsystem_004a7a25(int arg_1,int arg_2,int arg_3)
   int local_508;
   int local_504 [320];
   
-  local_514 = Palette_Subsystem_004a7bcd(arg_1,arg_2,(int)local_504);
+  local_514 = Palette_Subsystem_004a7bcd(player,card_slot,(int)local_504);
   local_508 = 0;
   for (; (local_508 < arg_3 && (local_514 != 0)); local_514 = local_514 + -1) {
-    local_50c = FUN_0040a1d2(local_514);
+    local_50c = Math_RandomRange(local_514);
     FUN_00415d48(local_504[local_50c * 2],local_504[local_50c * 2 + 1]);
     if ((*(int *)(&DAT_006b3088 +
                  *(int *)(&g_MasterCardTypeTable +
@@ -8582,7 +8582,7 @@ int Palette_Subsystem_004a7a25(int arg_1,int arg_2,int arg_3)
                         *(int *)(&g_CardSlot_CardId +
                                 local_504[local_50c * 2] * 0x5b20 +
                                 local_504[local_50c * 2 + 1] * 0x120) * 0x34) * 0x98) == 0x57)) {
-      FUN_00410cc0(arg_1,arg_2,DAT_00695df4,local_504[local_50c * 2],local_504[local_50c * 2 + 1]);
+      Card_ApplyTriggerEffect(player,card_slot,DAT_00695df4,local_504[local_50c * 2],local_504[local_50c * 2 + 1]);
     }
     for (; local_50c < local_514; local_50c = local_50c + 1) {
       local_504[local_50c * 2] = local_504[local_50c * 2 + 2];
@@ -8602,7 +8602,7 @@ int Palette_Subsystem_004a7a25(int arg_1,int arg_2,int arg_3)
  */
 
 
-int Palette_Subsystem_004a7bcd(int arg_1,int arg_2,int arg_3)
+int Palette_Subsystem_004a7bcd(int player,int card_slot,int arg_3)
 
 {
   uint uVar1;
@@ -8618,7 +8618,7 @@ int Palette_Subsystem_004a7bcd(int arg_1,int arg_2,int arg_3)
           (((&g_CardSlot_Flags)[local_8 * 0x5b20 + local_10 * 0x120] & 2) != 0)) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34] & 2) != 0)) {
-        uVar1 = Glue_Subsystem_004d0a42(arg_1,arg_2);
+        uVar1 = Glue_Subsystem_004d0a42(player,card_slot);
         if ((*(uint *)(&g_CardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0)
         {
           *(int *)(arg_3 + local_c * 8) = local_8;
@@ -8679,21 +8679,21 @@ int Palette_Subsystem_004a7d05(int arg1,int arg2)
  */
 
 
-undefined4 Palette_Subsystem_004a7e3c(int arg_1,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_004a7e3c(int player,int card_slot,int arg_3)
 
 {
   if ((((arg_3 == 0x82) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + arg_2 * 0x120 + arg_1 * 0x5b20) == g_OverworldMapGrid)
-       ) && ((char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + arg_1 * 0x5b20] ==
+       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)
+       ) && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
              g_OverworldPlayerCoordX)) && (g_OverworldMapGrid != -1)) {
     *(uint *)(&DAT_006a6038 +
-             *(int *)(&g_CardSlot_OriginalCardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x120 +
-             (char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + arg_1 * 0x5b20] * 0x5b20) =
+             *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
+             (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) =
          *(uint *)(&DAT_006a6038 +
-                  *(int *)(&g_CardSlot_OriginalCardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x120 +
-                  (char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + arg_1 * 0x5b20] * 0x5b20) &
+                  *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
+                  (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) &
          0xfffffffc;
-    Pic_Subsystem_0044867e(arg_1,arg_2,1);
+    Pic_Subsystem_0044867e(player,card_slot,1);
   }
   return 0;
 }
@@ -8707,7 +8707,7 @@ undefined4 Palette_Subsystem_004a7e3c(int arg_1,int arg_2,int arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a7f2a(int arg_1,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_004a7f2a(int player,int card_slot,int arg_3)
 
 {
   int iVar1;
@@ -8715,8 +8715,8 @@ undefined4 Palette_Subsystem_004a7f2a(int arg_1,int arg_2,int arg_3)
   undefined4 local_504 [320];
   
   if (arg_3 == 0x73) {
-    iVar1 = FUN_0040d949(arg_1,3,2);
-    if ((iVar1 == 0) || (iVar1 = FUN_0040d949(arg_1,7,3), iVar1 == 0)) {
+    iVar1 = Font_DrawString(player,3,2);
+    if ((iVar1 == 0) || (iVar1 = Font_DrawString(player,7,3), iVar1 == 0)) {
       uVar2 = 0;
     }
     else {
@@ -8730,23 +8730,23 @@ undefined4 Palette_Subsystem_004a7f2a(int arg_1,int arg_2,int arg_3)
   else {
     if (arg_3 == 0x6d) {
       DAT_006b2d40 = 1;
-      Ai_CalcManaRequirement_004ba890(arg_1,3,2);
+      Ai_CalcManaRequirement_004ba890(player,3,2);
       if (g_ActivePlayer != 1) {
-        uVar2 = FUN_0040a1d2(0x14);
-        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + arg_2 * 0x120 + arg_1 * 0x5b20) = uVar2;
-        iVar1 = Palette_Subsystem_004a7bcd(arg_1,arg_2,(int)local_504);
-        iVar1 = FUN_0040a1d2(iVar1);
-        *(undefined4 *)(&g_CardSlot_CombatTarget + arg_2 * 0x120 + arg_1 * 0x5b20) =
+        uVar2 = Math_RandomRange(0x14);
+        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) = uVar2;
+        iVar1 = Palette_Subsystem_004a7bcd(player,card_slot,(int)local_504);
+        iVar1 = Math_RandomRange(iVar1);
+        *(undefined4 *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) =
              local_504[iVar1 * 2];
-        *(undefined4 *)(&g_CardSlot_AttachedAura + arg_2 * 0x120 + arg_1 * 0x5b20) =
+        *(undefined4 *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20) =
              local_504[iVar1 * 2 + 1];
-        (&g_CardSlot_TurnPlayed)[arg_2 * 0x120 + arg_1 * 0x5b20] = 1;
+        (&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] = 1;
       }
     }
-    if ((arg_3 == 0x72) && ((&g_CardSlot_TurnPlayed)[arg_2 * 0x120 + arg_1 * 0x5b20] != '\0')) {
+    if ((arg_3 == 0x72) && ((&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] != '\0')) {
       Palette_Subsystem_004a8111
-                (arg_1,arg_2,
-                 *(int *)(&g_CardSlot_ConvertedManaCost + arg_2 * 0x120 + arg_1 * 0x5b20));
+                (player,card_slot,
+                 *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20));
     }
     uVar2 = 0;
   }
@@ -8762,7 +8762,7 @@ undefined4 Palette_Subsystem_004a7f2a(int arg_1,int arg_2,int arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_004a8111(int player,int card_slot,int arg_3)
 
 {
   byte bVar1;
@@ -8790,42 +8790,42 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
   iVar4 = -1;
   arg_13 = 0;
   arg_12 = 0;
-  arg_11 = Glue_Subsystem_004d0a42(arg_1,arg_2);
+  arg_11 = Glue_Subsystem_004d0a42(player,card_slot);
   iVar4 = Rules_ParseFilter_0040360b
-                    (*(int *)(&g_CardSlot_CombatTarget + arg_2 * 0x120 + arg_1 * 0x5b20),
-                     *(int *)(&g_CardSlot_AttachedAura + arg_2 * 0x120 + arg_1 * 0x5b20),(char *)0x0
-                     ,arg_1,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,iVar4,iVar5,arg_16,arg_17,arg_18,
+                    (*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
+                     *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20),(char *)0x0
+                     ,player,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,iVar4,iVar5,arg_16,arg_17,arg_18,
                      arg_19,arg_20);
   if (iVar4 == 0) {
     g_ActivePlayer = 1;
   }
   else {
-    iVar4 = *(int *)(&g_CardSlot_CombatTarget + arg_2 * 0x120 + arg_1 * 0x5b20);
-    iVar5 = *(int *)(&g_CardSlot_AttachedAura + arg_2 * 0x120 + arg_1 * 0x5b20);
+    iVar4 = *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20);
+    iVar5 = *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20);
     local_c = -1;
     if ((((-1 < arg_3) && (arg_3 < 0x14)) && (arg_3 != 0xd)) && (arg_3 != 1)) {
       strcpy(&g_OverworldWorldState,s_casts_Berserk__0052c698 + arg_3 * 0x32);
-      Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar4,iVar5,&g_OverworldWorldState,0);
+      Ai_Subsystem_004cc56d(player,player,card_slot,iVar4,iVar5,&g_OverworldWorldState,0);
       if (g_IsAiThinking != 1) {
         Magic_UpkeepPhase(0x24);
       }
     }
     switch(arg_3) {
     case 0:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a4b64,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a4b64,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + arg_1 * 0x5b20) = 0x80;
-        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + arg_1 * 0x5b20) =
+        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + player * 0x5b20) = 0x80;
+        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + player * 0x5b20) =
              *(undefined2 *)(&g_CardSlot_Counters + iVar4 * 0x5b20 + iVar5 * 0x120);
-        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) | 0x4000;
+        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) =
+             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) | 0x4000;
       }
       break;
     case 1:
       if (*(short *)(&g_CardSlot_Counters + iVar4 * 0x5b20 + iVar5 * 0x120) < 3) {
         Ai_Subsystem_004cc56d
-                  (arg_1,arg_1,arg_2,iVar4,iVar5,s_activates_Tawnos_s_Wand_effect__0052cb7c,0);
-        local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_00696734,iVar4,iVar5);
+                  (player,player,card_slot,iVar4,iVar5,s_activates_Tawnos_s_Wand_effect__0052cb7c,0);
+        local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_00696734,iVar4,iVar5);
         if (g_IsAiThinking != 1) {
           Magic_UpkeepPhase(0x24);
         }
@@ -8833,73 +8833,73 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
       else {
         g_ActivePlayer = 1;
         Ai_Subsystem_004cc56d
-                  (arg_1,arg_1,arg_2,iVar4,iVar5,s_fizzles_attempting_Tawnos_s_Wand_0052cba0,0);
+                  (player,player,card_slot,iVar4,iVar5,s_fizzles_attempting_Tawnos_s_Wand_0052cba0,0);
       }
       break;
     case 2:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + arg_1 * 0x5b20) = 4;
-        sVar2 = FUN_0040a305(4,0,*(short *)(&DAT_006a5f46 + iVar4 * 0x5b20 + iVar5 * 0x120) + -1);
-        *(short *)(&DAT_006a5f4a + local_c * 0x120 + arg_1 * 0x5b20) = -sVar2;
+        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + player * 0x5b20) = 4;
+        sVar2 = Math_Clamp(4,0,*(short *)(&DAT_006a5f46 + iVar4 * 0x5b20 + iVar5 * 0x120) + -1);
+        *(short *)(&DAT_006a5f4a + local_c * 0x120 + player * 0x5b20) = -sVar2;
       }
       break;
     case 3:
-      bVar1 = FUN_0041d9d2(arg_1,arg_2,3);
+      bVar1 = Card_SetTapState(player,card_slot,3);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 4:
-      bVar1 = FUN_0041d9d2(arg_1,arg_2,5);
+      bVar1 = Card_SetTapState(player,card_slot,5);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 5:
-      bVar1 = FUN_0041d9d2(arg_1,arg_2,4);
+      bVar1 = Card_SetTapState(player,card_slot,4);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 6:
-      FUN_0041db67(iVar4,iVar5,3,g_DialogPromptHwnd,g_DuelArenaHwnd);
+      Card_ApplyCombatDamage(iVar4, iVar5, 3, g_DialogPromptHwnd, g_DuelArenaHwnd);
       break;
     case 7:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined4 *)(&g_CardSlot_Abilities2 + local_c * 0x120 + arg_1 * 0x5b20) = 0;
-        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + arg_1 * 0x5b20) = 0x20;
+        *(undefined4 *)(&g_CardSlot_Abilities2 + local_c * 0x120 + player * 0x5b20) = 0;
+        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + player * 0x5b20) = 0x20;
       }
       break;
     case 8:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + arg_1 * 0x5b20) = 3;
-        *(undefined2 *)(&DAT_006a5f4a + local_c * 0x120 + arg_1 * 0x5b20) = 3;
+        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + player * 0x5b20) = 3;
+        *(undefined2 *)(&DAT_006a5f4a + local_c * 0x120 + player * 0x5b20) = 3;
       }
       break;
     case 9:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + arg_1 * 0x5b20) = 0x40;
+        *(undefined4 *)(&g_CardSlot_ConvertedManaCost + local_c * 0x120 + player * 0x5b20) = 0x40;
       }
       *(undefined4 *)(&g_CardSlot_Abilities2 + iVar4 * 0x5b20 + iVar5 * 0x120) = 0x8000000;
       break;
     case 10:
-      bVar1 = FUN_0041d9d2(arg_1,arg_2,1);
+      bVar1 = Card_SetTapState(player,card_slot,1);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xb:
-      bVar1 = FUN_0041d9d2(arg_1,arg_2,2);
+      bVar1 = Card_SetTapState(player,card_slot,2);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xc:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a4b64,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a4b64,iVar4,iVar5);
       if (local_c != -1) {
-        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) | 0x800000;
+        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) =
+             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) | 0x800000;
       }
       *(undefined4 *)(&g_CardSlot_Abilities2 + iVar4 * 0x5b20 + iVar5 * 0x120) = 0x8000000;
       break;
     case 0xd:
       iVar3 = Ai_Subsystem_004cc56d
-                        (arg_1,arg_1,arg_2,iVar4,iVar5,s_casts_Twiddle__Tap__Untap__0052cb5c,
-                         (*(uint *)(&g_CardSlot_Flags + arg_2 * 0x120 + arg_1 * 0x5b20) & 0x10) >> 4
+                        (player,player,card_slot,iVar4,iVar5,s_casts_Twiddle__Tap__Untap__0052cb5c,
+                         (*(uint *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) & 0x10) >> 4
                         );
       if (iVar3 == 0) {
         FUN_00415d48(iVar4,iVar5);
@@ -8913,17 +8913,17 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
       }
       break;
     case 0xe:
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006a2854,iVar4,iVar5);
       if (local_c != -1) {
-        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + arg_1 * 0x5b20) = 0xfffe;
-        *(undefined2 *)(&DAT_006a5f4a + local_c * 0x120 + arg_1 * 0x5b20) = 0;
+        *(undefined2 *)(&DAT_006a5f48 + local_c * 0x120 + player * 0x5b20) = 0xfffe;
+        *(undefined2 *)(&DAT_006a5f4a + local_c * 0x120 + player * 0x5b20) = 0;
       }
       break;
     case 0xf:
       FUN_0041da41(iVar4,iVar5);
       break;
     case 0x10:
-      FUN_0041db67(iVar4,iVar5,1,g_DialogPromptHwnd,g_DuelArenaHwnd);
+      Card_ApplyCombatDamage(iVar4,iVar5,1,g_DialogPromptHwnd,g_DuelArenaHwnd);
       break;
     case 0x11:
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
@@ -8940,22 +8940,22 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
           }
         }
       }
-      local_c = FUN_00410cc0(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006b3060,iVar4,iVar5);
+      local_c = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_006b3060,iVar4,iVar5);
       if (local_c != -1) {
-        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + arg_1 * 0x5b20) | 0x1000000;
-        *(ushort *)(&DAT_006a5f48 + local_c * 0x120 + arg_1 * 0x5b20) =
+        *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) =
+             *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) | 0x1000000;
+        *(ushort *)(&DAT_006a5f48 + local_c * 0x120 + player * 0x5b20) =
              -(*(ushort *)
                 (&DAT_0051aec2 +
                 *(int *)(&g_CardSlot_CardId + iVar4 * 0x5b20 + iVar5 * 0x120) * 0x34) & 0xbfff);
-        *(ushort *)(&DAT_006a5f4a + local_c * 0x120 + arg_1 * 0x5b20) =
+        *(ushort *)(&DAT_006a5f4a + local_c * 0x120 + player * 0x5b20) =
              2 - (*(ushort *)
                    (&DAT_0051aec4 +
                    *(int *)(&g_CardSlot_CardId + iVar4 * 0x5b20 + iVar5 * 0x120) * 0x34) & 0xbfff);
       }
       break;
     case 0x12:
-      iVar3 = FUN_00473179(iVar4,iVar5,0x32,0xffffffff);
+      iVar3 = Card_TapForMana(iVar4, iVar5, 0x32, 0xffffffff);
       (&g_PlayerCreatureCount)[iVar4] = (&g_PlayerCreatureCount)[iVar4] + iVar3;
       Pic_Subsystem_0044867e(iVar4,iVar5,4);
       break;
@@ -8973,17 +8973,17 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
       }
       break;
     default:
-      Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar4,iVar5,s_made_an_error__0052cbcc,0);
+      Ai_Subsystem_004cc56d(player,player,card_slot,iVar4,iVar5,s_made_an_error__0052cbcc,0);
     }
     if (local_c != -1) {
-      iVar4 = FUN_00478aa4(*(int *)(&DAT_0052c640 + arg_3 * 4),arg_1,arg_2);
-      *(uint *)(&DAT_006a5f74 + local_c * 0x120 + arg_1 * 0x5b20) =
+      iVar4 = FUN_00478aa4(*(int *)(&DAT_0052c640 + arg_3 * 4),player,card_slot);
+      *(uint *)(&DAT_006a5f74 + local_c * 0x120 + player * 0x5b20) =
            iVar4 << 0x10 | *(uint *)(&DAT_0052c640 + arg_3 * 4);
     }
   }
   (&g_CardSlot_TurnPlayed)
-  [*(int *)(&g_CardSlot_TapState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x5b20 +
-   *(int *)(&g_CardSlot_SicknessState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x120] = 0;
+  [*(int *)(&g_CardSlot_TapState + card_slot * 0x120 + player * 0x5b20) * 0x5b20 +
+   *(int *)(&g_CardSlot_SicknessState + card_slot * 0x120 + player * 0x5b20) * 0x120] = 0;
   return 0;
 }
 
@@ -8996,7 +8996,7 @@ undefined4 Palette_Subsystem_004a8111(int arg_1,int arg_2,int arg_3)
  */
 
 
-undefined4 Palette_Subsystem_004a8d46(int arg_1,int arg_2,int arg_3)
+undefined4 Palette_Subsystem_004a8d46(int player,int card_slot,int arg_3)
 
 {
   int iVar1;
@@ -9007,34 +9007,34 @@ undefined4 Palette_Subsystem_004a8d46(int arg_1,int arg_2,int arg_3)
   int local_8;
   
   if (arg_3 == 0x74) {
-    if ((g_ActivePlayerPriority == arg_1) && (iVar1 = FUN_0040d949(arg_1,7,3), iVar1 == 0)) {
+    if ((g_ActivePlayerPriority == player) && (iVar1 = Font_DrawString(player,7,3), iVar1 == 0)) {
       return 0;
     }
     uVar2 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == arg_2)) && (g_OverworldPlayerCoordX == arg_1)) {
-      *(undefined4 *)(&g_CardSlot_ConvertedManaCost + arg_2 * 0x120 + arg_1 * 0x5b20) =
+    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+      *(undefined4 *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) =
            g_TurnCounter;
     }
     if (arg_3 == 0x71) {
       for (local_50c = 0;
-          local_50c < *(int *)(&g_CardSlot_ConvertedManaCost + arg_2 * 0x120 + arg_1 * 0x5b20);
+          local_50c < *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20);
           local_50c = local_50c + 1) {
-        iVar1 = FUN_0040a1d2(0x10);
+        iVar1 = Math_RandomRange(0x10);
         if (*(int *)(&DAT_0052cb00 + iVar1 * 4) != 0) {
           arg_1_00 = Palette_Subsystem_004a8fd8
-                               (arg_1,arg_2,(int)local_508,*(uint *)(&DAT_0052cb00 + iVar1 * 4));
+                               (player,card_slot,(int)local_508,*(uint *)(&DAT_0052cb00 + iVar1 * 4));
           if (arg_1_00 == 0) {
             g_ActivePlayer = 1;
           }
           else {
-            local_8 = FUN_0040a1d2(arg_1_00);
-            *(undefined4 *)(&g_CardSlot_CombatTarget + arg_2 * 0x120 + arg_1 * 0x5b20) =
+            local_8 = Math_RandomRange(arg_1_00);
+            *(undefined4 *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) =
                  local_508[local_8 * 2];
-            *(undefined4 *)(&g_CardSlot_AttachedAura + arg_2 * 0x120 + arg_1 * 0x5b20) =
+            *(undefined4 *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20) =
                  local_508[local_8 * 2 + 1];
-            (&g_CardSlot_TurnPlayed)[arg_2 * 0x120 + arg_1 * 0x5b20] = 1;
+            (&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] = 1;
           }
         }
         if (g_ActivePlayer == 1) {
@@ -9046,14 +9046,14 @@ undefined4 Palette_Subsystem_004a8d46(int arg_1,int arg_2,int arg_3)
           g_ActivePlayer = 0;
         }
         else {
-          Palette_Subsystem_004a9137(arg_1,arg_2,iVar1);
+          Palette_Subsystem_004a9137(player,card_slot,iVar1);
         }
       }
       if (g_IsAiThinking != 1) {
         Magic_UpkeepPhase(0x2d);
       }
-      (&g_CardSlot_TurnPlayed)[arg_2 * 0x120 + arg_1 * 0x5b20] = 0;
-      Pic_Subsystem_0044867e(arg_1,arg_2,1);
+      (&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] = 0;
+      Pic_Subsystem_0044867e(player,card_slot,1);
     }
     uVar2 = 0;
   }
@@ -9069,7 +9069,7 @@ undefined4 Palette_Subsystem_004a8d46(int arg_1,int arg_2,int arg_3)
  */
 
 
-int Palette_Subsystem_004a8fd8(int arg_1,int arg_2,int width,uint height)
+int Palette_Subsystem_004a8fd8(int player,int card_slot,int width,uint height)
 
 {
   uint uVar1;
@@ -9086,7 +9086,7 @@ int Palette_Subsystem_004a8fd8(int arg_1,int arg_2,int width,uint height)
          ((height & (byte)(&g_MasterCardColorTable)
                           [*(int *)(&g_CardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34
                           ]) != 0)) {
-        uVar1 = Glue_Subsystem_004d0a42(arg_1,arg_2);
+        uVar1 = Glue_Subsystem_004d0a42(player,card_slot);
         if ((*(uint *)(&g_CardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0)
         {
           *(int *)(width + local_c * 8) = local_8;
@@ -9113,7 +9113,7 @@ int Palette_Subsystem_004a8fd8(int arg_1,int arg_2,int width,uint height)
  */
 
 
-undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
+undefined4 Palette_Subsystem_004a9137(int player,int card_slot,undefined4 arg_3)
 
 {
   char cVar1;
@@ -9122,16 +9122,16 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
   int iVar4;
   int local_14;
   
-  iVar3 = *(int *)(&g_CardSlot_CombatTarget + arg_2 * 0x120 + arg_1 * 0x5b20);
-  iVar4 = *(int *)(&g_CardSlot_AttachedAura + arg_2 * 0x120 + arg_1 * 0x5b20);
+  iVar3 = *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20);
+  iVar4 = *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20);
   switch(arg_3) {
   case 0:
     Ai_Subsystem_004cc56d
-              (arg_1,arg_1,arg_2,iVar3,iVar4,s_activates_Time_Elemental_effect__0052cbe8,0);
+              (player,player,card_slot,iVar3,iVar4,s_activates_Time_Elemental_effect__0052cbe8,0);
     FUN_0041da41(iVar3,iVar4);
     break;
   case 1:
-    iVar2 = FUN_0040a1d2(2);
+    iVar2 = Math_RandomRange(2);
     strcpy(&g_OverworldWorldState,s_casts_Twiddle_to_0052cc0c);
     if (iVar2 == 0) {
       strcat(&g_OverworldWorldState,&DAT_0052cc28);
@@ -9139,7 +9139,7 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
     else {
       strcat(&g_OverworldWorldState,s_untap__0052cc20);
     }
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,&g_OverworldWorldState,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,&g_OverworldWorldState,0);
     if (iVar2 == 0) {
       if (((&g_CardSlot_Flags)[iVar3 * 0x5b20 + iVar4 * 0x120] & 0x10) == 0) {
         *(uint *)(&g_CardSlot_Flags + iVar3 * 0x5b20 + iVar4 * 0x120) =
@@ -9158,65 +9158,65 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
     break;
   case 2:
     Ai_Subsystem_004cc56d
-              (arg_1,arg_1,arg_2,iVar3,iVar4,s_activates_Aladdin_s_Ring_effect__0052cc30,0);
-    Glue_Subsystem_004dfb23(arg_1,arg_2,0x71,4);
+              (player,player,card_slot,iVar3,iVar4,s_activates_Aladdin_s_Ring_effect__0052cc30,0);
+    Glue_Subsystem_004dfb23(player,card_slot,0x71,4);
     break;
   case 3:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_casts_Ancestral_Recall__0052cc54,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_casts_Ancestral_Recall__0052cc54,0);
     FUN_0046f5d1(iVar3);
     FUN_0046f5d1(iVar3);
     FUN_0046f5d1(iVar3);
     break;
   case 4:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,-1,-1,s_activates_Pandora_s_Box_effect__0052cd80,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_activates_Pandora_s_Box_effect__0052cd80,0);
     Minit_Subsystem_0046758c();
     break;
   case 5:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_casts_Crumble__0052cc70,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_casts_Crumble__0052cc70,0);
     cVar1 = (&DAT_0051aebf)[*(int *)(&g_CardSlot_CardId + iVar3 * 0x5b20 + iVar4 * 0x120) * 0x34];
-    iVar2 = FUN_0040a305((int)(char)(&DAT_0051aec0)
+    iVar2 = Math_Clamp((int)(char)(&DAT_0051aec0)
                                     [*(int *)(&g_CardSlot_CardId + iVar3 * 0x5b20 + iVar4 * 0x120) *
                                      0x34],0,99);
     (&g_PlayerCreatureCount)[iVar3] = (&g_PlayerCreatureCount)[iVar3] + cVar1 + iVar2;
     Pic_Subsystem_0044867e(iVar3,iVar4,2);
     break;
   case 6:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,-1,-1,s_activates_Bottle_of_Suleiman_eff_0052cd20,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_activates_Bottle_of_Suleiman_eff_0052cd20,0);
     iVar3 = Ai_Subsystem_004cc56d
-                      (arg_1,arg_1,arg_2,-1,-1,s_Call_the_coin_flip__Heads_Tails_0052cd48,1);
+                      (player,player,card_slot,-1,-1,s_Call_the_coin_flip__Heads_Tails_0052cd48,1);
     iVar4 = Ai_Subsystem_004b7d38(s_Bottle_of_Suleiman_0052cd6c);
     if (iVar4 == iVar3) {
       iVar3 = Pic_Subsystem_0045268f(0x37a);
-      iVar3 = Pic_Subsystem_00451291(arg_1,iVar3);
+      iVar3 = Pic_Subsystem_00451291(player,iVar3);
       if (iVar3 != -1) {
-        Pic_Subsystem_0042ac1f(arg_1,iVar3);
-        *(uint *)(&g_CardSlot_Abilities1 + arg_1 * 0x5b20 + iVar3 * 0x120) =
-             *(uint *)(&g_CardSlot_Abilities1 + arg_1 * 0x5b20 + iVar3 * 0x120) | 0x10;
+        Pic_Subsystem_0042ac1f(player,iVar3);
+        *(uint *)(&g_CardSlot_Abilities1 + player * 0x5b20 + iVar3 * 0x120) =
+             *(uint *)(&g_CardSlot_Abilities1 + player * 0x5b20 + iVar3 * 0x120) | 0x10;
       }
     }
     else {
-      Mem_AllocOrFree_0041df33(arg_1,5,arg_1,arg_2);
+      Mem_AllocOrFree_0041df33(player,5,player,card_slot);
     }
     break;
   case 7:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_casts_Disenchant__0052cc80,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_casts_Disenchant__0052cc80,0);
     Pic_Subsystem_0044867e(iVar3,iVar4,1);
     break;
   case 8:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_casts_Healing_Salve__0052cc94,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_casts_Healing_Salve__0052cc94,0);
     (&g_PlayerCreatureCount)[iVar3] = (&g_PlayerCreatureCount)[iVar3] + 3;
     break;
   case 9:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_casts_Fissure__0052ccac,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_casts_Fissure__0052ccac,0);
     Pic_Subsystem_0044867e(iVar3,iVar4,1);
     break;
   case 10:
     Ai_Subsystem_004cc56d
-              (arg_1,arg_1,arg_2,iVar3,iVar4,s_activates_Disrupting_Sceptre_eff_0052cda4,0);
+              (player,player,card_slot,iVar3,iVar4,s_activates_Disrupting_Sceptre_eff_0052cda4,0);
     Prompts_Load_0046fa40(iVar3,0,0);
     break;
   case 0xb:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_activates_Millstone_effect__0052ccbc,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_activates_Millstone_effect__0052ccbc,0);
     for (local_14 = 0; local_14 < 2; local_14 = local_14 + 1) {
       iVar4 = *(int *)(&DAT_0069e730 + iVar3 * 2000);
       if (iVar4 != -1) {
@@ -9233,8 +9233,8 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
     }
     break;
   case 0xc:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,-1,-1,s_activates_The_Hive_effect__0052ccdc,0);
-    iVar3 = FUN_0040a1d2(2);
+    Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_activates_The_Hive_effect__0052ccdc,0);
+    iVar3 = Math_RandomRange(2);
     iVar4 = Pic_Subsystem_0045268f(0x375);
     iVar4 = Pic_Subsystem_00451291(iVar3,iVar4);
     if (iVar4 != -1) {
@@ -9244,20 +9244,20 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
     }
     break;
   case 0xd:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,-1,-1,s_activates_Nevinyrral_s_Disk_effe_0052ccf8,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_activates_Nevinyrral_s_Disk_effe_0052ccf8,0);
     Glue_Subsystem_004e65e1(Minit_Subsystem_00463c10,-1);
     break;
   case 0xe:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,-1,-1,s_casts_Fog_effect__0052cdcc,0);
-    iVar3 = FUN_00410cc0(arg_1,arg_2,DAT_0068a670,-1,-1);
+    Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_casts_Fog_effect__0052cdcc,0);
+    iVar3 = Card_ApplyTriggerEffect(player,card_slot,DAT_0068a670,-1,-1);
     if (iVar3 != -1) {
-      *(undefined4 *)(&DAT_006a5f74 + arg_1 * 0x5b20 + iVar3 * 0x120) = DAT_0052caf0;
+      *(undefined4 *)(&DAT_006a5f74 + player * 0x5b20 + iVar3 * 0x120) = DAT_0052caf0;
     }
     break;
   case 0xf:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_activates_Sinbad_effect__0052cde0,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_activates_Sinbad_effect__0052cde0,0);
     iVar4 = FUN_0046f5d1(iVar3);
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_Sinbad_draws____0052cdfc,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_Sinbad_draws____0052cdfc,0);
     if (((&g_MasterCardColorTable)
          [*(int *)(&g_CardSlot_CardId + iVar4 * 0x120 + iVar3 * 0x5b20) * 0x34] & 1) == 0) {
       Pic_Subsystem_0044913a(iVar3,iVar4);
@@ -9269,7 +9269,7 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
     }
     break;
   default:
-    Ai_Subsystem_004cc56d(arg_1,arg_1,arg_2,iVar3,iVar4,s_made_an_error__0052ce0c,0);
+    Ai_Subsystem_004cc56d(player,player,card_slot,iVar3,iVar4,s_made_an_error__0052ce0c,0);
   }
   return 0;
 }
@@ -9285,7 +9285,7 @@ undefined4 Palette_Subsystem_004a9137(int arg_1,int arg_2,undefined4 arg_3)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint Palette_Subsystem_004a99a0(int arg_1)
+uint Palette_Subsystem_004a99a0(int player)
 
 {
   uint uVar1;
@@ -9311,31 +9311,31 @@ uint Palette_Subsystem_004a99a0(int arg_1)
   uint local_8;
   
   if ((g_IsAiThinking == 1) || (DAT_00633434 != 0)) {
-    local_30 = 1 - arg_1;
+    local_30 = 1 - player;
     local_c = 0;
     local_38 = 0;
     local_8 = 0;
     local_28 = 0;
     local_9c = 0;
     local_34 = 2;
-    if (((g_PlayerHandCardCount & 1) == 0) && (0 < (&DAT_006b3008)[arg_1] + DAT_00627a14)) {
-      for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[arg_1];
+    if (((g_PlayerHandCardCount & 1) == 0) && (0 < (&DAT_006b3008)[player] + DAT_00627a14)) {
+      for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[player];
           local_2c = local_2c + 1) {
-        if (*(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120) != -1) {
-          if ((((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 2) != 0) &&
+        if (*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120) != -1) {
+          if ((((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 2) != 0) &&
              (((&g_MasterCardColorTable)
-               [*(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120) * 0x34] & 2) != 0))
+               [*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120) * 0x34] & 2) != 0))
           {
             local_34 = local_34 | 0x7c;
           }
-          if (((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 0x12) == 0) {
+          if (((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 0x12) == 0) {
             if ((((&g_MasterCardColorTable)
-                  [*(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120) * 0x34] & 1) !=
-                 0) && (local_8 = 1, (&DAT_006a5f4c)[arg_1 * 0x5b20 + local_2c * 0x120] != '\0')) {
+                  [*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120) * 0x34] & 1) !=
+                 0) && (local_8 = 1, (&DAT_006a5f4c)[player * 0x5b20 + local_2c * 0x120] != '\0')) {
               local_38 = local_38 + 1;
             }
             if ((&DAT_0051aec0)
-                [*(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120) * 0x34] == -1) {
+                [*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120) * 0x34] == -1) {
               local_38 = local_38 + 99;
             }
             local_c = local_c + 1;
@@ -9345,11 +9345,11 @@ uint Palette_Subsystem_004a99a0(int arg_1)
       if (local_8 != 0) {
         local_10 = 0;
         local_8 = 0;
-        for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[arg_1];
+        for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[player];
             local_2c = local_2c + 1) {
-          local_20 = *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120);
+          local_20 = *(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120);
           if ((local_20 != -1) &&
-             (((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 0x12) == 0)) {
+             (((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 0x12) == 0)) {
             local_40 = (uint)(char)(&DAT_0051aebe)[local_20 * 0x34];
             if ((((&g_MasterCardColorTable)[local_20 * 0x34] & 1) != 0) &&
                (local_9c = local_9c | local_40, local_40 == 0)) {
@@ -9358,16 +9358,16 @@ uint Palette_Subsystem_004a99a0(int arg_1)
             if ((local_34 & (byte)(&g_MasterCardColorTable)[local_20 * 0x34]) != 0) {
               for (local_48 = 1; local_48 < 6; local_48 = local_48 + 1) {
                 if ((local_40 & 1 << ((byte)local_48 & 0x1f)) != 0) {
-                  if (*(int *)(&DAT_0063ee30 + local_48 * 4 + arg_1 * 0x20) + 1 ==
+                  if (*(int *)(&DAT_0063ee30 + local_48 * 4 + player * 0x20) + 1 ==
                       (int)(char)(&DAT_0051aebf)[local_20 * 0x34]) {
                     local_28 = local_28 | 1 << ((byte)local_48 & 0x1f);
                   }
-                  if (*(int *)(&DAT_0063ee30 + local_48 * 4 + arg_1 * 0x20) + 1 <
+                  if (*(int *)(&DAT_0063ee30 + local_48 * 4 + player * 0x20) + 1 <
                       (int)(char)(&DAT_0051aebf)[local_20 * 0x34]) {
                     local_8 = local_8 | 1 << ((byte)local_48 & 0x1f);
                   }
                   iVar2 = abs((int)(char)(&DAT_0051aec0)[local_20 * 0x34]);
-                  if (*(int *)(&DAT_0063ee4c + arg_1 * 0x20) <
+                  if (*(int *)(&DAT_0063ee4c + player * 0x20) <
                       iVar2 + (char)(&DAT_0051aebf)[local_20 * 0x34]) {
                     local_8 = local_8 | 0xff;
                   }
@@ -9379,14 +9379,14 @@ uint Palette_Subsystem_004a99a0(int arg_1)
         local_3c = 999;
         local_24 = local_9c;
         for (local_2c = 0; (int)local_2c < 6; local_2c = local_2c + 1) {
-          if (0 < *(int *)(&DAT_006ff690 + local_2c * 4 + arg_1 * 0x20)) {
+          if (0 < *(int *)(&DAT_006ff690 + local_2c * 4 + player * 0x20)) {
             local_8 = local_8 | 1 << ((byte)local_2c & 0x1f);
           }
           if (((local_9c & 1 << ((byte)local_2c & 0x1f)) != 0) &&
-             (*(int *)(&DAT_0063ee30 + local_2c * 4 + arg_1 * 0x20) -
-              *(int *)(&DAT_006ff690 + local_2c * 4 + arg_1 * 0x20) < local_3c)) {
-            local_3c = *(int *)(&DAT_0063ee30 + local_2c * 4 + arg_1 * 0x20) -
-                       *(int *)(&DAT_006ff690 + local_2c * 4 + arg_1 * 0x20);
+             (*(int *)(&DAT_0063ee30 + local_2c * 4 + player * 0x20) -
+              *(int *)(&DAT_006ff690 + local_2c * 4 + player * 0x20) < local_3c)) {
+            local_3c = *(int *)(&DAT_0063ee30 + local_2c * 4 + player * 0x20) -
+                       *(int *)(&DAT_006ff690 + local_2c * 4 + player * 0x20);
             local_24 = 1 << ((byte)local_2c & 0x1f);
           }
         }
@@ -9410,19 +9410,19 @@ uint Palette_Subsystem_004a99a0(int arg_1)
           else {
             do {
               local_18 = uVar1;
-              local_40 = FUN_0040a1d2(7);
+              local_40 = Math_RandomRange(7);
               uVar1 = local_18;
             } while ((local_18 & 1 << ((byte)local_40 & 0x1f)) == 0);
           }
           if (g_IsAiThinking == 1) {
             g_AiDecisionScore = local_40;
             DAT_006fefa8 = 0xffffffff;
-            iVar2 = FUN_0040a1d2(4);
+            iVar2 = Math_RandomRange(4);
             if ((iVar2 == 0) && (DAT_006a2838 == 0)) {
               g_AiDecisionScore = 0xfffffffe;
             }
             if ((((local_28 == 0) && (local_8 == 0)) && (local_10 == 0)) &&
-               ((local_c < 7 && (3 < *(int *)(&DAT_0063ee4c + arg_1 * 0x20) - local_38)))) {
+               ((local_c < 7 && (3 < *(int *)(&DAT_0063ee4c + player * 0x20) - local_38)))) {
               g_AiDecisionScore = 0xfffffffe;
             }
           }
@@ -9433,16 +9433,16 @@ uint Palette_Subsystem_004a99a0(int arg_1)
           }
         }
         local_44 = 0xffffffff;
-        for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[arg_1];
+        for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[player];
             local_2c = local_2c + 1) {
-          local_20 = *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120);
+          local_20 = *(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120);
           if (((((local_20 != -1) &&
-                (((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 0x12) == 0)) &&
+                (((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 0x12) == 0)) &&
                (((&g_MasterCardColorTable)[local_20 * 0x34] & 1) != 0)) &&
               ((((local_40 == 0xffffffff &&
-                 ((&DAT_006a5f4c)[arg_1 * 0x5b20 + local_2c * 0x120] == '\0')) ||
+                 ((&DAT_006a5f4c)[player * 0x5b20 + local_2c * 0x120] == '\0')) ||
                 ((1 << ((byte)local_40 & 0x1f) &
-                 (int)(char)(&DAT_006a5f4c)[arg_1 * 0x5b20 + local_2c * 0x120]) != 0)) ||
+                 (int)(char)(&DAT_006a5f4c)[player * 0x5b20 + local_2c * 0x120]) != 0)) ||
                (local_9c == 0)))) && ((local_44 == 0xffffffff || (4 < local_20)))) {
             local_44 = local_2c;
           }
@@ -9452,7 +9452,7 @@ uint Palette_Subsystem_004a99a0(int arg_1)
             DAT_006fefa8 = 0xffffffff;
           }
           else {
-            DAT_006fefa8 = arg_1 << 8 | local_44 | 0x1000;
+            DAT_006fefa8 = player << 8 | local_44 | 0x1000;
           }
           DAT_0052ce1c = 1;
           Ai_EvaluateCreaturePower();
@@ -9461,7 +9461,7 @@ uint Palette_Subsystem_004a99a0(int arg_1)
               DAT_006a2844 = DAT_006a2844 + -1;
             }
             *(undefined4 *)(&DAT_006fe3b0 + DAT_006a2844 * 4) =
-                 *(undefined4 *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_44 * 0x120);
+                 *(undefined4 *)(&g_CardSlot_CardId + player * 0x5b20 + local_44 * 0x120);
             *(uint *)(&DAT_006966f0 + DAT_006a2844 * 4) = local_44;
             DAT_006a2844 = DAT_006a2844 + 1;
           }
@@ -9494,28 +9494,28 @@ uint Palette_Subsystem_004a99a0(int arg_1)
       _DAT_0054d640 = 0xf;
       _DAT_005528c8 = 0xfffffff0;
     }
-    for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[arg_1];
+    for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[player];
         local_2c = local_2c + 1) {
-      local_20 = *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + local_2c * 0x120);
+      local_20 = *(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120);
       if (local_20 != -1) {
-        if (((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 2) == 0) {
+        if (((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 2) == 0) {
           if (((_DAT_0054d640 & (int)(char)(&DAT_0051aed5)[local_20 * 0x34]) != 0) &&
              (((&g_MasterCardColorTable)[local_20 * 0x34] & 0x7e) != 0)) {
-            local_40 = FUN_00473cc5((&DAT_0051aebe)[local_20 * 0x34]);
-            iVar2 = FUN_00470ea3(arg_1,arg_1,local_2c);
+            local_40 = Card_ColorMaskToColorIndex((&DAT_0051aebe)[local_20 * 0x34]);
+            iVar2 = FUN_00470ea3(player,player,local_2c);
             if ((iVar2 != 0) &&
                ((((&g_MasterCardColorTable)[local_20 * 0x34] & 0x3c) == 0 ||
-                (iVar2 = (**(code **)(&DAT_0051aec8 + local_20 * 0x34))(arg_1,local_2c,0x74),
+                (iVar2 = (**(code **)(&DAT_0051aec8 + local_20 * 0x34))(player,local_2c,0x74),
                 iVar2 != 0)))) {
               auStack_98[local_1c] = local_2c;
               local_1c = local_1c + 1;
             }
           }
         }
-        else if ((((((&g_CardSlot_Flags)[arg_1 * 0x5b20 + local_2c * 0x120] & 0x34) == 0) &&
+        else if ((((((&g_CardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 0x34) == 0) &&
                   ((*(uint *)(&DAT_0051aed0 + local_20 * 0x34) & 0x1003) != 0x1000)) &&
                  ((_DAT_005528c8 & (int)(char)(&DAT_0051aed5)[local_20 * 0x34]) != 0)) &&
-                (iVar2 = Magic_TriggerCardEvent(arg_1,local_2c,0x73,1 - arg_1,0xffffffff),
+                (iVar2 = Magic_TriggerCardEvent(player,local_2c,0x73,1 - player,0xffffffff),
                 iVar2 != 0)) {
           auStack_98[local_1c] = local_2c;
           local_1c = local_1c + 1;
@@ -9543,19 +9543,19 @@ uint Palette_Subsystem_004a99a0(int arg_1)
       local_1c = local_1c + 1;
       if (g_IsAiThinking == 1) {
         if ((DAT_006a2840 == -1) || (DAT_006a2838 != 0)) {
-          g_AiDecisionScore = FUN_0040a1d2(local_1c);
+          g_AiDecisionScore = Math_RandomRange(local_1c);
           if (DAT_006a2838 != 0) {
             g_AiDecisionScore = local_1c - 1;
             if (DAT_006a2838 == 1) {
-              iVar2 = FUN_0040a305(local_1c * local_1c,10,0x14);
+              iVar2 = Math_Clamp(local_1c * local_1c,10,0x14);
               DAT_006fe40c = iVar2 * (DAT_0067f380 + 1) * 5;
             }
             DAT_006a2838 = -1;
           }
           DAT_006fefa8 = (-(uint)((*(uint *)(&g_CardSlot_Flags +
-                                            arg_1 * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
+                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
                                   & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
-                         | (arg_1 == 0) - 1 & 0x100;
+                         | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
           Ai_EvaluateCreaturePower();
         }
@@ -9585,9 +9585,9 @@ uint Palette_Subsystem_004a99a0(int arg_1)
             }
           }
           DAT_006fefa8 = (-(uint)((*(uint *)(&g_CardSlot_Flags +
-                                            arg_1 * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
+                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
                                   & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
-                         | (arg_1 == 0) - 1 & 0x100;
+                         | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
           Ai_EvaluateCreaturePower();
           if ((local_1c - 1U == g_AiDecisionScore) && (local_14 < DAT_006a2840)) {
@@ -9609,7 +9609,7 @@ uint Palette_Subsystem_004a99a0(int arg_1)
         }
         *(undefined4 *)(&DAT_006fe3b0 + DAT_006a2844 * 4) =
              *(undefined4 *)
-              (&g_CardSlot_CardId + arg_1 * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120);
+              (&g_CardSlot_CardId + player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120);
         *(uint *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_98[g_AiDecisionScore];
         DAT_006a2844 = DAT_006a2844 + 1;
       }

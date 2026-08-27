@@ -121,7 +121,7 @@ LAB_004f108c:
     }
     *(int *)g_DisplaySurfaceScreen = 0;
     uStackY_34 = 0x4f11b4;
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                  (int *)g_DisplaySurfaceScreen,0,0);
     if (arg1 == 0) {
       Ai_Subsystem_004cd1d1();
@@ -219,7 +219,7 @@ LAB_004f108c:
       if (DAT_0067bda0 == 1) {
         *(uint *)(&deck + local_1790 * 4) = *(uint *)(&deck + local_1790 * 4) ^ 0x4000;
       }
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
     }
   } while( true );
 }

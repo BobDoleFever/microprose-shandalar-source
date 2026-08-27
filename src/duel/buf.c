@@ -827,12 +827,12 @@ int32_t __CrtDbgReport(int player_id,int card_slot,int event_type,int32_t arg_4,
                 ((uint32_t *)&local_300c,
                  (uint32_t *)("Assertion failed: " + ((str_5 != (char *)0x0) - 1 & 0xfffff6dc)));
     }
-    FUN_004d9640((uint32_t *)&local_300c,(uint32_t *)&local_1004);
+    Str_CopyFast((uint32_t *)&local_300c,(uint32_t *)&local_1004);
     if (arg_1 == 2) {
       if ((bRam00509708 & 1) != 0) {
-        FUN_004d9640((uint32_t *)&local_300c,(uint32_t *)&DAT_004f0c60);
+        Str_CopyFast((uint32_t *)&local_300c,(uint32_t *)&DAT_004f0c60);
       }
-      FUN_004d9640((uint32_t *)&local_300c,(uint32_t *)&DAT_004f021c);
+      Str_CopyFast((uint32_t *)&local_300c,(uint32_t *)&DAT_004f021c);
     }
     if (arg_2 == 0) {
       Mem_AllocOrFree_004d9630((uint32_t *)&local_200c,(uint32_t *)&local_300c);

@@ -134,7 +134,7 @@ void Merchant_ProcessBuy_00407b34(int player_id)
   Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,val_1,(int)local_454);
   val_1 = Ai_Util_004c3bc4(0x85);
   FUN_00407843(&g_OverworldWorldState,local_3f4,val_1);
-  FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xfe,0x140,0xbc);
+  Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xfe,0x140,0xbc);
   Ai_Subsystem_004cd1d1();
   Mem_AllocOrFree_0050fc50(match_count);
   return;
@@ -175,7 +175,7 @@ int Castle_Process_0040b7fa(int player_id)
       if (*(int *)(&DAT_0067a9a0 + arg_1 * 0x10) == 0) {
         return 0;
       }
-      FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+      Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                    (int *)g_DisplaySurfaceScreen,0,0);
       g_OverworldWorldState = '\0';
       switch(val_1) {
@@ -338,7 +338,7 @@ int32_t Dungeon_Process_0040fcfd(int player_id,int card_slot,int event_type)
         val_1 = val_1 - val_2 * local_7f0;
         val_2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Ai_Subsystem_004cd1d1();
         *(uint8_t *)(local_818[local_81c + 1] + -3) = 10;
         FUN_0040a883(s_wiseman3_pic_0051934c);
@@ -378,7 +378,7 @@ LAB_004102e4:
           val_1 = val_1 + val_2 * -2;
           val_2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -394,7 +394,7 @@ LAB_004102e4:
           val_1 = val_1 + val_2 * -3;
           val_2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -420,7 +420,7 @@ LAB_004102e4:
           val_1 = val_1 + val_2 * -3;
           val_2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -442,7 +442,7 @@ LAB_004102e4:
       val_1 = val_1 + val_2 * -7;
       val_2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       local_7e8 = 1;
       FUN_0040a883(s_wiseman3_pic_00519538);
@@ -457,7 +457,7 @@ LAB_004102e4:
         val_1 = val_1 + val_2 * -7;
         val_2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Ai_Subsystem_004cd1d1();
         FUN_0048ea81(local_7d8);
         uval_5 = Overworld_LoadAdventureInterface800();
@@ -478,7 +478,7 @@ LAB_004102e4:
       val_1 = val_1 + val_2 * -7;
       val_2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       uval_5 = Ai_Subsystem_004cd1d1();
       return uval_5;
     case 4:
@@ -495,7 +495,7 @@ LAB_004102e4:
         val_1 = val_1 + val_2 * -7;
         val_2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         uval_5 = Ai_Subsystem_004cd1d1();
         return uval_5;
       }
@@ -510,7 +510,7 @@ LAB_004102e4:
       val_1 = val_1 + val_2 * -7;
       val_2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       UI_PromptDeckInspection((uint8_t)arg_1);
       uval_5 = Overworld_LoadAdventureInterface800();
@@ -525,7 +525,7 @@ LAB_004102e4:
       val_1 = val_1 + val_2 * -7;
       val_2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_2,val_1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       *(int *)(&DAT_0067bdbc + arg_1 * 4) = *(int *)(&DAT_0067bdbc + arg_1 * 4) + -3;
       for (local_7dc = 0; local_7dc < 500; local_7dc = local_7dc + 1) {
@@ -599,7 +599,7 @@ LAB_00410182:
       val_3 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_3,val_2);
     }
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
     *(uint8_t *)(local_850[local_854 + 1] + -3) = 10;
     FUN_0040a883(s_wiseman3_pic_00519388);
@@ -654,7 +654,7 @@ int32_t Castle_Process_00421b32(void)
   color_idx = local_40;
   player_idx = 0xb7;
   match_count = 0x1c;
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   *(int32_t *)(g_DisplaySurfaceBackBuffer + 0x20) = 4;
   *(int32_t *)(g_DisplaySurfaceWork + 0x20) = 4;
   Surface_FillRect((int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,0);
@@ -712,7 +712,7 @@ LAB_00421d4c:
   arg_4 = Ai_Util_004c3bc4(0x173);
   val_1 = Ai_Util_004c3bc4(0x43);
   arg_2 = Ai_Util_004c3bc4(0xf7);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,val_1,arg_4,arg_5,arg_6,val_2,val_3);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,val_1,arg_4,arg_5,arg_6,val_2,val_3);
   str_7 = s_advfac64_pic_0051acd4;
   str_6 = s_prdblk_pic_0051ace4;
   val_1 = Ai_Util_004c3bc4(0xa9);
@@ -722,19 +722,19 @@ LAB_00421d4c:
   FUN_00488fdb((int32_t *)g_DisplaySurfaceBackBuffer,arg_2_00,val_3,val_2,val_1,str_6,str_7);
   SelectObject(*(HDC *)(DAT_0070a860 + 4),*(HGDIOBJ *)(DAT_0070a860 + 0xc));
   DAT_0070a860 = 0;
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x4f,0x102);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb7,0x102);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x4f,0x102);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb7,0x102);
   Engine_CountActiveCreatures();
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x4f,0x138);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb7,0x138);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x29,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x4e,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x73,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x98,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xbd,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,match_count,0x69,0xc6);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,match_count,0x69,0xd6);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,match_count,0x10e,0x16c);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x4f,0x138);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb7,0x138);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x29,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x4e,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x73,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x98,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xbd,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,match_count,0x69,0xc6);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,match_count,0x69,0xd6);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,match_count,0x10e,0x16c);
   for (slot_idx = 0; (int)slot_idx < 5; slot_idx = slot_idx + 1) {
     if (*(int *)(&DAT_006410c0 + slot_idx * 4) != 0) {
       val_1 = (int)(&DAT_00538a10)[slot_idx];
@@ -745,7 +745,7 @@ LAB_00421d4c:
       Sprite_DrawScaled((int *)g_DisplaySurfaceBackBuffer,arg_2_01,val_4,val_3,val_2,val_1);
     }
   }
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,match_count,0x118,0xeb);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,match_count,0x118,0xeb);
   for (slot_idx = 0; (int)slot_idx < 0xc; slot_idx = slot_idx + 1) {
     *(int32_t *)(&DAT_0051a528 + (slot_idx + 10) * 0x54) = 3;
     *(int32_t *)(&DAT_00538a30 + slot_idx * 4) = 0;
@@ -796,20 +796,20 @@ LAB_00421d4c:
   FUN_0040b441((int *)&DAT_0051a830,0xc);
   FUN_00422f06();
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0x14,0x184);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x184);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x184);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0x14,0x196);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x196);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x196);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0x14,0x1a8);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x1a8);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x1a8);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0x14,0x1ba);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x1ba);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0xb2,0x1ba);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0xe9,0x19a);
   for (slot_idx = 0; (int)slot_idx < 5; slot_idx = slot_idx + 1) {
     FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,player_idx,slot_idx * 0x39 + 0x165,0x19a);
   }
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,match_count,0xe9,0x1c0);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,player_idx,0x1a1,0x1c0);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,match_count,0x1b0,0x36);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,player_idx,0x1a1,0x1c0);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,match_count,0x1b0,0x36);
   if (DAT_0070a880 == 8) {
     memset((void *)((int)&DAT_0070a134 + 2),0,0x300);
     FUN_0050e8b0((short *)&DAT_0070a130);
@@ -820,7 +820,7 @@ LAB_00421d4c:
   else {
     LoadPalNoPic(s_advfac64_pic_0051ae18);
   }
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                (int *)g_DisplaySurfaceScreen,0,0);
   FUN_005115a0(0,(short)g_MidiMusicTrackId);
   if (g_AiManaColorCost_Red == 0x280) {
@@ -858,7 +858,7 @@ LAB_004228ce:
   FUN_0041f391();
   switch(DAT_00538a28) {
   case 1:
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Glue_Subsystem_004ec98e(0,0xffffffff);
     goto switchD_00422abd_caseD_6;
   case 2:
@@ -866,7 +866,7 @@ LAB_004228ce:
     goto switchD_00422abd_caseD_6;
   case 3:
     Mem_AllocOrFree_0050fc50(DAT_00538a10);
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     LoadPalNoPic(s_advfac64_pic_0051ae64);
     return 0;
   case 4:
@@ -896,10 +896,10 @@ LAB_004228ce:
     goto switchD_00422abd_caseD_6;
   }
   if (*(int *)(DAT_00538a28 * 4 + 0x641098) != 0) {
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     Glue_Subsystem_004ec98e(0x101,DAT_00538a28 - 9);
   }
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if (*(int *)(DAT_00538a28 * 4 + 0x641098) != 0) goto switchD_00422abd_caseD_6;
   goto LAB_004228ce;
 switchD_00422abd_caseD_6:
@@ -1267,13 +1267,13 @@ int Dungeon_Process_004856b0(uint32_t arg1,int arg2)
     local_908 = s_prdgrn_pic_00527158;
     local_904 = s_prdrd_pic_00527170;
     local_900 = s_prdwt_pic_00527188;
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     FileIO_OpenFileStream(1,0,0,(char *)(&local_914)[arg2],
                  (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
     Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
                        (int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
     FUN_005115a0(0,(short)g_MidiMusicTrackId);
-    FUN_004f3955(_hdcScreen);
+    GDI_RealizeAndFlushPalette_Magic(_hdcScreen);
     Mem_AllocOrFree_00510e20(1,s_prdfrma_pic_00527194);
     Mem_AllocOrFree_0050fc00();
     local_8f4 = (void *)Sprite_EncodeFromSurface(1,1,1,0x68,0x2c);
@@ -1322,11 +1322,11 @@ int Dungeon_Process_004856b0(uint32_t arg1,int arg2)
     val_8 = Ai_Util_004c3bc4(8);
     Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,val_7 - val_8,val_6,val_5,val_4,val_3);
     *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 4;
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x188);
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0xbd,0x188);
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x1b5);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x188);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0xbd,0x188);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x1b5);
     Engine_CountActiveCreatures();
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0xc3,0x1b5);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0xc3,0x1b5);
     *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 2;
     val_3 = local_8c8;
     val_4 = Ai_Util_004c3bc4((int)*(short *)(local_8c8 + 6));
@@ -1335,7 +1335,7 @@ int Dungeon_Process_004856b0(uint32_t arg1,int arg2)
     val_7 = Ai_Util_004c3bc4(0x1d4);
     Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,val_7,val_6,val_5,val_4,val_3);
     Ai_CalcManaRequirement_004c003d();
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x21f,0x199);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x21f,0x199);
     FUN_0050fc20();
     Mem_AllocOrFree_0050fc50(local_8f4);
     val_6 = 0;
@@ -1376,7 +1376,7 @@ int Dungeon_Process_004856b0(uint32_t arg1,int arg2)
     if ((g_IsAiThinking == 0) && ((&DAT_0052262a)[(int)player_idx * 0x44] != '\v')) {
       FUN_0050b206(DAT_006b2dd0,0xe8,0x18,1,&DAT_005271e8);
     }
-    local_83c = FUN_0040a305(local_880 * 10,10,local_880 * 0x32);
+    local_83c = Math_Clamp(local_880 * 10, 10, local_880 * 0x32);
     if ((&DAT_0052262a)[(int)player_idx * 0x44] != '\v') {
       local_86c = 0;
       local_838 = 0;
@@ -1552,7 +1552,7 @@ LAB_0048627e:
             }
           }
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)g_MidiMusicTrackId);
+          Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
           FUN_0046f21e(s_dbox_spr_005274cc,0x71,0xe3);
           local_8bc = UI_DeckSelectionMenu(g_CurrentTurnPhase,0x69ef00,500,s_Pick_a_spell_005274dc,1);
           if ((*(int *)(&DAT_0069ef00 + local_8bc * 4) != -1) &&
@@ -1594,7 +1594,7 @@ LAB_0048627e:
               Glue_Subsystem_004ead96(0);
               Glue_Subsystem_004eadb7(0);
               SelectPalette(_hdcScreen,DAT_00626834,0);
-              FUN_005112b0(0,(short)g_MidiMusicTrackId);
+              Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
               Ai_CastleEncounter_004c24b3(0);
             }
           }
@@ -1606,7 +1606,7 @@ LAB_0048627e:
             }
             else {
               SelectPalette(_hdcScreen,DAT_00626834,0);
-              FUN_005112b0(0,(short)g_MidiMusicTrackId);
+              Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
               FUN_0048ea81(arg2 + -1);
             }
           }
@@ -1644,7 +1644,7 @@ LAB_0048627e:
             Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
                                (int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
             FUN_0050b206(DAT_006b2d90,0x17,0x50,1,&g_OverworldWorldState);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
             FUN_00489630(DAT_006b2d90);
           }
@@ -1653,7 +1653,7 @@ LAB_0048627e:
           }
           LoadPalNoPic(s_Prdblk_pic_005275b0);
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)g_MidiMusicTrackId);
+          Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
           FUN_0050d560(0,0);
           LoadPalNoPic(s_advfac64_pic_005275bc);
           FUN_0046f21e(s_dbox_spr_005275cc,0x71,0xe3);
@@ -1662,7 +1662,7 @@ LAB_0048627e:
         if (local_864 == local_870) {
           Gold = Gold - local_83c;
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)g_MidiMusicTrackId);
+          Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
           LoadPalNoPic(s_advfac64_pic_005275d8);
           FUN_0046f21e(s_dbox_spr_005275e8,0x71,0xe3);
           return 0;
@@ -1687,7 +1687,7 @@ LAB_0048627e:
     strcat(&g_OverworldWorldState,s_you_must____Duel_0052764c);
     Glue_Subsystem_004eaa19((int)player_idx,1,0);
     strcat(&g_OverworldWorldState,&DAT_00527660);
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     uVar11 = Ai_Util_004c3bc4(0x100);
     val_3 = g_AiManaColorCost_Red / 2;
     val_4 = FUN_0050f440((int *)g_DisplaySurfaceScreen,&g_OverworldWorldState);
@@ -1708,7 +1708,7 @@ LAB_00487364:
     if ('\n' < (char)(&DAT_0052262a)[(int)player_idx * 0x44]) {
       local_848 = DAT_00626804;
     }
-    val_3 = FUN_0040a305(3 - match_count / 3,0,3);
+    val_3 = Math_Clamp(3 - match_count / 3,0,3);
     DAT_0063ee24 = -val_3;
     if ((g_CampaignDifficultyLevel == 3) || ('\n' < (char)(&DAT_0052262a)[(int)player_idx * 0x44])) {
       DAT_0063ee24 = 0;
@@ -1809,7 +1809,7 @@ LAB_00487364:
     }
     Deck_LoadPreconstructedDeck((int)player_idx,local_8bc,(uint32_t)local_878,local_848);
     Palette_Subsystem_00496eaf();
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     SelectPalette(_hdcScreen,DAT_00626834,0);
     FUN_0046f21e(s_dbox_spr_005276ec,0x71,0xe3);
     Pic_Subsystem_00423c82(0);
@@ -1873,7 +1873,7 @@ LAB_00487364:
         }
         if (local_830 == -1) {
           *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 5;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xff,0x140,0x15e);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xff,0x140,0x15e);
           Ai_Subsystem_004cd1d1();
           for (arg1 = 0; (int)arg1 < (int)local_8c4; arg1 = arg1 + 1) {
             local_878 = (LPVOID)Pic_Subsystem_00451e40(auStack_8b0[arg1]);
@@ -1948,7 +1948,7 @@ LAB_00487364:
             FUN_0048ea81(local_830);
           }
         }
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         card_idx = *(uint32_t *)(&DAT_0052263c + (int)player_idx * 0x44);
         if (local_8b8 == 0) {
           card_idx = 0;
@@ -1964,7 +1964,7 @@ LAB_00487364:
           Mem_AllocOrFree_00510e20(1,s_winbak02_pic_005277c4);
           Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
                              (int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           strcpy(&g_OverworldWorldState,s_Won_this_Amulet__005277d4);
           local_964[0] = FUN_0050f440((int *)g_DisplaySurfaceScreen,&g_OverworldWorldState);
           val_7 = 0;
@@ -1985,7 +1985,7 @@ LAB_00487364:
           val_8 = Ai_Util_004c3bc4(0xd);
           Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,val_7 - val_8,val_6,val_5,val_4,val_3);
           if (card_idx == 0) {
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
           }
         }
@@ -2011,7 +2011,7 @@ LAB_00487364:
           strcat(&g_OverworldWorldState,s_says_the_00527874);
           Glue_Subsystem_004eaa19((int)player_idx,0,0);
           strcat(&g_OverworldWorldState,&DAT_00527880);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           local_964[8] = local_964[8] + 0x28;
           strcpy(&g_OverworldWorldState,s_You_get_00527884);
         }
@@ -2021,7 +2021,7 @@ LAB_00487364:
           pcVar10 = _itoa(g_PlayerCreatureCount,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
           strcat(&g_OverworldWorldState,s___carried_over_to_the_next_duel__005278a0);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((card_idx & 0x800) != 0) {
           val_3 = Util_GetRandomNumber(4);
@@ -2030,18 +2030,18 @@ LAB_00487364:
           pcVar10 = _itoa((int)g_AiManaColorCost_Blue,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
           strcat(&g_OverworldWorldState,s_lives_in_next_duel__005278c8);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((card_idx & 0x402) != 0) {
           do {
             local_844 = Util_GetRandomNumber(0x40);
             local_868 = Util_GetRandomNumber(0x40);
-            val_3 = FUN_0040c761(local_844,local_868);
+            val_3 = Surface_GetPixelColor(local_844, local_868);
           } while (val_3 == 0);
           g_OverworldMapPixelX = local_844 * 0x20 + 0x10;
           g_OverworldMapPixelY = local_868 * 0x20 + 0x10;
           DAT_00641884 = 0;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((card_idx & 4) != 0) {
           g_AiManaColorCost_Blue = (LPVOID)Pic_Subsystem_0045268f
@@ -2058,7 +2058,7 @@ LAB_00487364:
         }
         if ((card_idx & 0x10) != 0) {
           g_AiManaColorCost_Blue = (LPVOID)0x0;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((card_idx & 0x20) != 0) {
           g_AiManaColorCost_Blue = (LPVOID)Pic_Subsystem_0045268f
@@ -2083,11 +2083,11 @@ LAB_00487364:
           val_3 = Util_GetRandomNumber(0x1e);
           DAT_00522448 = DAT_00522448 + val_3 + 0x14;
           strcat(&g_OverworldWorldState,s_Extra_FOOD__00527948);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((card_idx & 0x40) != 0) {
           strcat(&g_OverworldWorldState,s_any_card_of_your_choice__00527954);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Ai_Subsystem_004cd1d1();
           Glue_Subsystem_004ead96(1);
           local_8bc = Palette_Color_0049716e(s_Pick_a_card_00527970,0,0xffffffff,1,0);
@@ -2102,7 +2102,7 @@ LAB_00487364:
         }
         if ((card_idx & 0x1000) != 0) {
           strcat(&g_OverworldWorldState,s_a_duplicate_card_of_your_choice__00527988);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Ai_Subsystem_004cd1d1();
           Glue_Subsystem_004ead96(1);
           for (arg1 = 0; (int)arg1 < 500; arg1 = arg1 + 1) {
@@ -2121,10 +2121,10 @@ LAB_00487364:
         }
         if ((card_idx & 8) != 0) {
           strcat(&g_OverworldWorldState,s_Extra_GOLD__005279bc);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Gold = Gold + 100;
         }
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         if (card_idx != 0) {
           Ai_Subsystem_004cd1d1();
         }
@@ -2145,7 +2145,7 @@ LAB_00487364:
                          (int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
       FUN_0040b3c2(2,player_idx);
       for (local_884 = 0; local_884 < 3; local_884 = local_884 + 1) {
-        FUN_0040a305((Gold / 0x28) * 10,0,100);
+        Math_Clamp((Gold / 0x28) * 10,0,100);
         local_878 = (LPVOID)0x0;
         local_87c = (&DAT_006b2d90)[local_884];
         if (local_87c != 0xffffffff) {
@@ -2157,7 +2157,7 @@ LAB_00487364:
             strcat(&g_OverworldWorldState,s_gold__005279f0);
           }
           FUN_0050b206(local_87c,0x17,0x50,1,&g_OverworldWorldState);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           FUN_00489630(local_87c);
         }
@@ -2182,7 +2182,7 @@ LAB_00487364:
       val_3 = Ai_Util_004c3bc4(val_3 * 4 + 300);
       FUN_0040d201((int)g_DisplaySurfaceScreen,0xca,
                    (int)(g_AiManaColorCost_Red + (g_AiManaColorCost_Red >> 0x1f & 3U)) >> 2,val_3);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
     }
   }
@@ -2190,7 +2190,7 @@ LAB_00488f4b:
   FUN_0046f21e(s_dbox_spr_00527a78,0x71,0xe3);
   SelectPalette(_hdcScreen,DAT_00626834,0);
   LoadPalNoPic(s_advfac64_pic_00527a84);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   return slot_idx;
 LAB_00486fd1:
   do {
@@ -2286,7 +2286,7 @@ void Castle_Process_0048f523(void)
   uStackY_3c = 0x48f7d7;
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_AiManaColorCost_Green - 0x1e0,0x280,0x1e0,
                      (int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                (int *)g_DisplaySurfaceScreen,0,0);
   Mem_AllocOrFree_0050fc00();
   for (local_12cc = 0; (int)local_12cc < 0xf; local_12cc = local_12cc + 1) {
@@ -2324,7 +2324,7 @@ LAB_0048fa24:
     uStackY_3c = 0x48fa87;
     Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_AiManaColorCost_Green - 0x1e0,0x280,0x1e0,
                        (int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                  (int *)g_DisplaySurfaceScreen,0,0);
   }
   local_12d0 = 0;
@@ -2477,13 +2477,13 @@ LAB_0048fa24:
     uval_7 = Ai_Util_004c3bc4(0x208);
     val_6 = Ai_Util_004c3bc4(0x46);
     arg_2 = Ai_Util_004c3bc4(0x50);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,val_6,uval_7,arg_5,arg_6,val_5,iVar9);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,val_6,uval_7,arg_5,arg_6,val_5,iVar9);
     DAT_0054aae0 = -5;
     local_12d4 = 0xffffffff;
     while( true ) {
       do {
         if (DAT_0054aae0 != -5) {
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           FUN_0041f391();
           Mem_AllocOrFree_0050fc50(DAT_00676bd0);
           if ((local_12c8 != 0) && (local_14ac[0] != (void *)0x0)) {
@@ -2539,7 +2539,7 @@ LAB_0048fa24:
             val_5 = Ai_Util_004c3bc4(((int)local_12cc / 2) * 0x3e + 0x69);
             val_6 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
             FUN_0040cf6d((int)g_DisplaySurfaceScreen,0xbe,iVar9,val_5 - val_6 / 2);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Castle_Process_00492ddf(auStackY_13e4[local_12cc]);
             goto LAB_0048fa24;
           }
@@ -2575,7 +2575,7 @@ LAB_0048fa24:
       bVar11 = local_14c8 != val_5;
       local_14c8 = val_5;
       if (bVar11) break;
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
     }
   } while( true );
 }
@@ -2682,7 +2682,7 @@ void Town_Process_00490d7b(void)
     }
   }
   for (local_42c = 0; local_42c < 5; local_42c = local_42c + 1) {
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xfe,local_42c * 0x2a + 0xcc,0x2a);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xfe,local_42c * 0x2a + 0xcc,0x2a);
   }
 LAB_00491326:
   do {
@@ -2947,7 +2947,7 @@ int32_t Castle_Process_00491d8f(int32_t arg_1,int y,int width,int height)
     target_idx = target_idx + 1;
   }
   strcat(&g_OverworldWorldState,&DAT_00528688);
-  uval_2 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + y * 100),*(int *)(&g_DungeonMapTileY + y * 100));
+  uval_2 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + y * 100),*(int *)(&g_DungeonMapTileY + y * 100));
   local_3c[6] = Glue_Subsystem_004ea7a6(uval_2);
   if (((&g_CardSlot_StatusFlags)[y * 100] & 1) == 0) {
     match_count = 0xe3;
@@ -2967,7 +2967,7 @@ int32_t Castle_Process_00491d8f(int32_t arg_1,int y,int width,int height)
     val_3 = Ai_Util_004c3bc4(width + 0x20c);
     FUN_0040d269((int)g_DisplaySurfaceBackBuffer,match_count,val_3,val_5);
   }
-  uval_2 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + y * 100),*(int *)(&g_DungeonMapTileY + y * 100));
+  uval_2 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + y * 100),*(int *)(&g_DungeonMapTileY + y * 100));
   local_3c[6] = Glue_Subsystem_004ea7a6(uval_2);
   slot_idx = 0;
   for (target_idx = 1; (int)target_idx < 6; target_idx = target_idx + 1) {
@@ -3088,7 +3088,7 @@ void Castle_Process_00492ddf(int player_id)
   slot_idx = 0x98;
   target_idx = 0xab;
   player_idx = 0x3a;
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   LoadPalNoPic(s_advfac64_pic_005289ec);
   Mem_AllocOrFree_00510e20(1,s_cluebutn_pic_005289fc);
   Mem_AllocOrFree_0050fc00();
@@ -3120,7 +3120,7 @@ void Castle_Process_00492ddf(int player_id)
   arg_4 = Ai_Util_004c3bc4(0x5a);
   val_3 = Ai_Util_004c3bc4(0x1a2);
   arg_2 = Ai_Util_004c3bc4(0x16);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,val_3,arg_4,arg_5,piVar6,val_7,val_8);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,val_3,arg_4,arg_5,piVar6,val_7,val_8);
   FUN_0041f213();
   *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 4;
   g_OverworldWorldState = 0;
@@ -3339,7 +3339,7 @@ int Town_Process_00506580(uint32_t arg_1)
   int slot_idx;
   
   DAT_0061e0d4 = arg_1;
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if ((&DAT_0067be01)[arg_1 * 100] == '\0') {
     if (*(int *)(&g_CardSlot_CreatureType + arg_1 * 100) == 4) {
       local_64[1] = s_0246_pic_00531a34;
@@ -3347,7 +3347,7 @@ int Town_Process_00506580(uint32_t arg_1)
       local_64[3] = s_0335_pic_00531a64;
       local_54 = s_0737_pic_00531a7c;
       local_50 = s_0028_pic_00531a94;
-      uval_4 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + arg_1 * 100),
+      uval_4 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + arg_1 * 100),
                            *(int *)(&g_DungeonMapTileY + arg_1 * 100));
       flag_1 = Glue_Subsystem_004ea7a6(uval_4);
       DAT_006b2d64 = Rules_CalculateManaCostReduction(flag_1);
@@ -3375,7 +3375,7 @@ int Town_Process_00506580(uint32_t arg_1)
       local_6c = s_0335_pic_00531b5c;
       local_68 = s_0737_pic_00531b74;
       local_64[0] = s_0028_pic_00531b8c;
-      uval_4 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + arg_1 * 100),
+      uval_4 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + arg_1 * 100),
                            *(int *)(&g_DungeonMapTileY + arg_1 * 100));
       flag_1 = Glue_Subsystem_004ea7a6(uval_4);
       DAT_006b2d64 = Rules_CalculateManaCostReduction(flag_1);
@@ -3567,7 +3567,7 @@ int Town_Process_00506580(uint32_t arg_1)
           local_24 = (local_24 + *(short *)(val_3 + 6) + 0x10) / 2;
           color_idx = (color_idx + (int)*(short *)(val_3 + 4) / 2) / 2;
           *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 4;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,0x7b,0x176,0x4b);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0x7b,0x176,0x4b);
           g_OverworldWorldState = 0;
           local_24 = local_24 + -5;
           strcat(&g_OverworldWorldState,(&PTR_s_Sleight_of_hand_005225d0)[card_idx]);
@@ -3592,7 +3592,7 @@ int Town_Process_00506580(uint32_t arg_1)
               strcpy(&g_OverworldWorldState,s_Insufficient_Funds_00531f1c);
               FUN_0040c336(&g_OverworldWorldState,color_idx,local_24,0xbe);
               local_24 = local_24 + 8;
-              FUN_0040a3e1();
+              App_ProcessPendingMessages();
               Ai_Subsystem_004cd1d1();
             }
             else {
@@ -3606,7 +3606,7 @@ int Town_Process_00506580(uint32_t arg_1)
               strcat(&g_OverworldWorldState,char_ptr_2);
               strcat(&g_OverworldWorldState,s_gold_pieces__00531ee4);
               strcat(&g_OverworldWorldState,s_Will_you____Never_mind_Pay_the_g_00531ef4);
-              FUN_0040a3e1();
+              App_ProcessPendingMessages();
               local_30 = FUN_004896be(&g_OverworldWorldState,
                                       (-(uint32_t)(g_AiManaColorCost_Red == 0x280) & 0xffffffce) + 0xbe,0x88);
               DAT_00531590 = card_idx;
@@ -3638,7 +3638,7 @@ int Town_Process_00506580(uint32_t arg_1)
             FUN_0040c336(&g_OverworldWorldState,color_idx,local_24,0x8d);
             local_24 = local_24 + 8;
             DAT_00531590 = card_idx;
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
           }
         }
@@ -3748,7 +3748,7 @@ int Town_Process_00506580(uint32_t arg_1)
                                (int *)g_DisplaySurfaceScreen,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
             strcpy(&g_OverworldWorldState,s_Lost_this_card_00531a18);
             FUN_0050b206(local_34,0x17,0x50,1,&g_OverworldWorldState);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
             FUN_00489630(local_34);
           }
@@ -3798,9 +3798,9 @@ int32_t Town_Process_00507c86(uint32_t arg_1)
   int32_t match_count;
   int slot_idx;
   
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   DAT_0062680c = arg_1;
-  uval_2 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + arg_1 * 100),*(int *)(&g_DungeonMapTileY + arg_1 * 100));
+  uval_2 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + arg_1 * 100),*(int *)(&g_DungeonMapTileY + arg_1 * 100));
   local_50 = Glue_Subsystem_004ea7a6(uval_2);
   loop_idx = *(int *)(&g_CardSlot_CreatureType + DAT_0062680c * 100) + 3;
   if (DAT_005224f8 == 0) {
@@ -3880,7 +3880,7 @@ LAB_00507faa:
     }
   }
   if (DAT_0061e05c != 1) {
-    uval_2 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + DAT_0061e100 * 100),
+    uval_2 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + DAT_0061e100 * 100),
                          *(int *)(&g_DungeonMapTileY + DAT_0061e100 * 100));
     local_44 = Glue_Subsystem_004ea7a6(uval_2);
     do {
@@ -3981,7 +3981,7 @@ LAB_00507faa:
           local_30 = (local_30 * 3) / 2;
         }
       }
-      uval_2 = FUN_0040a305((local_30 / 0x32) * 5,5,1000);
+      uval_2 = Math_Clamp((local_30 / 0x32) * 5,5,1000);
       *(int32_t *)(&DAT_0061e0a0 + local_3c * 4) = uval_2;
     }
   }
@@ -4254,7 +4254,7 @@ void Town_Process_00508cd7(void)
     val_2 = val_2 + val_3 * -4;
     val_3 = Ai_Util_004c3bc4(0x50);
     FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,val_3,val_2);
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
     FUN_0040a95d(s_village_pic_005320a8 + ((*(int *)(&g_CardSlot_CreatureType + arg_1 * 100) == 1) - 1 & 0xc));
   }
@@ -4298,8 +4298,8 @@ void Merchant_ProcessBuy_00509517(void)
   
   local_a8 = DAT_0062680c;
   local_ac = 0;
-  FUN_0040a3e1();
-  arg_1 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + local_a8 * 100),
+  App_ProcessPendingMessages();
+  arg_1 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + local_a8 * 100),
                        *(int *)(&g_DungeonMapTileY + local_a8 * 100));
   local_bc = Glue_Subsystem_004ea7a6(arg_1);
   local_ac = *(int *)(&g_CardSlot_CreatureType + local_a8 * 100) + 3;
@@ -4387,9 +4387,9 @@ LAB_00509872:
       pcVar5 = &DAT_005322cc;
       val_3 = 0;
       val_1 = (*(uint32_t *)(&DAT_0061e060 + local_b4 * 4) & 7) + local_b0 + 4;
-      val_2 = FUN_0040a305(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_AiManaColorCost_Red + -0x62);
+      val_2 = Math_Clamp(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_AiManaColorCost_Red + -0x62);
       FUN_0050b206(*(int *)(&DAT_0061e060 + local_b4 * 4),val_2,val_1,val_3,pcVar5);
-      val_1 = FUN_0040a305(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_AiManaColorCost_Red + -0x62);
+      val_1 = Math_Clamp(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_AiManaColorCost_Red + -0x62);
       val_1 = Ai_Util_004c3ba3(val_1);
       local_a4[local_b4 * 4] = val_1;
       val_1 = Ai_Util_004c3ba3((*(uint32_t *)(&DAT_0061e060 + local_b4 * 4) & 7) + local_b0 + 4);
@@ -4444,7 +4444,7 @@ LAB_00509872:
   Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,val_4 / 2,val_3,val_2,val_1,(int)arg_6);
   FUN_0050b3de(*(int *)(&DAT_0061e060 + local_b4 * 4),0x7a,0x29,0x4b,0x70,1,&DAT_005322ec);
   FUN_0040d339((int)g_DisplaySurfaceScreen,0x1b,0x140,0x47);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   local_b8 = FUN_0048ac2f();
   if (((local_b8 == 0x79) || (local_b8 == 0x59)) && (*(int *)(&DAT_0061e0a0 + local_b4 * 4) <= Gold)
      ) {
@@ -4502,7 +4502,7 @@ void Town_Process_0050a065(void)
   
   val_1 = DAT_0062680c;
   Glue_Subsystem_004ebcdc(s_x_sound_button2_wav_00532320,0xf,100,100,0);
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   DeckBuilderMain(_hwndScreen,1,3);
   Pic_Load_advfac64_0040a4fc();
   Overworld_LoadAdventureInterface800();
@@ -4591,7 +4591,7 @@ void Town_Process_0050a262(void)
   
   val_1 = DAT_0062680c;
   Glue_Subsystem_004ebcdc(s_x_sound_button2_wav_005323bc,0xf,100,100,0);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   Castle_Process_00421b32();
   Overworld_LoadAdventureInterface800();
   Ai_Subsystem_004c3c5c(1);
@@ -4615,7 +4615,7 @@ int SellPrice(int player_id)
   int slot_idx;
   
                     /* 0x10a8ae  7  SellPrice */
-  arg_1_00 = FUN_0040c761(*(int *)(&g_DungeonMapTileX + DAT_0061e0fc * 100),
+  arg_1_00 = Surface_GetPixelColor(*(int *)(&g_DungeonMapTileX + DAT_0061e0fc * 100),
                           *(int *)(&g_DungeonMapTileY + DAT_0061e0fc * 100));
   val_1 = Glue_Subsystem_004ea7a6(arg_1_00);
   slot_idx = FUN_0050a9bf(arg_1);

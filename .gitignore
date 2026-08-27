@@ -1,0 +1,24 @@
+# ==============================================================================
+# Git Ignore - MicroProse Shandalar Modern ANSI C Engine
+# ==============================================================================
+
+# Build Output & Binaries
+build/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+
+# Redundant Intermediate Function Exports
+**/functions/
+functions/
+
+# Temporary / Scratch Files
+*.swp
+*.swo
+*~
+.DS_Store
+__pycache__/
+*.pyc

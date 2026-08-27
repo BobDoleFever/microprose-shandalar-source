@@ -316,13 +316,13 @@ void FUN_00511120(uint32_t *arg1,int *arg2)
 
 
 /*
- * Decompiled function: FUN_005112b0
+ * Decompiled function: Surface_TransformPoint
  * Entry Point: 005112b0
  * Size: 747 bytes
  */
 
 
-int FUN_005112b0(short arg1,short arg2)
+int Surface_TransformPoint(short arg1,short arg2)
 
 {
   int val_1;

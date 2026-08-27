@@ -323,7 +323,7 @@ switchD_0040e766_default:
 int32_t Sound_LoadWav_x_sound_button2_0041ed86(int player_id)
 
 {
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if (DAT_00640f08 == 0) {
     DAT_00640f08 = *(int *)(arg_1 + 0x2c);
   }

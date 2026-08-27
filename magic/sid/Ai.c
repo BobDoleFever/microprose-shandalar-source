@@ -328,11 +328,11 @@ void Ai_EvaluateCreaturePower(void)
  * Size: 75 bytes
  */
 
-int Ai_GetOpponentPlayerScore(int arg1)
+int Ai_GetOpponentPlayerScore(int x)
 
 {
   if ((g_IsAiThinking != 1) &&
-     (g_AiCurrentSearchPath = *(uint *)(&DAT_0054f838 + (arg1 + g_AiBestScoreTable) * 4),
+     (g_AiCurrentSearchPath = *(uint *)(&DAT_0054f838 + (x + g_AiBestScoreTable) * 4),
      g_AiCurrentSearchPath != 0xffffffff)) {
     g_AiCurrentSearchPath = g_AiCurrentSearchPath & 0xfff;
   }
@@ -352,11 +352,11 @@ int Ai_GetOpponentPlayerScore(int arg1)
  * Size: 74 bytes
  */
 
-int Ai_CalcLifeAdvantage(int arg1)
+int Ai_CalcLifeAdvantage(int x)
 
 {
   if ((g_IsAiThinking != 1) &&
-     (DAT_0062785c = (&g_AiCardScore_BasicLand)[g_AiBestScoreTable + arg1], DAT_0062785c == 99)) {
+     (DAT_0062785c = (&g_AiCardScore_BasicLand)[g_AiBestScoreTable + x], DAT_0062785c == 99)) {
     DAT_0062785c = 0;
   }
   return 0;
@@ -477,7 +477,7 @@ void Ai_Score_SetValidityFlag(void)
  * Size: 2722 bytes
  */
 
-int Ai_SimulateCombatRound(int arg1)
+int Ai_SimulateCombatRound(int x)
 
 {
   int status;
@@ -502,14 +502,14 @@ int Ai_SimulateCombatRound(int arg1)
   
   g_CardSlot_PowerBonus = 1;
   local_c = 0;
-  local_28 = 1 - arg1;
+  local_28 = 1 - x;
   Ai_FilterValidBlockers(local_d4,local_d4 + 1);
   memset(local_cc,0,0xa0);
   local_20 = 0;
-  for (local_1c = 1; local_1c <= (int)(&g_PlayerCreatureCount)[arg1]; local_1c = local_1c + 1) {
+  for (local_1c = 1; local_1c <= (int)(&g_PlayerCreatureCount)[x]; local_1c = local_1c + 1) {
     local_20 = local_20 + (int)(0x18 / (longlong)local_1c) + 0xc;
   }
-  status = *(int *)(&g_PlayerLifeTotals + arg1 * 4) * local_20;
+  status = *(int *)(&g_PlayerLifeTotals + x * 4) * local_20;
   local_20 = 0;
   for (local_1c = 1; local_1c <= (int)(&g_PlayerCreatureCount)[local_28]; local_1c = local_1c + 1) {
     local_20 = local_20 + (int)(0x18 / (longlong)local_1c) + 0xc;
@@ -517,8 +517,8 @@ int Ai_SimulateCombatRound(int arg1)
   local_c = ((int)(status + (status >> 0x1f & 7U)) >> 3) -
             ((int)(*(int *)(&g_PlayerLifeTotals + local_28 * 4) * local_20 +
                   (*(int *)(&g_PlayerLifeTotals + local_28 * 4) * local_20 >> 0x1f & 7U)) >> 3);
-  if ((int)(&g_PlayerCreatureCount)[arg1] < 1) {
-    local_c = local_c + ((&g_PlayerCreatureCount)[arg1] * 4 + -8) * 0x4b;
+  if ((int)(&g_PlayerCreatureCount)[x] < 1) {
+    local_c = local_c + ((&g_PlayerCreatureCount)[x] * 4 + -8) * 0x4b;
   }
   if ((int)(&g_PlayerCreatureCount)[local_28] < 1) {
     local_c = local_c + ((&g_PlayerCreatureCount)[local_28] + -2) * -0x100;
@@ -532,17 +532,17 @@ int Ai_SimulateCombatRound(int arg1)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_1c = 0; local_1c < (int)(&g_PlayerActiveCardCount)[local_8];
             local_1c = local_1c + 1) {
-          if ((1 << ((byte)arg1 & 0x1f) & (int)(char)local_cc[local_8 * 0x50 + local_1c]) != 0) {
+          if ((1 << ((byte)x & 0x1f) & (int)(char)local_cc[local_8 * 0x50 + local_1c]) != 0) {
             local_c = local_c + 2;
           }
-          if ((1 << (1 - (byte)arg1 & 0x1f) & (int)(char)local_cc[local_8 * 0x50 + local_1c]) != 0)
+          if ((1 << (1 - (byte)x & 0x1f) & (int)(char)local_cc[local_8 * 0x50 + local_1c]) != 0)
           {
             local_c = local_c + -2;
           }
         }
       }
-      if ((DAT_00676c8c == 0) && (g_DefendingPlayer == arg1)) {
-        local_c = Ai_ChooseAttackers(arg1,local_c);
+      if ((DAT_00676c8c == 0) && (g_DefendingPlayer == x)) {
+        local_c = Ai_ChooseAttackers(x,local_c);
       }
       g_CardSlot_PowerBonus = 0;
       return local_c;
@@ -563,14 +563,14 @@ int Ai_SimulateCombatRound(int arg1)
         if (((&g_MasterCardColorTable)[local_14 * 0x34] & 0x80) == 0) {
           local_2c = 1;
           if (((&g_MasterCardColorTable)[local_14 * 0x34] & 2) != 0) {
-            u_temp = FUN_00473179(local_8,local_1c,0x34,0xffffffff);
-            u_score = FUN_00473179(local_8,local_1c,0x32,0xffffffff);
+            u_temp = Card_TapForMana(local_8, local_1c, 0x34, 0xffffffff);
+            u_score = Card_TapForMana(local_8,local_1c,0x32,0xffffffff);
             local_18 = (u_score & 0xffffbfff) * 2;
             if ((&DAT_0051aebd)[local_14 * 0x34] == '\0') {
               local_18 = 0;
             }
             status = local_18;
-            u_score = FUN_00473179(local_8,local_1c,0x33,0xffffffff);
+            u_score = Card_TapForMana(local_8,local_1c,0x33,0xffffffff);
             u_score = u_score & 0xffffbfff;
             local_2c = (int)((status + 3) * (u_score + 4)) / 2;
             if ((((&g_CardSlot_Flags)[local_1c * 0x120 + local_8 * 0x5b20] & 0x10) != 0) &&
@@ -592,18 +592,18 @@ int Ai_SimulateCombatRound(int arg1)
             if ((u_temp & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_00676c8c == 0) && (local_8 != arg1)) && (g_DefendingPlayer == arg1)) &&
+            if ((((DAT_00676c8c == 0) && (local_8 != x)) && (g_DefendingPlayer == x)) &&
                (((&g_CardSlot_Flags)[local_1c * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
-              u_temp = FUN_00473179(local_8,local_1c,0x34,0xffffffff);
+              u_temp = Card_TapForMana(local_8, local_1c, 0x34, 0xffffffff);
               for (local_24 = 0; local_24 < (int)(&g_PlayerActiveCardCount)[local_28];
                   local_24 = local_24 + 1) {
                 card_idx = FUN_00472c0c(local_28,local_24,local_8,local_1c,u_temp,local_d4[local_8]);
                 if (card_idx != 0) {
                   local_e4 = 1;
-                  card_idx = FUN_00473179(local_28,local_24,0x33,local_1c);
+                  card_idx = Card_TapForMana(local_28,local_24,0x33,local_1c);
                   if ((status < card_idx) ||
-                     (card_idx = FUN_00473179(local_28,local_24,0x32,local_1c), (int)u_score <= card_idx)) {
+                     (card_idx = Card_TapForMana(local_28,local_24,0x32,local_1c), (int)u_score <= card_idx)) {
                     local_e4 = 3;
                     break;
                   }
@@ -681,7 +681,7 @@ int Ai_SimulateCombatRound(int arg1)
       }
     }
     (&DAT_006b2538)[local_8] = local_10;
-    if (local_8 == arg1) {
+    if (local_8 == x) {
       local_c = local_c + local_10;
     }
     else {
@@ -735,7 +735,7 @@ int Ai_ChooseAttackers(int player, int attacker_idx)
   int local_10;
   char acStack_c [8];
   
-  x = 1 - arg1;
+  x = 1 - x;
   Ai_FilterValidBlockers(&local_1a8,(uint *)0x0);
   for (local_1a0 = 0; local_1a0 < 8; local_1a0 = local_1a0 + 1) {
     acStack_c[local_1a0] = (&g_AiCombatScore_Total)[local_1a0 * 4 + x * 0x20];
@@ -746,18 +746,18 @@ int Ai_ChooseAttackers(int player, int attacker_idx)
     aiStack_154[local_14 * 3 + 1] = -1;
   }
   local_10 = 0;
-  for (local_1b0 = 0; local_1b0 < (int)(&g_PlayerActiveCardCount)[arg1]; local_1b0 = local_1b0 + 1)
+  for (local_1b0 = 0; local_1b0 < (int)(&g_PlayerActiveCardCount)[x]; local_1b0 = local_1b0 + 1)
   {
-    if (((*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
-        ((*(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) & 0x402) != 0)) &&
+    if (((*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + x * 0x5b20) != -1) &&
+        ((*(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + x * 0x5b20) & 0x402) != 0)) &&
        (((&g_MasterCardColorTable)
-         [*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) != 0)) {
+         [*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + x * 0x5b20) * 0x34] & 2) != 0)) {
       acStack_ac[local_1b0] = (char)local_10;
-      status = FUN_00473179(arg1,local_1b0,0x32,0xffffffff);
+      status = Card_TapForMana(x,local_1b0,0x32,0xffffffff);
       aiStack_f0[local_10] = status;
-      status = FUN_00473179(arg1,local_1b0,0x33,0xffffffff);
+      status = Card_TapForMana(x,local_1b0,0x33,0xffffffff);
       aiStack_194[local_10] = status;
-      aiStack_58[local_10] = *(int *)(&DAT_006a5f70 + local_1b0 * 0x120 + arg1 * 0x5b20);
+      aiStack_58[local_10] = *(int *)(&DAT_006a5f70 + local_1b0 * 0x120 + x * 0x5b20);
       local_10 = local_10 + 1;
     }
   }
@@ -767,8 +767,8 @@ int Ai_ChooseAttackers(int player, int attacker_idx)
        ((((&g_CardSlot_Flags)[local_1a0 * 0x120 + x * 0x5b20] & 2) != 0 &&
         (((&DAT_0051aebd)[local_19c * 0x34] != '\0' ||
          (((&DAT_006a5f69)[local_1a0 * 0x120 + x * 0x5b20] & 8) != 0)))))) {
-      local_1c0 = FUN_00473179(x,local_1a0,0x32,0xffffffff);
-      local_1bc = FUN_00473179(x,local_1a0,0x33,0xffffffff);
+      local_1c0 = Card_TapForMana(x,local_1a0,0x32,0xffffffff);
+      local_1bc = Card_TapForMana(x,local_1a0,0x33,0xffffffff);
       if (g_CurrentTurnPhase == x) {
         if (((&g_MasterCardSubtypeTable)[local_19c * 0x34] & 8) != 0) {
           status = (**(code **)(&g_MasterCardManaCostTable + local_19c * 0x34))(x,local_1a0,0x39);
@@ -798,7 +798,7 @@ LAB_004ac40d:
   local_14 = 0;
   do {
     if ((7 < local_14) || (aiStack_154[local_14 * 3 + 1] == -1)) {
-      if (((int)(&g_PlayerCreatureCount)[arg1] <= local_1a4) &&
+      if (((int)(&g_PlayerCreatureCount)[x] <= local_1a4) &&
          (0 < (int)(&g_PlayerCreatureCount)[x])) {
         arg2 = arg2 + -0x100;
       }
@@ -808,31 +808,31 @@ LAB_004ac40d:
       return arg2;
     }
     local_1a0 = aiStack_154[local_14 * 3];
-    local_198 = FUN_00473179(x,local_1a0,0x34,0xffffffff);
+    local_198 = Card_TapForMana(x,local_1a0,0x34,0xffffffff);
     status = aiStack_154[local_14 * 3 + 1];
     temp_idx = aiStack_154[local_14 * 3 + 2];
     local_1b4 = 0;
     local_1b8 = 0;
     local_f4 = 0;
     local_5c = 0x7fff;
-    for (local_1b0 = 0; local_1b0 < (int)(&g_PlayerActiveCardCount)[arg1]; local_1b0 = local_1b0 + 1
+    for (local_1b0 = 0; local_1b0 < (int)(&g_PlayerActiveCardCount)[x]; local_1b0 = local_1b0 + 1
         ) {
-      if (((*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
-          (((&g_CardSlot_Flags)[local_1b0 * 0x120 + arg1 * 0x5b20] & 2) != 0)) &&
+      if (((*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + x * 0x5b20) != -1) &&
+          (((&g_CardSlot_Flags)[local_1b0 * 0x120 + x * 0x5b20] & 2) != 0)) &&
          (((&g_MasterCardColorTable)
-           [*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) != 0)) {
+           [*(int *)(&g_CardSlot_CardId + local_1b0 * 0x120 + x * 0x5b20) * 0x34] & 2) != 0)) {
         local_f4 = (int)acStack_ac[local_1b0];
         local_18 = aiStack_f0[local_f4];
         local_b0 = aiStack_194[local_f4];
-        val_result = FUN_004728c3(arg1,local_1b0);
-        if (((*(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) &
+        val_result = FUN_004728c3(x,local_1b0);
+        if (((*(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + x * 0x5b20) &
              (-(uint)(val_result == 0) & 4) + 8) == 0) &&
-           (val_result = FUN_00472c0c(arg1,local_1b0,x,local_1a0,local_198,local_1a8), val_result != 0)) {
+           (val_result = FUN_00472c0c(x,local_1b0,x,local_1a0,local_198,local_1a8), val_result != 0)) {
           local_1b8 = 1;
           if ((status < local_b0) || (temp_idx <= local_18)) {
             local_1b8 = 3;
-            *(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) =
-                 *(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) | 8;
+            *(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + x * 0x5b20) =
+                 *(uint *)(&g_CardSlot_Flags + local_1b0 * 0x120 + x * 0x5b20) | 8;
             break;
           }
           if (aiStack_58[local_f4] < local_5c) {
@@ -843,21 +843,21 @@ LAB_004ac40d:
       }
     }
     if ((local_1b8 & 2) == 0) {
-      temp_idx = *(int *)(&g_PlayerLifeTotals + arg1 * 4) * status * 0x18;
+      temp_idx = *(int *)(&g_PlayerLifeTotals + x * 4) * status * 0x18;
       temp_idx = temp_idx + (temp_idx >> 0x1f & 3U);
-      val_result = FUN_0040a305((&g_PlayerCreatureCount)[arg1] + 1,1,99);
+      val_result = Math_Clamp((&g_PlayerCreatureCount)[x] + 1,1,99);
       temp_idx = (int)(CONCAT44(temp_idx >> 0x1f,temp_idx >> 2) / (longlong)val_result);
-      val_result = (int)(*(int *)(&g_AiPlayerLifeDifferential + arg1 * 4) * local_5c +
-                   (*(int *)(&g_AiPlayerLifeDifferential + arg1 * 4) * local_5c >> 0x1f & 0xfU)) >> 4;
+      val_result = (int)(*(int *)(&g_AiPlayerLifeDifferential + x * 4) * local_5c +
+                   (*(int *)(&g_AiPlayerLifeDifferential + x * 4) * local_5c >> 0x1f & 0xfU)) >> 4;
       if ((local_1b8 == 0) ||
-         ((temp_idx < val_result && (status + local_1a4 < (int)(&g_PlayerCreatureCount)[arg1])))) {
+         ((temp_idx < val_result && (status + local_1a4 < (int)(&g_PlayerCreatureCount)[x])))) {
         local_1a4 = local_1a4 + status;
         arg2 = arg2 - temp_idx;
       }
       else {
         arg2 = arg2 - val_result;
-        *(uint *)(&g_CardSlot_Flags + local_1b4 * 0x120 + arg1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Flags + local_1b4 * 0x120 + arg1 * 0x5b20) | 8;
+        *(uint *)(&g_CardSlot_Flags + local_1b4 * 0x120 + x * 0x5b20) =
+             *(uint *)(&g_CardSlot_Flags + local_1b4 * 0x120 + x * 0x5b20) | 8;
       }
     }
     local_14 = local_14 + 1;
@@ -902,14 +902,14 @@ int Ai_ChooseBlockers(int player, int attacker_idx)
   strcat(&g_OverworldWorldState,s_____0052ce64);
   local_8 = 0;
   while( true ) {
-    if (arg1 == 0) {
+    if (x == 0) {
       local_10 = g_AiBestScoreTable;
     }
     else {
       local_10 = DAT_00556928;
     }
     if (local_10 <= local_8) break;
-    if (arg1 == 0) {
+    if (x == 0) {
       local_c = *(uint *)(&DAT_0054fc38 + local_8 * 4);
     }
     else {
@@ -932,7 +932,7 @@ int Ai_ChooseBlockers(int player, int attacker_idx)
         strcat(&g_OverworldWorldState,s_Player_0052ce8c);
       }
       else {
-        if (arg1 == 0) {
+        if (x == 0) {
           local_14 = *(int *)(&DAT_00553840 + local_8 * 4);
         }
         else {
@@ -961,7 +961,7 @@ int Ai_ChooseBlockers(int player, int attacker_idx)
  * Size: 155 bytes
  */
 
-void Ai_FilterValidBlockers(uint * arg1, uint * arg2)
+void Ai_FilterValidBlockers(uint * x, uint * arg2)
 
 {
   int local_10;
@@ -978,8 +978,8 @@ void Ai_FilterValidBlockers(uint * arg1, uint * arg2)
       local_c = local_c | 1 << ((char)local_10 - 1U & 0x1f);
     }
   }
-  if (arg1 != (uint *)0x0) {
-    *arg1 = local_8;
+  if (x != (uint *)0x0) {
+    *x = local_8;
   }
   if (arg2 != (uint *)0x0) {
     *arg2 = local_c;
@@ -1001,7 +1001,7 @@ void Ai_FilterValidBlockers(uint * arg1, uint * arg2)
  * Size: 538 bytes
  */
 
-int Ai_AssignCombatDamage(int * arg1, uint * arg2, uint arg3, int arg4, uint arg5, uint arg6, int arg7, int arg8, int arg9)
+int Ai_AssignCombatDamage(int * x, uint * arg2, uint arg3, int arg4, uint arg5, uint arg6, int arg7, int arg8, int arg9)
 
 {
   int u_res;
@@ -1017,7 +1017,7 @@ int Ai_AssignCombatDamage(int * arg1, uint * arg2, uint arg3, int arg4, uint arg
   int local_c;
   INT_PTR local_8;
   
-  if ((arg1 == (int *)0x0) || (arg2 == (uint *)0x0)) {
+  if ((x == (int *)0x0) || (arg2 == (uint *)0x0)) {
     u_res = 0;
   }
   else {
@@ -1061,7 +1061,7 @@ int Ai_AssignCombatDamage(int * arg1, uint * arg2, uint arg3, int arg4, uint arg
     local_8 = DialogBoxParamA(g_AppHInstance,(LPCSTR)0xe3,g_MainAppHwnd,Ai_StartDuelWndProc,
                               (LPARAM)&local_2c);
     local_30 = (uint)(local_8 != 0);
-    *arg1 = local_2c;
+    *x = local_2c;
     *arg2 = local_30;
     DAT_00695e90 = 0;
     Pic_Subsystem_0044cfe4(g_AiDuelTurnState);
@@ -1156,7 +1156,7 @@ HGDIOBJ Ai_DuelDialogProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
     }
     if (uMsg == 0x14) {
       local_180 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_17c);
       if (DAT_00556ac8 == (HANDLE)0x0) {
         hbr = GetStockObject(2);
@@ -1201,7 +1201,7 @@ HGDIOBJ Ai_DuelDialogProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
         SendMessageA(hwnd,0x401,0x486,0);
       }
       local_14c = GetDC(hwnd);
-      FUN_004f3955(local_14c);
+      GDI_RealizeAndFlushPalette_Magic(local_14c);
       local_140 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x486,0x31,0,0);
       SelectObject(local_14c,local_140);
       GetDlgItemTextA(hwnd,0x486,local_134,200);
@@ -1253,7 +1253,7 @@ LAB_004ad556:
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_15c = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       local_164 = lParam;
       local_160 = GetDlgCtrlID(lParam);
       SetBkMode((HDC)local_15c,1);
@@ -1278,7 +1278,7 @@ LAB_004ad556:
     if (uMsg == 0x113) {
       if (wParam == (HWND)0x1) {
         KillTimer(hwnd,1);
-        local_184 = FUN_0040a1d2(2);
+        local_184 = Math_RandomRange(2);
         local_8 = (HWND)GetWindowLongA(hwnd,8);
         *(int *)((int)local_8 + 4) = local_184;
         if (local_184 == 0) {
@@ -1305,7 +1305,7 @@ LAB_004ad556:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      pvVar2 = (HGDIOBJ)FUN_004f5d1a(hwnd,uMsg,wParam,lParam);
+      pvVar2 = (HGDIOBJ)GDI_RealizePaletteTree_Magic(hwnd,uMsg,wParam,lParam);
       return pvVar2;
     }
     if (uMsg == 0x4c8) {
@@ -1341,7 +1341,7 @@ LAB_004ad556:
  * Size: 182 bytes
  */
 
-void Ai_LoadStartDuel2Backdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6)
+void Ai_LoadStartDuel2Backdrop(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6)
 
 {
   int u_res;
@@ -1349,7 +1349,7 @@ void Ai_LoadStartDuel2Backdrop(int * arg1, int * out_buffer, int * arg3, int * a
   
   sprintf(local_10c,s__s_WINBK_StartDuel2_pic_0052cf20,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0;
   sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_0052cf38,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
@@ -1375,17 +1375,17 @@ void Ai_LoadStartDuel2Backdrop(int * arg1, int * out_buffer, int * arg3, int * a
  * Size: 77 bytes
  */
 
-void Ai_StartDuel_InitContext(int arg1, int arg2, int arg3)
+void Ai_StartDuel_InitContext(int x, int arg2, int arg3)
 
 {
-  if (arg1 != 0) {
-    FUN_004f4548((HANDLE)arg1);
+  if (x != 0) {
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != 0) {
-    FUN_004f4548((HANDLE)arg2);
+    GDI_DestroyDIBSection_Magic((HANDLE)arg2);
   }
   if (arg3 != 0) {
-    FUN_004f4548((HANDLE)arg3);
+    GDI_DestroyDIBSection_Magic((HANDLE)arg3);
   }
   return;
 }
@@ -1453,7 +1453,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_208 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_204);
       if (DAT_00556a6c == (HANDLE)0x0) {
         hbr = GetStockObject(2);
@@ -1474,7 +1474,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
       local_8 = (HWND)GetWindowLongA(hwnd,8);
       hdc = BeginPaint(hwnd,&local_280);
       if (hdc != (HDC)0x0) {
-        FUN_004f3955(hdc);
+        GDI_RealizeAndFlushPalette_Magic(hdc);
         if (*(int *)((int)local_8 + 8) != -1) {
           ptVar9 = &local_240;
           pHVar6 = GetDlgItem(hwnd,0x470);
@@ -1572,7 +1572,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
       ShowWindow(pHVar6,iVar7);
       local_8[6].unused = 0;
       local_15c = GetDC(hwnd);
-      FUN_004f3955(local_15c);
+      GDI_RealizeAndFlushPalette_Magic(local_15c);
       local_150 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x415,0x31,0,0);
       SelectObject(local_15c,local_150);
       ptVar9 = &local_14c;
@@ -1657,7 +1657,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_1e0 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       local_1e8 = lParam;
       local_1e4 = GetDlgCtrlID(lParam);
       SetBkMode((HDC)local_1e0,1);
@@ -1715,7 +1715,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        pvVar4 = (HGDIOBJ)FUN_004f5d1a(hwnd,uMsg,wParam,lParam);
+        pvVar4 = (HGDIOBJ)GDI_RealizePaletteTree_Magic(hwnd,uMsg,wParam,lParam);
         return pvVar4;
       }
       if (uMsg != 0x200) {
@@ -1786,7 +1786,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
  * Size: 228 bytes
  */
 
-void Ai_LoadStartDuelBackdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
+void Ai_LoadStartDuelBackdrop(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
 
 {
   int u_res;
@@ -1794,7 +1794,7 @@ void Ai_LoadStartDuelBackdrop(int * arg1, int * out_buffer, int * arg3, int * ar
   
   sprintf(local_10c,s__s_WINBK_StartDuel_pic_0052d0a4,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0;
   sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_0052d0bc,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
@@ -1826,16 +1826,16 @@ void Ai_Duel_ResetBuffers(int x, int y, int width, int height)
 
 {
   if (x != 0) {
-    FUN_004f4548((HANDLE)x);
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (y != 0) {
-    FUN_004f4548((HANDLE)y);
+    GDI_DestroyDIBSection_Magic((HANDLE)y);
   }
   if (width != 0) {
-    FUN_004f4548((HANDLE)width);
+    GDI_DestroyDIBSection_Magic((HANDLE)width);
   }
   if (height != 0) {
-    FUN_004f4548((HANDLE)height);
+    GDI_DestroyDIBSection_Magic((HANDLE)height);
   }
   return;
 }
@@ -1852,7 +1852,7 @@ void Ai_Duel_ResetBuffers(int x, int y, int width, int height)
  * Size: 298 bytes
  */
 
-void Ai_Duel_SetupSurfaces(int arg1)
+void Ai_Duel_SetupSurfaces(int x)
 
 {
   int status;
@@ -1879,11 +1879,11 @@ void Ai_Duel_SetupSurfaces(int arg1)
   else {
     local_10 = local_7e0[0];
   }
-  if (arg1 == 0) {
+  if (x == 0) {
     Ai_Subsystem_004b6f49(local_918);
     strcat(local_918,&DAT_0052d130);
   }
-  else if (arg1 == 1) {
+  else if (x == 1) {
     strcpy(local_918,s_You_won__0052d138);
   }
   else {
@@ -1908,7 +1908,7 @@ void Ai_Duel_SetupSurfaces(int arg1)
  * Size: 242 bytes
  */
 
-INT_PTR Ai_Duel_RenderBackdrop(int arg1, int arg2, int arg3, int arg4, int arg5)
+INT_PTR Ai_Duel_RenderBackdrop(int x, int arg2, int arg3, int arg4, int arg5)
 
 {
   int status;
@@ -1936,7 +1936,7 @@ INT_PTR Ai_Duel_RenderBackdrop(int arg1, int arg2, int arg3, int arg4, int arg5)
   else {
     local_10 = local_7e0[0];
   }
-  sprintf(local_918,s__s_That_was_round__d_Your_record_0052d158,arg1,arg2,arg3,arg4,arg5);
+  sprintf(local_918,s__s_That_was_round__d_Your_record_0052d158,x,arg2,arg3,arg4,arg5);
   local_7ec = 1;
   local_7e8 = local_c;
   local_7e4 = local_10;
@@ -1999,7 +1999,7 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_108 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_104);
       if (g_AiHeuristicWeight_Flyers == (HANDLE)0x0) {
         hbr = GetStockObject(2);
@@ -2025,7 +2025,7 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
       }
       hdc = BeginPaint(hwnd,&local_1b4);
       if (hdc != (HDC)0x0) {
-        FUN_004f3955(hdc);
+        GDI_RealizeAndFlushPalette_Magic(hdc);
         if (local_160 == 0) {
           local_15c = *(int *)((int)local_8 + 0x130);
           local_174 = 0x491;
@@ -2093,7 +2093,7 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
     if (uMsg == 0x135) {
 LAB_004aecb5:
       local_e4 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       local_ec = lParam;
       local_e8 = GetDlgCtrlID(lParam);
       if ((local_e8 != 0x493) && (local_e8 != 0x494)) {
@@ -2222,7 +2222,7 @@ LAB_004aefff:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      pvVar1 = (HGDIOBJ)FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      pvVar1 = (HGDIOBJ)GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return pvVar1;
     }
     if (uMsg == 0x4c8) {
@@ -2255,7 +2255,7 @@ LAB_004aefff:
  * Size: 230 bytes
  */
 
-void Ai_LoadEndDuelBackdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7, int * arg8)
+void Ai_LoadEndDuelBackdrop(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7, int * arg8)
 
 {
   int u_res;
@@ -2266,7 +2266,7 @@ void Ai_LoadEndDuelBackdrop(int * arg1, int * out_buffer, int * arg3, int * arg4
   
   sprintf(local_10c,s__s_WINBK_EndDuel_pic_0052d1c4,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0x1000040;
   *arg3 = 0x1000040;
   pHVar2 = CreateSolidBrush(0x100001a);
@@ -2309,7 +2309,7 @@ void Ai_EndDuel_ShowResult(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
 
 {
   if (x != 0) {
-    FUN_004f4548((HANDLE)x);
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != (HGDIOBJ)0x0) {
     DeleteObject(arg2);
@@ -2336,17 +2336,17 @@ void Ai_EndDuel_ShowResult(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
  * Size: 293 bytes
  */
 
-int Ai_EndDuel_ProcessRewards(int arg1, int arg2)
+int Ai_EndDuel_ProcessRewards(int x, int arg2)
 
 {
   uint local_8;
   
   KillTimer(g_MainAppHwnd,DAT_006fdbd4);
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-  if ((DAT_006808ac != arg1) || (DAT_006a2834 != arg2)) {
+  if ((DAT_006808ac != x) || (DAT_006a2834 != arg2)) {
     local_8 = local_8 | 1;
   }
-  DAT_006808ac = arg1;
+  DAT_006808ac = x;
   DAT_006a2834 = arg2;
   DAT_006a48e0 = g_ActiveBattlefieldFlag;
   LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
@@ -2356,7 +2356,7 @@ int Ai_EndDuel_ProcessRewards(int arg1, int arg2)
     SendMessageA(DAT_006a283c,0x432,0,0);
     UpdateWindow(DAT_006a283c);
   }
-  if ((arg2 == 0x15) && (arg1 == 1)) {
+  if ((arg2 == 0x15) && (x == 1)) {
     DAT_0069f6d0 = 0;
   }
   if ((arg2 == 0x15) && (g_ActiveBattlefieldFlag != 0)) {
@@ -2381,7 +2381,7 @@ int Ai_EndDuel_ProcessRewards(int arg1, int arg2)
  * Size: 737 bytes
  */
 
-LRESULT Ai_EndDuel_Cleanup(int arg1, char * output_str, int arg3, int arg4, int arg5, int arg6, int arg7, int * arg8, int * arg9, int arg10, int arg11)
+LRESULT Ai_EndDuel_Cleanup(int x, char * output_str, int arg3, int arg4, int arg5, int arg6, int arg7, int * arg8, int * arg9, int arg10, int arg11)
 
 {
   POINT Point;
@@ -2431,7 +2431,7 @@ LRESULT Ai_EndDuel_Cleanup(int arg1, char * output_str, int arg3, int arg4, int 
   Point.x = local_1d4.x;
   local_1cc = WindowFromPoint(Point);
   SendMessageA(local_1cc,0x20,(WPARAM)local_1cc,0x2000001);
-  local_ec = arg1;
+  local_ec = x;
   local_e8 = arg4;
   local_e4 = arg5;
   local_e0 = arg6;
@@ -2530,7 +2530,7 @@ INT_PTR Ai_ScoreCardPlay_Creature(int * player, int card_index, int target_playe
   int local_34;
   WNDCLASSA local_30;
   
-  if (((arg3 < 1) || (arg1 == (int *)0x0)) || (*arg1 == -1)) {
+  if (((arg3 < 1) || (x == (int *)0x0)) || (*x == -1)) {
     IVar1 = -1;
   }
   else {
@@ -2546,8 +2546,8 @@ INT_PTR Ai_ScoreCardPlay_Creature(int * player, int card_index, int target_playe
     local_30.lpszClassName = s_ShowListCard_0052d1e0;
     RegisterClassA(&local_30);
     local_690 = arg4;
-    for (local_34 = 0; (local_34 < arg3 && (arg1[local_34] != -1)); local_34 = local_34 + 1) {
-      u_temp = Ai_Subsystem_004cbd67(arg1[local_34] & 0xfff);
+    for (local_34 = 0; (local_34 < arg3 && (x[local_34] != -1)); local_34 = local_34 + 1) {
+      u_temp = Ai_Subsystem_004cbd67(x[local_34] & 0xfff);
       auStack_68c[local_34] = u_temp;
     }
     local_4c = local_34;
@@ -2643,7 +2643,7 @@ LRESULT Ai_ScoreCardPlay_Spell(HWND player, uint card_index, HDC target_player, 
   if (y < 0x15) {
     if (y == 0x14) {
       local_84 = hdc;
-      FUN_004f3955(hdc);
+      GDI_RealizeAndFlushPalette_Magic(hdc);
       GetClientRect(hwnd,&local_80);
       FillRect(local_84,&local_80,DAT_00556a98);
       return 1;
@@ -2698,7 +2698,7 @@ LAB_004aff88:
         local_a8 = (uint)(y != 0x85);
         local_c0 = GetWindowDC(hwnd);
         if (local_c0 != (HDC)0x0) {
-          FUN_004f3955(local_c0);
+          GDI_RealizeAndFlushPalette_Magic(local_c0);
           GetWindowRect(hwnd,&local_94);
           GetClientRect(hwnd,&local_134);
           MapWindowPoints(hwnd,(HWND)0x0,(LPPOINT)&local_134,2);
@@ -2933,7 +2933,7 @@ LAB_004aff88:
   else {
     if (y == 0x201) goto LAB_004aff88;
     if ((0x30e < y) && (y < 0x312)) {
-      LVar5 = FUN_004f5d1a(hwnd,y,(HWND)hdc,arg4);
+      LVar5 = GDI_RealizePaletteTree_Magic(hwnd,y,(HWND)hdc,arg4);
       return LVar5;
     }
   }
@@ -2961,7 +2961,7 @@ void Ai_ScoreCardPlay_Enchantment(int * player, int * card_index, int * target_p
   HGDIOBJ pvVar3;
   
   h_wnd = CreateSolidBrush(0x10000c7);
-  *arg1 = (int)h_wnd;
+  *x = (int)h_wnd;
   pHVar2 = CreatePen(0,0,0x1000086);
   *arg2 = (int)pHVar2;
   pHVar2 = CreatePen(0,0,0x100001d);
@@ -2971,9 +2971,9 @@ void Ai_ScoreCardPlay_Enchantment(int * player, int * card_index, int * target_p
   h_wnd = CreateSolidBrush(0x100000f);
   *arg5 = (int)h_wnd;
   *arg6 = 0x1000090;
-  if (*arg1 == 0) {
+  if (*x == 0) {
     pvVar3 = GetStockObject(2);
-    *arg1 = (int)pvVar3;
+    *x = (int)pvVar3;
   }
   if (*arg2 == 0) {
     pvVar3 = GetStockObject(6);
@@ -3010,8 +3010,8 @@ void Ai_ScoreCardPlay_Enchantment(int * player, int * card_index, int * target_p
 void Ai_ScoreCardPlay_Artifact(HGDIOBJ player, HGDIOBJ card_index, HGDIOBJ target_player, HGDIOBJ action_flags, HGDIOBJ arg5)
 
 {
-  if (arg1 != (HGDIOBJ)0x0) {
-    DeleteObject(arg1);
+  if (x != (HGDIOBJ)0x0) {
+    DeleteObject(x);
   }
   if (arg2 != (HGDIOBJ)0x0) {
     DeleteObject(arg2);
@@ -3077,7 +3077,7 @@ LRESULT Ai_ScoreDialog_WndProc(HWND hwnd, uint uMsg, WPARAM wParam, LONG * lPara
       }
       hdc = BeginPaint(hwnd,&local_60);
       if (hdc != (HDC)0x0) {
-        FUN_004f3955(hdc);
+        GDI_RealizeAndFlushPalette_Magic(hdc);
         BitBlt(hdc,0,0,local_20.right,local_20.bottom,g_HdcBackBuffer,0,0,0xcc0020);
         EndPaint(hwnd,&local_60);
       }
@@ -3107,7 +3107,7 @@ LRESULT Ai_ScoreDialog_WndProc(HWND hwnd, uint uMsg, WPARAM wParam, LONG * lPara
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        LVar3 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+        LVar3 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
         return LVar3;
       }
       if (uMsg != 0x200) {
@@ -3196,12 +3196,12 @@ void Ai_CalcMana_AddSource(uint player, int color_index, int required_amount)
   if (BVar1 != 0) {
     if ((arg2 == -1) || (arg3 == -1)) {
       lParam_00 = 0;
-      WVar2 = Ai_Subsystem_004cbd67(arg1);
+      WVar2 = Ai_Subsystem_004cbd67(x);
       SendMessageA(g_MainAppWindow,0x401,WVar2,lParam_00);
     }
     else {
       lParam = &local_c;
-      WVar2 = Ai_Subsystem_004cbd67(arg1);
+      WVar2 = Ai_Subsystem_004cbd67(x);
       SendMessageA(g_MainAppWindow,0x401,WVar2,(LPARAM)lParam);
     }
   }
@@ -3251,7 +3251,7 @@ INT_PTR Ai_ManaSelection_DialogProc(int hwnd, int uMsg, INT_PTR wParam, char * l
   char *local_10;
   char *local_c;
   
-  if (arg1 == 0) {
+  if (x == 0) {
     local_20 = arg2;
     local_18 = (uint)(arg3 != -1);
     local_14 = str_4;
@@ -3403,7 +3403,7 @@ HWND Ai_TargetSelection_DialogProc(HWND hwnd, uint uMsg, uint wParam, int * lPar
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    pHVar3 = (HWND)FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+    pHVar3 = (HWND)GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
     return pHVar3;
   }
   return (HWND)0x0;
@@ -3421,13 +3421,13 @@ HWND Ai_TargetSelection_DialogProc(HWND hwnd, uint uMsg, uint wParam, int * lPar
  * Size: 87 bytes
  */
 
-INT_PTR Ai_Target_HighlightCandidate(int arg1, int arg2, INT_PTR arg3)
+INT_PTR Ai_Target_HighlightCandidate(int x, int arg2, INT_PTR arg3)
 
 {
   int local_10;
   INT_PTR local_c;
   
-  if (arg1 == 0) {
+  if (x == 0) {
     local_10 = arg2;
     local_c = arg3;
     arg3 = DialogBoxParamA(g_AppHInstance,(LPCSTR)0xe5,g_MainAppHwnd,Ai_AttackSelection_DialogProc,
@@ -3484,7 +3484,7 @@ int Ai_AttackSelection_DialogProc(HWND hwnd, uint uMsg, uint wParam, int * lPara
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    u_temp = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+    u_temp = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
     return u_temp;
   }
   return 0;
@@ -3502,14 +3502,14 @@ int Ai_AttackSelection_DialogProc(HWND hwnd, uint uMsg, uint wParam, int * lPara
  * Size: 94 bytes
  */
 
-INT_PTR Ai_Attack_ToggleAttacker(int arg1, int arg2, INT_PTR arg3)
+INT_PTR Ai_Attack_ToggleAttacker(int x, int arg2, INT_PTR arg3)
 
 {
   int local_14;
   INT_PTR local_10;
   int local_c;
   
-  if (arg1 == 0) {
+  if (x == 0) {
     local_14 = arg2;
     local_10 = arg3;
     local_c = 0;
@@ -3569,7 +3569,7 @@ HGDIOBJ Ai_BlockSelection_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lPar
       return (HGDIOBJ)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_44);
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ActiveCombatRoundCounter);
       temp_idx = SaveDC(g_HdcBackBuffer);
@@ -3591,7 +3591,7 @@ HGDIOBJ Ai_BlockSelection_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lPar
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_24 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       local_2c = lParam;
       local_28 = GetDlgCtrlID(lParam);
       SetBkMode(local_24,1);
@@ -3652,7 +3652,7 @@ HGDIOBJ Ai_BlockSelection_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lPar
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      pvVar1 = (HGDIOBJ)FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      pvVar1 = (HGDIOBJ)GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return pvVar1;
     }
     if (uMsg == 0x201) {
@@ -3724,7 +3724,7 @@ LRESULT Ai_Block_AssignPair(HWND hwnd, UINT y, uint width, LPARAM arg4)
  * Size: 221 bytes
  */
 
-void Ai_LoadQuestPromptBackdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
+void Ai_LoadQuestPromptBackdrop(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
 
 {
   int u_res;
@@ -3735,7 +3735,7 @@ void Ai_LoadQuestPromptBackdrop(int * arg1, int * out_buffer, int * arg3, int * 
   
   sprintf(local_10c,s__s_WINBK_QuestN_pic_0052d210,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0x100009a;
   pHVar2 = CreateSolidBrush(0x100001c);
   *arg3 = (int)pHVar2;
@@ -3776,7 +3776,7 @@ void Ai_Quest_FormatPromptText(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
 
 {
   if (x != 0) {
-    FUN_004f4548((HANDLE)x);
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != (HGDIOBJ)0x0) {
     DeleteObject(arg2);
@@ -3802,7 +3802,7 @@ void Ai_Quest_FormatPromptText(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
  * Size: 698 bytes
  */
 
-INT_PTR Ai_Quest_ProcessChoice(int arg1, int arg2, int arg3, int arg4, uint arg5)
+INT_PTR Ai_Quest_ProcessChoice(int x, int arg2, int arg3, int arg4, uint arg5)
 
 {
   char c_res;
@@ -3905,7 +3905,7 @@ INT_PTR Ai_Quest_ProcessChoice(int arg1, int arg2, int arg3, int arg4, uint arg5
       }
     }
     local_20 = arg4;
-    if (arg1 == 0) {
+    if (x == 0) {
       local_1c = arg2;
       local_18 = arg4;
       local_14 = (uint)(arg4 != -1);
@@ -3972,7 +3972,7 @@ HGDIOBJ Ai_Quest_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
       return (HGDIOBJ)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_48);
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ActiveCombatRoundCounter);
       val_result = SaveDC(g_HdcBackBuffer);
@@ -4057,7 +4057,7 @@ HGDIOBJ Ai_Quest_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_28 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       local_30 = lParam;
       local_2c = GetDlgCtrlID(lParam);
       SetBkMode(local_28,1);
@@ -4244,7 +4244,7 @@ HGDIOBJ Ai_Quest_DialogProc(HWND hwnd, uint uMsg, HDC wParam, HWND lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      pvVar1 = (HGDIOBJ)FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      pvVar1 = (HGDIOBJ)GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return pvVar1;
     }
     if (uMsg == 0x201) {
@@ -4297,7 +4297,7 @@ void Ai_CalcManaRequirement_Black(int * player, int * color_index, int * require
   
   sprintf(local_10c,s__s_WINBK_QuestMana_pic_0052d260,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0x1000031;
   sprintf(local_10c,s__s_WINBK_QuestManaSelection_pic_0052d278,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
@@ -4362,15 +4362,15 @@ void Ai_CalcManaRequirement_Blue(int player, int color_index, int required_amoun
 {
   int local_8;
   
-  if (arg1 != 0) {
-    FUN_004f4548((HANDLE)arg1);
+  if (x != 0) {
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != 0) {
-    FUN_004f4548((HANDLE)arg2);
+    GDI_DestroyDIBSection_Magic((HANDLE)arg2);
   }
   for (local_8 = 0; local_8 < 6; local_8 = local_8 + 1) {
     if (*(int *)(arg3 + local_8 * 4) != 0) {
-      FUN_004f4548(*(HANDLE *)(arg3 + local_8 * 4));
+      GDI_DestroyDIBSection_Magic(*(HANDLE *)(arg3 + local_8 * 4));
     }
   }
   if (arg4 != (HGDIOBJ)0x0) {
@@ -4406,7 +4406,7 @@ void Ai_CalcManaRequirement_Green(LPRECT player, HWND color_index, int required_
   tagRECT local_24;
   tagRECT local_14;
   
-  if (arg1 != (LPRECT)0x0) {
+  if (x != (LPRECT)0x0) {
     if (arg3 == 5) {
       ptVar2 = &local_24;
       h_wnd = GetDlgItem(hwnd,0x41c);
@@ -4455,9 +4455,9 @@ void Ai_CalcManaRequirement_Green(LPRECT player, HWND color_index, int required_
       h_wnd = GetDlgItem(hwnd,0x427);
       GetWindowRect(h_wnd,ptVar2);
     }
-    UnionRect(arg1,&local_24,&local_14);
-    InflateRect(arg1,0,10);
-    MapWindowPoints((HWND)0x0,hwnd,(LPPOINT)arg1,2);
+    UnionRect(x,&local_24,&local_14);
+    InflateRect(x,0,10);
+    MapWindowPoints((HWND)0x0,hwnd,(LPPOINT)x,2);
   }
   return;
 }
@@ -4485,7 +4485,7 @@ INT_PTR Ai_CalcManaRequirement_Red(int player, int * color_index, int required_a
   int local_10;
   int local_c;
   
-  if (arg1 == 0) {
+  if (x == 0) {
     local_1c = arg3;
     local_18 = arg4;
     local_14 = arg5;
@@ -4563,7 +4563,7 @@ HBRUSH Ai_CalcManaRequirement_White(HWND player, uint color_index, HWND required
     }
     if (uMsg == 0x14) {
       local_48 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_40);
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ActiveCombatRoundCounter);
       local_44 = SaveDC(g_HdcBackBuffer);
@@ -4596,7 +4596,7 @@ HBRUSH Ai_CalcManaRequirement_White(HWND player, uint color_index, HWND required
     if (uMsg == 0x135) {
 LAB_004b3d43:
       local_20 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       local_28 = lParam;
       local_24 = GetDlgCtrlID(lParam);
       if ((local_24 != 0x498) && (local_24 != 0x499)) {
@@ -4736,7 +4736,7 @@ LAB_004b3ffd:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      h_wnd = (HBRUSH)FUN_004f5d1a(hwnd,uMsg,wParam,lParam);
+      h_wnd = (HBRUSH)GDI_RealizePaletteTree_Magic(hwnd,uMsg,wParam,lParam);
       return h_wnd;
     }
     if (uMsg == 0x4c8) {
@@ -4773,7 +4773,7 @@ LAB_004b3ffd:
  * Size: 221 bytes
  */
 
-void Ai_LoadChangeTextBackdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
+void Ai_LoadChangeTextBackdrop(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
 
 {
   int u_res;
@@ -4784,7 +4784,7 @@ void Ai_LoadChangeTextBackdrop(int * arg1, int * out_buffer, int * arg3, int * a
   
   sprintf(local_10c,s__s_WINBK_ChangeText_pic_0052d378,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0x1000098;
   pHVar2 = CreateSolidBrush(0x1000076);
   *arg3 = (int)pHVar2;
@@ -4825,7 +4825,7 @@ void Ai_ChangeText_FormatOptions(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4
 
 {
   if (x != 0) {
-    FUN_004f4548((HANDLE)x);
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != (HGDIOBJ)0x0) {
     DeleteObject(arg2);
@@ -5497,8 +5497,8 @@ int Ai_EvalAbility_FirstStrike(int player, int card_index, int target_player, in
   if (arg4 == 0xff) {
     arg4 = -1;
   }
-  if ((arg1 != -1) && (arg2 != -1)) {
-    status = Ai_EvalAbility_Disenchant(arg1,arg2);
+  if ((x != -1) && (arg2 != -1)) {
+    status = Ai_EvalAbility_Disenchant(x,arg2);
     if (status == -1) {
       Ai_ChangeText_ApplyWord();
     }
@@ -5509,7 +5509,7 @@ int Ai_EvalAbility_FirstStrike(int player, int card_index, int target_player, in
       Ai_ChangeText_ApplyWord();
     }
   }
-  local_20 = arg1;
+  local_20 = x;
   local_1c = arg2;
   local_18 = arg3;
   local_14 = arg4;
@@ -5571,7 +5571,7 @@ void Ai_EvalAbility_Protection(int player)
 {
   int local_8;
   
-  if (arg1 == 0) {
+  if (x == 0) {
     local_8 = DAT_006fe48c;
   }
   else {
@@ -5599,7 +5599,7 @@ int Ai_EvalAbility_Landwalk(int player, int card_index)
 {
   int u_res;
   
-  if ((arg1 == 0) || (arg1 == 1)) {
+  if ((x == 0) || (x == 1)) {
     if ((arg2 < 0) || (0x50 < arg2)) {
       u_res = 1;
     }
@@ -5631,10 +5631,10 @@ uint Ai_EvalAbility_Deathtouch(int player, int card_index)
   int status;
   uint u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(uint *)(&DAT_0068a768 + arg2 * 0x120 + arg1 * 0x5b20) & 0xff00;
+    u_temp = *(uint *)(&DAT_0068a768 + arg2 * 0x120 + x * 0x5b20) & 0xff00;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5662,10 +5662,10 @@ int Ai_EvalAbility_DirectDamage(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a754 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a754 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5693,10 +5693,10 @@ uint Ai_EvalAbility_Removal(int player, int card_index)
   int status;
   uint u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(uint *)(&DAT_0068a77c + arg2 * 0x120 + arg1 * 0x5b20) & 0xff;
+    u_temp = *(uint *)(&DAT_0068a77c + arg2 * 0x120 + x * 0x5b20) & 0xff;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5723,12 +5723,12 @@ void Ai_EvalAbility_Counterspell(int player, int card_index, uint * target_playe
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    *arg3 = (uint)(byte)(&DAT_0068a77d)[arg2 * 0x120 + arg1 * 0x5b20];
-    *arg4 = (*(uint *)(&DAT_0068a77c + arg2 * 0x120 + arg1 * 0x5b20) & 0xff0000) >> 0x10;
-    *arg5 = *(uint *)(&DAT_0068a77c + arg2 * 0x120 + arg1 * 0x5b20) >> 0x18;
+    *arg3 = (uint)(byte)(&DAT_0068a77d)[arg2 * 0x120 + x * 0x5b20];
+    *arg4 = (*(uint *)(&DAT_0068a77c + arg2 * 0x120 + x * 0x5b20) & 0xff0000) >> 0x10;
+    *arg5 = *(uint *)(&DAT_0068a77c + arg2 * 0x120 + x * 0x5b20) >> 0x18;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   return;
@@ -5751,10 +5751,10 @@ int Ai_EvalAbility_CardDraw(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)(char)(&DAT_0068a74e)[arg2 * 0x120 + arg1 * 0x5b20];
+    status = (int)(char)(&DAT_0068a74e)[arg2 * 0x120 + x * 0x5b20];
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5780,10 +5780,10 @@ int Ai_EvalAbility_Displacement(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)*(short *)(&DAT_0068a740 + arg2 * 0x120 + arg1 * 0x5b20);
+    status = (int)*(short *)(&DAT_0068a740 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5810,10 +5810,10 @@ int Ai_EvalAbility_LifeGain(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a734 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a734 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -5840,9 +5840,9 @@ int Ai_EvalAbility_Disenchant(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
-    status = Ai_EvalAbility_LifeGain(arg1,arg2);
+    status = Ai_EvalAbility_LifeGain(x,arg2);
     if (status == -1) {
       u_temp = 0xffffffff;
     }
@@ -5875,11 +5875,11 @@ int Ai_EvalAbility_BoardWipe(int player, int card_index)
   int status;
   int local_8;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + arg1 * 0x5b20] & 2) == 0) {
-      if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + arg1 * 0x5b20] & 0x20) == 0) {
+    if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + x * 0x5b20] & 2) == 0) {
+      if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + x * 0x5b20] & 0x20) == 0) {
         local_8 = 0;
       }
       else {
@@ -5915,23 +5915,23 @@ byte Ai_EvalAbility_LandDestruction(int player, int card_index)
   int status;
   byte is_match;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    is_match = ((&DAT_0068a73e)[arg2 * 0x120 + arg1 * 0x5b20] & 3) != 0;
-    if ((((&g_AiEvaluationTimeout)[arg2 * 0x120 + arg1 * 0x5b20] & 0x10) != 0) &&
-       (((&g_MasterCardColorTable)[*(int *)(&DAT_0068a734 + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] &
+    is_match = ((&DAT_0068a73e)[arg2 * 0x120 + x * 0x5b20] & 3) != 0;
+    if ((((&g_AiEvaluationTimeout)[arg2 * 0x120 + x * 0x5b20] & 0x10) != 0) &&
+       (((&g_MasterCardColorTable)[*(int *)(&DAT_0068a734 + arg2 * 0x120 + x * 0x5b20) * 0x34] &
         0x47) != 4)) {
       is_match = is_match | 2;
     }
-    if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + arg1 * 0x5b20] & 4) != 0) {
+    if (((&g_AiEvaluationTimeout)[arg2 * 0x120 + x * 0x5b20] & 4) != 0) {
       is_match = is_match | 4;
     }
-    if ((&DAT_0068a74e)[arg2 * 0x120 + arg1 * 0x5b20] != -1) {
+    if ((&DAT_0068a74e)[arg2 * 0x120 + x * 0x5b20] != -1) {
       is_match = is_match | 8;
     }
-    if (((&DAT_0068a742)[arg2 * 0x120 + arg1 * 0x5b20] != -1) &&
-       (*(int *)(&DAT_0068a758 + arg2 * 0x120 + arg1 * 0x5b20) != -1)) {
+    if (((&DAT_0068a742)[arg2 * 0x120 + x * 0x5b20] != -1) &&
+       (*(int *)(&DAT_0068a758 + arg2 * 0x120 + x * 0x5b20) != -1)) {
       is_match = is_match | 0x10;
     }
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
@@ -5959,17 +5959,17 @@ void Ai_EvalAbility_ManaRamp(int * player, int card_index, int target_player)
 {
   int status;
   
-  if (arg1 != (int *)0x0) {
+  if (x != (int *)0x0) {
     status = Ai_EvalAbility_Landwalk(arg2,arg3);
     if (status == 0) {
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-      *arg1 = (int)(char)(&DAT_0068a742)[arg3 * 0x120 + arg2 * 0x5b20];
-      arg1[1] = *(int *)(&DAT_0068a758 + arg3 * 0x120 + arg2 * 0x5b20);
+      *x = (int)(char)(&DAT_0068a742)[arg3 * 0x120 + arg2 * 0x5b20];
+      x[1] = *(int *)(&DAT_0068a758 + arg3 * 0x120 + arg2 * 0x5b20);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
     else {
-      *arg1 = -1;
-      arg1[1] = -1;
+      *x = -1;
+      x[1] = -1;
     }
   }
   return;
@@ -5996,17 +5996,17 @@ int Ai_EvalAbility_Tapping(int * player, int card_index, int target_player)
   status = Ai_EvalAbility_Landwalk(arg2,arg3);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    if (arg1 != (int *)0x0) {
-      *arg1 = (int)(char)(&DAT_0068a743)[arg3 * 0x120 + arg2 * 0x5b20];
-      arg1[1] = *(int *)(&DAT_0068a75c + arg3 * 0x120 + arg2 * 0x5b20);
+    if (x != (int *)0x0) {
+      *x = (int)(char)(&DAT_0068a743)[arg3 * 0x120 + arg2 * 0x5b20];
+      x[1] = *(int *)(&DAT_0068a75c + arg3 * 0x120 + arg2 * 0x5b20);
     }
     u_temp = *(int *)(&DAT_0068a774 + arg3 * 0x120 + arg2 * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
-    if (arg1 != (int *)0x0) {
-      *arg1 = (int)(char)(&DAT_0068a743)[arg3 * 0x120 + arg2 * 0x5b20];
-      arg1[1] = *(int *)(&DAT_0068a75c + arg3 * 0x120 + arg2 * 0x5b20);
+    if (x != (int *)0x0) {
+      *x = (int)(char)(&DAT_0068a743)[arg3 * 0x120 + arg2 * 0x5b20];
+      x[1] = *(int *)(&DAT_0068a75c + arg3 * 0x120 + arg2 * 0x5b20);
     }
     u_temp = 0xffffffff;
   }
@@ -6031,9 +6031,9 @@ uint8_t Ai_EvalAbility_Discard(int player, int card_index)
   uint8_t u_res;
   int val_result;
   
-  val_result = Ai_EvalAbility_Landwalk(arg1,arg2);
+  val_result = Ai_EvalAbility_Landwalk(x,arg2);
   if (val_result == 0) {
-    val_result = Ai_EvalAbility_LifeGain(arg1,arg2);
+    val_result = Ai_EvalAbility_LifeGain(x,arg2);
     if (val_result == -1) {
       u_res = 0;
     }
@@ -6064,10 +6064,10 @@ int Ai_EvalAbility_PumpSpell(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)*(short *)(&DAT_0068a744 + arg2 * 0x120 + arg1 * 0x5b20);
+    status = (int)*(short *)(&DAT_0068a744 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6093,10 +6093,10 @@ int Ai_EvalAbility_Haste(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)*(short *)(&DAT_0068a746 + arg2 * 0x120 + arg1 * 0x5b20);
+    status = (int)*(short *)(&DAT_0068a746 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6123,12 +6123,12 @@ uint Ai_EvalAbility_Vigilance(int player, int card_index)
   int status;
   uint local_8;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    local_8 = *(uint *)(&DAT_0068a76c + arg2 * 0x120 + arg1 * 0x5b20);
-    if ((((&DAT_0068a76e)[arg2 * 0x120 + arg1 * 0x5b20] & 0x20) != 0) &&
-       (((&g_AiEvaluationTimeout)[arg2 * 0x120 + arg1 * 0x5b20] & 4) != 0)) {
+    local_8 = *(uint *)(&DAT_0068a76c + arg2 * 0x120 + x * 0x5b20);
+    if ((((&DAT_0068a76e)[arg2 * 0x120 + x * 0x5b20] & 0x20) != 0) &&
+       (((&g_AiEvaluationTimeout)[arg2 * 0x120 + x * 0x5b20] & 4) != 0)) {
       local_8 = local_8 | 0x40;
     }
     if (local_8 == 0xffffffff) {
@@ -6159,10 +6159,10 @@ int Ai_EvalAbility_Defender(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)(char)(&DAT_0068a74d)[arg2 * 0x120 + arg1 * 0x5b20];
+    status = (int)(char)(&DAT_0068a74d)[arg2 * 0x120 + x * 0x5b20];
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6188,10 +6188,10 @@ int Ai_EvalAbility_PingDamage(int player, int card_index)
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)(char)(&DAT_0068a74c)[arg2 * 0x120 + arg1 * 0x5b20];
+    status = (int)(char)(&DAT_0068a74c)[arg2 * 0x120 + x * 0x5b20];
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6218,10 +6218,10 @@ int Ai_EvalAbility_Recursion(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&g_AiEvaluationTimeout + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&g_AiEvaluationTimeout + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6248,10 +6248,10 @@ int Ai_EvalAbility_TokenGeneration(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a760 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a760 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6324,9 +6324,9 @@ uint Ai_EvalAbility_DamagePrevention(int player, int card_index)
   uint u_temp;
   uint local_8;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
-    u_temp = Ai_EvalAbility_Recursion(arg1,arg2);
+    u_temp = Ai_EvalAbility_Recursion(x,arg2);
     local_8 = (uint)((u_temp & 0x1000) != 0);
   }
   else {
@@ -6353,9 +6353,9 @@ uint Ai_EvalAbility_PowerMod(int player, int card_index)
   int status;
   uint u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
-    status = Ai_EvalAbility_LifeGain(arg1,arg2);
+    status = Ai_EvalAbility_LifeGain(x,arg2);
     if (status == -1) {
       u_temp = 0;
     }
@@ -6387,15 +6387,15 @@ bool Ai_EvalAbility_ToughnessMod(int player, int card_index)
   int status;
   bool is_match;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
-    status = Ai_EvalAbility_LifeGain(arg1,arg2);
+    status = Ai_EvalAbility_LifeGain(x,arg2);
     if (status == -1) {
       is_match = false;
     }
     else {
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-      is_match = ((&DAT_0068a768)[arg2 * 0x120 + arg1 * 0x5b20] & 6) != 0;
+      is_match = ((&DAT_0068a768)[arg2 * 0x120 + x * 0x5b20] & 6) != 0;
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
   }
@@ -6423,10 +6423,10 @@ int Ai_EvalAbility_ColorIdentity(int player, int card_index)
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a784 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a784 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6447,16 +6447,16 @@ int Ai_EvalAbility_ColorIdentity(int player, int card_index)
  * Size: 132 bytes
  */
 
-bool Ai_Subsystem_004b67ab(int arg1, int arg2)
+bool Ai_Subsystem_004b67ab(int x, int arg2)
 
 {
   int status;
   bool is_match;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    is_match = ((&DAT_0068a73e)[arg1 * 0x5b20 + arg2 * 0x120] & 0x20) != 0;
+    is_match = ((&DAT_0068a73e)[x * 0x5b20 + arg2 * 0x120] & 0x20) != 0;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6483,10 +6483,10 @@ bool Ai_EvalAbility_StealCreature(int player, int card_index)
   int status;
   bool is_match;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    is_match = ((&DAT_0068a73e)[arg2 * 0x120 + arg1 * 0x5b20] & 0x10) == 0;
+    is_match = ((&DAT_0068a73e)[arg2 * 0x120 + x * 0x5b20] & 0x10) == 0;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6507,20 +6507,20 @@ bool Ai_EvalAbility_StealCreature(int player, int card_index)
  * Size: 263 bytes
  */
 
-void Ai_Subsystem_004b68b3(int arg1, int arg2, char * arg3)
+void Ai_Subsystem_004b68b3(int x, int arg2, char * arg3)
 
 {
   int local_8;
   
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   for (local_8 = 1; local_8 < 6; local_8 = local_8 + 1) {
-    if (*(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) != '\0') {
+    if (*(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) != '\0') {
       FUN_004f4a92(arg3,(char *)(local_8 * 10 + 0x649f70),1,
                    &DAT_00649f30 +
-                   *(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) * 10);
+                   *(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) * 10);
       FUN_004f4a92(arg3,(char *)(local_8 * 10 + 0x64a030),1,
                    &DAT_00649f30 +
-                   *(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) * 10);
+                   *(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a829 + local_8) * 10);
     }
   }
   LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
@@ -6539,7 +6539,7 @@ void Ai_Subsystem_004b68b3(int arg1, int arg2, char * arg3)
  * Size: 494 bytes
  */
 
-void Ai_Subsystem_004b69ba(int arg1, int arg2, char * arg3)
+void Ai_Subsystem_004b69ba(int x, int arg2, char * arg3)
 
 {
   char local_30 [20];
@@ -6548,18 +6548,18 @@ void Ai_Subsystem_004b69ba(int arg1, int arg2, char * arg3)
   
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   for (local_1c = 1; local_1c < 6; local_1c = local_1c + 1) {
-    if (*(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) != '\0') {
+    if (*(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) != '\0') {
       FUN_004f4a92(arg3,(char *)(local_1c * 10 + 0x649ff0),1,
                    &DAT_0064a070 +
-                   *(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
+                   *(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
       FUN_004f4a92(arg3,(char *)(local_1c * 10 + 0x649fb0),1,
                    &DAT_0064a070 +
-                   *(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
+                   *(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
       FUN_004f4a92(arg3,s_PLAINSs_0052d3e0,1,s_PLAINS_0052d3d8);
       strcpy(local_30,(char *)(local_1c * 10 + 0x649ff0));
       strcat(local_30,&DAT_0052d3e8);
       strcpy(local_18,&DAT_0064a070 +
-                      *(char *)(arg1 * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
+                      *(char *)(x * 0x5b20 + arg2 * 0x120 + 0x68a82f + local_1c) * 10);
       strcat(local_18,&DAT_0052d3f0);
       FUN_004f4a92(arg3,local_30,1,local_18);
       strcpy(local_30,(char *)(local_1c * 10 + 0x649fb0));
@@ -6583,20 +6583,20 @@ void Ai_Subsystem_004b69ba(int arg1, int arg2, char * arg3)
  * Size: 179 bytes
  */
 
-int Ai_Subsystem_004b6ba8(int arg1, int arg2, void * arg3)
+int Ai_Subsystem_004b6ba8(int x, int arg2, void * arg3)
 
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     if (arg3 == (void *)0x0) {
       status = 0;
     }
     else {
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-      status = (int)(char)(&DAT_0068a828)[arg1 * 0x5b20 + arg2 * 0x120];
-      memcpy(arg3,(void *)(arg2 * 0x120 + arg1 * 0x5b20 + 0x68a788),0xa0);
+      status = (int)(char)(&DAT_0068a828)[x * 0x5b20 + arg2 * 0x120];
+      memcpy(arg3,(void *)(arg2 * 0x120 + x * 0x5b20 + 0x68a788),0xa0);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
   }
@@ -6618,16 +6618,16 @@ int Ai_Subsystem_004b6ba8(int arg1, int arg2, void * arg3)
  * Size: 109 bytes
  */
 
-int Ai_Subsystem_004b6c5b(int arg1, int arg2)
+int Ai_Subsystem_004b6c5b(int x, int arg2)
 
 {
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a768 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a768 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6648,16 +6648,16 @@ int Ai_Subsystem_004b6c5b(int arg1, int arg2)
  * Size: 109 bytes
  */
 
-int Ai_Subsystem_004b6cc8(int arg1, int arg2)
+int Ai_Subsystem_004b6cc8(int x, int arg2)
 
 {
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a838 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a838 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6678,16 +6678,16 @@ int Ai_Subsystem_004b6cc8(int arg1, int arg2)
  * Size: 112 bytes
  */
 
-int Ai_Subsystem_004b6d35(int arg1, int arg2)
+int Ai_Subsystem_004b6d35(int x, int arg2)
 
 {
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a730 + arg1 * 0x5b20 + arg2 * 0x120);
+    u_temp = *(int *)(&DAT_0068a730 + x * 0x5b20 + arg2 * 0x120);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6708,16 +6708,16 @@ int Ai_Subsystem_004b6d35(int arg1, int arg2)
  * Size: 150 bytes
  */
 
-void Ai_Subsystem_004b6da5(int * arg1, int arg2, int arg3)
+void Ai_Subsystem_004b6da5(int * x, int arg2, int arg3)
 
 {
   int status;
   
   status = Ai_EvalAbility_Landwalk(arg2,arg3);
-  if ((status == 0) && (arg1 != (int *)0x0)) {
+  if ((status == 0) && (x != (int *)0x0)) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    *arg1 = *(int *)(&DAT_0068a820 + arg3 * 0x120 + arg2 * 0x5b20);
-    arg1[1] = *(int *)(&DAT_0068a824 + arg3 * 0x120 + arg2 * 0x5b20);
+    *x = *(int *)(&DAT_0068a820 + arg3 * 0x120 + arg2 * 0x5b20);
+    x[1] = *(int *)(&DAT_0068a824 + arg3 * 0x120 + arg2 * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   return;
@@ -6735,16 +6735,16 @@ void Ai_Subsystem_004b6da5(int * arg1, int arg2, int arg3)
  * Size: 112 bytes
  */
 
-int Ai_Subsystem_004b6e3b(int arg1, int arg2)
+int Ai_Subsystem_004b6e3b(int x, int arg2)
 
 {
   int status;
   int u_temp;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    u_temp = *(int *)(&DAT_0068a730 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(int *)(&DAT_0068a730 + arg2 * 0x120 + x * 0x5b20);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6765,15 +6765,15 @@ int Ai_Subsystem_004b6e3b(int arg1, int arg2)
  * Size: 110 bytes
  */
 
-int Ai_Subsystem_004b6eab(int arg1, int arg2)
+int Ai_Subsystem_004b6eab(int x, int arg2)
 
 {
   int status;
   
-  status = Ai_EvalAbility_Landwalk(arg1,arg2);
+  status = Ai_EvalAbility_Landwalk(x,arg2);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    status = (int)(char)(&DAT_0068a750)[arg1 * 0x5b20 + arg2 * 0x120];
+    status = (int)(char)(&DAT_0068a750)[x * 0x5b20 + arg2 * 0x120];
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   else {
@@ -6794,12 +6794,12 @@ int Ai_Subsystem_004b6eab(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004b6f19(int arg1)
+int Ai_Util_004b6f19(int x)
 
 {
   int u_res;
   
-  if ((arg1 == 0) || (arg1 == 1)) {
+  if ((x == 0) || (x == 1)) {
     u_res = 0;
   }
   else {
@@ -6849,16 +6849,16 @@ void Ai_Subsystem_004b6f49(char * prompt_text)
  * Size: 102 bytes
  */
 
-int Ai_Subsystem_004b6fa6(int arg1)
+int Ai_Subsystem_004b6fa6(int x)
 
 {
   int status;
   int local_8;
   
-  status = Ai_Util_004b6f19(arg1);
+  status = Ai_Util_004b6f19(x);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    if (arg1 == 0) {
+    if (x == 0) {
       local_8 = DAT_006a3f7c;
     }
     else {
@@ -6884,16 +6884,16 @@ int Ai_Subsystem_004b6fa6(int arg1)
  * Size: 102 bytes
  */
 
-int Ai_Subsystem_004b700c(int arg1)
+int Ai_Subsystem_004b700c(int x)
 
 {
   int status;
   int local_8;
   
-  status = Ai_Util_004b6f19(arg1);
+  status = Ai_Util_004b6f19(x);
   if (status == 0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    if (arg1 == 0) {
+    if (x == 0) {
       local_8 = DAT_00695ed8;
     }
     else {
@@ -6919,13 +6919,13 @@ int Ai_Subsystem_004b700c(int arg1)
  * Size: 140 bytes
  */
 
-int Ai_Subsystem_004b7072(void * arg1, int arg2)
+int Ai_Subsystem_004b7072(void * x, int arg2)
 
 {
   int u_res;
   int val_result;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     u_res = 0;
   }
   else {
@@ -6933,10 +6933,10 @@ int Ai_Subsystem_004b7072(void * arg1, int arg2)
     if (val_result == 0) {
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
       if (arg2 == 0) {
-        memcpy(arg1,&DAT_0069f6e0,0x1c);
+        memcpy(x,&DAT_0069f6e0,0x1c);
       }
       else {
-        memcpy(arg1,&DAT_00695ee0,0x1c);
+        memcpy(x,&DAT_00695ee0,0x1c);
       }
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
       u_res = 1;
@@ -6960,20 +6960,20 @@ int Ai_Subsystem_004b7072(void * arg1, int arg2)
  * Size: 140 bytes
  */
 
-int Ai_Subsystem_004b70fe(void * arg1, int arg2, int arg3)
+int Ai_Subsystem_004b70fe(void * x, int arg2, int arg3)
 
 {
   int u_res;
   int val_result;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     u_res = 0;
   }
   else {
     val_result = Ai_EvalAbility_Landwalk(arg2,arg3);
     if (val_result == 0) {
       EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-      memcpy(arg1,&DAT_0068a730 + arg2 * 0x5b20 + arg3 * 0x120,0x120);
+      memcpy(x,&DAT_0068a730 + arg2 * 0x5b20 + arg3 * 0x120,0x120);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
       u_res = 1;
     }
@@ -6996,13 +6996,13 @@ int Ai_Subsystem_004b70fe(void * arg1, int arg2, int arg3)
  * Size: 163 bytes
  */
 
-int Ai_Subsystem_004b718a(void * arg1, int arg2)
+int Ai_Subsystem_004b718a(void * x, int arg2)
 
 {
   int status;
   int local_8;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     local_8 = 0;
   }
   else {
@@ -7015,7 +7015,7 @@ int Ai_Subsystem_004b718a(void * arg1, int arg2)
       else {
         local_8 = DAT_007006b4;
       }
-      memcpy(arg1,(void *)((int)&DAT_00695f20 + ((arg2 == 0) - 1 & 0x674e0)),2000);
+      memcpy(x,(void *)((int)&DAT_00695f20 + ((arg2 == 0) - 1 & 0x674e0)),2000);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
     else {
@@ -7037,13 +7037,13 @@ int Ai_Subsystem_004b718a(void * arg1, int arg2)
  * Size: 163 bytes
  */
 
-int Ai_Subsystem_004b722d(void * arg1, int arg2)
+int Ai_Subsystem_004b722d(void * x, int arg2)
 
 {
   int status;
   int local_8;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     local_8 = 0;
   }
   else {
@@ -7056,7 +7056,7 @@ int Ai_Subsystem_004b722d(void * arg1, int arg2)
       else {
         local_8 = DAT_006b2d34;
       }
-      memcpy(arg1,(void *)((int)&DAT_006fe4a0 + ((arg2 == 0) - 1 & 0xfffa6ae0)),2000);
+      memcpy(x,(void *)((int)&DAT_006fe4a0 + ((arg2 == 0) - 1 & 0xfffa6ae0)),2000);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
     else {
@@ -7078,13 +7078,13 @@ int Ai_Subsystem_004b722d(void * arg1, int arg2)
  * Size: 163 bytes
  */
 
-int Ai_Subsystem_004b72d0(void * arg1, int arg2)
+int Ai_Subsystem_004b72d0(void * x, int arg2)
 
 {
   int status;
   int local_8;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     local_8 = 0;
   }
   else {
@@ -7097,7 +7097,7 @@ int Ai_Subsystem_004b72d0(void * arg1, int arg2)
       else {
         local_8 = DAT_006b2e20;
       }
-      memcpy(arg1,(void *)((int)&DAT_006b2550 + ((arg2 == 0) - 1 & 0x4b690)),2000);
+      memcpy(x,(void *)((int)&DAT_006b2550 + ((arg2 == 0) - 1 & 0x4b690)),2000);
       LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     }
     else {
@@ -7119,18 +7119,18 @@ int Ai_Subsystem_004b72d0(void * arg1, int arg2)
  * Size: 91 bytes
  */
 
-int Ai_Subsystem_004b7373(void * arg1)
+int Ai_Subsystem_004b7373(void * x)
 
 {
   int u_res;
   
-  if (arg1 == (void *)0x0) {
+  if (x == (void *)0x0) {
     u_res = 0;
   }
   else {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     u_res = g_AiCandidateActionCount;
-    memcpy(arg1,&DAT_006a29e0,0x1580);
+    memcpy(x,&DAT_006a29e0,0x1580);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   return u_res;
@@ -7183,12 +7183,12 @@ void Ai_Duel_CalculateLayout(int x, int * y, int width, int * height)
  * Size: 73 bytes
  */
 
-void Ai_Subsystem_004b74b1(int * arg1, int * arg2)
+void Ai_Subsystem_004b74b1(int * x, int * arg2)
 
 {
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-  if (arg1 != (int *)0x0) {
-    *arg1 = DAT_006808ac;
+  if (x != (int *)0x0) {
+    *x = DAT_006808ac;
   }
   if (arg2 != (int *)0x0) {
     *arg2 = DAT_006a2834;
@@ -7209,14 +7209,14 @@ void Ai_Subsystem_004b74b1(int * arg1, int * arg2)
  * Size: 117 bytes
  */
 
-void Ai_Subsystem_004b74fa(void * arg1, int arg2)
+void Ai_Subsystem_004b74fa(void * x, int arg2)
 
 {
   int status;
   
-  if ((arg1 != (void *)0x0) && (status = Ai_Util_004b6f19(arg2), status == 0)) {
+  if ((x != (void *)0x0) && (status = Ai_Util_004b6f19(arg2), status == 0)) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    memcpy(arg1,&DAT_006fedd0 + ((arg2 == 0) - 1 & 0xfffa5b70),0x98);
+    memcpy(x,&DAT_006fedd0 + ((arg2 == 0) - 1 & 0xfffa5b70),0x98);
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
   return;
@@ -7234,12 +7234,12 @@ void Ai_Subsystem_004b74fa(void * arg1, int arg2)
  * Size: 53 bytes
  */
 
-void Ai_Subsystem_004b756f(int * arg1)
+void Ai_Subsystem_004b756f(int * x)
 
 {
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-  if (arg1 != (int *)0x0) {
-    *arg1 = DAT_0068a678;
+  if (x != (int *)0x0) {
+    *x = DAT_0068a678;
   }
   LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   return;
@@ -7280,16 +7280,16 @@ int Ai_Subsystem_004b75a4(void)
  * Size: 81 bytes
  */
 
-bool Ai_Subsystem_004b75d8(int * arg1)
+bool Ai_Subsystem_004b75d8(int * x)
 
 {
-  if (arg1 != (int *)0x0) {
+  if (x != (int *)0x0) {
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-    *arg1 = DAT_006a29c8;
-    arg1[1] = DAT_006a29cc;
+    *x = DAT_006a29c8;
+    x[1] = DAT_006a29cc;
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
   }
-  return arg1 != (int *)0x0;
+  return x != (int *)0x0;
 }
 
 /*
@@ -7327,12 +7327,12 @@ int Ai_Subsystem_004b7629(void)
  * Size: 73 bytes
  */
 
-void Ai_Subsystem_004b765d(int * arg1, int * arg2)
+void Ai_Subsystem_004b765d(int * x, int * arg2)
 
 {
   EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
-  if (arg1 != (int *)0x0) {
-    *arg1 = DAT_00695ec0;
+  if (x != (int *)0x0) {
+    *x = DAT_00695ec0;
   }
   if (arg2 != (int *)0x0) {
     *arg2 = DAT_00696730;
@@ -7353,7 +7353,7 @@ void Ai_Subsystem_004b765d(int * arg1, int * arg2)
  * Size: 423 bytes
  */
 
-int Ai_Subsystem_004b76a6(void * arg1, int y, int width, int height)
+int Ai_Subsystem_004b76a6(void * x, int y, int width, int height)
 
 {
   int status;
@@ -7363,11 +7363,11 @@ int Ai_Subsystem_004b76a6(void * arg1, int y, int width, int height)
   int local_c;
   int local_8;
   
-  if ((((arg1 == (void *)0x0) || (y == 0)) || (width == 0)) || (height == 0)) {
+  if ((((x == (void *)0x0) || (y == 0)) || (width == 0)) || (height == 0)) {
     local_8ac = 0;
   }
   else {
-    memcpy(local_7dc,arg1,y << 2);
+    memcpy(local_7dc,x,y << 2);
     local_c = 0;
     local_8ac = 0;
     while ((local_c == 0 && (local_8ac < height))) {
@@ -7412,14 +7412,14 @@ int Ai_Subsystem_004b76a6(void * arg1, int y, int width, int height)
  * Size: 74 bytes
  */
 
-void Ai_Subsystem_004b784d(int arg1, int arg2)
+void Ai_Subsystem_004b784d(int x, int arg2)
 
 {
   int local_10;
   int local_c;
   
   if (g_IsAiThinking != 1) {
-    local_10 = arg1;
+    local_10 = x;
     local_c = arg2;
     DialogBoxParamA(g_AppHInstance,(LPCSTR)0xf3,g_MainAppHwnd,Ai_CalcManaRequirement_Colorless,
                     (LPARAM)&local_10);
@@ -7457,13 +7457,13 @@ int Ai_CalcManaRequirement_Colorless(HWND player, uint color_index, HDC required
   if (uMsg < 0x101) {
     if (uMsg == 0x100) {
 LAB_004b7c11:
-      FUN_004f4548(DAT_00556934);
+      GDI_DestroyDIBSection_Magic(DAT_00556934);
       EndDialog(hwnd,0);
       return 1;
     }
     if (uMsg == 0x14) {
       local_1ec = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_1e4);
       if (DAT_00556934 == (HANDLE)0x0) {
         hbr = GetStockObject(2);
@@ -7512,7 +7512,7 @@ LAB_004b7c11:
   else if (uMsg < 0x202) {
     if (uMsg == 0x201) {
 LAB_004b7c35:
-      FUN_004f4548(DAT_00556934);
+      GDI_DestroyDIBSection_Magic(DAT_00556934);
       EndDialog(hwnd,0);
       return 1;
     }
@@ -7533,7 +7533,7 @@ LAB_004b7c35:
     }
     if (uMsg == 0x111) goto LAB_004b7c11;
     if (uMsg == 0x113) {
-      FUN_004f4548(DAT_00556934);
+      GDI_DestroyDIBSection_Magic(DAT_00556934);
       EndDialog(hwnd,0);
       return 1;
     }
@@ -7541,7 +7541,7 @@ LAB_004b7c35:
   else {
     if (uMsg == 0x204) goto LAB_004b7c35;
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      u_res = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      u_res = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return u_res;
     }
   }
@@ -7644,7 +7644,7 @@ LAB_004b80bf:
       return (HBRUSH)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_148);
       FillRect(wParam,&local_148,DAT_00556970);
       return (HBRUSH)0x1;
@@ -7698,7 +7698,7 @@ LAB_004b80bf:
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_130 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       local_138 = lParam;
       local_134 = GetDlgCtrlID(lParam);
       SetBkMode(local_130,1);
@@ -7729,7 +7729,7 @@ LAB_004b80bf:
       return (HBRUSH)0x1;
     }
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      pHVar2 = (HBRUSH)FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      pHVar2 = (HBRUSH)GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return pHVar2;
     }
   }
@@ -7748,13 +7748,13 @@ LAB_004b80bf:
  * Size: 36 bytes
  */
 
-void Ai_Util_004b82ea(int * arg1, int * arg2)
+void Ai_Util_004b82ea(int * x, int * arg2)
 
 {
   HBRUSH h_wnd;
   
   h_wnd = CreateSolidBrush(0x100000d);
-  *arg1 = h_wnd;
+  *x = h_wnd;
   *arg2 = 0x10000bf;
   return;
 }
@@ -7771,11 +7771,11 @@ void Ai_Util_004b82ea(int * arg1, int * arg2)
  * Size: 31 bytes
  */
 
-void Ai_Util_004b830e(HGDIOBJ arg1)
+void Ai_Util_004b830e(HGDIOBJ x)
 
 {
-  if (arg1 != (HGDIOBJ)0x0) {
-    DeleteObject(arg1);
+  if (x != (HGDIOBJ)0x0) {
+    DeleteObject(x);
   }
   return;
 }
@@ -7792,7 +7792,7 @@ void Ai_Util_004b830e(HGDIOBJ arg1)
  * Size: 234 bytes
  */
 
-int Ai_Subsystem_004b832d(int arg1, int arg2, int arg3, int arg4, int * arg5, int * arg6, int * arg7)
+int Ai_Subsystem_004b832d(int x, int arg2, int arg3, int arg4, int * arg5, int * arg6, int * arg7)
 
 {
   int u_res;
@@ -7804,10 +7804,10 @@ int Ai_Subsystem_004b832d(int arg1, int arg2, int arg3, int arg4, int * arg5, in
   int local_10;
   int local_c;
   
-  if (arg1 == 1) {
+  if (x == 1) {
     u_res = 0;
   }
-  else if ((((arg1 == -1) || (arg2 == -1)) || (arg5 == (int *)0x0)) ||
+  else if ((((x == -1) || (arg2 == -1)) || (arg5 == (int *)0x0)) ||
           ((arg6 == (int *)0x0 || (arg7 == (int *)0x0)))) {
     u_res = 0;
   }
@@ -7884,7 +7884,7 @@ HBRUSH Ai_WndProc_004b8421(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_b0 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_ac);
       if (DAT_00556aa0 == (HANDLE)0x0) {
         pHVar3 = GetStockObject(3);
@@ -7897,7 +7897,7 @@ HBRUSH Ai_WndProc_004b8421(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
     }
     if (uMsg == 0xf) {
       hdc = BeginPaint(hwnd,&local_118);
-      if ((hdc != (HDC)0x0) && (FUN_004f3955(hdc), DAT_00556954 != 0xffffffff)) {
+      if ((hdc != (HDC)0x0) && (GDI_RealizeAndFlushPalette_Magic(hdc), DAT_00556954 != 0xffffffff)) {
         ptVar7 = &local_d8;
         pHVar4 = GetDlgItem(hwnd,0x475);
         GetWindowRect(pHVar4,ptVar7);
@@ -7954,7 +7954,7 @@ HBRUSH Ai_WndProc_004b8421(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_8c = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       local_94 = lParam;
       local_90 = GetDlgCtrlID(lParam);
       pHVar4 = GetFocus();
@@ -8005,7 +8005,7 @@ HBRUSH Ai_WndProc_004b8421(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        pHVar3 = (HBRUSH)FUN_004f5d1a(hwnd,uMsg,wParam,lParam);
+        pHVar3 = (HBRUSH)GDI_RealizePaletteTree_Magic(hwnd,uMsg,wParam,lParam);
         return pHVar3;
       }
       if (uMsg != 0x200) {
@@ -8065,7 +8065,7 @@ HBRUSH Ai_WndProc_004b8421(HWND hwnd, uint uMsg, HWND wParam, HWND lParam)
  * Size: 221 bytes
  */
 
-void Ai_Subsystem_004b8cc3(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
+void Ai_Subsystem_004b8cc3(int * x, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6, int * arg7)
 
 {
   int u_res;
@@ -8076,7 +8076,7 @@ void Ai_Subsystem_004b8cc3(int * arg1, int * out_buffer, int * arg3, int * arg4,
   
   sprintf(local_10c,s__s_WINBK_Fireball_pic_0052d4a8,&g_AiCurrentChoiceIndex);
   u_res = Pic_Load_00423833(local_10c);
-  *arg1 = u_res;
+  *x = u_res;
   *out_buffer = 0x10000b6;
   pHVar2 = CreateSolidBrush(0x10000e5);
   *arg3 = (int)pHVar2;
@@ -8117,7 +8117,7 @@ void Ai_Subsystem_004b8da0(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
 
 {
   if (x != 0) {
-    FUN_004f4548((HANDLE)x);
+    GDI_DestroyDIBSection_Magic((HANDLE)x);
   }
   if (arg2 != (HGDIOBJ)0x0) {
     DeleteObject(arg2);
@@ -8143,16 +8143,16 @@ void Ai_Subsystem_004b8da0(int x, HGDIOBJ arg2, HGDIOBJ arg3, HGDIOBJ arg4)
  * Size: 80 bytes
  */
 
-int Ai_Subsystem_004b8dfd(int arg1, int arg2)
+int Ai_Subsystem_004b8dfd(int x, int arg2)
 
 {
   int local_8;
   
-  if ((arg1 == 0) || (arg2 == 0)) {
+  if ((x == 0) || (arg2 == 0)) {
     local_8 = 0;
   }
   else {
-    local_8 = (arg1 - (arg2 + -1)) / arg2;
+    local_8 = (x - (arg2 + -1)) / arg2;
     if (local_8 < 1) {
       local_8 = 0;
     }
@@ -8172,10 +8172,10 @@ int Ai_Subsystem_004b8dfd(int arg1, int arg2)
  * Size: 657 bytes
  */
 
-char * Ai_FormatCardScoreString(int arg1, int arg2)
+char * Ai_FormatCardScoreString(int x, int arg2)
 
 {
-  uint arg1;
+  uint x;
   int status;
   char local_4c [52];
   int local_18;
@@ -8185,22 +8185,22 @@ char * Ai_FormatCardScoreString(int arg1, int arg2)
   int local_8;
   
   local_c = (char *)0x0;
-  local_8 = Ai_Subsystem_004cbc65(arg1,arg2);
+  local_8 = Ai_Subsystem_004cbc65(x,arg2);
   if (local_8 != -1) {
     if (local_8 == DAT_006ff2dc) {
-      arg1 = Ai_Util_004cbc07(arg1,arg2);
-      local_8 = Ai_Subsystem_004cbd67(arg1);
+      x = Ai_Util_004cbc07(x,arg2);
+      local_8 = Ai_Subsystem_004cbd67(x);
     }
-    local_10 = (uint)*(ushort *)(&DAT_006a5f74 + arg2 * 0x120 + arg1 * 0x5b20);
-    local_14 = (int)(char)(&g_CardSlot_DamageReceived)[arg2 * 0x120 + arg1 * 0x5b20];
-    local_18 = *(int *)(&g_CardSlot_TypeFlags + arg2 * 0x120 + arg1 * 0x5b20);
+    local_10 = (uint)*(ushort *)(&DAT_006a5f74 + arg2 * 0x120 + x * 0x5b20);
+    local_14 = (int)(char)(&g_CardSlot_DamageReceived)[arg2 * 0x120 + x * 0x5b20];
+    local_18 = *(int *)(&g_CardSlot_TypeFlags + arg2 * 0x120 + x * 0x5b20);
     if (local_8 == DAT_00695e94) {
       strcpy(&g_AiHeuristicWeight_Evasion,s_Damage_0052d4c0);
     }
     else if (local_8 == DAT_0068a70c) {
       sprintf(&g_AiHeuristicWeight_Evasion,s_Hunting___s_0052d4c8,
               (&PTR_DAT_00528cc8)
-              [*(int *)(&g_CardSlot_ConvertedManaCost + arg2 * 0x120 + arg1 * 0x5b20)]);
+              [*(int *)(&g_CardSlot_ConvertedManaCost + arg2 * 0x120 + x * 0x5b20)]);
     }
     else if (local_8 == DAT_0068a694) {
       strcpy(&g_AiHeuristicWeight_Evasion,*(char **)(&DAT_006809e4 + local_10 * 0x14));
@@ -8212,11 +8212,11 @@ char * Ai_FormatCardScoreString(int arg1, int arg2)
       g_AiHeuristicWeight_Evasion = '\0';
     }
     if ((local_8 == DAT_0068a694) &&
-       (0 < *(int *)(&g_CardSlot_TargetSlot + arg2 * 0x120 + arg1 * 0x5b20))) {
+       (0 < *(int *)(&g_CardSlot_TargetSlot + arg2 * 0x120 + x * 0x5b20))) {
       strcpy(local_4c,&g_AiHeuristicWeight_Evasion);
       Palette_Subsystem_004a2dce
                 (&g_AiHeuristicWeight_Evasion,local_4c,
-                 *(int *)(&g_CardSlot_TargetSlot + arg2 * 0x120 + arg1 * 0x5b20));
+                 *(int *)(&g_CardSlot_TargetSlot + arg2 * 0x120 + x * 0x5b20));
     }
     status = Ai_Subsystem_004cbc65(local_14,local_18);
     if ((status == 0x361) || (status == 0x360)) {
@@ -8244,12 +8244,12 @@ char * Ai_FormatCardScoreString(int arg1, int arg2)
  * Size: 60 bytes
  */
 
-void Ai_Subsystem_004b90de(int arg1, int arg2)
+void Ai_Subsystem_004b90de(int x, int arg2)
 
 {
   char *output_str;
   
-  output_str = (char *)Ai_FormatCardScoreString(arg1,arg2);
+  output_str = (char *)Ai_FormatCardScoreString(x,arg2);
   if (output_str != (char *)0x0) {
     strcat(&g_OverworldWorldState,output_str);
   }
@@ -8321,7 +8321,7 @@ void Ai_Subsystem_004b920e(void)
   }
   g_AiHeuristicWeight_BoardThreat = (HMENU)0x0;
   if (g_AiHeuristicWeight_Removal != (HANDLE)0x0) {
-    FUN_004f4548(g_AiHeuristicWeight_Removal);
+    GDI_DestroyDIBSection_Magic(g_AiHeuristicWeight_Removal);
   }
   g_AiHeuristicWeight_Removal = (HANDLE)0x0;
   if (DAT_00556b1c != (HGDIOBJ)0x0) {
@@ -8473,7 +8473,7 @@ LRESULT Ai_CalcManaRequirement_General(HWND player, uint color_index, char * req
           RestoreDC(g_HdcBackBuffer,local_2c8);
           local_30c = BeginPaint(hwnd,&local_308);
           if (local_30c != (HDC)0x0) {
-            FUN_004f3955(local_30c);
+            GDI_RealizeAndFlushPalette_Magic(local_30c);
             GetClientRect(hwnd,&local_2b0);
             if (DAT_0068a674 != 0) {
               pHVar4 = GetStockObject(0);
@@ -8698,7 +8698,7 @@ LAB_004b9e62:
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar5 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar5 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar5;
     }
     if (uMsg == 0x204) {
@@ -8879,22 +8879,22 @@ void Ai_WndProc_004ba6b6(LPRECT lprect, HWND hwnd_target, int wParam)
     local_2c = -1;
   }
   if (local_2c == -1) {
-    SetRect(arg1,0,0,0,0);
+    SetRect(x,0,0,0,0);
   }
   else {
     local_8 = (local_24 + local_28) * local_2c + local_20;
     local_1c = local_8 + local_28;
-    SetRect(arg1,local_18.left,local_8,local_18.right,local_1c);
+    SetRect(x,local_18.left,local_8,local_18.right,local_1c);
     if (local_30 == 0) {
       if (arg3 == 6) {
-        SetRect(arg1,0,0,0,0);
+        SetRect(x,0,0,0,0);
       }
     }
     else if (arg3 == 0) {
-      arg1->right = arg1->right - (local_18.right - local_18.left) / 2;
+      x->right = x->right - (local_18.right - local_18.left) / 2;
     }
     else if (arg3 == 6) {
-      arg1->left = arg1->left + ((local_18.right - local_18.left) * 2) / 3;
+      x->left = x->left + ((local_18.right - local_18.left) * 2) / 3;
     }
   }
   return;
@@ -8960,11 +8960,11 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
     for (local_1c = 0; (int)local_1c < 7; local_1c = local_1c + 1) {
       local_50[local_1c] = 0;
     }
-    status = FUN_0040d949(arg1,6,1);
-    local_24 = FUN_0040d949(arg1,7,1);
+    status = Font_DrawString(x,6,1);
+    local_24 = Font_DrawString(x,7,1);
     local_24 = status - local_24;
     local_8 = 1;
-    if ((((g_AiTemporaryCardState == 0) && (arg1 != 1)) && (g_IsAiThinking != 1)) && (g_AiTurnDecisionFlag == 0)) {
+    if ((((g_AiTemporaryCardState == 0) && (x != 1)) && (g_IsAiThinking != 1)) && (g_AiTurnDecisionFlag == 0)) {
       local_c = 0;
       local_28 = 0;
       local_2c = 0;
@@ -8975,7 +8975,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
       local_54 = 1;
       local_34 = 1;
       local_2c = 1;
-      if (((arg1 == 1) || (g_IsAiThinking == 1)) || (g_AiTurnDecisionFlag != 0)) {
+      if (((x == 1) || (g_IsAiThinking == 1)) || (g_AiTurnDecisionFlag != 0)) {
         local_28 = 1;
         local_c = 1;
       }
@@ -8985,17 +8985,17 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
       }
     }
     status = g_OverworldPlayerCoordY;
-    if (arg1 == g_ActivePlayerPriority) {
+    if (x == g_ActivePlayerPriority) {
       for (local_1c = 0; (int)local_1c < 7; local_1c = local_1c + 1) {
         if ((&g_AiSelectedTargetCard)[local_1c] == -1) {
-          local_64 = FUN_0040d949(arg1,local_1c,1);
+          local_64 = Font_DrawString(x,local_1c,1);
           if (g_IsAiThinking == 1) {
-            status = FUN_0040a1d2(3);
+            status = Math_RandomRange(3);
             if ((status == 0) || (local_64 < 2)) {
               local_60 = local_64;
             }
             else {
-              local_60 = FUN_0040a1d2(local_64 + -1);
+              local_60 = Math_RandomRange(local_64 + -1);
               local_60 = local_60 + 1;
             }
             g_AiDecisionScore = local_60;
@@ -9039,21 +9039,21 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
     if ((local_8 != 0) &&
        (status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY), status == 0))
     {
-      Ai_Subsystem_004bb9f3(arg1,local_50,&local_10,local_24);
+      Ai_Subsystem_004bb9f3(x,local_50,&local_10,local_24);
       Ai_EvalAbility_Regeneration();
     }
     if (((local_54 != 0) &&
         (status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY), status == 0))
        && (local_58 != 0)) {
       Ai_Subsystem_004bbb99
-                (arg1,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
+                (x,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
       Ai_EvalAbility_Regeneration();
     }
     if ((local_34 != 0) &&
        (status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY), status == 0))
     {
       Ai_Subsystem_004bbd93
-                (arg1,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
+                (x,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
       Ai_EvalAbility_Regeneration();
     }
     if ((local_2c != 0) &&
@@ -9061,11 +9061,11 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
     {
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x1e,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x1e,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x1c,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x1c,local_c);
       }
     }
     if ((local_28 != 0) &&
@@ -9073,30 +9073,30 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
     {
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x14,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x14,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,4,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,4,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x1a,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x1a,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x18,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x18,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0x10,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0x10,local_c);
       }
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if (status == 0) {
-        Ai_Subsystem_004bc72e(arg1,local_50,&local_10,0,local_c);
+        Ai_Subsystem_004bc72e(x,local_50,&local_10,0,local_c);
       }
     }
-    if (((arg1 == 1) || (g_IsAiThinking == 1)) || (g_AiTurnDecisionFlag != 0)) {
+    if (((x == 1) || (g_IsAiThinking == 1)) || (g_AiTurnDecisionFlag != 0)) {
       status = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
       if ((status == 0) && (local_58 == 0)) {
         g_ActivePlayer = 1;
@@ -9118,7 +9118,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
           Ai_Subsystem_004bc029
                     (&g_OverworldWorldState,&g_AiSelectedTargetCard,g_TurnCounter,g_OverworldPlayerCoordY);
           local_30 = Duel_LogActionStatusBanner
-                               (arg1,arg1,arg1,0,0,&g_OverworldWorldState,
+                               (x,x,x,0,0,&g_OverworldWorldState,
                                 (-(uint)(local_68 == 0) & 0xfffffffe) + 3);
           if ((_DAT_0063ee20 == -1) && ((local_30 == -1 || (local_30 == -2)))) {
             if (DAT_0063ee8c == -2) {
@@ -9132,9 +9132,9 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                 local_5c = 1;
               }
             }
-            else if (((DAT_0063ee8c == -3) && (DAT_00627858 == arg1)) &&
+            else if (((DAT_0063ee8c == -3) && (DAT_00627858 == x)) &&
                     (g_AiGameStateBackupBuffer != 0xffffffff)) {
-              if ((0 < *(int *)(&g_AiLookaheadDepth + g_AiGameStateBackupBuffer * 4 + arg1 * 0x20)) &&
+              if ((0 < *(int *)(&g_AiLookaheadDepth + g_AiGameStateBackupBuffer * 4 + x * 0x20)) &&
                  (((((&g_AiSelectedTargetCard)[g_AiGameStateBackupBuffer] != 0 || (g_AiSelectedTargetCard != 0)) ||
                    (g_AiSelectedTargetPlayer != 0)) && ((g_AiGameStateBackupBuffer != 6 || (g_AiSelectedTargetPlayer != 0)))))) {
                 if ((&g_AiSelectedTargetCard)[g_AiGameStateBackupBuffer] == 0) {
@@ -9149,11 +9149,11 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                   local_6c = g_AiGameStateBackupBuffer;
                 }
                 local_70 = Ai_Subsystem_004bd459
-                                     (0x6b2d40,local_6c,(int)(&g_AiLookaheadDepth + arg1 * 0x20),
+                                     (0x6b2d40,local_6c,(int)(&g_AiLookaheadDepth + x * 0x20),
                                       g_AiGameStateBackupBuffer,g_AiTemporaryCardState,g_OverworldPlayerCoordY,
                                       g_TurnCounter);
                 Ai_Subsystem_004bd3e9
-                          (0x6b2d40,local_6c,local_70,&g_TurnCounter,g_OverworldPlayerCoordY,arg1,
+                          (0x6b2d40,local_6c,local_70,&g_TurnCounter,g_OverworldPlayerCoordY,x,
                            g_AiGameStateBackupBuffer,(int)local_50,&local_10);
                 Ai_EvalAbility_Regeneration();
               }
@@ -9161,16 +9161,16 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                 local_78 = 0;
                 local_20 = 0;
                 while ((local_20 < 10 &&
-                       (*(int *)(&g_AiTempTargetBuffer + local_20 * 4 + arg1 * 0x2c) != -1))) {
-                  local_80 = (uint)*(ushort *)(&g_AiTempTargetBuffer + local_20 * 4 + arg1 * 0x2c);
+                       (*(int *)(&g_AiTempTargetBuffer + local_20 * 4 + x * 0x2c) != -1))) {
+                  local_80 = (uint)*(ushort *)(&g_AiTempTargetBuffer + local_20 * 4 + x * 0x2c);
                   status = local_20 * 4;
                   if (g_AiGameStateBackupBuffer == local_80) {
-                    local_84._0_1_ = (byte)(*(uint *)(&g_AiTempTargetBuffer + status + arg1 * 0x2c) >> 0x10)
+                    local_84._0_1_ = (byte)(*(uint *)(&g_AiTempTargetBuffer + status + x * 0x2c) >> 0x10)
                     ;
                     local_78 = local_78 | 1 << ((byte)local_84 & 0x1f);
                   }
                   local_20 = local_20 + 1;
-                  local_84 = *(uint *)(&g_AiTempTargetBuffer + status + arg1 * 0x2c) >> 0x10;
+                  local_84 = *(uint *)(&g_AiTempTargetBuffer + status + x * 0x2c) >> 0x10;
                 }
                 local_7c = 0;
                 for (local_1c = 0; (int)local_1c < 7; local_1c = local_1c + 1) {
@@ -9187,19 +9187,19 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                     }
                   }
                   if (local_74 == 1) {
-                    local_88 = FUN_00473cc5((byte)local_78);
+                    local_88 = Card_ColorMaskToColorIndex((byte)local_78);
                   }
                   else {
                     local_88 = Ai_Subsystem_004cc93d
-                                         (arg1,s_Which_color_to_use_that_choice_a_0052d5d0,1,
+                                         (x,s_Which_color_to_use_that_choice_a_0052d5d0,1,
                                           g_AiGameStateBackupBuffer,local_78);
                   }
                   local_8c = Ai_Subsystem_004bd459
-                                       (0x6b2d40,local_88,(int)(&g_AiLookaheadDepth + arg1 * 0x20),
+                                       (0x6b2d40,local_88,(int)(&g_AiLookaheadDepth + x * 0x20),
                                         g_AiGameStateBackupBuffer,g_AiTemporaryCardState,g_OverworldPlayerCoordY,
                                         g_TurnCounter);
                   Ai_Subsystem_004bd3e9
-                            (0x6b2d40,local_88,local_8c,&g_TurnCounter,g_OverworldPlayerCoordY,arg1
+                            (0x6b2d40,local_88,local_8c,&g_TurnCounter,g_OverworldPlayerCoordY,x
                              ,g_AiGameStateBackupBuffer,(int)local_50,&local_10);
                   Ai_EvalAbility_Regeneration();
                 }
@@ -9207,17 +9207,17 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
             }
           }
           else if ((((_DAT_0063ee20 == -1) || (local_30 != -1)) &&
-                   (local_14 = *(int *)(&g_CardSlot_CardId + local_30 * 0x120 + arg1 * 0x5b20),
+                   (local_14 = *(int *)(&g_CardSlot_CardId + local_30 * 0x120 + x * 0x5b20),
                    ((&DAT_0051aed1)[local_14 * 0x34] & 0x10) != 0)) &&
                   ((((&g_MasterCardColorTable)[local_14 * 0x34] & 0x20) != 0 ||
-                   (((((&g_CardSlot_Flags)[local_30 * 0x120 + arg1 * 0x5b20] & 2) != 0 &&
-                     (((&g_CardSlot_Flags)[local_30 * 0x120 + arg1 * 0x5b20] & 0x10) == 0)) &&
-                    ((((&DAT_006a5f3e)[local_30 * 0x120 + arg1 * 0x5b20] & 3) == 0 ||
+                   (((((&g_CardSlot_Flags)[local_30 * 0x120 + x * 0x5b20] & 2) != 0 &&
+                     (((&g_CardSlot_Flags)[local_30 * 0x120 + x * 0x5b20] & 0x10) == 0)) &&
+                    ((((&DAT_006a5f3e)[local_30 * 0x120 + x * 0x5b20] & 3) == 0 ||
                      (((&g_MasterCardColorTable)
-                       [*(int *)(&g_CardSlot_CardId + local_30 * 0x120 + arg1 * 0x5b20) * 0x34] & 2
+                       [*(int *)(&g_CardSlot_CardId + local_30 * 0x120 + x * 0x5b20) * 0x34] & 2
                       ) == 0)))))))) {
             for (local_d8 = 0; local_d8 < 8; local_d8 = local_d8 + 1) {
-              aiStack_d4[local_d8] = *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + arg1 * 0x20);
+              aiStack_d4[local_d8] = *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + x * 0x20);
             }
             local_b4 = g_TurnCounter;
             g_TurnCounter = 0;
@@ -9227,18 +9227,18 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
               aiStack_b0[local_d8] = (&g_AiSelectedTargetCard)[local_d8];
               (&g_AiSelectedTargetCard)[local_d8] = 0;
             }
-            if (((&g_CardSlot_Flags)[local_30 * 0x120 + arg1 * 0x5b20] & 2) == 0) {
-              FUN_0046fe86(arg1,local_30);
+            if (((&g_CardSlot_Flags)[local_30 * 0x120 + x * 0x5b20] & 2) == 0) {
+              FUN_0046fe86(x,local_30);
               Ai_Turn_ExecuteMainPhase(0,0xff);
             }
             else if ((((&g_MasterCardColorTable)[local_14 * 0x34] & 1) != 0) ||
-                    (status = Magic_TriggerCardEvent(arg1,local_30,0x73,1 - arg1,0xffffffff),
+                    (status = Magic_TriggerCardEvent(x,local_30,0x73,1 - x,0xffffffff),
                     status != 0)) {
-              Magic_CombatPhase(arg1,local_30,0x72,arg1,0);
+              Magic_CombatPhase(x,local_30,0x72,x,0);
               g_AiManaPoolReserve = 1;
               DAT_006ff2d4 = 0xffffffff;
-              local_18 = *(uint *)(&g_CardSlot_Flags + local_30 * 0x120 + arg1 * 0x5b20) & 0x10;
-              Magic_TriggerCardEvent(arg1,local_30,0x6d,1 - arg1,0xffffffff);
+              local_18 = *(uint *)(&g_CardSlot_Flags + local_30 * 0x120 + x * 0x5b20) & 0x10;
+              Magic_TriggerCardEvent(x,local_30,0x6d,1 - x,0xffffffff);
               g_AiManaPoolReserve = 0;
               if (g_ActivePlayer == 1) {
                 g_ActivePlayer = 0;
@@ -9246,8 +9246,8 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
               }
               else {
                 if ((local_18 == 0) &&
-                   (((&g_CardSlot_Flags)[local_30 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) {
-                  FUN_00473e69(arg1,local_30,0x81);
+                   (((&g_CardSlot_Flags)[local_30 * 0x120 + x * 0x5b20] & 0x10) != 0)) {
+                  FUN_00473e69(x,local_30,0x81);
                 }
                 if (g_IsAiThinking != 1) {
                   Magic_UpkeepPhase(0x12);
@@ -9262,20 +9262,20 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
               (&g_AiSelectedTargetCard)[local_d8] = aiStack_b0[local_d8];
             }
             for (local_d8 = 0; local_d8 < 8; local_d8 = local_d8 + 1) {
-              *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + arg1 * 0x20) =
-                   *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + arg1 * 0x20) - aiStack_d4[local_d8];
+              *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + x * 0x20) =
+                   *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + x * 0x20) - aiStack_d4[local_d8];
             }
-            status = FUN_0040d949(arg1,6,1);
-            local_24 = FUN_0040d949(arg1,7,1);
+            status = Font_DrawString(x,6,1);
+            local_24 = Font_DrawString(x,7,1);
             local_24 = status - local_24;
-            Ai_Subsystem_004bb9f3(arg1,local_50,&local_10,local_24);
+            Ai_Subsystem_004bb9f3(x,local_50,&local_10,local_24);
             Ai_Subsystem_004bbb99
-                      (arg1,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
+                      (x,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
             Ai_Subsystem_004bbd93
-                      (arg1,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
+                      (x,local_50,&local_10,local_24,&g_TurnCounter,g_OverworldPlayerCoordY);
             for (local_d8 = 0; local_d8 < 8; local_d8 = local_d8 + 1) {
-              *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + arg1 * 0x20) =
-                   *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + arg1 * 0x20) + aiStack_d4[local_d8];
+              *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + x * 0x20) =
+                   *(int *)(&g_AiLookaheadDepth + local_d8 * 4 + x * 0x20) + aiStack_d4[local_d8];
             }
             Ai_EvalAbility_Regeneration();
           }
@@ -9286,7 +9286,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
   if (g_ActivePlayer == 1) {
     Ai_Subsystem_004bd682((int)local_50);
     for (local_1c = 0; (int)local_1c < 7; local_1c = local_1c + 1) {
-      FUN_0040d875(arg1,local_1c,local_50[local_1c]);
+      FUN_0040d875(x,local_1c,local_50[local_1c]);
       local_50[local_1c] = 0;
     }
     local_10 = 0;
@@ -9354,7 +9354,7 @@ void Ai_Subsystem_004bb9f3(int x, int arg2, int * arg3, int height)
  * Size: 506 bytes
  */
 
-void Ai_Subsystem_004bbb99(int arg1, int arg2, int * arg3, int arg4, int * arg5, int arg6)
+void Ai_Subsystem_004bbb99(int x, int arg2, int * arg3, int arg4, int * arg5, int arg6)
 
 {
   ushort u_res;
@@ -9364,26 +9364,26 @@ void Ai_Subsystem_004bbb99(int arg1, int arg2, int * arg3, int arg4, int * arg5,
   
   for (local_8 = 0; local_8 < 7; local_8 = local_8 + 1) {
     if ((&g_AiSelectedTargetCard)[local_8] == -1) {
-      while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) &&
+      while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) &&
              ((g_TurnCounter < arg6 || (arg6 == -1))))) {
-        Ai_Subsystem_004bd3e9(0x6b2d40,local_8,1,arg5,arg6,arg1,local_8,arg2,arg3);
+        Ai_Subsystem_004bd3e9(0x6b2d40,local_8,1,arg5,arg6,x,local_8,arg2,arg3);
       }
     }
   }
   if (g_AiSelectedTargetPlayer == -1) {
-    while (((0 < *(int *)(&g_AiLookaheadDepth + arg1 * 0x20) && (arg4 < g_AiSelectedTargetPlayer)) &&
+    while (((0 < *(int *)(&g_AiLookaheadDepth + x * 0x20) && (arg4 < g_AiSelectedTargetPlayer)) &&
            ((g_TurnCounter < arg6 || (arg6 == -1))))) {
-      Ai_Subsystem_004bd3e9(0x6b2d40,6,1,arg5,arg6,arg1,0,arg2,arg3);
+      Ai_Subsystem_004bd3e9(0x6b2d40,6,1,arg5,arg6,x,0,arg2,arg3);
     }
   }
   local_c = 0;
-  while ((local_c < 10 && (*(int *)(&g_AiTempTargetBuffer + local_c * 4 + arg1 * 0x2c) != -1))) {
-    u_res = *(ushort *)(&g_AiTempTargetBuffer + local_c * 4 + arg1 * 0x2c);
-    u_temp = *(uint *)(&g_AiTempTargetBuffer + local_c * 4 + arg1 * 0x2c);
+  while ((local_c < 10 && (*(int *)(&g_AiTempTargetBuffer + local_c * 4 + x * 0x2c) != -1))) {
+    u_res = *(ushort *)(&g_AiTempTargetBuffer + local_c * 4 + x * 0x2c);
+    u_temp = *(uint *)(&g_AiTempTargetBuffer + local_c * 4 + x * 0x2c);
     if ((&g_AiSelectedTargetCard)[u_temp >> 0x10] == -1) {
-      while ((0 < *(int *)(&g_AiLookaheadDepth + (uint)u_res * 4 + arg1 * 0x20) &&
+      while ((0 < *(int *)(&g_AiLookaheadDepth + (uint)u_res * 4 + x * 0x20) &&
              ((g_TurnCounter < arg6 || (arg6 == -1))))) {
-        Ai_Subsystem_004bd3e9(0x6b2d40,u_temp >> 0x10,1,arg5,arg6,arg1,(uint)u_res,arg2,arg3);
+        Ai_Subsystem_004bd3e9(0x6b2d40,u_temp >> 0x10,1,arg5,arg6,x,(uint)u_res,arg2,arg3);
       }
     }
     local_c = local_c + 1;
@@ -9403,7 +9403,7 @@ void Ai_Subsystem_004bbb99(int arg1, int arg2, int * arg3, int arg4, int * arg5,
  * Size: 507 bytes
  */
 
-void Ai_Subsystem_004bbd93(int arg1, int arg2, int * arg3, int arg4, int * arg5, int arg6)
+void Ai_Subsystem_004bbd93(int x, int arg2, int * arg3, int arg4, int * arg5, int arg6)
 
 {
   int local_8;
@@ -9411,15 +9411,15 @@ void Ai_Subsystem_004bbd93(int arg1, int arg2, int * arg3, int arg4, int * arg5,
   if (g_AiSelectedTargetPlayer != 0) {
     for (local_8 = 0; local_8 < 7; local_8 = local_8 + 1) {
       if (g_AiSelectedTargetPlayer < 1) {
-        while (((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) && (g_AiSelectedTargetPlayer == -1))
+        while (((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) && (g_AiSelectedTargetPlayer == -1))
                && ((arg6 == -1 || (arg4 < arg6 - g_TurnCounter))))) {
-          Ai_Subsystem_004bd3e9(0x6b2d40,6,1,arg5,arg6,arg1,local_8,arg2,arg3);
+          Ai_Subsystem_004bd3e9(0x6b2d40,6,1,arg5,arg6,x,local_8,arg2,arg3);
         }
       }
       else {
-        while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) && (arg4 < g_AiSelectedTargetPlayer)))
+        while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) && (arg4 < g_AiSelectedTargetPlayer)))
         {
-          Ai_Subsystem_004bd3e9(0x6b2d40,6,1,(int *)0x0,0,arg1,local_8,arg2,arg3);
+          Ai_Subsystem_004bd3e9(0x6b2d40,6,1,(int *)0x0,0,x,local_8,arg2,arg3);
         }
       }
     }
@@ -9428,14 +9428,14 @@ void Ai_Subsystem_004bbd93(int arg1, int arg2, int * arg3, int arg4, int * arg5,
     for (local_8 = 0; local_8 < 7; local_8 = local_8 + 1) {
       if (local_8 != 6) {
         if (g_AiSelectedTargetCard == -1) {
-          while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) &&
+          while ((0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) &&
                  ((g_TurnCounter < arg6 || (arg6 == -1))))) {
-            Ai_Subsystem_004bd3e9(0x6b2d40,0,1,arg5,arg6,arg1,local_8,arg2,arg3);
+            Ai_Subsystem_004bd3e9(0x6b2d40,0,1,arg5,arg6,x,local_8,arg2,arg3);
           }
         }
         else {
-          while ((0 < g_AiSelectedTargetCard && (0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20)))) {
-            Ai_Subsystem_004bd3e9(0x6b2d40,0,1,(int *)0x0,0,arg1,local_8,arg2,arg3);
+          while ((0 < g_AiSelectedTargetCard && (0 < *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20)))) {
+            Ai_Subsystem_004bd3e9(0x6b2d40,0,1,(int *)0x0,0,x,local_8,arg2,arg3);
           }
         }
       }
@@ -9456,7 +9456,7 @@ void Ai_Subsystem_004bbd93(int arg1, int arg2, int * arg3, int arg4, int * arg5,
  * Size: 155 bytes
  */
 
-int Ai_Subsystem_004bbf8e(int arg1, int arg2, int arg3)
+int Ai_Subsystem_004bbf8e(int x, int arg2, int arg3)
 
 {
   int local_8;
@@ -9466,11 +9466,11 @@ int Ai_Subsystem_004bbf8e(int arg1, int arg2, int arg3)
     if (6 < local_8) {
       return 1;
     }
-    if (0 < *(int *)(arg1 + local_8 * 4)) break;
-    if (((*(int *)(arg1 + local_8 * 4) == -1) && (arg3 != -1)) && (arg2 < arg3)) {
+    if (0 < *(int *)(x + local_8 * 4)) break;
+    if (((*(int *)(x + local_8 * 4) == -1) && (arg3 != -1)) && (arg2 < arg3)) {
       return 0;
     }
-    if ((*(int *)(arg1 + local_8 * 4) == -1) && (arg3 == -1)) {
+    if ((*(int *)(x + local_8 * 4) == -1) && (arg3 == -1)) {
       return 0;
     }
     local_8 = local_8 + 1;
@@ -9715,7 +9715,7 @@ int Ai_CalcMana_004bc423(void)
  * Size: 2311 bytes
  */
 
-int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
+int Ai_Subsystem_004bc72e(int x, int arg2, int arg3, int arg4, int arg5)
 
 {
   bool is_valid;
@@ -9736,20 +9736,20 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
   }
   temp_idx = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
   if (temp_idx == 0) {
-    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[arg1]; local_c = local_c + 1) {
-      temp_idx = Ai_Subsystem_004bd035(arg1,local_c,(byte)arg4);
+    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
+      temp_idx = Ai_Subsystem_004bd035(x,local_c,(byte)arg4);
       if (temp_idx != 0) {
-        temp_idx = Magic_TriggerCardEvent(arg1,local_c,0x73,1 - arg1,0xffffffff);
+        temp_idx = Magic_TriggerCardEvent(x,local_c,0x73,1 - x,0xffffffff);
         if (temp_idx != 0) {
           is_match = false;
           for (local_14 = 0; local_14 < 7; local_14 = local_14 + 1) {
             if (((&g_AiSelectedTargetCard)[local_14] < 1) ||
                ((1 << ((byte)local_14 & 0x1f) &
-                (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) == 0)) {
+                (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) == 0)) {
               if ((((&g_AiSelectedTargetCard)[local_14] == -1) &&
                   ((g_TurnCounter < g_OverworldPlayerCoordY && (g_OverworldPlayerCoordY != -1)))) &&
                  ((1 << ((byte)local_14 & 0x1f) &
-                  (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) != 0)) {
+                  (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) != 0)) {
                 is_match = true;
               }
             }
@@ -9759,17 +9759,17 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
           }
           if ((arg5 != 0) && (!is_match)) {
             local_18 = 0;
-            while ((local_18 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c) != -1)))
+            while ((local_18 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c) != -1)))
             {
-              local_20 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c);
-              if (((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c) >> 0x10] <
+              local_20 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c);
+              if (((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c) >> 0x10] <
                    1) || ((1 << (local_20 & 0x1f) &
-                          (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) == 0)) {
-                if (((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c) >> 0x10]
+                          (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) == 0)) {
+                if (((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c) >> 0x10]
                      == -1) &&
                    (((g_TurnCounter < g_OverworldPlayerCoordY && (g_OverworldPlayerCoordY != -1)) &&
                     ((1 << (local_20 & 0x1f) &
-                     (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) != 0)))) {
+                     (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) != 0)))) {
                   is_match = true;
                 }
               }
@@ -9780,14 +9780,14 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
             }
           }
           if (is_match) {
-            temp_idx = Ai_Subsystem_004bd23f(arg1,local_c);
+            temp_idx = Ai_Subsystem_004bd23f(x,local_c);
             if (temp_idx != 0) {
-              temp_idx = FUN_0040d949(arg1,6,1);
-              card_idx = FUN_0040d949(arg1,7,1);
+              temp_idx = Font_DrawString(x,6,1);
+              card_idx = Font_DrawString(x,7,1);
               temp_idx = temp_idx - card_idx;
-              Ai_Subsystem_004bb9f3(arg1,arg2,arg3,temp_idx);
-              Ai_Subsystem_004bbb99(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
-              Ai_Subsystem_004bbd93(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bb9f3(x,arg2,arg3,temp_idx);
+              Ai_Subsystem_004bbb99(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bbd93(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
             }
           }
         }
@@ -9796,10 +9796,10 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
   }
   temp_idx = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
   if ((temp_idx == 0) && ((g_AiSelectedTargetCard != 0 || (g_AiSelectedTargetPlayer != 0)))) {
-    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[arg1]; local_c = local_c + 1) {
-      temp_idx = Ai_Subsystem_004bd035(arg1,local_c,(byte)arg4);
+    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
+      temp_idx = Ai_Subsystem_004bd035(x,local_c,(byte)arg4);
       if (temp_idx != 0) {
-        temp_idx = Magic_TriggerCardEvent(arg1,local_c,0x73,1 - arg1,0xffffffff);
+        temp_idx = Magic_TriggerCardEvent(x,local_c,0x73,1 - x,0xffffffff);
         if (temp_idx != 0) {
           is_match = false;
           if (g_AiSelectedTargetCard < 1) {
@@ -9820,18 +9820,18 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
           else {
             is_match = true;
           }
-          if (((&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120] == '@') && (g_AiSelectedTargetPlayer == 0)) {
+          if (((&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120] == '@') && (g_AiSelectedTargetPlayer == 0)) {
             is_match = false;
           }
           if (is_match) {
-            temp_idx = Ai_Subsystem_004bd23f(arg1,local_c);
+            temp_idx = Ai_Subsystem_004bd23f(x,local_c);
             if (temp_idx != 0) {
-              temp_idx = FUN_0040d949(arg1,6,1);
-              card_idx = FUN_0040d949(arg1,7,1);
+              temp_idx = Font_DrawString(x,6,1);
+              card_idx = Font_DrawString(x,7,1);
               temp_idx = temp_idx - card_idx;
-              Ai_Subsystem_004bb9f3(arg1,arg2,arg3,temp_idx);
-              Ai_Subsystem_004bbb99(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
-              Ai_Subsystem_004bbd93(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bb9f3(x,arg2,arg3,temp_idx);
+              Ai_Subsystem_004bbb99(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bbd93(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
             }
           }
         }
@@ -9840,16 +9840,16 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
   }
   temp_idx = Ai_Subsystem_004bbf8e(0x6b2d40,g_TurnCounter,g_OverworldPlayerCoordY);
   if (((temp_idx == 0) && (is_valid)) && (g_OverworldPlayerCoordY == -1)) {
-    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[arg1]; local_c = local_c + 1) {
-      temp_idx = Ai_Subsystem_004bd035(arg1,local_c,(byte)arg4);
+    for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
+      temp_idx = Ai_Subsystem_004bd035(x,local_c,(byte)arg4);
       if (temp_idx != 0) {
-        temp_idx = Magic_TriggerCardEvent(arg1,local_c,0x73,1 - arg1,0xffffffff);
+        temp_idx = Magic_TriggerCardEvent(x,local_c,0x73,1 - x,0xffffffff);
         if (temp_idx != 0) {
           is_valid = false;
           for (local_14 = 1; local_14 < 7; local_14 = local_14 + 1) {
             if (((g_OverworldPlayerCoordY == -1) && ((&g_AiSelectedTargetCard)[local_14] == -1)) &&
                ((1 << ((byte)local_14 & 0x1f) &
-                (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) != 0)) {
+                (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) != 0)) {
               is_valid = true;
             }
             else if ((g_OverworldPlayerCoordY == -1) && (g_AiSelectedTargetCard == -1)) {
@@ -9859,33 +9859,33 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
               is_valid = true;
             }
           }
-          if (((&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120] == '@') && (g_AiSelectedTargetPlayer != -1)) {
+          if (((&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120] == '@') && (g_AiSelectedTargetPlayer != -1)) {
             is_valid = false;
           }
           if ((arg5 != 0) && (!is_valid)) {
             local_18 = 0;
-            while ((local_18 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c) != -1)))
+            while ((local_18 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c) != -1)))
             {
               if (((g_OverworldPlayerCoordY == -1) &&
-                  ((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c) >> 0x10]
+                  ((&g_AiSelectedTargetCard)[*(uint *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c) >> 0x10]
                    == -1)) &&
-                 (local_28 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_18 * 4 + arg1 * 0x2c),
+                 (local_28 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_18 * 4 + x * 0x2c),
                  (1 << (local_28 & 0x1f) &
-                 (int)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_c * 0x120]) != 0)) {
+                 (int)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_c * 0x120]) != 0)) {
                 is_valid = true;
               }
               local_18 = local_18 + 1;
             }
           }
           if (is_valid) {
-            temp_idx = Ai_Subsystem_004bd23f(arg1,local_c);
+            temp_idx = Ai_Subsystem_004bd23f(x,local_c);
             if (temp_idx != 0) {
-              temp_idx = FUN_0040d949(arg1,6,1);
-              card_idx = FUN_0040d949(arg1,7,1);
+              temp_idx = Font_DrawString(x,6,1);
+              card_idx = Font_DrawString(x,7,1);
               temp_idx = temp_idx - card_idx;
-              Ai_Subsystem_004bb9f3(arg1,arg2,arg3,temp_idx);
-              Ai_Subsystem_004bbb99(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
-              Ai_Subsystem_004bbd93(arg1,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bb9f3(x,arg2,arg3,temp_idx);
+              Ai_Subsystem_004bbb99(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
+              Ai_Subsystem_004bbd93(x,arg2,arg3,temp_idx,&g_TurnCounter,g_OverworldPlayerCoordY);
             }
           }
         }
@@ -9908,15 +9908,15 @@ int Ai_Subsystem_004bc72e(int arg1, int arg2, int arg3, int arg4, int arg5)
  * Size: 522 bytes
  */
 
-int Ai_Subsystem_004bd035(int arg1, int arg2, byte arg3)
+int Ai_Subsystem_004bd035(int x, int arg2, byte arg3)
 
 {
   int status;
   int local_c;
   
-  status = *(int *)(&g_CardSlot_CardId + arg1 * 0x5b20 + arg2 * 0x120);
+  status = *(int *)(&g_CardSlot_CardId + x * 0x5b20 + arg2 * 0x120);
   local_c = 1;
-  if (((((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 2) == 0) ||
+  if (((((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 2) == 0) ||
       (((&DAT_0051aed1)[status * 0x34] & 0x10) == 0)) || (((&DAT_0051aed2)[status * 0x34] & 1) != 0))
   {
     local_c = 0;
@@ -9924,16 +9924,16 @@ int Ai_Subsystem_004bd035(int arg1, int arg2, byte arg3)
   else {
     if (((arg3 & 1) != 0) &&
        (((status < 5 || (*(int *)(&g_MasterCardTypeTable + status * 0x34) == 0x366)) ||
-        ((&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + arg2 * 0x120] == '@')))) {
+        ((&g_CardSlot_CountersBonus)[x * 0x5b20 + arg2 * 0x120] == '@')))) {
       local_c = 0;
     }
     if ((((arg3 & 2) != 0) && (((&g_MasterCardColorTable)[status * 0x34] & 1) != 0)) &&
        ((4 < status &&
         ((*(int *)(&g_MasterCardTypeTable + status * 0x34) != 0x366 &&
-         ((&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + arg2 * 0x120] != '@')))))) {
+         ((&g_CardSlot_CountersBonus)[x * 0x5b20 + arg2 * 0x120] != '@')))))) {
       local_c = 0;
     }
-    if (((arg3 & 4) != 0) && (((&DAT_006a5f3e)[arg1 * 0x5b20 + arg2 * 0x120] & 4) != 0)) {
+    if (((arg3 & 4) != 0) && (((&DAT_006a5f3e)[x * 0x5b20 + arg2 * 0x120] & 4) != 0)) {
       local_c = 0;
     }
     if (((arg3 & 8) != 0) && (((&g_MasterCardColorTable)[status * 0x34] & 0x40) != 0)) {
@@ -9958,21 +9958,21 @@ int Ai_Subsystem_004bd035(int arg1, int arg2, byte arg3)
  * Size: 426 bytes
  */
 
-int Ai_Subsystem_004bd23f(int arg1, int arg2)
+int Ai_Subsystem_004bd23f(int x, int arg2)
 
 {
   uint u_res;
   int local_8;
   
-  if ((((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 0x10) == 0) &&
-     ((((&DAT_006a5f3e)[arg1 * 0x5b20 + arg2 * 0x120] & 3) == 0 ||
+  if ((((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 0x10) == 0) &&
+     ((((&DAT_006a5f3e)[x * 0x5b20 + arg2 * 0x120] & 3) == 0 ||
       (((&g_MasterCardColorTable)
-        [*(int *)(&g_CardSlot_CardId + arg1 * 0x5b20 + arg2 * 0x120) * 0x34] & 2) == 0)))) {
-    Magic_CombatPhase(arg1,arg2,0x72,arg1,0);
+        [*(int *)(&g_CardSlot_CardId + x * 0x5b20 + arg2 * 0x120) * 0x34] & 2) == 0)))) {
+    Magic_CombatPhase(x,arg2,0x72,x,0);
     g_AiManaPoolReserve = 1;
     DAT_006ff2d4 = 0xffffffff;
-    u_res = *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + arg2 * 0x120);
-    Magic_TriggerCardEvent(arg1,arg2,0x6d,1 - arg1,0xffffffff);
+    u_res = *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + arg2 * 0x120);
+    Magic_TriggerCardEvent(x,arg2,0x6d,1 - x,0xffffffff);
     g_AiManaPoolReserve = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
@@ -9980,9 +9980,9 @@ int Ai_Subsystem_004bd23f(int arg1, int arg2)
       local_8 = 0;
     }
     else {
-      if (((u_res & 0x10) == 0) && (((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 0x10) != 0)
+      if (((u_res & 0x10) == 0) && (((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 0x10) != 0)
          ) {
-        FUN_00473e69(arg1,arg2,0x81);
+        FUN_00473e69(x,arg2,0x81);
       }
       if (g_IsAiThinking != 1) {
         Magic_UpkeepPhase(0x12);
@@ -10009,17 +10009,17 @@ int Ai_Subsystem_004bd23f(int arg1, int arg2)
  * Size: 112 bytes
  */
 
-void Ai_Subsystem_004bd3e9(int arg1, int arg2, int arg3, int * arg4, int arg5, int arg6, int arg7, int arg8, int * arg9)
+void Ai_Subsystem_004bd3e9(int x, int arg2, int arg3, int * arg4, int arg5, int arg6, int arg7, int arg8, int * arg9)
 
 {
   int *p_ires;
   
   FUN_0040d8b7(arg6,arg7,arg3);
-  if (*(int *)(arg1 + arg2 * 4) == -1) {
+  if (*(int *)(x + arg2 * 4) == -1) {
     *arg4 = *arg4 + arg3;
   }
   else {
-    p_ires = (int *)(arg1 + arg2 * 4);
+    p_ires = (int *)(x + arg2 * 4);
     *p_ires = *p_ires - arg3;
   }
   p_ires = (int *)(arg_8 + arg7 * 4);
@@ -10041,7 +10041,7 @@ void Ai_Subsystem_004bd3e9(int arg1, int arg2, int arg3, int * arg4, int arg5, i
  * Size: 151 bytes
  */
 
-int Ai_Subsystem_004bd459(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7)
+int Ai_Subsystem_004bd459(int x, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7)
 
 {
   int status;
@@ -10050,7 +10050,7 @@ int Ai_Subsystem_004bd459(int arg1, int arg2, int arg3, int arg4, int arg5, int 
   if (arg5 == 0) {
     local_8 = 1;
   }
-  else if (*(int *)(arg1 + arg2 * 4) == -1) {
+  else if (*(int *)(x + arg2 * 4) == -1) {
     if (arg6 == -1) {
       local_8 = *(int *)(arg3 + arg4 * 4);
     }
@@ -10063,7 +10063,7 @@ int Ai_Subsystem_004bd459(int arg1, int arg2, int arg3, int arg4, int arg5, int 
   }
   else {
     local_8 = *(int *)(arg3 + arg4 * 4);
-    status = *(int *)(arg1 + arg2 * 4);
+    status = *(int *)(x + arg2 * 4);
     if (status <= local_8) {
       local_8 = status;
     }
@@ -10114,15 +10114,15 @@ int Ai_Subsystem_004bd4f0(void)
  * Size: 71 bytes
  */
 
-bool Ai_Subsystem_004bd563(int arg1, int arg2)
+bool Ai_Subsystem_004bd563(int x, int arg2)
 
 {
   int status;
   
   status = g_AiHeuristicWeight_LifeAdvantage;
   if (0 < g_AiHeuristicWeight_LifeAdvantage) {
-    *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + arg1 * 4) =
-         *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + arg1 * 4) + arg2;
+    *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + x * 4) =
+         *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + x * 4) + arg2;
   }
   return 0 < status;
 }
@@ -10163,7 +10163,7 @@ bool Ai_Util_CheckTimer(void)
  * Size: 154 bytes
  */
 
-int Ai_Subsystem_004bd5e3(int arg1)
+int Ai_Subsystem_004bd5e3(int x)
 
 {
   int u_res;
@@ -10174,11 +10174,11 @@ int Ai_Subsystem_004bd5e3(int arg1)
   }
   else {
     for (local_8 = 0; local_8 < 7; local_8 = local_8 + 1) {
-      *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) =
-           *(int *)(&g_AiLookaheadDepth + local_8 * 4 + arg1 * 0x20) +
+      *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) =
+           *(int *)(&g_AiLookaheadDepth + local_8 * 4 + x * 0x20) +
            *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + local_8 * 4);
-      *(int *)(&DAT_0063eeac + arg1 * 0x20) =
-           *(int *)(&DAT_0063eeac + arg1 * 0x20) +
+      *(int *)(&DAT_0063eeac + x * 0x20) =
+           *(int *)(&DAT_0063eeac + x * 0x20) +
            *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + local_8 * 4);
     }
     u_res = 1;
@@ -10198,7 +10198,7 @@ int Ai_Subsystem_004bd5e3(int arg1)
  * Size: 114 bytes
  */
 
-int Ai_Subsystem_004bd682(int arg1)
+int Ai_Subsystem_004bd682(int x)
 
 {
   int u_res;
@@ -10211,7 +10211,7 @@ int Ai_Subsystem_004bd682(int arg1)
     for (local_8 = 0; local_8 < 7; local_8 = local_8 + 1) {
       *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + local_8 * 4) =
            *(int *)(&g_AiHeuristicWeight_Protection + (g_AiHeuristicWeight_LifeAdvantage + -1) * 0x1c + local_8 * 4) -
-           *(int *)(arg1 + local_8 * 4);
+           *(int *)(x + local_8 * 4);
     }
     u_res = 1;
   }
@@ -10232,7 +10232,7 @@ int Ai_Subsystem_004bd682(int arg1)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-int Ai_Subsystem_004bd6f9(int arg1, uint arg2, int arg3)
+int Ai_Subsystem_004bd6f9(int x, uint arg2, int arg3)
 
 {
   int status;
@@ -10248,18 +10248,18 @@ int Ai_Subsystem_004bd6f9(int arg1, uint arg2, int arg3)
   g_AiCombatDamageAssigned = arg2;
 LAB_004bd70a:
   while( true ) {
-    if (0 < *(int *)(&g_AiLookaheadDepth + arg2 * 4 + arg1 * 0x20)) {
-      FUN_0040d8b7(arg1,arg2,1);
+    if (0 < *(int *)(&g_AiLookaheadDepth + arg2 * 4 + x * 0x20)) {
+      FUN_0040d8b7(x,arg2,1);
       g_AiCombatDamageAssigned = 0xffffffff;
       return 1;
     }
     local_24 = 0;
-    while ((local_24 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c) != -1))) {
+    while ((local_24 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c) != -1))) {
       if ((0 < *(int *)(&g_AiLookaheadDepth +
-                       (uint)*(ushort *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c) * 4 +
-                       arg1 * 0x20)) &&
-         (*(uint *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c) >> 0x10 == arg2)) {
-        FUN_0040d8b7(arg1,(uint)*(ushort *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c),1);
+                       (uint)*(ushort *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c) * 4 +
+                       x * 0x20)) &&
+         (*(uint *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c) >> 0x10 == arg2)) {
+        FUN_0040d8b7(x,(uint)*(ushort *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c),1);
         g_AiCombatDamageAssigned = 0xffffffff;
         return 1;
       }
@@ -10267,8 +10267,8 @@ LAB_004bd70a:
     }
     if (arg2 == 6) {
       for (local_20 = 0; (int)local_20 < 7; local_20 = local_20 + 1) {
-        if (*(int *)(&g_AiLookaheadDepth + local_20 * 4 + arg1 * 0x20) != 0) {
-          FUN_0040d8b7(arg1,local_10,1);
+        if (*(int *)(&g_AiLookaheadDepth + local_20 * 4 + x * 0x20) != 0) {
+          FUN_0040d8b7(x,local_10,1);
           g_AiCombatDamageAssigned = 0xffffffff;
           return 1;
         }
@@ -10276,22 +10276,22 @@ LAB_004bd70a:
     }
     if (arg2 == 0) {
       for (local_20 = 0; (int)local_20 < 7; local_20 = local_20 + 1) {
-        if ((local_20 != 6) && (*(int *)(&g_AiLookaheadDepth + local_20 * 4 + arg1 * 0x20) != 0)) {
-          FUN_0040d8b7(arg1,local_10,1);
+        if ((local_20 != 6) && (*(int *)(&g_AiLookaheadDepth + local_20 * 4 + x * 0x20) != 0)) {
+          FUN_0040d8b7(x,local_10,1);
           g_AiCombatDamageAssigned = 0xffffffff;
           return 1;
         }
       }
     }
-    if ((((g_CurrentTurnPhase == arg1) && (g_IsAiThinking != 1)) && (g_AiTemporaryCardState == 0)) &&
+    if ((((g_CurrentTurnPhase == x) && (g_IsAiThinking != 1)) && (g_AiTemporaryCardState == 0)) &&
        (g_AiTurnDecisionFlag == 0)) break;
     if (arg2 == 0) {
       local_10 = -1;
       for (local_20 = 1; (int)local_20 < 7; local_20 = local_20 + 1) {
-        status = FUN_0040d949(arg1,local_20,1);
+        status = Font_DrawString(x,local_20,1);
         if (status != 0) {
-          status = FUN_0040d949(arg1,local_20,1);
-          status = (status << 5) / (*(int *)(&DAT_006ff690 + local_20 * 4 + arg1 * 0x20) * 2 + 1);
+          status = Font_DrawString(x,local_20,1);
+          status = (status << 5) / (*(int *)(&DAT_006ff690 + local_20 * 4 + x * 0x20) * 2 + 1);
           if (local_10 < status) {
             arg2 = local_20;
             g_AiCombatDamageAssigned = local_20;
@@ -10302,34 +10302,34 @@ LAB_004bd70a:
     }
     local_30 = 0;
     local_24 = 0;
-    while ((local_24 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c) != -1))) {
-      if (*(uint *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c) >> 0x10 == arg2) {
-        local_8 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_24 * 4 + arg1 * 0x2c);
+    while ((local_24 < 10 && (*(int *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c) != -1))) {
+      if (*(uint *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c) >> 0x10 == arg2) {
+        local_8 = (byte)*(int16_t *)(&g_AiTempTargetBuffer + local_24 * 4 + x * 0x2c);
         local_30 = local_30 | 1 << (local_8 & 0x1f);
       }
       local_24 = local_24 + 1;
     }
     local_20 = 0;
     while( true ) {
-      if ((int)(&g_PlayerActiveCardCount)[arg1] <= (int)local_20) {
+      if ((int)(&g_PlayerActiveCardCount)[x] <= (int)local_20) {
         g_AiCombatDamageAssigned = 0xffffffff;
         return 0;
       }
-      if (((((((&g_CardSlot_Flags)[arg1 * 0x5b20 + local_20 * 0x120] & 2) != 0) &&
-            (((&g_CardSlot_Flags)[arg1 * 0x5b20 + local_20 * 0x120] & 0x10) == 0)) &&
-           (status = *(int *)(&g_CardSlot_CardId + arg1 * 0x5b20 + local_20 * 0x120), status != -1))
+      if (((((((&g_CardSlot_Flags)[x * 0x5b20 + local_20 * 0x120] & 2) != 0) &&
+            (((&g_CardSlot_Flags)[x * 0x5b20 + local_20 * 0x120] & 0x10) == 0)) &&
+           (status = *(int *)(&g_CardSlot_CardId + x * 0x5b20 + local_20 * 0x120), status != -1))
           && ((((&g_MasterCardColorTable)[status * 0x34] & 1) != 0 &&
-              (u_temp = (uint)(char)(&g_CardSlot_CountersBonus)[arg1 * 0x5b20 + local_20 * 0x120], u_temp != 0)))
+              (u_temp = (uint)(char)(&g_CardSlot_CountersBonus)[x * 0x5b20 + local_20 * 0x120], u_temp != 0)))
           ) && ((((u_temp & 1 << ((byte)arg2 & 0x1f)) != 0 ||
                  (((u_temp & local_30) != 0 || (arg2 == 0)))) || (arg2 == 6)))) break;
       local_20 = local_20 + 1;
     }
-    Magic_CombatPhase(arg1,local_20,0x72,arg1,0);
+    Magic_CombatPhase(x,local_20,0x72,x,0);
     g_AiManaPoolReserve = 1;
     DAT_006ff2d4 = 0xffffffff;
-    u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + arg1 * 0x5b20);
+    u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + x * 0x5b20);
     _DAT_006b2d28 = status;
-    Magic_TriggerCardEvent(arg1,local_20,0x6d,1 - arg1,0xffffffff);
+    Magic_TriggerCardEvent(x,local_20,0x6d,1 - x,0xffffffff);
     g_AiManaPoolReserve = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
@@ -10337,8 +10337,8 @@ LAB_004bd70a:
     }
     else {
       if (((u_temp & 0x10) == 0) &&
-         (((&g_CardSlot_Flags)[local_34 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) {
-        FUN_00473e69(arg1,local_20,0x81);
+         (((&g_CardSlot_Flags)[local_34 * 0x120 + x * 0x5b20] & 0x10) != 0)) {
+        FUN_00473e69(x,local_20,0x81);
       }
       if (g_IsAiThinking != 1) {
         Magic_UpkeepPhase(0x12);
@@ -10372,25 +10372,25 @@ LAB_004bd70a:
       output_str = _itoa(g_TurnCounter,&DAT_00556c40,10);
       strcat(&g_OverworldWorldState,output_str);
     }
-    local_34 = Duel_LogActionStatusBanner(arg1,arg1,arg1,0,0,&g_OverworldWorldState,1);
-    if (((local_34 != -1) && (((&g_CardSlot_Flags)[local_34 * 0x120 + arg1 * 0x5b20] & 2) != 0)) &&
-       (((&g_CardSlot_Flags)[local_34 * 0x120 + arg1 * 0x5b20] & 0x14) == 0)) {
+    local_34 = Duel_LogActionStatusBanner(x,x,x,0,0,&g_OverworldWorldState,1);
+    if (((local_34 != -1) && (((&g_CardSlot_Flags)[local_34 * 0x120 + x * 0x5b20] & 2) != 0)) &&
+       (((&g_CardSlot_Flags)[local_34 * 0x120 + x * 0x5b20] & 0x14) == 0)) {
       if (((&g_MasterCardColorTable)
-           [*(int *)(&g_CardSlot_CardId + local_34 * 0x120 + arg1 * 0x5b20) * 0x34] & 1) == 0) {
+           [*(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20) * 0x34] & 1) == 0) {
         if ((((&DAT_0051aed1)
-              [*(int *)(&g_CardSlot_CardId + local_34 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x10) != 0
-            ) && (status = Magic_TriggerCardEvent(arg1,local_34,0x73,1 - arg1,0xffffffff),
+              [*(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20) * 0x34] & 0x10) != 0
+            ) && (status = Magic_TriggerCardEvent(x,local_34,0x73,1 - x,0xffffffff),
                  status != 0)) break;
       }
-      else if (((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + arg1 * 0x5b20] != 0) &&
-              ((((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + arg1 * 0x5b20] &
+      else if (((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + x * 0x5b20] != 0) &&
+              ((((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + x * 0x5b20] &
                 1 << ((byte)arg2 & 0x1f)) != 0 || (arg2 == 0)))) {
-        Magic_CombatPhase(arg1,local_20,0x72,arg1,0);
-        _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + arg1 * 0x5b20);
+        Magic_CombatPhase(x,local_20,0x72,x,0);
+        _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20);
         g_AiManaPoolReserve = 1;
         DAT_006ff2d4 = 0xffffffff;
-        u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + arg1 * 0x5b20);
-        Magic_TriggerCardEvent(arg1,local_34,0x6d,1 - arg1,0xffffffff);
+        u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + x * 0x5b20);
+        Magic_TriggerCardEvent(x,local_34,0x6d,1 - x,0xffffffff);
         g_AiManaPoolReserve = 0;
         if (g_ActivePlayer == 1) {
           g_ActivePlayer = 0;
@@ -10398,8 +10398,8 @@ LAB_004bd70a:
         }
         else {
           if (((u_temp & 0x10) == 0) &&
-             (((&g_CardSlot_Flags)[local_34 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) {
-            FUN_00473e69(arg1,local_34,0x81);
+             (((&g_CardSlot_Flags)[local_34 * 0x120 + x * 0x5b20] & 0x10) != 0)) {
+            FUN_00473e69(x,local_34,0x81);
           }
           if (g_IsAiThinking != 1) {
             Magic_UpkeepPhase(0x12);
@@ -10411,19 +10411,19 @@ LAB_004bd70a:
         goto LAB_004bd70a;
       }
     }
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     if (arg3 == 0) {
       Ai_Turn_ExecuteMainPhase(0,0xff);
       g_AiCombatDamageAssigned = 0xffffffff;
       return 0;
     }
   } while( true );
-  Magic_CombatPhase(arg1,local_20,0x72,arg1,0);
-  _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + arg1 * 0x5b20);
+  Magic_CombatPhase(x,local_20,0x72,x,0);
+  _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20);
   g_AiManaPoolReserve = 1;
   DAT_006ff2d4 = 0xffffffff;
-  u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + arg1 * 0x5b20);
-  Magic_TriggerCardEvent(arg1,local_34,0x6d,1 - arg1,0xffffffff);
+  u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + x * 0x5b20);
+  Magic_TriggerCardEvent(x,local_34,0x6d,1 - x,0xffffffff);
   g_AiManaPoolReserve = 0;
   if (g_ActivePlayer == 1) {
     g_ActivePlayer = 0;
@@ -10431,8 +10431,8 @@ LAB_004bd70a:
   }
   else {
     if (((u_temp & 0x10) == 0) &&
-       (((&g_CardSlot_Flags)[local_34 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) {
-      FUN_00473e69(arg1,local_34,0x81);
+       (((&g_CardSlot_Flags)[local_34 * 0x120 + x * 0x5b20] & 0x10) != 0)) {
+      FUN_00473e69(x,local_34,0x81);
     }
     if (g_IsAiThinking != 1) {
       Magic_UpkeepPhase(0x12);
@@ -10462,10 +10462,10 @@ int Ai_Subsystem_004be192(int x, int y, int width, int height)
   int status;
   int val_result;
   
-  status = FUN_00473cc5((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
+  status = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
   g_AiSelectedTargetCard = g_AiSelectedTargetCard + *(int *)(&DAT_006330d0 + status * 4);
   val_result = Ai_CalcManaRequirement_PayCost(x,width,height);
-  status = FUN_00473cc5((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
+  status = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
   val_result = val_result - *(int *)(&DAT_006330d0 + status * 4);
   if (g_ActivePlayer == 1) {
     val_result = 0;
@@ -10507,7 +10507,7 @@ void Ai_Util_004be240(void)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004be25f(int arg1, int arg2, int arg3, int arg4, int arg5)
+void Ai_Subsystem_004be25f(int x, int arg2, int arg3, int arg4, int arg5)
 
 {
   int local_c;
@@ -10578,10 +10578,10 @@ void Ai_Subsystem_004be357(void)
  * Size: 123 bytes
  */
 
-void Ai_Subsystem_004be3c4(int * arg1, int arg2, int arg3, int arg4, int arg5, int arg6)
+void Ai_Subsystem_004be3c4(int * x, int arg2, int arg3, int arg4, int arg5, int arg6)
 
 {
-  Sprite_DrawScaled(arg1,(g_AiManaColorCost_Red * arg2) / 0x280,(g_AiManaColorCost_Green * arg3) / 0x1e0,
+  Sprite_DrawScaled(x,(g_AiManaColorCost_Red * arg2) / 0x280,(g_AiManaColorCost_Green * arg3) / 0x1e0,
                     (g_AiManaColorCost_Red * arg5) / 0x280,(g_AiManaColorCost_Green * arg6) / 0x1e0,arg4);
   return;
 }
@@ -10702,7 +10702,7 @@ void Ai_Subsystem_004be5ae(int x, int y, int * width, int * height)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004be643(int arg1, int arg2, int arg3)
+void Ai_Subsystem_004be643(int x, int arg2, int arg3)
 
 {
   int *p_ires;
@@ -10769,9 +10769,9 @@ void Ai_Subsystem_004be643(int arg1, int arg2, int arg3)
     g_AiHeuristicWeight_Tempo = 0xcc;
     g_AiPlayerScoreTable = 0x33;
   }
-  g_AiLookaheadDelta = arg1;
+  g_AiLookaheadDelta = x;
   g_AiLookaheadBestMove = arg2;
-  _DAT_00557484 = (int)(arg1 + (arg1 >> 0x1f & 0x1fU)) >> 5;
+  _DAT_00557484 = (int)(x + (x >> 0x1f & 0x1fU)) >> 5;
   _DAT_00557488 = (int)(arg2 + (arg2 >> 0x1f & 0x1fU)) >> 5;
   *(int *)g_DisplaySurfaceScreen = *(int *)g_DisplaySurfaceBackBuffer;
   Ai_Util_004be240();
@@ -10790,8 +10790,8 @@ void Ai_Subsystem_004be643(int arg1, int arg2, int arg3)
   local_10 = p_ires[1];
   local_c = p_ires[2];
   local_8 = p_ires[3];
-  Ai_Subsystem_004c06df(arg1,arg2);
-  Ai_Subsystem_004be525(arg1,arg2,local_48,local_50);
+  Ai_Subsystem_004c06df(x,arg2);
+  Ai_Subsystem_004be525(x,arg2,local_48,local_50);
   val_result = Ai_Util_004c3ba3(0x8c);
   temp_idx = Ai_Util_004c3ba3(0x100);
   FUN_0050e6f0(local_dc,(int)g_DisplaySurfaceScreen,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10,
@@ -10868,7 +10868,7 @@ void Ai_Subsystem_004be643(int arg1, int arg2, int arg3)
           p_ires = (int *)g_DisplaySurfaceScreen;
           DVar9 = Ai_Util_004c3ba3(0x8c);
           temp_idx = Ai_Util_004c3ba3(0x100);
-          FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10
+          Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10
                        ,temp_idx - 2,DVar9,p_ires,uVar8,val_result);
         }
         else {
@@ -10878,7 +10878,7 @@ void Ai_Subsystem_004be643(int arg1, int arg2, int arg3)
           p_ires = (int *)g_DisplaySurfaceScreen;
           DVar9 = Ai_Util_004c3ba3(0x8c);
           arg4 = Ai_Util_004c3ba3(0x100);
-          FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10
+          Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10
                        ,arg4,DVar9,p_ires,uVar8,val_result);
         }
       }
@@ -11048,7 +11048,7 @@ void Ai_Subsystem_004bf23a(void)
       piVar11 = (int *)g_DisplaySurfaceBackBuffer;
       uVar8 = u_temp;
       card_idx = Ai_Util_004c3bc4(0x280);
-      FUN_0050dce0((int *)PTR_DAT_005174bc,u_temp,0,card_idx - u_temp,DVar7,piVar11,uVar8,temp_idx);
+      Surface_BlitToDevice((int *)PTR_DAT_005174bc,u_temp,0,card_idx - u_temp,DVar7,piVar11,uVar8,temp_idx);
       temp_idx = DAT_00677e14;
       card_idx = Ai_Util_004c3bc4((int)*(short *)(iVar5 + 6));
       iVar5 = Ai_Util_004c3bc4((int)*(short *)(iVar5 + 4));
@@ -11080,7 +11080,7 @@ void Ai_Subsystem_004bf23a(void)
       uVar8 = Ai_Util_004c3bc4((int)*(short *)(iVar9 + 4));
       iVar9 = Ai_Util_004c3bc4(0x13);
       u_temp = Ai_Util_004c3bc4(0x23a);
-      FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,u_temp,iVar9,uVar8,DVar7,piVar11,status,iVar5);
+      Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,u_temp,iVar9,uVar8,DVar7,piVar11,status,iVar5);
     }
   }
   return;
@@ -11155,7 +11155,7 @@ void Ai_CalcMana_004bf4b3(int player)
     piVar10 = (int *)g_DisplaySurfaceBackBuffer;
     uVar6 = local_24;
     val_result = Ai_Util_004c3bc4(0x280);
-    FUN_0050dce0((int *)PTR_DAT_005174bc,local_24,0,val_result - local_24,DVar9,piVar10,uVar6,status);
+    Surface_BlitToDevice((int *)PTR_DAT_005174bc,local_24,0,val_result - local_24,DVar9,piVar10,uVar6,status);
     local_24 = Ai_Util_004c3bc4(0x181);
     status = DAT_00677e14;
     val_result = Ai_Util_004c3bc4((int)*(short *)(local_8 + 6));
@@ -11189,7 +11189,7 @@ void Ai_CalcMana_004bf4b3(int player)
   Ai_Subsystem_004be3c4
             (g_DisplaySurfaceBackBuffer,0x193,local_2c,g_AiBackupBoardRegister,
              (int)*(short *)(g_AiBackupBoardRegister + 4),(int)*(short *)(g_AiBackupBoardRegister + 6));
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,g_AiHeuristicWeight_HandAdvantage,0x1a9,
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,g_AiHeuristicWeight_HandAdvantage,0x1a9,
                local_2c + (int)*(short *)(local_28 + 6) / 2);
   local_24 = Ai_Util_004c3bc4(0x17c);
   local_1c = 0x200;
@@ -11259,7 +11259,7 @@ void Ai_CalcMana_004bf4b3(int player)
   }
   if (g_AiManaColorCost_White == 0xffffffff) {
 LAB_004bfef2:
-    FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,0xff,local_1c,0x41);
+    Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,0xff,local_1c,0x41);
     status = Ai_Util_004c3bc4(0x148);
     DVar9 = local_20;
     piVar10 = (int *)g_DisplaySurfaceScreen;
@@ -11267,7 +11267,7 @@ LAB_004bfef2:
     val_result = Ai_Util_004c3bc4(0x280);
     uVar8 = val_result - local_24;
     val_result = Ai_Util_004c3bc4(0x13);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,local_24,val_result,uVar8,DVar9,piVar10,uVar6,status);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,local_24,val_result,uVar8,DVar9,piVar10,uVar6,status);
   }
   else {
     if (g_AiHandEvaluationBuffer == 0) {
@@ -11339,7 +11339,7 @@ LAB_004bfef2:
     }
     strcat(&g_OverworldWorldState,&DAT_0052dc14);
     Ai_Subsystem_004c3b19(g_AiManaColorCost_White);
-    FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,0xff,local_1c,0x41);
+    Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,0xff,local_1c,0x41);
     status = Ai_Util_004c3bc4(0x148);
     DVar9 = local_20;
     piVar10 = (int *)g_DisplaySurfaceScreen;
@@ -11347,7 +11347,7 @@ LAB_004bfef2:
     val_result = Ai_Util_004c3bc4(0x280);
     uVar8 = val_result - local_24;
     val_result = Ai_Util_004c3bc4(0x13);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,local_24,val_result,uVar8,DVar9,piVar10,uVar6,status);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,local_24,val_result,uVar8,DVar9,piVar10,uVar6,status);
   }
   if ((g_AiManaColorCost_White != 0xffffffff) && (DAT_0067bddc <= DAT_00641020)) {
     FUN_0040b3c2(0x11,g_AiHandEvaluationBuffer);
@@ -11382,7 +11382,7 @@ LAB_004c002d:
 void Ai_CalcMana_004c003d(void)
 
 {
-  uint arg1;
+  uint x;
   char *pcVar1;
   int val_result;
   char *local_114;
@@ -11395,12 +11395,12 @@ void Ai_CalcMana_004c003d(void)
     local_c = 7;
     Adventure_FormatNewsString(g_AiCardScoringThreshold,0,0);
     strcat(&g_OverworldWorldState,s_attacking_0052dc6c);
-    arg1 = Duel_GetCardDrawOriginY
+    x = Duel_GetCardDrawOriginY
                       ((int)(*(int *)(&g_AiCardEvaluationScore + local_c * 0x14) +
                             (*(int *)(&g_AiCardEvaluationScore + local_c * 0x14) >> 0x1f & 0x1fU)) >> 5,
                        (int)(*(int *)(&g_AiCardSynergyScore + local_c * 0x14) +
                             (*(int *)(&g_AiCardSynergyScore + local_c * 0x14) >> 0x1f & 0x1fU)) >> 5);
-    Ai_Subsystem_004c3b19(arg1);
+    Ai_Subsystem_004c3b19(x);
     strcat(&g_OverworldWorldState,&DAT_0052dc78);
   }
   if ((g_AiCombatLookaheadTarget != 0) || (g_AiManaColorCost_Blue != -1)) {
@@ -11529,7 +11529,7 @@ void Ai_Subsystem_004c05ba(void)
   DAT_0052d778 = 1;
   if (g_IsAiThinking == 0) {
     Mem_AllocOrFree_00510e20(1,PTR_s_advinter800_pic_00530d98);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                  (int *)g_DisplaySurfaceScreen,0,0);
     FUN_0041f2af(0,4);
   }
@@ -11543,13 +11543,13 @@ void Ai_Subsystem_004c05ba(void)
     DVar4 = status - val_result;
     u_score = Ai_Util_004c3bc4(0x280);
     status = Ai_Util_004c3bc4(0x148);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,status,u_score,DVar4,piVar5,arg7,arg_8);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,status,u_score,DVar4,piVar5,arg7,arg_8);
     val_result = 0;
     status = 0;
     piVar5 = (int *)PTR_DAT_005174e4;
     DVar4 = Ai_Util_004c3bc4(0x148);
     u_score = Ai_Util_004c3bc4(0x40);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,u_score,DVar4,piVar5,status,val_result);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,u_score,DVar4,piVar5,status,val_result);
     DAT_005574a4 = 1;
   }
   return;
@@ -11569,7 +11569,7 @@ void Ai_Subsystem_004c05ba(void)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004c06df(uint arg1, uint arg2)
+void Ai_Subsystem_004c06df(uint x, uint arg2)
 
 {
   bool is_valid;
@@ -11603,12 +11603,12 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
   
   local_20 = *(int *)g_DisplaySurfaceScreen;
   *(int *)g_DisplaySurfaceScreen = 2;
-  g_AiLookaheadDelta = arg1;
+  g_AiLookaheadDelta = x;
   g_AiLookaheadBestMove = arg2;
-  local_38 = arg1 - (arg1 & 0x1f);
+  local_38 = x - (x & 0x1f);
   local_54 = arg2 - (arg2 & 0x1f);
   Ai_Subsystem_004be525(local_38,local_54,local_50,local_60);
-  Ai_Subsystem_004be525(arg1,arg2,local_14,local_1c);
+  Ai_Subsystem_004be525(x,arg2,local_14,local_1c);
   Ai_Subsystem_004be525(0,0,local_88,&local_24);
   if ((DAT_00556c54 == 0) || (DAT_00641884 == 0)) {
     local_44 = 0xfffffff7;
@@ -11617,11 +11617,11 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
     local_58 = 6;
     _DAT_00557480 = local_88[0];
     _DAT_00558dcc = local_24;
-    DAT_00556c6c = arg1;
+    DAT_00556c6c = x;
     DAT_00558dc4 = arg2;
     g_AiLookaheadScore_Player0 = 0;
     g_AiLookaheadScore_Player1 = 0;
-    _DAT_0064187c = arg1;
+    _DAT_0064187c = x;
     _DAT_00641880 = arg2;
     DAT_00556c68 = 0x40;
     DAT_00556c5c = g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10;
@@ -11633,15 +11633,15 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
     DAT_005574a8 = *(int *)(g_DisplaySurfaceScreen + 0x10) - (DAT_00556c5c + DAT_00557490);
     DAT_00556c54 = 1;
     DAT_00641884 = 1;
-    Ai_Subsystem_004c0efe(arg1,arg2,local_3c,local_58,local_44,local_64,1,0);
-    Ai_Subsystem_004c0efe(arg1,arg2,local_3c + -2,local_58,local_44,local_64 + 2,2,1);
+    Ai_Subsystem_004c0efe(x,arg2,local_3c,local_58,local_44,local_64,1,0);
+    Ai_Subsystem_004c0efe(x,arg2,local_3c + -2,local_58,local_44,local_64 + 2,2,1);
   }
   else {
     is_valid = false;
     is_match = 0;
     bVar3 = 0;
     bVar4 = 0;
-    iVar5 = (int)(arg1 + ((int)arg1 >> 0x1f & 0x1fU)) >> 5;
+    iVar5 = (int)(x + ((int)x >> 0x1f & 0x1fU)) >> 5;
     local_8 = (int)(arg2 + ((int)arg2 >> 0x1f & 0x1fU)) >> 5;
     g_AiLookaheadScore_Player0 = *(int *)(&DAT_006418d0 + iVar5 * 4 + local_8 * 0x100) - local_50[0];
     local_60[0] = *(int *)(&DAT_006458d0 + iVar5 * 4 + local_8 * 0x100) - local_60[0];
@@ -11662,16 +11662,16 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
     g_AiLookaheadScore_Player1 = local_60[0];
     local_74 = g_AiLookaheadScore_Player0;
     if (!(bool)(bVar4 | bVar3 | is_match) && !is_valid) {
-      FUN_0050dce0((int *)g_DisplaySurfaceScreen,DAT_00556c68 + g_AiLookaheadScore_Player0,
+      Surface_BlitToDevice((int *)g_DisplaySurfaceScreen,DAT_00556c68 + g_AiLookaheadScore_Player0,
                    DAT_00556c5c + local_60[0],DAT_00558dc0,DAT_00557490,
                    (int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10);
       *(int *)g_DisplaySurfaceScreen = local_20;
       Ai_Subsystem_004c0efe(DAT_00556c6c,DAT_00558dc4,-5,4,0xfffffff9,9,0,1);
-      g_AiLookaheadDelta = arg1;
+      g_AiLookaheadDelta = x;
       g_AiLookaheadBestMove = arg2;
       return;
     }
-    Ai_Subsystem_004c0efe(arg1,arg2,-5,4,0xfffffff9,9,0,1);
+    Ai_Subsystem_004c0efe(x,arg2,-5,4,0xfffffff9,9,0,1);
     if ((int)local_74 < 1) {
       if ((int)local_74 < 0) {
         local_d4 = 0;
@@ -11712,45 +11712,45 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
       local_cc = (*(int *)(g_DisplaySurfaceScreen + 0x10) - local_60[0]) - 0x80;
       local_b8 = 2;
     }
-    FUN_0050dce0((int *)g_DisplaySurfaceScreen,local_d4,local_d8,local_c8,local_cc,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceScreen,local_d4,local_d8,local_c8,local_cc,
                  (int *)g_DisplaySurfaceScreen,local_bc,local_c4);
     if (local_d0 == 1) {
-      Ai_Subsystem_004c0efe(arg1,arg2,-3,-1,0xfffffff9,7,1,0);
+      Ai_Subsystem_004c0efe(x,arg2,-3,-1,0xfffffff9,7,1,0);
       if (local_b8 == 1) {
-        Ai_Subsystem_004c0efe(arg1,arg2,-1,4,0xfffffff9,-3,1,0);
+        Ai_Subsystem_004c0efe(x,arg2,-1,4,0xfffffff9,-3,1,0);
       }
       else if (local_b8 == 2) {
-        Ai_Subsystem_004c0efe(arg1,arg2,-1,4,3,7,1,0);
+        Ai_Subsystem_004c0efe(x,arg2,-1,4,3,7,1,0);
       }
     }
     else if (local_d0 == 2) {
-      Ai_Subsystem_004c0efe(arg1,arg2,2,5,0xfffffff9,7,1,0);
+      Ai_Subsystem_004c0efe(x,arg2,2,5,0xfffffff9,7,1,0);
       if (local_b8 == 1) {
-        Ai_Subsystem_004c0efe(arg1,arg2,-3,2,0xfffffff9,-3,1,0);
+        Ai_Subsystem_004c0efe(x,arg2,-3,2,0xfffffff9,-3,1,0);
       }
       else if (local_b8 == 2) {
-        Ai_Subsystem_004c0efe(arg1,arg2,-3,2,3,7,1,0);
+        Ai_Subsystem_004c0efe(x,arg2,-3,2,3,7,1,0);
       }
     }
     else if (local_b8 == 1) {
-      Ai_Subsystem_004c0efe(arg1,arg2,-3,5,0xfffffff9,-3,1,0);
+      Ai_Subsystem_004c0efe(x,arg2,-3,5,0xfffffff9,-3,1,0);
     }
     else if (local_b8 == 2) {
-      Ai_Subsystem_004c0efe(arg1,arg2,-3,5,3,7,1,0);
+      Ai_Subsystem_004c0efe(x,arg2,-3,5,3,7,1,0);
     }
-    Ai_Subsystem_004c0efe(arg1,arg2,-4,6,0xfffffff7,0xb,2,0);
+    Ai_Subsystem_004c0efe(x,arg2,-4,6,0xfffffff7,0xb,2,0);
     _DAT_00557480 = local_88[0];
     _DAT_00558dcc = local_24;
-    DAT_00556c6c = arg1;
+    DAT_00556c6c = x;
     DAT_00558dc4 = arg2;
     g_AiLookaheadScore_Player0 = 0;
     g_AiLookaheadScore_Player1 = 0;
-    _DAT_0064187c = arg1;
+    _DAT_0064187c = x;
     _DAT_00641880 = arg2;
   }
-  g_AiLookaheadDelta = arg1;
+  g_AiLookaheadDelta = x;
   g_AiLookaheadBestMove = arg2;
-  FUN_0050dce0((int *)g_DisplaySurfaceScreen,DAT_00556c68,DAT_00556c5c,DAT_00558dc0,DAT_00557490,
+  Surface_BlitToDevice((int *)g_DisplaySurfaceScreen,DAT_00556c68,DAT_00556c5c,DAT_00558dc0,DAT_00557490,
                (int *)g_DisplaySurfaceBackBuffer,0x40,g_AiPlayerScoreTable * 2 + g_AiHeuristicWeight_CardAdvantage + 0x10);
   *(int *)g_DisplaySurfaceScreen = local_20;
   return;
@@ -11768,7 +11768,7 @@ void Ai_Subsystem_004c06df(uint arg1, uint arg2)
  * Size: 4369 bytes
  */
 
-void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, int arg6, int arg7, int arg8)
+void Ai_Subsystem_004c0efe(uint x, uint arg2, int arg3, int arg4, uint arg5, int arg6, int arg7, int arg8)
 
 {
   short s_res;
@@ -11816,9 +11816,9 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
   
   local_20 = *(int *)g_DisplaySurfaceScreen;
   *(int *)g_DisplaySurfaceScreen = 2;
-  g_AiLookaheadDelta = arg1;
+  g_AiLookaheadDelta = x;
   g_AiLookaheadBestMove = arg2;
-  local_38 = arg1 - (arg1 & 0x1f);
+  local_38 = x - (x & 0x1f);
   local_4c = arg2 - (arg2 & 0x1f);
   Ai_Subsystem_004be525(local_38,local_4c,&local_48,&local_54);
   for (local_8 = arg5; (int)local_8 < arg6; local_8 = local_8 + 1) {
@@ -11865,7 +11865,7 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
           for (local_3c = 1; (int)local_3c < 9; local_3c = local_3c + 1) {
             local_34 = (int)local_34 >> 1;
             local_10 = (int)local_10 >> 1;
-            local_60 = FUN_0040c761(*(int *)(&DAT_00522378 + local_3c * 4) + local_14,
+            local_60 = Surface_GetPixelColor(*(int *)(&DAT_00522378 + local_3c * 4) + local_14,
                                     *(int *)(&DAT_005223e0 + local_3c * 4) + local_1c);
             local_68 = Adventure_GetLocationEncounterIndex(local_60);
             if (((local_60 == 0) || (local_60 == 8)) ||
@@ -12098,7 +12098,7 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
           local_18 = Duel_GetCardDrawOriginX(local_14,local_1c);
           val_result = local_74;
           if (*(int *)(&g_CardSlot_CreatureType + local_18 * 100) == 4) {
-            temp_idx = FUN_00473cc5((byte)local_50);
+            temp_idx = Card_ColorMaskToColorIndex((byte)local_50);
             val_result = local_74;
             local_50 = temp_idx - 1;
             if (arg_8 != 0) {
@@ -12115,7 +12115,7 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
             }
           }
           else if (*(int *)(&g_CardSlot_CreatureType + local_18 * 100) == 5) {
-            temp_idx = FUN_00473cc5((byte)local_50);
+            temp_idx = Card_ColorMaskToColorIndex((byte)local_50);
             val_result = local_74;
             local_50 = temp_idx - 1;
             if (arg_8 != 0) {
@@ -12176,7 +12176,7 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
             }
             else {
               if (*(int *)(&g_CardSlot_CreatureType + local_18 * 100) == 4) {
-                local_40 = FUN_00473cc5((byte)local_50);
+                local_40 = Card_ColorMaskToColorIndex((byte)local_50);
                 output_str = (char *)Mem_AllocOrFree_00473d7e(local_40);
                 strcpy(&g_OverworldWorldState,output_str);
                 *(uint *)(&DAT_0067f010 + (local_40 - 1) * 0x30) =
@@ -12227,7 +12227,7 @@ void Ai_Subsystem_004c0efe(uint arg1, uint arg2, int arg3, int arg4, uint arg5, 
  * Size: 497 bytes
  */
 
-int Ai_Simulate_EvaluateMoveTree(int arg1, int arg2)
+int Ai_Simulate_EvaluateMoveTree(int x, int arg2)
 
 {
   int status;
@@ -12236,12 +12236,12 @@ int Ai_Simulate_EvaluateMoveTree(int arg1, int arg2)
   int local_28;
   
   if (DAT_00680770 == 0) {
-    if ((DAT_007039cc < *(int *)(arg1 + 0x10)) ||
-       (*(int *)(arg1 + 0x18) + *(int *)(arg1 + 0x10) < DAT_007039cc)) {
+    if ((DAT_007039cc < *(int *)(x + 0x10)) ||
+       (*(int *)(x + 0x18) + *(int *)(x + 0x10) < DAT_007039cc)) {
       is_match = false;
     }
-    else if ((DAT_007039c8 < *(int *)(arg1 + 0x14)) ||
-            (*(int *)(arg1 + 0x14) + *(int *)(arg1 + 0x1c) < DAT_007039c8)) {
+    else if ((DAT_007039c8 < *(int *)(x + 0x14)) ||
+            (*(int *)(x + 0x14) + *(int *)(x + 0x1c) < DAT_007039c8)) {
       is_match = false;
     }
     else {
@@ -12251,13 +12251,13 @@ int Ai_Simulate_EvaluateMoveTree(int arg1, int arg2)
       return 0;
     }
   }
-  if (*(int *)(arg1 + 0x40) == 3) {
+  if (*(int *)(x + 0x40) == 3) {
     u_score = 0;
   }
   else {
     u_score = *(int *)g_DisplaySurfaceScreen;
     *(int *)g_DisplaySurfaceScreen = 0;
-    status = *(int *)(&DAT_0052d8c4 + *(int *)(arg1 + 0x2c) * 0x54);
+    status = *(int *)(&DAT_0052d8c4 + *(int *)(x + 0x2c) * 0x54);
     if (arg2 == 0) {
       local_28 = 0;
     }
@@ -12271,8 +12271,8 @@ int Ai_Simulate_EvaluateMoveTree(int arg1, int arg2)
                       *(int *)(&DAT_0052d8ac + status * 0x54),*(int *)(&DAT_0052d8b0 + status * 0x54),
                       *(int *)(&DAT_0052d8b4 + status * 0x54),(&DAT_00641890)[status * 3 + local_28]);
     *(int *)g_DisplaySurfaceScreen = u_score;
-    if ((arg2 == 2) && (*(int *)(arg1 + 0x28) != 0)) {
-      (**(code **)(arg1 + 0x28))(arg1);
+    if ((arg2 == 2) && (*(int *)(x + 0x28) != 0)) {
+      (**(code **)(x + 0x28))(x);
     }
     u_score = 1;
   }
@@ -12291,11 +12291,11 @@ int Ai_Simulate_EvaluateMoveTree(int arg1, int arg2)
  * Size: 50 bytes
  */
 
-int Ai_Subsystem_004c2270(int arg1)
+int Ai_Subsystem_004c2270(int x)
 
 {
   Adventure_Audio_PlayEffect(s_x_sound_button2_wav_0052dd68,0xf,100,100,0);
-  g_AiHeuristicWeight_Lifelink = *(int *)(arg1 + 0x2c);
+  g_AiHeuristicWeight_Lifelink = *(int *)(x + 0x2c);
   return 0;
 }
 
@@ -12345,7 +12345,7 @@ int Ai_Subsystem_004c22a2(int x, int y, int width, byte * arg4)
  * Size: 371 bytes
  */
 
-void Ai_Subsystem_004c2340(int * arg1, int arg2, int arg3, int arg4, int arg5, uint arg6, int arg7)
+void Ai_Subsystem_004c2340(int * x, int arg2, int arg3, int arg4, int arg5, uint arg6, int arg7)
 
 {
   uint8_t u_res;
@@ -12375,11 +12375,11 @@ void Ai_Subsystem_004c2340(int * arg1, int arg2, int arg3, int arg4, int arg5, u
     }
   }
   for (local_20 = arg3; local_20 < arg5 + arg3; local_20 = local_20 + 1) {
-    Surface_GetLine((int *)local_430,*arg1,arg2,local_20,arg4);
+    Surface_GetLine((int *)local_430,*x,arg2,local_20,arg4);
     for (local_1c = 0; local_1c < arg4; local_1c = local_1c + 1) {
       local_430[local_1c] = (&DAT_00558cc0)[local_430[local_1c]];
     }
-    Surface_PutLine((int *)local_430,*arg1,arg2,local_20,arg4);
+    Surface_PutLine((int *)local_430,*x,arg2,local_20,arg4);
   }
   return;
 }
@@ -12398,7 +12398,7 @@ void Ai_Subsystem_004c2340(int * arg1, int arg2, int arg3, int arg4, int arg5, u
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004c24b3(int arg1)
+void Ai_Subsystem_004c24b3(int x)
 
 {
   byte arg_1_00;
@@ -12442,7 +12442,7 @@ void Ai_Subsystem_004c24b3(int arg1)
   
   local_2c = 1;
   local_4c = 0;
-  local_64 = arg1;
+  local_64 = x;
   local_a4[0] = 0xd2;
   local_a4[1] = 0;
   local_a4[2] = 0x40;
@@ -12452,8 +12452,8 @@ void Ai_Subsystem_004c24b3(int arg1)
   local_44 = -1;
   local_48 = -1;
   Adventure_LoadFacePalette(0);
-  if (arg1 == 4) {
-    arg1 = 0;
+  if (x == 4) {
+    x = 0;
   }
   Mem_AllocOrFree_00510e20(1,s_mapbttns_pic_0052dd7c);
   Mem_AllocOrFree_0050fc00();
@@ -12491,7 +12491,7 @@ void Ai_Subsystem_004c24b3(int arg1)
     }
     local_a8 = FUN_0041f354();
     Mem_AllocOrFree_0041f12b(local_a8);
-    if (arg1 == 0) {
+    if (x == 0) {
       _DAT_0052d8fc = Ai_Util_004c3bc4(DAT_0052d860);
       _DAT_0052d900 = Ai_Util_004c3bc4(DAT_0052d864);
       FUN_0041f17e(0x52d8ec,1,local_a8);
@@ -12499,7 +12499,7 @@ void Ai_Subsystem_004c24b3(int arg1)
       _DAT_0052d954 = Ai_Util_004c3bc4(DAT_0052d86c);
       FUN_0041f17e(0x52d940,1,local_a8);
     }
-    else if (arg1 == 1) {
+    else if (x == 1) {
       DAT_0052d8a8 = Ai_Util_004c3bc4(DAT_0052d860);
       _DAT_0052d8ac = Ai_Util_004c3bc4(DAT_0052d864);
       FUN_0041f17e(0x52d898,1,local_a8);
@@ -12507,7 +12507,7 @@ void Ai_Subsystem_004c24b3(int arg1)
       _DAT_0052d900 = Ai_Util_004c3bc4(DAT_0052d86c);
       FUN_0041f17e(0x52d8ec,1,local_a8);
     }
-    else if (arg1 == 2) {
+    else if (x == 2) {
       DAT_0052d8a8 = Ai_Util_004c3bc4(DAT_0052d860);
       _DAT_0052d8ac = Ai_Util_004c3bc4(DAT_0052d864);
       FUN_0041f17e(0x52d898,1,local_a8);
@@ -12592,7 +12592,7 @@ void Ai_Subsystem_004c24b3(int arg1)
               aiStack_84[*(int *)(&g_CardSlot_StatusFlags + local_30 * 100) >> 8] =
                    aiStack_84[*(int *)(&g_CardSlot_StatusFlags + local_30 * 100) >> 8] + 1;
             }
-            if (((arg1 == 0) && (((&g_CardSlot_StatusFlags)[local_30 * 100] & 1) != 0)) &&
+            if (((x == 0) && (((&g_CardSlot_StatusFlags)[local_30 * 100] & 1) != 0)) &&
                (1 < *(int *)(&g_CardSlot_CreatureType + local_30 * 100))) {
               local_a4[6] = local_a4[6] + 1;
             }
@@ -12630,11 +12630,11 @@ void Ai_Subsystem_004c24b3(int arg1)
                 local_68 = *(int *)(&g_CardSlot_StatusFlags + local_30 * 100) >> 8;
                 local_3c = local_a4[*(int *)(&g_CardSlot_StatusFlags + local_30 * 100) >> 8];
               }
-              if (arg1 == 1) {
+              if (x == 1) {
                 local_b0 = 0;
                 local_d4[6] = (int)*(short *)(g_AiBackupBoardRegister + 4);
                 local_b8 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
-                u_res = FUN_0040c761(*(int *)(&DAT_0067bdf4 + local_30 * 100),
+                u_res = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + local_30 * 100),
                                      *(int *)(&DAT_0067bdf8 + local_30 * 100));
                 local_68 = Adventure_GetLocationEncounterIndex(u_res);
                 for (local_54 = 1; local_54 < 6; local_54 = local_54 + 1) {
@@ -12662,7 +12662,7 @@ void Ai_Subsystem_004c24b3(int arg1)
                   strcat(&g_OverworldWorldState,&DAT_0052dda0);
                 }
                 else {
-                  local_68 = FUN_00473cc5((byte)*(int *)(&DAT_0067bdfc + local_30 * 100));
+                  local_68 = Card_ColorMaskToColorIndex((byte)*(int *)(&DAT_0067bdfc + local_30 * 100));
                   pcVar7 = (char *)Mem_AllocOrFree_00473d7e(local_68);
                   strcpy(&g_OverworldWorldState,pcVar7);
                   strcat(&g_OverworldWorldState,s_cards_0052dd98);
@@ -12692,15 +12692,15 @@ void Ai_Subsystem_004c24b3(int arg1)
                   }
                 }
               }
-              if ((arg1 == 0) || ((arg1 == 1 && (*(int *)(&g_CardSlot_CreatureType + local_30 * 100) == 4))))
+              if ((x == 0) || ((x == 1 && (*(int *)(&g_CardSlot_CreatureType + local_30 * 100) == 4))))
               {
                 temp_idx = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
                 g_OverworldWorldState = 0;
                 if ((*(int *)(&g_CardSlot_CreatureType + local_30 * 100) == 4) ||
                    (*(int *)(&g_CardSlot_CreatureType + local_30 * 100) == 5)) {
-                  u_res = FUN_0040c761(local_50,local_58);
+                  u_res = Surface_GetPixelColor(local_50,local_58);
                   arg_1_00 = Adventure_GetLocationEncounterIndex(u_res);
-                  val_result = FUN_00473cc5(arg_1_00);
+                  val_result = Card_ColorMaskToColorIndex(arg_1_00);
                   pcVar7 = (char *)Mem_AllocOrFree_00473d7e(val_result);
                   strcpy(&g_OverworldWorldState,pcVar7);
                 }
@@ -12768,11 +12768,11 @@ LAB_004c2cf3:
       iVar5 = Ai_Util_004c3bc4(0);
       Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,iVar5,card_idx,iVar11,val_result,temp_idx);
       for (local_54 = 0; local_54 < 5; local_54 = local_54 + 1) {
-        FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xfe,0x18,local_54 * 0x1a + 0xc6);
+        Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xfe,0x18,local_54 * 0x1a + 0xc6);
       }
     }
     *(int *)g_DisplaySurfaceScreen = 0;
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                  (int *)g_DisplaySurfaceScreen,0,0);
     if (local_64 == 4) {
       FUN_0041f391();
@@ -12808,7 +12808,7 @@ LAB_004c2cf3:
       else {
         FUN_0041f3ea(DAT_0067bda4,DAT_0067bda8,DAT_007039c4);
         if (((DAT_007039c4 != 0) && (g_CardSlot_ToughnessBonus != 0)) && (g_AiHeuristicWeight_Lifelink < 0)) {
-          FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,local_28[0] - 1,local_34 + -1,4,4,
+          Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,local_28[0] - 1,local_34 + -1,4,4,
                        (int *)g_DisplaySurfaceScreen,local_28[0] + -1,local_34 + -1);
           temp_idx = DAT_0067bda8;
           local_28[0] = DAT_0067bda4;
@@ -12829,20 +12829,20 @@ LAB_004c2cf3:
       }
     } while (g_AiHeuristicWeight_Lifelink == -1);
     if (g_AiHeuristicWeight_Lifelink == 3) {
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Town_Process_00490d7b(1);
-      arg1 = 0;
+      x = 0;
       FUN_0041f391();
     }
     else {
       if (g_AiHeuristicWeight_Lifelink == 4) {
         FUN_0041f391();
         Mem_AllocOrFree_0050fc50(DAT_00641890);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         return;
       }
-      arg1 = g_AiHeuristicWeight_Lifelink;
-      FUN_0040a3e1();
+      x = g_AiHeuristicWeight_Lifelink;
+      App_ProcessPendingMessages();
       FUN_0041f391();
     }
   } while( true );
@@ -12900,24 +12900,24 @@ void Ai_Subsystem_004c3ad4(int x, int y, int * width, int * height)
  * Size: 138 bytes
  */
 
-void Ai_Subsystem_004c3b19(uint arg1)
+void Ai_Subsystem_004c3b19(uint x)
 
 {
   int status;
   uint u_temp;
   uint u_score;
   
-  u_temp = (int)arg1 >> 0x1f;
-  status = arg1 + (u_temp & 7);
+  u_temp = (int)x >> 0x1f;
+  status = x + (u_temp & 7);
   u_score = status >> 0x1f;
   strcat(&g_OverworldWorldState,
          (&PTR_s_Amanaxis_00522460)[((status >> 3 ^ u_score) - u_score & 0xf ^ u_score) - u_score]);
-  if (*(int *)(&g_CardSlot_CreatureType + arg1 * 100) == 1) {
+  if (*(int *)(&g_CardSlot_CreatureType + x * 100) == 1) {
     strcat(&g_OverworldWorldState,s_Village_0052ddb0);
   }
   else {
     strcat(&g_OverworldWorldState,
-           (&PTR_s_Tower_005224a0)[((arg1 ^ u_temp) - u_temp & 0xf ^ u_temp) - u_temp]);
+           (&PTR_s_Tower_005224a0)[((x ^ u_temp) - u_temp & 0xf ^ u_temp) - u_temp]);
   }
   return;
 }
@@ -12934,10 +12934,10 @@ void Ai_Subsystem_004c3b19(uint arg1)
  * Size: 33 bytes
  */
 
-int Ai_Util_004c3ba3(int arg1)
+int Ai_Util_004c3ba3(int x)
 
 {
-  return (g_AiManaColorCost_Red * arg1) / 0x140;
+  return (g_AiManaColorCost_Red * x) / 0x140;
 }
 
 /*
@@ -12952,10 +12952,10 @@ int Ai_Util_004c3ba3(int arg1)
  * Size: 33 bytes
  */
 
-int Ai_Util_004c3bc4(int arg1)
+int Ai_Util_004c3bc4(int x)
 
 {
-  return (g_AiManaColorCost_Red * arg1) / 0x280;
+  return (g_AiManaColorCost_Red * x) / 0x280;
 }
 
 /*
@@ -12970,12 +12970,12 @@ int Ai_Util_004c3bc4(int arg1)
  * Size: 119 bytes
  */
 
-int Ai_Subsystem_004c3be5(int arg1, int arg2)
+int Ai_Subsystem_004c3be5(int x, int arg2)
 
 {
   int u_res;
   
-  if ((arg1 < g_AiLookaheadDelta) || ((8 << (DAT_006498e0 & 0x1f)) + g_AiLookaheadDelta <= arg1)) {
+  if ((x < g_AiLookaheadDelta) || ((8 << (DAT_006498e0 & 0x1f)) + g_AiLookaheadDelta <= x)) {
     u_res = 0;
   }
   else if ((arg2 < g_AiLookaheadBestMove) || ((6 << (DAT_006498e0 & 0x1f)) + g_AiLookaheadBestMove <= arg2)) {
@@ -13001,7 +13001,7 @@ int Ai_Subsystem_004c3be5(int arg1, int arg2)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004c3c5c(int arg1)
+void Ai_Subsystem_004c3c5c(int x)
 
 {
   DWORD DVar1;
@@ -13022,7 +13022,7 @@ void Ai_Subsystem_004c3c5c(int arg1)
   u_temp = Ai_Util_004c3bc4(0x126);
   temp_idx = Ai_Util_004c3bc4(0x13);
   arg2 = Ai_Util_004c3bc4(0x58);
-  FUN_0050dce0((int *)PTR_DAT_005174bc,arg2,temp_idx,u_temp,DVar1,piVar4,iVar5,arg_8);
+  Surface_BlitToDevice((int *)PTR_DAT_005174bc,arg2,temp_idx,u_temp,DVar1,piVar4,iVar5,arg_8);
   temp_idx = Ai_Util_004c3bc4(10);
   iVar5 = Ai_Util_004c3bc4(0x12);
   FUN_0040d269((int)g_DisplaySurfaceBackBuffer,g_AiHeuristicWeight_HandAdvantage,iVar5,temp_idx);
@@ -13041,11 +13041,11 @@ void Ai_Subsystem_004c3c5c(int arg1)
   piVar4 = (int *)g_DisplaySurfaceScreen;
   DVar1 = Ai_Util_004c3bc4(0x15);
   u_temp = Ai_Util_004c3bc4(0x126);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,u_temp,DVar1,piVar4,iVar5,temp_idx);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,u_temp,DVar1,piVar4,iVar5,temp_idx);
   *(int *)(g_DisplaySurfaceScreen + 0x20) = 2;
   Ai_CalcMana_004bf4b3(1);
   temp_idx = g_AiBackupBoardRegister;
-  if ((DAT_0052d778 == 0) && (arg1 == 0)) {
+  if ((DAT_0052d778 == 0) && (x == 0)) {
     Pic_Subsystem_0044b8aa();
   }
   else {
@@ -13054,27 +13054,27 @@ void Ai_Subsystem_004c3c5c(int arg1)
     Ai_Subsystem_004be3c4
               (g_DisplaySurfaceScreen,0x4e,iVar5,DAT_006776a8,(int)*(short *)(temp_idx + 4),
                (int)*(short *)(temp_idx + 6));
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,100,iVar5 + (int)*(short *)(temp_idx + 6) / 2
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,100,iVar5 + (int)*(short *)(temp_idx + 6) / 2
                 );
     Ai_Subsystem_004be3c4
               (g_DisplaySurfaceScreen,0xa1,iVar5,DAT_006776a4,(int)*(short *)(temp_idx + 4),
                (int)*(short *)(temp_idx + 6));
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0xb7,
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0xb7,
                  iVar5 + (int)*(short *)(temp_idx + 6) / 2);
     Ai_Subsystem_004be3c4
               (g_DisplaySurfaceScreen,0xf0,iVar5,DAT_006776b0,(int)*(short *)(temp_idx + 4),
                (int)*(short *)(temp_idx + 6));
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x106,
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x106,
                  iVar5 + (int)*(short *)(temp_idx + 6) / 2);
     Ai_Subsystem_004be3c4
               (g_DisplaySurfaceScreen,0x140,iVar5,DAT_006776ac,(int)*(short *)(temp_idx + 4),
                (int)*(short *)(temp_idx + 6));
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x156,
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x156,
                  iVar5 + (int)*(short *)(temp_idx + 6) / 2);
     Ai_Subsystem_004be3c4
               (g_DisplaySurfaceScreen,0x193,iVar5,g_AiBackupBoardRegister,(int)*(short *)(temp_idx + 4),
                (int)*(short *)(temp_idx + 6));
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x1a9,
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,g_AiHeuristicWeight_HandAdvantage,0x1a9,
                  iVar5 + (int)*(short *)(temp_idx + 6) / 2);
     for (local_20 = 0; (int)local_20 < 0xc; local_20 = local_20 + 1) {
       if ((_DAT_0067f374 & 1 << ((byte)local_20 & 0x1f)) != 0) {
@@ -13128,7 +13128,7 @@ void Ai_Subsystem_004c3c5c(int arg1)
  * Size: 2676 bytes
  */
 
-void Ai_Subsystem_004c4210(int arg1)
+void Ai_Subsystem_004c4210(int x)
 
 {
   int status;
@@ -13140,76 +13140,76 @@ void Ai_Subsystem_004c4210(int arg1)
   int iVar6;
   int local_14;
   
-  arg_1_00 = 1 - arg1;
+  arg_1_00 = 1 - x;
   memset(&g_AiBestScore,0,0x780);
-  for (local_14 = 0; local_14 < (int)(&g_PlayerActiveCardCount)[arg1]; local_14 = local_14 + 1) {
-    if ((*(int *)(&g_CardSlot_CardId + local_14 * 0x120 + arg1 * 0x5b20) != -1) &&
-       (((&g_CardSlot_Flags)[local_14 * 0x120 + arg1 * 0x5b20] & 2) != 0)) {
-      iVar6 = *(int *)(&g_CardSlot_CardId + local_14 * 0x120 + arg1 * 0x5b20);
-      temp_idx = (int)(char)(&g_CardSlot_Toughness)[local_14 * 0x120 + arg1 * 0x5b20];
-      status = *(int *)(&g_CardSlot_OriginalCardId + local_14 * 0x120 + arg1 * 0x5b20);
+  for (local_14 = 0; local_14 < (int)(&g_PlayerActiveCardCount)[x]; local_14 = local_14 + 1) {
+    if ((*(int *)(&g_CardSlot_CardId + local_14 * 0x120 + x * 0x5b20) != -1) &&
+       (((&g_CardSlot_Flags)[local_14 * 0x120 + x * 0x5b20] & 2) != 0)) {
+      iVar6 = *(int *)(&g_CardSlot_CardId + local_14 * 0x120 + x * 0x5b20);
+      temp_idx = (int)(char)(&g_CardSlot_Toughness)[local_14 * 0x120 + x * 0x5b20];
+      status = *(int *)(&g_CardSlot_OriginalCardId + local_14 * 0x120 + x * 0x5b20);
       if ((*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_0043ebbf) &&
-         (card_idx = FUN_0040d949(temp_idx,3,1), card_idx != 0)) {
+         (card_idx = Font_DrawString(temp_idx,3,1), card_idx != 0)) {
         *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) =
              *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) | 0x200;
         *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) | 0x200;
       }
       else if ((*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_0043f51d) &&
-              (card_idx = FUN_0040d949(temp_idx,4,3), card_idx != 0)) {
+              (card_idx = Font_DrawString(temp_idx,4,3), card_idx != 0)) {
         *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) =
              *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) | 0x200;
         *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) | 0x200;
       }
       if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00435abf) {
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
       else if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00436f60) {
-        card_idx = FUN_0040d949(temp_idx,4,1);
+        card_idx = Font_DrawString(temp_idx,4,1);
         *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
       else if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00436500) {
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) + card_idx;
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
-      *(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + arg1 * 0x5b20) =
-           *(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + arg1 * 0x5b20) | 0xe000000;
-      u_temp = *(int *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20);
-      if (g_ActivePlayerPriority == arg1) {
-        if (((&g_CardSlot_StateByte)[local_14 * 0x120 + arg1 * 0x5b20] & 0x20) == 0) {
-          *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20) =
-               *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20) | 0x14;
+      *(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + x * 0x5b20) =
+           *(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + x * 0x5b20) | 0xe000000;
+      u_temp = *(int *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20);
+      if (g_ActivePlayerPriority == x) {
+        if (((&g_CardSlot_StateByte)[local_14 * 0x120 + x * 0x5b20] & 0x20) == 0) {
+          *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20) =
+               *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20) | 0x14;
         }
         else {
-          *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20) =
-               *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20) | 4;
+          *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20) =
+               *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20) | 4;
         }
       }
-      DAT_006b2e18 = FUN_00473179(arg1,local_14,0x32,0xffffffff);
-      DAT_00700eb4 = FUN_00473179(arg1,local_14,0x33,0xffffffff);
-      g_AiAttackingCreatureCount = FUN_00473179(arg1,local_14,0x34,0xffffffff);
-      u_extra = FUN_00473cc5((&DAT_0051aebe)[iVar6 * 0x34]);
-      if (((g_AiAttackingCreatureCount & 0x200) != 0) && (iVar6 = FUN_0040d949(arg1,u_extra,1), iVar6 == 0)) {
+      DAT_006b2e18 = Card_TapForMana(x,local_14,0x32,0xffffffff);
+      DAT_00700eb4 = Card_TapForMana(x,local_14,0x33,0xffffffff);
+      g_AiAttackingCreatureCount = Card_TapForMana(x,local_14,0x34,0xffffffff);
+      u_extra = Card_ColorMaskToColorIndex((&DAT_0051aebe)[iVar6 * 0x34]);
+      if (((g_AiAttackingCreatureCount & 0x200) != 0) && (iVar6 = Font_DrawString(x,u_extra,1), iVar6 == 0)) {
         g_AiAttackingCreatureCount = g_AiAttackingCreatureCount & 0xfffffdff;
       }
-      if (g_CurrentTurnPhase == arg1) {
-        FUN_00473e69(arg1,local_14,0x8c);
+      if (g_CurrentTurnPhase == x) {
+        FUN_00473e69(x,local_14,0x8c);
       }
-      *(int *)(&g_AiBestScore + local_14 * 0xc + arg1 * 0x3c0) =
-           *(int *)(&g_AiBestScore + local_14 * 0xc + arg1 * 0x3c0) + DAT_006b2e18;
-      *(int *)(&g_AiBestCardIndex + local_14 * 0xc + arg1 * 0x3c0) =
-           *(int *)(&g_AiBestCardIndex + local_14 * 0xc + arg1 * 0x3c0) + DAT_00700eb4;
-      *(uint *)(&g_AiBestTargetPlayer + local_14 * 0xc + arg1 * 0x3c0) =
-           *(uint *)(&g_AiBestTargetPlayer + local_14 * 0xc + arg1 * 0x3c0) | g_AiAttackingCreatureCount;
-      *(int *)(&g_CardSlot_Flags + local_14 * 0x120 + arg1 * 0x5b20) = u_temp;
+      *(int *)(&g_AiBestScore + local_14 * 0xc + x * 0x3c0) =
+           *(int *)(&g_AiBestScore + local_14 * 0xc + x * 0x3c0) + DAT_006b2e18;
+      *(int *)(&g_AiBestCardIndex + local_14 * 0xc + x * 0x3c0) =
+           *(int *)(&g_AiBestCardIndex + local_14 * 0xc + x * 0x3c0) + DAT_00700eb4;
+      *(uint *)(&g_AiBestTargetPlayer + local_14 * 0xc + x * 0x3c0) =
+           *(uint *)(&g_AiBestTargetPlayer + local_14 * 0xc + x * 0x3c0) | g_AiAttackingCreatureCount;
+      *(int *)(&g_CardSlot_Flags + local_14 * 0x120 + x * 0x5b20) = u_temp;
     }
   }
   g_AiDecisionTreeDepth = 0;
@@ -13221,34 +13221,34 @@ void Ai_Subsystem_004c4210(int arg1)
       temp_idx = (int)(char)(&g_CardSlot_Toughness)[local_14 * 0x120 + arg_1_00 * 0x5b20];
       status = *(int *)(&g_CardSlot_OriginalCardId + local_14 * 0x120 + arg_1_00 * 0x5b20);
       if ((*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_0043ebbf) &&
-         (card_idx = FUN_0040d949(temp_idx,3,1), card_idx != 0)) {
+         (card_idx = Font_DrawString(temp_idx,3,1), card_idx != 0)) {
         *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) =
              *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) | 0x200;
         *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) | 0x200;
       }
       else if ((*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_0043f51d) &&
-              (card_idx = FUN_0040d949(temp_idx,4,3), card_idx != 0)) {
+              (card_idx = Font_DrawString(temp_idx,4,3), card_idx != 0)) {
         *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) =
              *(uint *)(&g_AiBestTargetPlayer + status * 0xc + temp_idx * 0x3c0) | 0x200;
         *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities2 + status * 0x120 + temp_idx * 0x5b20) | 0x200;
       }
       if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00435abf) {
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
       else if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00436f60) {
-        card_idx = FUN_0040d949(temp_idx,4,1);
+        card_idx = Font_DrawString(temp_idx,4,1);
         *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
       else if (*(code **)(&g_MasterCardManaCostTable + iVar6 * 0x34) == Pic_Subsystem_00436500) {
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestScore + status * 0xc + temp_idx * 0x3c0) + card_idx;
-        card_idx = FUN_0040d949(temp_idx,5,1);
+        card_idx = Font_DrawString(temp_idx,5,1);
         *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) =
              *(int *)(&g_AiBestCardIndex + status * 0xc + temp_idx * 0x3c0) + card_idx;
       }
@@ -13257,11 +13257,11 @@ void Ai_Subsystem_004c4210(int arg1)
       u_temp = *(int *)(&g_CardSlot_Flags + local_14 * 0x120 + arg_1_00 * 0x5b20);
       *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg_1_00 * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + local_14 * 0x120 + arg_1_00 * 0x5b20) | 8;
-      DAT_006b2e18 = FUN_00473179(arg_1_00,local_14,0x32,0xffffffff);
-      DAT_00700eb4 = FUN_00473179(arg_1_00,local_14,0x33,0xffffffff);
-      g_AiAttackingCreatureCount = FUN_00473179(arg_1_00,local_14,0x34,0xffffffff);
-      u_extra = FUN_00473cc5((&DAT_0051aebe)[iVar6 * 0x34]);
-      if (((g_AiAttackingCreatureCount & 0x200) != 0) && (iVar6 = FUN_0040d949(arg_1_00,u_extra,1), iVar6 == 0)) {
+      DAT_006b2e18 = Card_TapForMana(arg_1_00,local_14,0x32,0xffffffff);
+      DAT_00700eb4 = Card_TapForMana(arg_1_00,local_14,0x33,0xffffffff);
+      g_AiAttackingCreatureCount = Card_TapForMana(arg_1_00,local_14,0x34,0xffffffff);
+      u_extra = Card_ColorMaskToColorIndex((&DAT_0051aebe)[iVar6 * 0x34]);
+      if (((g_AiAttackingCreatureCount & 0x200) != 0) && (iVar6 = Font_DrawString(arg_1_00,u_extra,1), iVar6 == 0)) {
         g_AiAttackingCreatureCount = g_AiAttackingCreatureCount & 0xfffffdff;
       }
       if (g_CurrentTurnPhase == arg_1_00) {
@@ -13296,7 +13296,7 @@ void Ai_Subsystem_004c4210(int arg1)
     DAT_00641874 = 0;
   }
   else {
-    DAT_00641874 = FUN_0040d949(arg_1_00,7,0);
+    DAT_00641874 = Font_DrawString(arg_1_00,7,0);
   }
   FUN_00472fae();
   return;
@@ -13316,7 +13316,7 @@ void Ai_Subsystem_004c4210(int arg1)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Ai_Subsystem_004c4c84(int arg1)
+void Ai_Subsystem_004c4c84(int x)
 
 {
   int status;
@@ -13344,7 +13344,7 @@ void Ai_Subsystem_004c4c84(int arg1)
   int local_c;
   uint local_8;
   
-  g_AiCreatureToughnessEval = 1 - arg1;
+  g_AiCreatureToughnessEval = 1 - x;
   if (DAT_00559b18 == 0) {
     Ai_FilterValidBlockers(&local_8,&local_18);
     if (g_AiCreatureToughnessEval == 1) {
@@ -13365,56 +13365,56 @@ void Ai_Subsystem_004c4c84(int arg1)
     DAT_0055999c = 0;
     g_AiEvaluationCandidateCount = 0;
     Magic_ScanCards(199);
-    Pic_Subsystem_004475a4(arg1);
-    local_88 = Ai_SimulateCombatRound(arg1);
+    Pic_Subsystem_004475a4(x);
+    local_88 = Ai_SimulateCombatRound(x);
     local_88 = g_SpellStackDepth + local_88;
     Ai_PopBoardState();
     g_SpellStackDepth = local_64;
-    for (local_70 = 0; local_70 < (int)(&g_PlayerActiveCardCount)[arg1]; local_70 = local_70 + 1) {
-      local_68 = *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + arg1 * 0x5b20);
-      if (((local_68 != -1) && (((&g_CardSlot_Flags)[local_70 * 0x120 + arg1 * 0x5b20] & 4) != 0))
-         && (((&g_CardSlot_ColorMask)[local_70 * 0x120 + arg1 * 0x5b20] == -1 ||
-             ((char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + arg1 * 0x5b20] == local_70)))) {
-        local_80 = FUN_00473cc5((&DAT_0051aebe)[local_68 * 0x34]);
-        local_78 = *(int *)(&g_AiBestScore + local_70 * 0xc + arg1 * 0x3c0);
+    for (local_70 = 0; local_70 < (int)(&g_PlayerActiveCardCount)[x]; local_70 = local_70 + 1) {
+      local_68 = *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + x * 0x5b20);
+      if (((local_68 != -1) && (((&g_CardSlot_Flags)[local_70 * 0x120 + x * 0x5b20] & 4) != 0))
+         && (((&g_CardSlot_ColorMask)[local_70 * 0x120 + x * 0x5b20] == -1 ||
+             ((char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + x * 0x5b20] == local_70)))) {
+        local_80 = Card_ColorMaskToColorIndex((&DAT_0051aebe)[local_68 * 0x34]);
+        local_78 = *(int *)(&g_AiBestScore + local_70 * 0xc + x * 0x3c0);
         (&g_AiAttackerList)[g_AiCreaturePowerEval] = local_70;
-        (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] = *(int *)(&DAT_00695eb0 + arg1 * 4) + local_78;
+        (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] = *(int *)(&DAT_00695eb0 + x * 4) + local_78;
         (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] =
-             *(int *)(&g_AiBestCardIndex + local_70 * 0xc + arg1 * 0x3c0) +
-             *(int *)(&DAT_00695eb8 + arg1 * 4);
+             *(int *)(&g_AiBestCardIndex + local_70 * 0xc + x * 0x3c0) +
+             *(int *)(&DAT_00695eb8 + x * 4);
         (&g_AiBlockerList)[g_AiCreaturePowerEval] =
-             *(int *)(&g_AiBestTargetPlayer + local_70 * 0xc + arg1 * 0x3c0);
-        val_result = FUN_0040d949(arg1,local_80,1);
+             *(int *)(&g_AiBestTargetPlayer + local_70 * 0xc + x * 0x3c0);
+        val_result = Font_DrawString(x,local_80,1);
         if (val_result == 0) {
           (&g_AiBlockerList)[g_AiCreaturePowerEval] = (&g_AiBlockerList)[g_AiCreaturePowerEval] & 0xfffffdff;
         }
         g_AiBlockingCreatureCount = 0;
-        FUN_00473e69(arg1,local_70,0x8a);
+        FUN_00473e69(x,local_70,0x8a);
         (&DAT_00559a98)[g_AiCreaturePowerEval] = g_AiBlockingCreatureCount;
         if (((&g_MasterCardSubtypeTable)[local_68 * 0x34] & 8) != 0) {
-          val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(arg1,local_70,0x39);
+          val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(x,local_70,0x39);
           (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] = (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] + val_result;
         }
         if (((&g_MasterCardSubtypeTable)[local_68 * 0x34] & 0x10) != 0) {
-          val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(arg1,local_70,0x3a);
+          val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(x,local_70,0x3a);
           (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] = (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] + val_result;
         }
         Ai_PushBoardState();
         local_64 = g_SpellStackDepth;
         g_SpellStackDepth = 0;
-        *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + arg1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + arg1 * 0x5b20) | 8;
-        Pic_Subsystem_0044867e(arg1,local_70,2);
+        *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + x * 0x5b20) =
+             *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + x * 0x5b20) | 8;
+        Pic_Subsystem_0044867e(x,local_70,2);
         Magic_ScanCards(199);
-        Pic_Subsystem_004475a4(arg1);
-        local_c = Ai_SimulateCombatRound(arg1);
+        Pic_Subsystem_004475a4(x);
+        local_c = Ai_SimulateCombatRound(x);
         local_c = g_SpellStackDepth + local_c;
         Ai_PopBoardState();
         g_SpellStackDepth = local_64;
         val_result = abs((int)(char)(&DAT_0051aec0)[local_68 * 0x34]);
         local_10 = ((val_result + (char)(&DAT_0051aebf)[local_68 * 0x34]) - local_c) + local_88;
         if ((*(byte *)((int)&g_AiBlockerList + g_AiCreaturePowerEval * 4 + 1) & 2) != 0) {
-          val_result = FUN_0040d949(arg1,local_80,1);
+          val_result = Font_DrawString(x,local_80,1);
           if (val_result == 0) {
             local_10 = local_10 << 1;
           }
@@ -13422,69 +13422,69 @@ void Ai_Subsystem_004c4c84(int arg1)
             local_10 = local_10 / 3;
           }
         }
-        *(int *)(&DAT_006a5f70 + local_70 * 0x120 + arg1 * 0x5b20) = local_10;
+        *(int *)(&DAT_006a5f70 + local_70 * 0x120 + x * 0x5b20) = local_10;
         (&g_AiCombatSimulationBuffer_End)[g_AiCreaturePowerEval] = local_10;
         (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] =
              (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] -
-             (int)*(short *)(&g_CardSlot_Power + local_70 * 0x120 + arg1 * 0x5b20);
+             (int)*(short *)(&g_CardSlot_Power + local_70 * 0x120 + x * 0x5b20);
         (&g_AiCandidatePriorityList)[g_AiCreaturePowerEval] = 0;
-        if ((&DAT_006a604f)[local_70 * 0x120 + arg1 * 0x5b20] != '\0') {
+        if ((&DAT_006a604f)[local_70 * 0x120 + x * 0x5b20] != '\0') {
           g_AiEvaluationCandidateCount = g_AiEvaluationCandidateCount | 1 << ((byte)g_AiCreaturePowerEval & 0x1f);
         }
         g_AiCreaturePowerEval = g_AiCreaturePowerEval + 1;
         if ((g_IsAiThinking == 1) && (6 < g_AiCreaturePowerEval)) break;
       }
     }
-    for (local_70 = 0; local_70 < (int)(&g_PlayerActiveCardCount)[arg1]; local_70 = local_70 + 1) {
-      local_68 = *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + arg1 * 0x5b20);
-      if ((((local_68 != -1) && (((&g_CardSlot_Flags)[local_70 * 0x120 + arg1 * 0x5b20] & 4) != 0))
-          && ((&g_CardSlot_ColorMask)[local_70 * 0x120 + arg1 * 0x5b20] != -1)) &&
-         ((char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + arg1 * 0x5b20] != local_70)) {
+    for (local_70 = 0; local_70 < (int)(&g_PlayerActiveCardCount)[x]; local_70 = local_70 + 1) {
+      local_68 = *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + x * 0x5b20);
+      if ((((local_68 != -1) && (((&g_CardSlot_Flags)[local_70 * 0x120 + x * 0x5b20] & 4) != 0))
+          && ((&g_CardSlot_ColorMask)[local_70 * 0x120 + x * 0x5b20] != -1)) &&
+         ((char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + x * 0x5b20] != local_70)) {
         local_5c = -1;
         for (local_74 = 0; local_74 < g_AiCreaturePowerEval; local_74 = local_74 + 1) {
-          if ((int)(char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + arg1 * 0x5b20] ==
+          if ((int)(char)(&g_CardSlot_ColorMask)[local_70 * 0x120 + x * 0x5b20] ==
               (&g_AiAttackerList)[local_74]) {
             local_5c = local_74;
             break;
           }
         }
         if (local_5c != -1) {
-          local_80 = FUN_00473cc5((&DAT_0051aebe)[local_68 * 0x34]);
+          local_80 = Card_ColorMaskToColorIndex((&DAT_0051aebe)[local_68 * 0x34]);
           (&DAT_00559ad8)[DAT_0055a090] = local_70;
-          local_78 = *(int *)(&g_AiBestScore + local_70 * 0xc + arg1 * 0x3c0);
+          local_78 = *(int *)(&g_AiBestScore + local_70 * 0xc + x * 0x3c0);
           (&g_AiCombatSimulationState)[local_5c] = (&g_AiCombatSimulationState)[local_5c] + local_78;
           (&g_AiCandidateScoreList)[local_5c] =
-               (&g_AiCandidateScoreList)[local_5c] + *(int *)(&g_AiBestCardIndex + local_70 * 0xc + arg1 * 0x3c0);
-          local_8c = *(uint *)(&g_AiBestTargetPlayer + local_70 * 0xc + arg1 * 0x3c0) & 0x200 |
+               (&g_AiCandidateScoreList)[local_5c] + *(int *)(&g_AiBestCardIndex + local_70 * 0xc + x * 0x3c0);
+          local_8c = *(uint *)(&g_AiBestTargetPlayer + local_70 * 0xc + x * 0x3c0) & 0x200 |
                      (&g_AiBlockerList)[local_5c] & 0x200;
           (&g_AiBlockerList)[local_5c] =
-               (&g_AiBlockerList)[local_5c] & *(uint *)(&g_AiBestTargetPlayer + local_70 * 0xc + arg1 * 0x3c0)
+               (&g_AiBlockerList)[local_5c] & *(uint *)(&g_AiBestTargetPlayer + local_70 * 0xc + x * 0x3c0)
           ;
           (&g_AiBlockerList)[local_5c] = (&g_AiBlockerList)[local_5c] | local_8c;
           if (((&g_MasterCardSubtypeTable)[local_68 * 0x34] & 8) != 0) {
-            val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(arg1,local_70,0x39);
+            val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(x,local_70,0x39);
             (&g_AiCombatSimulationState)[local_5c] = (&g_AiCombatSimulationState)[local_5c] + val_result;
           }
           if (((&g_MasterCardSubtypeTable)[local_68 * 0x34] & 0x10) != 0) {
-            val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(arg1,local_70,0x3a);
+            val_result = (**(code **)(&g_MasterCardManaCostTable + local_68 * 0x34))(x,local_70,0x3a);
             (&g_AiCandidateScoreList)[local_5c] = (&g_AiCandidateScoreList)[local_5c] + val_result;
           }
           Ai_PushBoardState();
           local_64 = g_SpellStackDepth;
           g_SpellStackDepth = 0;
-          *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + arg1 * 0x5b20) =
-               *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + arg1 * 0x5b20) | 8;
-          Pic_Subsystem_0044867e(arg1,local_70,2);
+          *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + x * 0x5b20) =
+               *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + x * 0x5b20) | 8;
+          Pic_Subsystem_0044867e(x,local_70,2);
           Magic_ScanCards(199);
-          Pic_Subsystem_004475a4(arg1);
-          local_c = Ai_SimulateCombatRound(arg1);
+          Pic_Subsystem_004475a4(x);
+          local_c = Ai_SimulateCombatRound(x);
           local_c = g_SpellStackDepth + local_c;
           Ai_PopBoardState();
           g_SpellStackDepth = local_64;
           val_result = abs((int)(char)(&DAT_0051aec0)[local_68 * 0x34]);
           local_10 = ((val_result + (char)(&DAT_0051aebf)[local_68 * 0x34]) - local_c) + local_88;
           if ((*(byte *)((int)&g_AiBlockerList + local_5c * 4 + 1) & 2) != 0) {
-            val_result = FUN_0040d949(arg1,local_80,1);
+            val_result = Font_DrawString(x,local_80,1);
             if (val_result == 0) {
               local_10 = local_10 << 1;
             }
@@ -13492,15 +13492,15 @@ void Ai_Subsystem_004c4c84(int arg1)
               local_10 = local_10 / 3;
             }
           }
-          *(int *)(&DAT_006a5f70 + local_70 * 0x120 + arg1 * 0x5b20) = local_10;
+          *(int *)(&DAT_006a5f70 + local_70 * 0x120 + x * 0x5b20) = local_10;
           if (local_10 < (int)(&g_AiCombatSimulationBuffer_End)[local_5c]) {
             (&g_AiCombatSimulationBuffer_End)[local_5c] = local_10;
           }
           (&g_AiCandidateScoreList)[local_5c] =
                (&g_AiCandidateScoreList)[local_5c] -
-               (int)*(short *)(&g_CardSlot_Power + local_70 * 0x120 + arg1 * 0x5b20);
+               (int)*(short *)(&g_CardSlot_Power + local_70 * 0x120 + x * 0x5b20);
           (&g_AiCandidatePriorityList)[local_5c] = 0;
-          if ((&DAT_006a604f)[local_70 * 0x120 + arg1 * 0x5b20] != '\0') {
+          if ((&DAT_006a604f)[local_70 * 0x120 + x * 0x5b20] != '\0') {
             g_AiEvaluationCandidateCount = g_AiEvaluationCandidateCount | 1 << ((byte)local_5c & 0x1f);
           }
           DAT_0055a090 = DAT_0055a090 + 1;
@@ -13554,7 +13554,7 @@ void Ai_Subsystem_004c4c84(int arg1)
     for (local_84 = 0; local_84 < local_60; local_84 = local_84 + 1) {
       local_70 = aiStack_58[local_84];
       local_68 = *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20);
-      local_80 = FUN_00473cc5((&DAT_0051aebe)[local_68 * 0x34]);
+      local_80 = Card_ColorMaskToColorIndex((&DAT_0051aebe)[local_68 * 0x34]);
       *(uint *)(&g_CardSlot_Flags + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) | 8;
       local_78 = *(int *)(&g_AiBestScore + local_70 * 0xc + g_AiCreatureToughnessEval * 0x3c0);
@@ -13565,7 +13565,7 @@ void Ai_Subsystem_004c4c84(int arg1)
            *(int *)(&DAT_00695eb8 + g_AiCreatureToughnessEval * 4);
       (&g_AiBlockerAssignmentList)[g_AiCombatScoreBuffer] =
            *(int *)(&g_AiBestTargetPlayer + local_70 * 0xc + g_AiCreatureToughnessEval * 0x3c0);
-      val_result = FUN_0040d949(g_AiCreatureToughnessEval,local_80,1);
+      val_result = Font_DrawString(g_AiCreatureToughnessEval,local_80,1);
       if (val_result == 0) {
         (&g_AiBlockerAssignmentList)[g_AiCombatScoreBuffer] = (&g_AiBlockerAssignmentList)[g_AiCombatScoreBuffer] & 0xfffffdff;
       }
@@ -13589,19 +13589,19 @@ void Ai_Subsystem_004c4c84(int arg1)
            *(uint *)(&g_CardSlot_Abilities1 + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) | 8;
       Pic_Subsystem_0044867e(g_AiCreatureToughnessEval,local_70,2);
       Magic_ScanCards(199);
-      Pic_Subsystem_004475a4(arg1);
-      local_c = Ai_SimulateCombatRound(arg1);
+      Pic_Subsystem_004475a4(x);
+      local_c = Ai_SimulateCombatRound(x);
       local_c = g_SpellStackDepth + local_c;
       Ai_PopBoardState();
       g_SpellStackDepth = 0;
       *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) = 0xffffffff;
-      local_14 = Ai_SimulateCombatRound(arg1);
+      local_14 = Ai_SimulateCombatRound(x);
       local_14 = g_SpellStackDepth + local_14;
       Ai_PopBoardState();
       g_SpellStackDepth = local_64;
       local_10 = local_c - local_88;
       if ((*(byte *)((int)&g_AiBlockerAssignmentList + g_AiCombatScoreBuffer * 4 + 1) & 2) != 0) {
-        val_result = FUN_0040d949(g_AiCreatureToughnessEval,local_80,1);
+        val_result = Font_DrawString(g_AiCreatureToughnessEval,local_80,1);
         if (val_result == 0) {
           local_10 = local_10 << 1;
         }
@@ -13617,15 +13617,15 @@ void Ai_Subsystem_004c4c84(int arg1)
       *(uint *)(&g_CardSlot_Flags + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) & 0xfffffff7;
       for (local_74 = 0; local_74 < g_AiCreaturePowerEval; local_74 = local_74 + 1) {
-        val_result = FUN_00472c0c(g_AiCreatureToughnessEval,local_70,arg1,(&g_AiAttackerList)[local_74],
+        val_result = FUN_00472c0c(g_AiCreatureToughnessEval,local_70,x,(&g_AiAttackerList)[local_74],
                              (&g_AiBlockerList)[local_74],DAT_0055a094);
         if (val_result == 0) {
           if (DAT_0055a090 != 0) {
             for (local_7c = 0; local_7c < DAT_0055a090; local_7c = local_7c + 1) {
               if (((int)(char)(&g_CardSlot_ColorMask)
-                              [arg1 * 0x5b20 + (&DAT_00559ad8)[local_7c] * 0x120] ==
+                              [x * 0x5b20 + (&DAT_00559ad8)[local_7c] * 0x120] ==
                    (&g_AiAttackerList)[local_70]) &&
-                 (val_result = FUN_00472c0c(g_AiCreatureToughnessEval,local_70,arg1,(&DAT_00559ad8)[local_7c],
+                 (val_result = FUN_00472c0c(g_AiCreatureToughnessEval,local_70,x,(&DAT_00559ad8)[local_7c],
                                        (&g_AiBlockerList)[local_74],DAT_0055a094), val_result != 0)) {
                 (&g_AiCandidatePriorityList)[local_74] =
                      (&g_AiCandidatePriorityList)[local_74] | 1 << ((byte)g_AiCombatScoreBuffer & 0x1f);
@@ -13644,7 +13644,7 @@ void Ai_Subsystem_004c4c84(int arg1)
            *(uint *)(&g_CardSlot_Flags + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) & 0xfffffff7;
       val_result = *(int *)(&g_AiPlayerLifeDifferential + g_AiCreatureToughnessEval * 4);
       status = (&DAT_0055a098)[g_AiCombatScoreBuffer];
-      temp_idx = FUN_0040a305((&g_AiCandidateCardList)[g_AiCombatScoreBuffer] + 1,1,99);
+      temp_idx = Math_Clamp((&g_AiCandidateCardList)[g_AiCombatScoreBuffer] + 1,1,99);
       (&DAT_00559678)[g_AiCombatScoreBuffer] = (val_result * status) / temp_idx;
       g_AiCombatScoreBuffer = g_AiCombatScoreBuffer + 1;
       if ((g_IsAiThinking == 1) && (6 < g_AiCombatScoreBuffer)) break;
@@ -13653,7 +13653,7 @@ void Ai_Subsystem_004c4c84(int arg1)
     memset(&DAT_00559b20,0,0x1c);
     for (local_70 = 0; local_70 < g_AiCreaturePowerEval; local_70 = local_70 + 1) {
       for (local_74 = 0; local_74 < g_AiCombatScoreBuffer; local_74 = local_74 + 1) {
-        u_val = FUN_00476c77(arg1,(&g_AiAttackerList)[local_70],g_AiCreatureToughnessEval,(&g_AiCombatDamageTable)[local_74])
+        u_val = FUN_00476c77(x,(&g_AiAttackerList)[local_70],g_AiCreatureToughnessEval,(&g_AiCombatDamageTable)[local_74])
         ;
         if ((u_val & 1) != 0) {
           *(uint *)(&DAT_00559a68 + local_70 * 4) =
@@ -13687,7 +13687,7 @@ void Ai_Subsystem_004c4c84(int arg1)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint Ai_Subsystem_004c5fc9(int arg1)
+uint Ai_Subsystem_004c5fc9(int x)
 
 {
   uint u_res;
@@ -13748,17 +13748,17 @@ uint Ai_Subsystem_004c5fc9(int arg1)
   int local_48 [16];
   uint local_8;
   
-  Ai_Subsystem_004c4210(arg1);
+  Ai_Subsystem_004c4210(x);
   local_2a0 = g_CardSlot_PowerBonus;
   g_CardSlot_PowerBonus = 2;
   local_24c = g_IsAiThinking;
   if (g_IsAiThinking == 1) {
     DAT_00680790 = DAT_00680790 ^ 2;
   }
-  for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[arg1]; local_2a8 = local_2a8 + 1)
+  for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[x]; local_2a8 = local_2a8 + 1)
   {
-    *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + arg1 * 0x5b20) =
-         *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + arg1 * 0x5b20) & 0xfffffffb;
+    *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + x * 0x5b20) =
+         *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + x * 0x5b20) & 0xfffffffb;
   }
   Magic_ScanCards(0x15);
   local_2c4 = 0;
@@ -13768,29 +13768,29 @@ uint Ai_Subsystem_004c5fc9(int arg1)
   local_254 = 0;
   local_8 = 0xffffffff;
   memset(local_46c,0,0x40);
-  for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[arg1]; local_2a8 = local_2a8 + 1)
+  for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[x]; local_2a8 = local_2a8 + 1)
   {
-    local_204 = *(int *)(&g_CardSlot_CardId + local_2a8 * 0x120 + arg1 * 0x5b20);
+    local_204 = *(int *)(&g_CardSlot_CardId + local_2a8 * 0x120 + x * 0x5b20);
     if ((((local_204 != -1) && (((&g_MasterCardColorTable)[local_204 * 0x34] & 2) != 0)) &&
-        ((*(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + arg1 * 0x5b20) & 0x20012) == 2)) &&
-       (val_result = FUN_004726c5(arg1,local_2a8), val_result != 0)) {
-      if (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + arg1 * 0x5b20] & 0x80) != 0) {
+        ((*(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + x * 0x5b20) & 0x20012) == 2)) &&
+       (val_result = FUN_004726c5(x,local_2a8), val_result != 0)) {
+      if (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + x * 0x5b20] & 0x80) != 0) {
         local_8c = local_8c | 1 << ((byte)local_254 & 0x1f);
       }
       if ((((DAT_00680790 & 2) == 0) ||
-          (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + arg1 * 0x5b20] & 0x80) != 0)) ||
-         (((&g_AiBestTargetPlayer)[local_2a8 * 0xc + arg1 * 0x3c0] & 0x40) == 0)) {
-        val_result = Ai_Subsystem_004cae47(arg1,local_2a8);
+          (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + x * 0x5b20] & 0x80) != 0)) ||
+         (((&g_AiBestTargetPlayer)[local_2a8 * 0xc + x * 0x3c0] & 0x40) == 0)) {
+        val_result = Ai_Subsystem_004cae47(x,local_2a8);
         aiStack_e0[local_254] = val_result;
         local_46c[local_254] = local_2a8;
         local_254 = local_254 + 1;
-        *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + arg1 * 0x5b20) =
-             *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + arg1 * 0x5b20) | 4;
+        *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + x * 0x5b20) =
+             *(uint *)(&g_CardSlot_Flags + local_2a8 * 0x120 + x * 0x5b20) | 4;
       }
       else {
-        local_29c = local_29c + *(int *)(&g_AiBestScore + local_2a8 * 0xc + arg1 * 0x3c0);
-        local_8 = local_8 & *(uint *)(&g_AiBestTargetPlayer + local_2a8 * 0xc + arg1 * 0x3c0);
-        local_2c4 = local_2c4 | *(uint *)(&g_AiBestTargetPlayer + local_2a8 * 0xc + arg1 * 0x3c0) & 0x200;
+        local_29c = local_29c + *(int *)(&g_AiBestScore + local_2a8 * 0xc + x * 0x3c0);
+        local_8 = local_8 & *(uint *)(&g_AiBestTargetPlayer + local_2a8 * 0xc + x * 0x3c0);
+        local_2c4 = local_2c4 | *(uint *)(&g_AiBestTargetPlayer + local_2a8 * 0xc + x * 0x3c0) & 0x200;
         aiStack_244[local_248] = local_2a8;
         local_248 = local_248 + 1;
       }
@@ -13811,7 +13811,7 @@ uint Ai_Subsystem_004c5fc9(int arg1)
       aiStack_178[local_2a8] = 0;
     }
     for (local_2a8 = 0; local_2a8 < local_254; local_2a8 = local_2a8 + 1) {
-      aiStack_178[local_2a8] = *(int *)(&g_AiBestScore + local_46c[local_2a8] * 0xc + arg1 * 0x3c0);
+      aiStack_178[local_2a8] = *(int *)(&g_AiBestScore + local_46c[local_2a8] * 0xc + x * 0x3c0);
     }
     while (local_470 != 0) {
       local_47c = 0;
@@ -13829,10 +13829,10 @@ uint Ai_Subsystem_004c5fc9(int arg1)
     for (local_2a8 = 0; local_2a8 < local_254; local_2a8 = local_2a8 + 1) {
       local_474 = local_474 + aiStack_178[local_2a8];
     }
-    if ((int)(&g_PlayerCreatureCount)[1 - arg1] <= local_474) {
+    if ((int)(&g_PlayerCreatureCount)[1 - x] <= local_474) {
       for (local_2a8 = 0; local_2a8 < local_254; local_2a8 = local_2a8 + 1) {
-        *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-             *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
+        *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+             *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
       }
       g_ActiveBattlefieldFlag = (1 << ((byte)local_254 & 0x1f)) - 1;
       return g_ActiveBattlefieldFlag;
@@ -13864,17 +13864,17 @@ uint Ai_Subsystem_004c5fc9(int arg1)
       local_254 = 7;
     }
     for (local_2a8 = 7; local_2a8 < 0x10; local_2a8 = local_2a8 + 1) {
-      *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-           *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) & 0xfffffffb
+      *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+           *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) & 0xfffffffb
       ;
     }
     memset(local_450,0,0x24);
     local_8c = 0;
     local_254 = 0;
-    for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[arg1];
+    for (local_2a8 = 0; local_2a8 < (int)(&g_PlayerActiveCardCount)[x];
         local_2a8 = local_2a8 + 1) {
-      if (((&g_CardSlot_Flags)[local_2a8 * 0x120 + arg1 * 0x5b20] & 4) != 0) {
-        if (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + arg1 * 0x5b20] & 0x80) != 0) {
+      if (((&g_CardSlot_Flags)[local_2a8 * 0x120 + x * 0x5b20] & 4) != 0) {
+        if (((&g_CardSlot_StateByte)[local_2a8 * 0x120 + x * 0x5b20] & 0x80) != 0) {
           local_8c = local_8c | 1 << ((byte)local_254 & 0x1f);
         }
         local_46c[local_254] = local_2a8;
@@ -13882,7 +13882,7 @@ uint Ai_Subsystem_004c5fc9(int arg1)
       }
     }
   }
-  Ai_Subsystem_004c4c84(arg1);
+  Ai_Subsystem_004c4c84(x);
   memcpy(local_88,&g_AiCombatSimulationState,0x40);
   memcpy(local_48,&g_AiCandidateScoreList,0x40);
   memcpy(local_308,&g_AiBlockerList,0x40);
@@ -13932,14 +13932,14 @@ uint Ai_Subsystem_004c5fc9(int arg1)
     }
   }
   local_17c = 0;
-  for (local_2b8 = 0; local_2b8 < (int)(&g_PlayerActiveCardCount)[arg1]; local_2b8 = local_2b8 + 1)
+  for (local_2b8 = 0; local_2b8 < (int)(&g_PlayerActiveCardCount)[x]; local_2b8 = local_2b8 + 1)
   {
-    if (((*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + arg1 * 0x5b20) != -1) &&
-        (((&g_CardSlot_Flags)[local_2b8 * 0x120 + arg1 * 0x5b20] & 2) != 0)) &&
+    if (((*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + x * 0x5b20) != -1) &&
+        (((&g_CardSlot_Flags)[local_2b8 * 0x120 + x * 0x5b20] & 2) != 0)) &&
        (((&g_MasterCardColorTable)
-         [*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) != 0)) {
-      aiStack_178[local_17c] = *(int *)(&g_AiBestScore + local_2b8 * 0xc + arg1 * 0x3c0);
-      aiStack_1fc[local_17c] = *(int *)(&g_AiBestCardIndex + local_2b8 * 0xc + arg1 * 0x3c0);
+         [*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + x * 0x5b20) * 0x34] & 2) != 0)) {
+      aiStack_178[local_17c] = *(int *)(&g_AiBestScore + local_2b8 * 0xc + x * 0x3c0);
+      aiStack_1fc[local_17c] = *(int *)(&g_AiBestCardIndex + local_2b8 * 0xc + x * 0x3c0);
       aiStack_e0[local_17c] = (aiStack_1fc[local_17c] + 1) * (aiStack_178[local_17c] + 1);
       for (local_2c0 = 0; (int)local_2c0 < g_AiCreaturePowerEval; local_2c0 = local_2c0 + 1) {
         if ((&g_AiAttackerList)[local_2c0] == local_2b8) {
@@ -13957,13 +13957,13 @@ uint Ai_Subsystem_004c5fc9(int arg1)
   do {
     if (1 << ((byte)local_254 & 0x1f) <= (int)local_2c0) {
       for (local_2a8 = 0; local_2a8 < local_254; local_2a8 = local_2a8 + 1) {
-        *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-             *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) &
+        *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+             *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) &
              0xfffffffb;
         if ((local_2a4 & 1 << ((byte)local_2a8 & 0x1f)) != 0) {
-          *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-               *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
-          FUN_004726c5(arg1,local_46c[local_2a8]);
+          *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+               *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
+          FUN_004726c5(x,local_46c[local_2a8]);
           if (((local_248 != 0) && (local_420 == -1)) &&
              ((local_308[local_2a8] & local_8) == local_308[local_2a8])) {
             local_420 = local_46c[local_2a8];
@@ -13971,25 +13971,25 @@ uint Ai_Subsystem_004c5fc9(int arg1)
         }
       }
       if (((local_248 == 0) || (local_420 == -1)) ||
-         (((&g_CardSlot_Flags)[local_420 * 0x120 + arg1 * 0x5b20] & 4) == 0)) {
+         (((&g_CardSlot_Flags)[local_420 * 0x120 + x * 0x5b20] & 4) == 0)) {
         if ((local_248 != 0) && (local_e4 == 0)) {
           for (local_2a8 = 0; local_2a8 < local_248; local_2a8 = local_2a8 + 1) {
-            *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + aiStack_244[local_2a8] * 0x120) =
-                 *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + aiStack_244[local_2a8] * 0x120) | 4;
-            FUN_004726c5(arg1,aiStack_244[local_2a8]);
+            *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + aiStack_244[local_2a8] * 0x120) =
+                 *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + aiStack_244[local_2a8] * 0x120) | 4;
+            FUN_004726c5(x,aiStack_244[local_2a8]);
           }
           local_2a4 = 1;
         }
       }
       else {
         for (local_2a8 = 0; local_2a8 < local_248; local_2a8 = local_2a8 + 1) {
-          (&g_CardSlot_ColorMask)[arg1 * 0x5b20 + aiStack_244[local_2a8] * 0x120] =
+          (&g_CardSlot_ColorMask)[x * 0x5b20 + aiStack_244[local_2a8] * 0x120] =
                (uint8_t)local_420;
-          *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + aiStack_244[local_2a8] * 0x120) =
-               *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + aiStack_244[local_2a8] * 0x120) | 4;
-          FUN_004726c5(arg1,aiStack_244[local_2a8]);
+          *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + aiStack_244[local_2a8] * 0x120) =
+               *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + aiStack_244[local_2a8] * 0x120) | 4;
+          FUN_004726c5(x,aiStack_244[local_2a8]);
         }
-        (&g_CardSlot_ColorMask)[local_420 * 0x120 + arg1 * 0x5b20] = (uint8_t)local_420;
+        (&g_CardSlot_ColorMask)[local_420 * 0x120 + x * 0x5b20] = (uint8_t)local_420;
       }
       g_CardSlot_PowerBonus = local_2a0;
       g_ActiveBattlefieldFlag = local_2a4;
@@ -13999,12 +13999,12 @@ uint Ai_Subsystem_004c5fc9(int arg1)
     g_AiCreaturePowerEval = 0;
     g_AiEvaluationCandidateCount = 0;
     for (local_2a8 = 0; local_2a8 < local_254; local_2a8 = local_2a8 + 1) {
-      *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-           *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) & 0xfffffffb
+      *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+           *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) & 0xfffffffb
       ;
       local_2b0 = *(int *)(&g_MasterCardTypeTable +
                           *(int *)(&g_CardSlot_CardId +
-                                  arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) * 0x34);
+                                  x * 0x5b20 + local_46c[local_2a8] * 0x120) * 0x34);
       if ((local_2c0 & 1 << ((byte)local_2a8 & 0x1f)) == 0) {
         if ((local_2b0 == 0x19f) || (local_2b0 == 0x84)) {
           local_2bc = 0;
@@ -14014,8 +14014,8 @@ uint Ai_Subsystem_004c5fc9(int arg1)
         }
       }
       else {
-        *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) =
-             *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
+        *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) =
+             *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_46c[local_2a8] * 0x120) | 4;
         (&g_AiAttackerList)[g_AiCreaturePowerEval] = local_46c[local_2a8];
         (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] = local_88[local_2a8];
         (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] = local_48[local_2a8];
@@ -14032,7 +14032,7 @@ uint Ai_Subsystem_004c5fc9(int arg1)
     }
     if (local_2bc != 0) {
       DAT_00559b18 = 1;
-      Ai_Subsystem_004c7aa8(arg1);
+      Ai_Subsystem_004c7aa8(x);
       Ai_PushBoardState();
       g_IsAiThinking = 1;
       Magic_ScanCards(199);
@@ -14065,7 +14065,7 @@ LAB_004c72b0:
       local_98 = 0;
       while ((local_98 < 8 && (aiStack_1c4[local_98 * 2 + 3] != -1))) {
         local_2a8 = aiStack_1c4[local_98 * 2 + 2];
-        local_200 = FUN_00473179(g_AiCreatureToughnessEval,local_2a8,0x34,0xffffffff);
+        local_200 = Card_TapForMana(g_AiCreatureToughnessEval,local_2a8,0x34,0xffffffff);
         local_90 = (int)acStack_35c[local_2a8];
         local_428 = aiStack_41c[local_90];
         local_424 = aiStack_3dc[local_90];
@@ -14073,27 +14073,27 @@ LAB_004c72b0:
         local_42c = 0;
         local_17c = 0;
         local_9c = 0x7fff;
-        for (local_2b8 = 0; local_2b8 < (int)(&g_PlayerActiveCardCount)[arg1];
+        for (local_2b8 = 0; local_2b8 < (int)(&g_PlayerActiveCardCount)[x];
             local_2b8 = local_2b8 + 1) {
-          if (((*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + arg1 * 0x5b20) != -1) &&
-              ((*(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + arg1 * 0x5b20) & 0x402) != 0)) &&
+          if (((*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + x * 0x5b20) != -1) &&
+              ((*(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + x * 0x5b20) & 0x402) != 0)) &&
              (((&g_MasterCardColorTable)
-               [*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) != 0)
+               [*(int *)(&g_CardSlot_CardId + local_2b8 * 0x120 + x * 0x5b20) * 0x34] & 2) != 0)
              ) {
             local_17c = (int)acStack_134[local_2b8];
             local_a0 = aiStack_178[local_17c];
             local_138 = aiStack_1fc[local_17c];
             card_idx = local_2b8 * 0x120;
-            val_result = FUN_004728c3(arg1,local_2b8);
-            if (((*(uint *)(&g_CardSlot_Flags + card_idx + arg1 * 0x5b20) &
+            val_result = FUN_004728c3(x,local_2b8);
+            if (((*(uint *)(&g_CardSlot_Flags + card_idx + x * 0x5b20) &
                  (-(uint)(val_result == 0) & 4) + 8) == 0) &&
-               (val_result = FUN_00472c0c(arg1,local_2b8,g_AiCreatureToughnessEval,local_2a8,local_200,local_2b4),
+               (val_result = FUN_00472c0c(x,local_2b8,g_AiCreatureToughnessEval,local_2a8,local_200,local_2b4),
                u_res = local_42c, val_result != 0)) {
               local_42c = local_42c | 1;
               if ((local_428 < local_138) || (local_424 <= local_a0)) {
                 local_42c = u_res | 3;
-                *(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + arg1 * 0x5b20) =
-                     *(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + arg1 * 0x5b20) | 8;
+                *(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + x * 0x5b20) =
+                     *(uint *)(&g_CardSlot_Flags + local_2b8 * 0x120 + x * 0x5b20) | 8;
                 break;
               }
               if (aiStack_e0[local_17c] < local_9c) {
@@ -14104,17 +14104,17 @@ LAB_004c72b0:
           }
         }
         if ((local_42c & 2) == 0) {
-          val_result = *(int *)(&g_PlayerLifeTotals + arg1 * 4) * local_428 * 0x18;
+          val_result = *(int *)(&g_PlayerLifeTotals + x * 4) * local_428 * 0x18;
           val_result = val_result + (val_result >> 0x1f & 3U);
-          card_idx = FUN_0040a305((&g_PlayerCreatureCount)[arg1] + 1,1,99);
+          card_idx = Math_Clamp((&g_PlayerCreatureCount)[x] + 1,1,99);
           local_250 = (int)(CONCAT44(val_result >> 0x1f,val_result >> 2) / (longlong)card_idx);
           if (local_42c != 0) {
-            local_94 = (int)(*(int *)(&g_AiPlayerLifeDifferential + arg1 * 4) * local_9c +
-                            (*(int *)(&g_AiPlayerLifeDifferential + arg1 * 4) * local_9c >> 0x1f & 7U)) >> 3;
+            local_94 = (int)(*(int *)(&g_AiPlayerLifeDifferential + x * 4) * local_9c +
+                            (*(int *)(&g_AiPlayerLifeDifferential + x * 4) * local_9c >> 0x1f & 7U)) >> 3;
             if (local_94 <= local_250) {
               g_AiDamageAssignmentBuffer = g_AiDamageAssignmentBuffer + local_94;
-              *(uint *)(&g_CardSlot_Flags + local_2c8 * 0x120 + arg1 * 0x5b20) =
-                   *(uint *)(&g_CardSlot_Flags + local_2c8 * 0x120 + arg1 * 0x5b20) | 8;
+              *(uint *)(&g_CardSlot_Flags + local_2c8 * 0x120 + x * 0x5b20) =
+                   *(uint *)(&g_CardSlot_Flags + local_2c8 * 0x120 + x * 0x5b20) | 8;
               goto LAB_004c737a;
             }
           }
@@ -14125,10 +14125,10 @@ LAB_004c737a:
         local_98 = local_98 + 1;
       }
       Ai_PopBoardState();
-      if ((((int)(&g_PlayerCreatureCount)[arg1] <= local_2ac) &&
-          (0 < (int)(&g_PlayerCreatureCount)[arg1])) &&
-         (0 < (int)(&g_PlayerCreatureCount)[1 - arg1])) {
-        g_AiDamageAssignmentBuffer = g_AiDamageAssignmentBuffer + ((local_2ac - (&g_PlayerCreatureCount)[arg1]) + 2) * 0x80;
+      if ((((int)(&g_PlayerCreatureCount)[x] <= local_2ac) &&
+          (0 < (int)(&g_PlayerCreatureCount)[x])) &&
+         (0 < (int)(&g_PlayerCreatureCount)[1 - x])) {
+        g_AiDamageAssignmentBuffer = g_AiDamageAssignmentBuffer + ((local_2ac - (&g_PlayerCreatureCount)[x]) + 2) * 0x80;
         g_AiDamageAssignmentBuffer = g_AiDamageAssignmentBuffer + DAT_00559998;
       }
       if (g_AiDamageAssignmentBuffer < local_258) {
@@ -14155,7 +14155,7 @@ LAB_004c72aa:
  * Size: 317 bytes
  */
 
-void Ai_Subsystem_004c7aa8(int arg1)
+void Ai_Subsystem_004c7aa8(int x)
 
 {
   int u_res;
@@ -14163,13 +14163,13 @@ void Ai_Subsystem_004c7aa8(int arg1)
   
   u_res = g_CardSlot_PowerBonus;
   g_CardSlot_PowerBonus = 2;
-  Ai_Subsystem_004c4c84(arg1);
-  DAT_005597b8 = (uint)(g_CurrentTurnPhase != arg1);
+  Ai_Subsystem_004c4c84(x);
+  DAT_005597b8 = (uint)(g_CurrentTurnPhase != x);
   g_AiDamageAssignmentBuffer = 0xffffd8f1;
   for (local_c = 0; local_c < 0x10; local_c = local_c + 1) {
     *(int *)(&DAT_00559738 + local_c * 4) = 0;
   }
-  Ai_Subsystem_004c7be5(arg1,0);
+  Ai_Subsystem_004c7be5(x,0);
   if ((g_IsAiThinking == 1) || (g_DefendingPlayer == g_CurrentTurnPhase)) {
     for (local_c = 0; local_c < g_AiCombatScoreBuffer; local_c = local_c + 1) {
       (&g_CardSlot_ColorMask)[g_AiCreatureToughnessEval * 0x5b20 + (&g_AiCombatDamageTable)[local_c] * 0x120] =
@@ -14195,7 +14195,7 @@ void Ai_Subsystem_004c7aa8(int arg1)
  * Size: 388 bytes
  */
 
-void Ai_Subsystem_004c7be5(int arg1, int arg2)
+void Ai_Subsystem_004c7be5(int x, int arg2)
 
 {
   int status;
@@ -14213,7 +14213,7 @@ void Ai_Subsystem_004c7be5(int arg1, int arg2)
     status = (&g_AiCombatDamageTable)[arg2] * 0x120 + g_AiCreatureToughnessEval * 0x5b20;
     if ((((&g_CardSlot_StateByte)[status] & 0x80) == 0) || ((&g_CardSlot_ColorMask)[status] == -1)) {
       *(int *)(&DAT_00559958 + arg2 * 4) = 0xffffffff;
-      Ai_Subsystem_004c7be5(arg1,arg2 + 1);
+      Ai_Subsystem_004c7be5(x,arg2 + 1);
     }
     for (local_c = 0; local_c < g_AiCreaturePowerEval; local_c = local_c + 1) {
       if (((*(int *)(&DAT_00559b40 + local_c * 4) < DAT_00559888) &&
@@ -14222,7 +14222,7 @@ void Ai_Subsystem_004c7be5(int arg1, int arg2)
           ((int)(char)(&g_CardSlot_ColorMask)[status] == (&g_AiAttackerList)[local_c])))) {
         *(int *)(&DAT_00559b40 + local_c * 4) = *(int *)(&DAT_00559b40 + local_c * 4) + 1;
         *(int *)(&DAT_00559958 + arg2 * 4) = (&g_AiAttackerList)[local_c];
-        Ai_Subsystem_004c7be5(arg1,arg2 + 1);
+        Ai_Subsystem_004c7be5(x,arg2 + 1);
         *(int *)(&DAT_00559b40 + local_c * 4) = *(int *)(&DAT_00559b40 + local_c * 4) + -1;
       }
     }
@@ -14514,15 +14514,15 @@ void Ai_EvalAttackCandidate_General(uint player)
              (((byte)*(int *)(&g_CardSlot_Flags + spell_id * 0x5b20 + local_e4[7] * 0x120) &
               6) == 6)) {
             (&g_AiAttackerList)[g_AiCreaturePowerEval] = local_e4[7];
-            u_res = FUN_00473179(spell_id,local_e4[7],0x33,0xffffffff);
+            u_res = Card_TapForMana(spell_id,local_e4[7],0x33,0xffffffff);
             (&g_AiCandidateScoreList)[g_AiCreaturePowerEval] = u_res;
-            u_res = FUN_00473179(spell_id,local_e4[7],0x34,0xffffffff);
+            u_res = Card_TapForMana(spell_id,local_e4[7],0x34,0xffffffff);
             (&g_AiBlockerList)[g_AiCreaturePowerEval] = u_res;
             local_b4 = 0;
             (&g_AiCombatSimulationState)[g_AiCreaturePowerEval] = 0;
             val_result = Ai_Subsystem_004c9f3a(local_64,(&g_AiBlockerList)[g_AiCreaturePowerEval]);
             if (val_result != 0) {
-              local_b4 = FUN_00473179(spell_id,local_e4[7],0x32,0xffffffff);
+              local_b4 = Card_TapForMana(spell_id,local_e4[7],0x32,0xffffffff);
               if (local_b4 < 0) {
                 local_b4 = 0;
               }
@@ -14548,17 +14548,17 @@ void Ai_EvalAttackCandidate_General(uint player)
               ((char)(&g_CardSlot_ColorMask)[local_e4[7] * 0x120 + local_6c * 0x5b20] == local_60))
              && (((&g_CardSlot_Flags)[local_e4[7] * 0x120 + local_6c * 0x5b20] & 2) != 0)) {
             (&g_AiCombatDamageTable)[g_AiCombatScoreBuffer] = local_e4[7];
-            val_result = FUN_00473179(local_6c,local_e4[7],0x33,local_60);
+            val_result = Card_TapForMana(local_6c,local_e4[7],0x33,local_60);
             (&g_AiCandidateCardList)[g_AiCombatScoreBuffer] =
                  val_result - *(short *)(&g_CardSlot_Power + local_e4[7] * 0x120 + local_6c * 0x5b20);
-            u_res = FUN_00473179(local_6c,local_e4[7],0x34,0xffffffff);
+            u_res = Card_TapForMana(local_6c,local_e4[7],0x34,0xffffffff);
             (&g_AiBlockerAssignmentList)[g_AiCombatScoreBuffer] = u_res;
             local_e4[4] = 0;
             (&g_AiLethalDamageFlag)[g_AiCombatScoreBuffer] = 0;
             if ((((&g_CardSlot_Flags)[local_e4[7] * 0x120 + local_6c * 0x5b20] & 0x10) == 0) &&
                (val_result = Ai_Subsystem_004c9f3a(local_64,(&g_AiBlockerAssignmentList)[g_AiCombatScoreBuffer]), val_result != 0))
             {
-              local_e4[4] = FUN_00473179(local_6c,local_e4[7],0x32,local_60);
+              local_e4[4] = Card_TapForMana(local_6c,local_e4[7],0x32,local_60);
               if (local_e4[4] < 0) {
                 local_e4[4] = 0;
               }
@@ -14585,7 +14585,7 @@ void Ai_EvalAttackCandidate_General(uint player)
               for (local_b8 = 0; local_b8 < g_AiCreaturePowerEval; local_b8 = local_b8 + 1) {
                 val_result = Ai_Subsystem_004c9f3a(local_64,(&g_AiBlockerList)[local_b8]);
                 if ((val_result != 0) &&
-                   (local_50[0] = FUN_0041db67(local_6c,g_AiCombatDamageTable,(&g_AiCombatSimulationState)[local_b8],
+                   (local_50[0] = Card_ApplyCombatDamage(local_6c, g_AiCombatDamageTable, (&g_AiCombatSimulationState)[local_b8],
                                                spell_id,(&g_AiAttackerList)[local_b8]),
                    local_c = local_50[0], local_50[0] != -1)) {
                   *(uint *)(&g_CardSlot_Abilities1 + local_50[0] * 0x120 + spell_id * 0x5b20) =
@@ -14685,7 +14685,7 @@ void Ai_EvalAttackCandidate_General(uint player)
                         local_e4[5] = local_b4;
                       }
                       if (local_50[local_68] == -1) {
-                        local_c = FUN_0041db67(local_e4[8],local_c0,local_e4[5],spell_id,
+                        local_c = Card_ApplyCombatDamage(local_e4[8],local_c0,local_e4[5],spell_id,
                                                (&g_AiAttackerList)[local_b8]);
                         local_50[local_68] = local_c;
                         if (local_c != -1) {
@@ -14722,7 +14722,7 @@ void Ai_EvalAttackCandidate_General(uint player)
               for (local_b8 = 0; local_b8 < g_AiCombatScoreBuffer; local_b8 = local_b8 + 1) {
                 val_result = Ai_Subsystem_004c9f3a(local_64,(&g_AiBlockerAssignmentList)[local_b8]);
                 if (((val_result != 0) &&
-                    (local_ac[0] = FUN_0041db67(spell_id,g_AiAttackerList,(&g_AiLethalDamageFlag)[local_b8],
+                    (local_ac[0] = Card_ApplyCombatDamage(spell_id,g_AiAttackerList,(&g_AiLethalDamageFlag)[local_b8],
                                                 local_6c,(&g_AiCombatDamageTable)[local_b8]),
                     local_c = local_ac[0], local_ac[0] != -1)) &&
                    (*(uint *)(&g_CardSlot_Abilities1 + local_ac[0] * 0x120 + local_6c * 0x5b20) =
@@ -14801,7 +14801,7 @@ void Ai_EvalAttackCandidate_General(uint player)
                         local_e4[5] = local_e4[4];
                       }
                       if (local_ac[local_68] == -1) {
-                        local_c = FUN_0041db67(spell_id,local_c0,local_e4[5],local_6c,
+                        local_c = Card_ApplyCombatDamage(spell_id,local_c0,local_e4[5],local_6c,
                                                (&g_AiCombatDamageTable)[local_b8]);
                         local_ac[local_68] = local_c;
                         if ((local_c != -1) &&
@@ -14836,7 +14836,7 @@ void Ai_EvalAttackCandidate_General(uint player)
       if ((*(int *)(&g_CardSlot_CardId + local_e4[7] * 0x120 + local_6c * 0x5b20) != -1) &&
          ((&g_CardSlot_ColorMask)[local_e4[7] * 0x120 + local_6c * 0x5b20] != -1)) {
         (&g_AiCombatDamageTable)[g_AiCombatScoreBuffer] = local_e4[7];
-        val_result = FUN_00473179(local_6c,local_e4[7],0x33,local_60);
+        val_result = Card_TapForMana(local_6c,local_e4[7],0x33,local_60);
         (&g_AiCandidateCardList)[g_AiCombatScoreBuffer] =
              val_result - *(short *)(&g_CardSlot_Power + local_e4[7] * 0x120 + local_6c * 0x5b20);
         val_result = Ai_Subsystem_004cb1d6(local_6c,local_e4[7]);
@@ -14937,15 +14937,15 @@ void Ai_EvalAttackCandidate_General(uint player)
  * Size: 78 bytes
  */
 
-int Ai_Subsystem_004c9f3a(int arg1, uint arg2)
+int Ai_Subsystem_004c9f3a(int x, uint arg2)
 
 {
   int u_res;
   
-  if ((arg1 == 0) && ((arg2 & 0x100) != 0)) {
+  if ((x == 0) && ((arg2 & 0x100) != 0)) {
     u_res = 1;
   }
-  else if ((arg1 == 0) || ((arg2 & 0x100) != 0)) {
+  else if ((x == 0) || ((arg2 & 0x100) != 0)) {
     u_res = 0;
   }
   else {
@@ -14966,22 +14966,22 @@ int Ai_Subsystem_004c9f3a(int arg1, uint arg2)
  * Size: 243 bytes
  */
 
-int Ai_Overworld_EvaluateEncounterThreat(int arg1)
+int Ai_Overworld_EvaluateEncounterThreat(int x)
 
 {
   int local_8;
   
   for (local_8 = 0; local_8 < g_AiCombatScoreBuffer; local_8 = local_8 + 1) {
-    *(uint *)(&g_CardSlot_Flags + (1 - arg1) * 0x5b20 + (&g_AiCombatDamageTable)[local_8] * 0x120) =
-         *(uint *)(&g_CardSlot_Flags + (1 - arg1) * 0x5b20 + (&g_AiCombatDamageTable)[local_8] * 0x120) &
+    *(uint *)(&g_CardSlot_Flags + (1 - x) * 0x5b20 + (&g_AiCombatDamageTable)[local_8] * 0x120) =
+         *(uint *)(&g_CardSlot_Flags + (1 - x) * 0x5b20 + (&g_AiCombatDamageTable)[local_8] * 0x120) &
          0xfffffff7;
   }
-  for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[arg1]; local_8 = local_8 + 1) {
-    if (((&g_CardSlot_Flags)[arg1 * 0x5b20 + local_8 * 0x120] & 4) != 0) {
-      *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_8 * 0x120) =
-           *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_8 * 0x120) & 0xfffffffb;
-      *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_8 * 0x120) =
-           *(uint *)(&g_CardSlot_Flags + arg1 * 0x5b20 + local_8 * 0x120) | 0x40;
+  for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[x]; local_8 = local_8 + 1) {
+    if (((&g_CardSlot_Flags)[x * 0x5b20 + local_8 * 0x120] & 4) != 0) {
+      *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_8 * 0x120) =
+           *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_8 * 0x120) & 0xfffffffb;
+      *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_8 * 0x120) =
+           *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + local_8 * 0x120) | 0x40;
     }
   }
   return 1;
@@ -15028,7 +15028,7 @@ void Ai_Subsystem_004ca07b(void)
 /* WARNING: Removing unreachable block (ram,0x004ca67e) */
 /* WARNING: Removing unreachable block (ram,0x004ca688) */
 
-void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int * arg7, int * arg8)
+void Ai_Subsystem_004ca0d9(int x, int arg2, int arg3, int arg4, int arg5, int arg6, int * arg7, int * arg8)
 
 {
   int status;
@@ -15045,7 +15045,7 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
   int local_10;
   int local_c;
   
-  status = 1 - arg1;
+  status = 1 - x;
   if (arg2 < g_AiCreaturePowerEval) {
     val_result = (&g_AiCombatSimulationState)[arg2];
     temp_idx = val_result + 1;
@@ -15072,7 +15072,7 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
           local_2c = local_2c + local_38;
         }
         *(int *)(&DAT_005599e0 + arg2 * 4) = local_2c;
-        Ai_Subsystem_004ca0d9(arg1,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
+        Ai_Subsystem_004ca0d9(x,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
       }
       else {
         if (4999999 < local_3c) {
@@ -15091,7 +15091,7 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
           }
           if (local_38 == 0) {
             *(int *)(&DAT_005599e0 + arg2 * 4) = local_28;
-            Ai_Subsystem_004ca0d9(arg1,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
+            Ai_Subsystem_004ca0d9(x,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
           }
         }
       }
@@ -15105,26 +15105,26 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
           local_24 = 0;
         }
         if (local_24 != 0) {
-          val_result = FUN_0041db67(status,(&g_AiCombatDamageTable)[local_30],local_24,arg1,(&g_AiAttackerList)[arg2]
+          val_result = Card_ApplyCombatDamage(status,(&g_AiCombatDamageTable)[local_30],local_24,x,(&g_AiAttackerList)[arg2]
                               );
           *(int *)(arg4 + local_30 * 4) = val_result;
           if (val_result != -1) {
-            *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) =
-                 *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) | 0x40000;
+            *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) =
+                 *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) | 0x40000;
             if ((*(byte *)(&g_AiBlockerList + arg2) & 0x80) != 0) {
-              *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) =
-                   *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) | 0x80000;
+              *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) =
+                   *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) | 0x80000;
             }
             if (arg5 == 0) {
-              *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) =
-                   *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + val_result * 0x120) | 0x100000;
+              *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) =
+                   *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + val_result * 0x120) | 0x100000;
             }
           }
         }
         *(int *)(&g_AiCombatRoundResult + local_30 * 4 + arg2 * 0x40) = local_24;
         local_2c = local_2c / temp_idx;
       }
-      Ai_Subsystem_004ca0d9(arg1,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
+      Ai_Subsystem_004ca0d9(x,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
     }
   }
   else {
@@ -15146,7 +15146,7 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
         local_c = local_c + *(int *)(&DAT_006a5f70 +
                                     status * 0x5b20 + (&g_AiCombatDamageTable)[local_28] * 0x120) +
                   (local_40 - (&g_AiCandidateCardList)[local_28]);
-        val_result = FUN_0040a305(local_40 - (&g_AiCandidateCardList)[local_28],0,local_1c);
+        val_result = Math_Clamp(local_40 - (&g_AiCandidateCardList)[local_28],0,local_1c);
         local_10 = local_10 - val_result;
       }
     }
@@ -15189,7 +15189,7 @@ void Ai_Subsystem_004ca0d9(int arg1, int arg2, int arg3, int arg4, int arg5, int
  * Size: 1150 bytes
  */
 
-void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int * arg7, int * arg8)
+void Ai_Subsystem_004ca714(int x, int arg2, int arg3, int arg4, int arg5, int arg6, int * arg7, int * arg8)
 
 {
   int status;
@@ -15204,7 +15204,7 @@ void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int
   int local_14;
   int local_8;
   
-  status = 1 - arg1;
+  status = 1 - x;
   if (arg2 < g_AiCombatScoreBuffer) {
     if (((&g_CardSlot_Flags)[status * 0x5b20 + (&g_AiCombatDamageTable)[arg2] * 0x120] & 0x10) == 0) {
       temp_idx = (&g_AiLethalDamageFlag)[arg2];
@@ -15227,7 +15227,7 @@ void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int
           }
           if (local_28 == 0) {
             *(int *)(&DAT_005599e0 + arg2 * 4) = local_18;
-            Ai_Subsystem_004ca714(arg1,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
+            Ai_Subsystem_004ca714(x,arg2 + 1,arg3,arg4,arg5,0,arg7,arg_8);
           }
         }
       }
@@ -15240,7 +15240,7 @@ void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int
             local_14 = 0;
           }
           if (local_14 != 0) {
-            temp_idx = FUN_0041db67(arg1,(&g_AiAttackerList)[local_20],local_14,status,
+            temp_idx = Card_ApplyCombatDamage(x,(&g_AiAttackerList)[local_20],local_14,status,
                                  (&g_AiCombatDamageTable)[arg2]);
             *(int *)(arg4 + local_20 * 4) = temp_idx;
             if ((temp_idx != -1) &&
@@ -15253,11 +15253,11 @@ void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int
           }
           local_1c = local_1c / val_result;
         }
-        Ai_Subsystem_004ca714(arg1,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
+        Ai_Subsystem_004ca714(x,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
       }
     }
     else {
-      Ai_Subsystem_004ca714(arg1,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
+      Ai_Subsystem_004ca714(x,arg2 + 1,arg3,arg4,arg5,arg6,arg7,arg_8);
     }
   }
   else {
@@ -15272,7 +15272,7 @@ void Ai_Subsystem_004ca714(int arg1, int arg2, int arg3, int arg4, int arg5, int
       }
       else {
         local_8 = local_8 + *(int *)(&DAT_006a5f70 +
-                                    arg1 * 0x5b20 + (&g_AiAttackerList)[local_18] * 0x120) +
+                                    x * 0x5b20 + (&g_AiAttackerList)[local_18] * 0x120) +
                   (local_30 - (&g_AiCandidateScoreList)[local_18]);
       }
     }
@@ -15357,16 +15357,16 @@ void Ai_Subsystem_004cab92(void)
  * Size: 96 bytes
  */
 
-void Ai_Subsystem_004cad65(int arg1, int arg2, int arg3)
+void Ai_Subsystem_004cad65(int x, int arg2, int arg3)
 
 {
   if (arg3 == 0) {
-    *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) =
-         *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) & 0xfffdffff;
+    *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + x * 0x5b20) =
+         *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + x * 0x5b20) & 0xfffdffff;
   }
   else {
-    *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) =
-         *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) | 0x20000;
+    *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + x * 0x5b20) =
+         *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + x * 0x5b20) | 0x20000;
   }
   return;
 }
@@ -15383,16 +15383,16 @@ void Ai_Subsystem_004cad65(int arg1, int arg2, int arg3)
  * Size: 96 bytes
  */
 
-void Ai_Subsystem_004cadc5(int arg1, int arg2, int arg3)
+void Ai_Subsystem_004cadc5(int x, int arg2, int arg3)
 
 {
   if (arg3 == 0) {
-    *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + arg2 * 0x120) =
-         *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + arg2 * 0x120) & 0xfffdffff;
+    *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + arg2 * 0x120) =
+         *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + arg2 * 0x120) & 0xfffdffff;
   }
   else {
-    *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + arg2 * 0x120) =
-         *(uint *)(&g_CardSlot_Abilities1 + arg1 * 0x5b20 + arg2 * 0x120) | 0x20000;
+    *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + arg2 * 0x120) =
+         *(uint *)(&g_CardSlot_Abilities1 + x * 0x5b20 + arg2 * 0x120) | 0x20000;
   }
   return;
 }
@@ -15409,10 +15409,10 @@ void Ai_Subsystem_004cadc5(int arg1, int arg2, int arg3)
  * Size: 34 bytes
  */
 
-void Ai_Util_004cae25(WPARAM arg1)
+void Ai_Util_004cae25(WPARAM x)
 
 {
-  PostMessageA(g_AiDecisionMatrix_Row,0x464,arg1,0);
+  PostMessageA(g_AiDecisionMatrix_Row,0x464,x,0);
   return;
 }
 
@@ -15428,7 +15428,7 @@ void Ai_Util_004cae25(WPARAM arg1)
  * Size: 518 bytes
  */
 
-int Ai_Subsystem_004cae47(int arg1, int arg2)
+int Ai_Subsystem_004cae47(int x, int arg2)
 
 {
   int status;
@@ -15437,9 +15437,9 @@ int Ai_Subsystem_004cae47(int arg1, int arg2)
   int local_20;
   int local_8;
   
-  status = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
-  local_20 = FUN_00473179(arg1,arg2,0x32,0xffffffff);
-  local_24 = FUN_00473179(arg1,arg2,0x33,0xffffffff);
+  status = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
+  local_20 = Card_TapForMana(x,arg2,0x32,0xffffffff);
+  local_24 = Card_TapForMana(x,arg2,0x33,0xffffffff);
   if (local_20 == 0) {
     local_20 = 0;
   }
@@ -15475,7 +15475,7 @@ int Ai_Subsystem_004cae47(int arg1, int arg2)
   if (((&g_MasterCardSubtypeTable)[status * 0x34] & 0x10) != 0) {
     local_8 = local_8 * 3;
   }
-  if (((&g_CardSlot_StateByte)[arg2 * 0x120 + arg1 * 0x5b20] & 0x80) != 0) {
+  if (((&g_CardSlot_StateByte)[arg2 * 0x120 + x * 0x5b20] & 0x80) != 0) {
     local_8 = local_8 << 1;
   }
   return local_8;
@@ -15493,7 +15493,7 @@ int Ai_Subsystem_004cae47(int arg1, int arg2)
  * Size: 393 bytes
  */
 
-int Ai_Subsystem_004cb04d(int arg1, int arg2)
+int Ai_Subsystem_004cb04d(int x, int arg2)
 
 {
   int status;
@@ -15502,9 +15502,9 @@ int Ai_Subsystem_004cb04d(int arg1, int arg2)
   int local_20;
   int local_8;
   
-  status = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
-  local_20 = FUN_00473179(arg1,arg2,0x32,0xffffffff);
-  local_24 = FUN_00473179(arg1,arg2,0x33,0xffffffff);
+  status = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
+  local_20 = Card_TapForMana(x,arg2,0x32,0xffffffff);
+  local_24 = Card_TapForMana(x,arg2,0x33,0xffffffff);
   if (local_20 == 0) {
     local_20 = 0;
   }
@@ -15549,7 +15549,7 @@ int Ai_Subsystem_004cb04d(int arg1, int arg2)
  * Size: 237 bytes
  */
 
-int Ai_Subsystem_004cb1d6(int arg1, int arg2)
+int Ai_Subsystem_004cb1d6(int x, int arg2)
 
 {
   int local_c;
@@ -15561,7 +15561,7 @@ int Ai_Subsystem_004cb1d6(int arg1, int arg2)
       return 0;
     }
     for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_c]; local_8 = local_8 + 1) {
-      if ((((char)(&g_CardSlot_Toughness)[local_8 * 0x120 + local_c * 0x5b20] == arg1) &&
+      if ((((char)(&g_CardSlot_Toughness)[local_8 * 0x120 + local_c * 0x5b20] == x) &&
           (*(int *)(&g_CardSlot_OriginalCardId + local_8 * 0x120 + local_c * 0x5b20) == arg2)) &&
          (*(int *)(&g_MasterCardTypeTable +
                   *(int *)(&g_CardSlot_CardId + local_8 * 0x120 + local_c * 0x5b20) * 0x34) == 0x285
@@ -15603,10 +15603,10 @@ int Ai_Util_004cb2d0(void)
  * Size: 52 bytes
  */
 
-uint Ai_Subsystem_004cbad0(int arg1, int arg2)
+uint Ai_Subsystem_004cbad0(int x, int arg2)
 
 {
-  return *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) & 0xff00;
+  return *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + x * 0x5b20) & 0xff00;
 }
 
 /*
@@ -15621,10 +15621,10 @@ uint Ai_Subsystem_004cbad0(int arg1, int arg2)
  * Size: 47 bytes
  */
 
-int Ai_Util_004cbb04(int arg1, int arg2)
+int Ai_Util_004cbb04(int x, int arg2)
 
 {
-  return *(int *)(&g_CardSlot_ConvertedManaCost + arg2 * 0x120 + arg1 * 0x5b20);
+  return *(int *)(&g_CardSlot_ConvertedManaCost + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -15639,13 +15639,13 @@ int Ai_Util_004cbb04(int arg1, int arg2)
  * Size: 106 bytes
  */
 
-uint Ai_Subsystem_004cbb33(int arg1, int arg2)
+uint Ai_Subsystem_004cbb33(int x, int arg2)
 
 {
   int status;
   uint u_temp;
   
-  status = Ai_Util_004cbc36(arg1,arg2);
+  status = Ai_Util_004cbc36(x,arg2);
   if (status == -1) {
     u_temp = 0;
   }
@@ -15653,7 +15653,7 @@ uint Ai_Subsystem_004cbb33(int arg1, int arg2)
     u_temp = 0;
   }
   else {
-    u_temp = Ai_Util_004cbb04(arg1,arg2);
+    u_temp = Ai_Util_004cbb04(x,arg2);
     u_temp = u_temp & 0xf;
   }
   return u_temp;
@@ -15671,10 +15671,10 @@ uint Ai_Subsystem_004cbb33(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cbba7(int arg1, int arg2)
+int Ai_Util_004cbba7(int x, int arg2)
 
 {
-  return (int)(char)(&g_CardSlot_ColorMask)[arg2 * 0x120 + arg1 * 0x5b20];
+  return (int)(char)(&g_CardSlot_ColorMask)[arg2 * 0x120 + x * 0x5b20];
 }
 
 /*
@@ -15689,10 +15689,10 @@ int Ai_Util_004cbba7(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cbbd7(int arg1, int arg2)
+int Ai_Util_004cbbd7(int x, int arg2)
 
 {
-  return (int)*(short *)(&g_CardSlot_Power + arg2 * 0x120 + arg1 * 0x5b20);
+  return (int)*(short *)(&g_CardSlot_Power + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -15707,10 +15707,10 @@ int Ai_Util_004cbbd7(int arg1, int arg2)
  * Size: 47 bytes
  */
 
-int Ai_Util_004cbc07(int arg1, int arg2)
+int Ai_Util_004cbc07(int x, int arg2)
 
 {
-  return *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + arg1 * 0x5b20);
+  return *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -15725,10 +15725,10 @@ int Ai_Util_004cbc07(int arg1, int arg2)
  * Size: 47 bytes
  */
 
-int Ai_Util_004cbc36(int arg1, int arg2)
+int Ai_Util_004cbc36(int x, int arg2)
 
 {
-  return *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
+  return *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -15743,17 +15743,17 @@ int Ai_Util_004cbc36(int arg1, int arg2)
  * Size: 106 bytes
  */
 
-int Ai_Subsystem_004cbc65(int arg1, int arg2)
+int Ai_Subsystem_004cbc65(int x, int arg2)
 
 {
   int u_res;
   int val_result;
   
-  if ((arg1 == -1) || (arg2 == -1)) {
+  if ((x == -1) || (arg2 == -1)) {
     u_res = 0xffffffff;
   }
   else {
-    val_result = Ai_Util_004cbc36(arg1,arg2);
+    val_result = Ai_Util_004cbc36(x,arg2);
     if (val_result == -1) {
       u_res = 0xffffffff;
     }
@@ -15783,14 +15783,14 @@ int Ai_Overworld_ChooseRoamDirection(int player)
   int local_8;
   
                     /* 0xcbcd9  3  CardTypeFromID */
-  if (arg1 == -1) {
+  if (x == -1) {
     local_8 = -1;
   }
   else {
     local_8 = -1;
     local_c = 0;
     while ((*(int *)(&g_MasterCardTypeTable + local_c * 0x34) != -1 && (local_8 == -1))) {
-      if (*(int *)(&g_MasterCardTypeTable + local_c * 0x34) == arg1) {
+      if (*(int *)(&g_MasterCardTypeTable + local_c * 0x34) == x) {
         local_8 = local_c;
       }
       local_c = local_c + 1;
@@ -15811,17 +15811,17 @@ int Ai_Overworld_ChooseRoamDirection(int player)
  * Size: 61 bytes
  */
 
-int Ai_Subsystem_004cbd67(uint arg1)
+int Ai_Subsystem_004cbd67(uint x)
 
 {
   int u_res;
   
                     /* 0xcbd67  1  CardIDFromType */
-  if (arg1 == 0xffffffff) {
+  if (x == 0xffffffff) {
     u_res = 0xffffffff;
   }
   else {
-    u_res = *(int *)(&g_MasterCardTypeTable + (arg1 & 0xfff) * 0x34);
+    u_res = *(int *)(&g_MasterCardTypeTable + (x & 0xfff) * 0x34);
   }
   return u_res;
 }
@@ -15838,17 +15838,17 @@ int Ai_Subsystem_004cbd67(uint arg1)
  * Size: 44 bytes
  */
 
-uint Ai_Util_004cbda9(uint arg1)
+uint Ai_Util_004cbda9(uint x)
 
 {
   uint u_res;
   
                     /* 0xcbda9  2  CardInDeck */
-  if (arg1 == 0xffffffff) {
+  if (x == 0xffffffff) {
     u_res = 0xffffffff;
   }
   else {
-    u_res = arg1 & 0x4000;
+    u_res = x & 0x4000;
   }
   return u_res;
 }
@@ -15865,15 +15865,15 @@ uint Ai_Util_004cbda9(uint arg1)
  * Size: 54 bytes
  */
 
-void Ai_Subsystem_004cbdda(int arg1, int arg2)
+void Ai_Subsystem_004cbdda(int x, int arg2)
 
 {
                     /* 0xcbdda  8  SetCardInDeck */
   if (arg2 == 1) {
-    *(uint *)(&deck + arg1 * 4) = *(uint *)(&deck + arg1 * 4) | 0x4000;
+    *(uint *)(&deck + x * 4) = *(uint *)(&deck + x * 4) | 0x4000;
   }
   else {
-    *(uint *)(&deck + arg1 * 4) = *(uint *)(&deck + arg1 * 4) & 0x8fff;
+    *(uint *)(&deck + x * 4) = *(uint *)(&deck + x * 4) & 0x8fff;
   }
   return;
 }
@@ -15890,10 +15890,10 @@ void Ai_Subsystem_004cbdda(int arg1, int arg2)
  * Size: 66 bytes
  */
 
-bool Ai_Subsystem_004cbe10(int arg1, int arg2)
+bool Ai_Subsystem_004cbe10(int x, int arg2)
 
 {
-  return ((&g_CardSlot_Flags)[arg2 * 0x120 + arg1 * 0x5b20] & 2) != 0;
+  return ((&g_CardSlot_Flags)[arg2 * 0x120 + x * 0x5b20] & 2) != 0;
 }
 
 /*
@@ -15908,23 +15908,23 @@ bool Ai_Subsystem_004cbe10(int arg1, int arg2)
  * Size: 283 bytes
  */
 
-byte Ai_Subsystem_004cbe57(int arg1, int arg2)
+byte Ai_Subsystem_004cbe57(int x, int arg2)
 
 {
   byte is_valid;
   
-  is_valid = ((&DAT_006a5f3e)[arg1 * 0x5b20 + arg2 * 0x120] & 3) != 0;
-  if (((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 0x10) != 0) {
+  is_valid = ((&DAT_006a5f3e)[x * 0x5b20 + arg2 * 0x120] & 3) != 0;
+  if (((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 0x10) != 0) {
     is_valid = is_valid | 2;
   }
-  if (((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 4) != 0) {
+  if (((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 4) != 0) {
     is_valid = is_valid | 4;
   }
-  if ((&g_CardSlot_ColorMask)[arg1 * 0x5b20 + arg2 * 0x120] != -1) {
+  if ((&g_CardSlot_ColorMask)[x * 0x5b20 + arg2 * 0x120] != -1) {
     is_valid = is_valid | 8;
   }
-  if (((&g_CardSlot_Toughness)[arg1 * 0x5b20 + arg2 * 0x120] != -1) &&
-     (*(int *)(&g_CardSlot_OriginalCardId + arg1 * 0x5b20 + arg2 * 0x120) != -1)) {
+  if (((&g_CardSlot_Toughness)[x * 0x5b20 + arg2 * 0x120] != -1) &&
+     (*(int *)(&g_CardSlot_OriginalCardId + x * 0x5b20 + arg2 * 0x120) != -1)) {
     is_valid = is_valid | 0x10;
   }
   return is_valid;
@@ -15942,11 +15942,11 @@ byte Ai_Subsystem_004cbe57(int arg1, int arg2)
  * Size: 94 bytes
  */
 
-undefined8 Ai_Subsystem_004cbf72(int arg1, int arg2)
+undefined8 Ai_Subsystem_004cbf72(int x, int arg2)
 
 {
-  return CONCAT44(*(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + arg1 * 0x5b20),
-                  (int)(char)(&g_CardSlot_Toughness)[arg2 * 0x120 + arg1 * 0x5b20]);
+  return CONCAT44(*(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + x * 0x5b20),
+                  (int)(char)(&g_CardSlot_Toughness)[arg2 * 0x120 + x * 0x5b20]);
 }
 
 /*
@@ -15961,14 +15961,14 @@ undefined8 Ai_Subsystem_004cbf72(int arg1, int arg2)
  * Size: 131 bytes
  */
 
-int Ai_Subsystem_004cbfd0(int arg1, int arg2, int * arg3)
+int Ai_Subsystem_004cbfd0(int x, int arg2, int * arg3)
 
 {
   if (arg3 != (int *)0x0) {
-    *arg3 = (int)(char)(&g_CardSlot_DamageReceived)[arg2 * 0x120 + arg1 * 0x5b20];
-    arg3[1] = *(int *)(&g_CardSlot_TypeFlags + arg2 * 0x120 + arg1 * 0x5b20);
+    *arg3 = (int)(char)(&g_CardSlot_DamageReceived)[arg2 * 0x120 + x * 0x5b20];
+    arg3[1] = *(int *)(&g_CardSlot_TypeFlags + arg2 * 0x120 + x * 0x5b20);
   }
-  return *(int *)(&DAT_006a5f74 + arg2 * 0x120 + arg1 * 0x5b20);
+  return *(int *)(&DAT_006a5f74 + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -15983,17 +15983,17 @@ int Ai_Subsystem_004cbfd0(int arg1, int arg2, int * arg3)
  * Size: 111 bytes
  */
 
-uint8_t Ai_Subsystem_004cc053(int arg1, int arg2)
+uint8_t Ai_Subsystem_004cc053(int x, int arg2)
 
 {
   uint8_t u_res;
   
-  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) == -1) {
+  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) == -1) {
     u_res = 0;
   }
   else {
     u_res = (&g_MasterCardColorTable)
-            [*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34];
+            [*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) * 0x34];
   }
   return u_res;
 }
@@ -16010,10 +16010,10 @@ uint8_t Ai_Subsystem_004cc053(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cc0c7(int arg1, int arg2)
+int Ai_Util_004cc0c7(int x, int arg2)
 
 {
-  return (int)*(short *)(&g_CardSlot_Counters + arg2 * 0x120 + arg1 * 0x5b20);
+  return (int)*(short *)(&g_CardSlot_Counters + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -16028,10 +16028,10 @@ int Ai_Util_004cc0c7(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cc0f7(int arg1, int arg2)
+int Ai_Util_004cc0f7(int x, int arg2)
 
 {
-  return (int)*(short *)(&DAT_006a5f46 + arg2 * 0x120 + arg1 * 0x5b20);
+  return (int)*(short *)(&DAT_006a5f46 + arg2 * 0x120 + x * 0x5b20);
 }
 
 /*
@@ -16046,16 +16046,16 @@ int Ai_Util_004cc0f7(int arg1, int arg2)
  * Size: 92 bytes
  */
 
-int Ai_Subsystem_004cc127(int arg1, int arg2)
+int Ai_Subsystem_004cc127(int x, int arg2)
 
 {
   int u_res;
   
-  if (*(int *)(&g_CardSlot_Abilities2 + arg2 * 0x120 + arg1 * 0x5b20) == -1) {
+  if (*(int *)(&g_CardSlot_Abilities2 + arg2 * 0x120 + x * 0x5b20) == -1) {
     u_res = 0;
   }
   else {
-    u_res = *(int *)(&g_CardSlot_Abilities2 + arg2 * 0x120 + arg1 * 0x5b20);
+    u_res = *(int *)(&g_CardSlot_Abilities2 + arg2 * 0x120 + x * 0x5b20);
   }
   return u_res;
 }
@@ -16072,10 +16072,10 @@ int Ai_Subsystem_004cc127(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cc188(int arg1, int arg2)
+int Ai_Util_004cc188(int x, int arg2)
 
 {
-  return (int)(char)(&DAT_006a5f4d)[arg1 * 0x5b20 + arg2 * 0x120];
+  return (int)(char)(&DAT_006a5f4d)[x * 0x5b20 + arg2 * 0x120];
 }
 
 /*
@@ -16090,10 +16090,10 @@ int Ai_Util_004cc188(int arg1, int arg2)
  * Size: 48 bytes
  */
 
-int Ai_Util_004cc1b8(int arg1, int arg2)
+int Ai_Util_004cc1b8(int x, int arg2)
 
 {
-  return (int)(char)(&g_CardSlot_CountersBonus)[arg2 * 0x120 + arg1 * 0x5b20];
+  return (int)(char)(&g_CardSlot_CountersBonus)[arg2 * 0x120 + x * 0x5b20];
 }
 
 /*
@@ -16108,16 +16108,16 @@ int Ai_Util_004cc1b8(int arg1, int arg2)
  * Size: 110 bytes
  */
 
-char * Ai_Subsystem_004cc1e8(int arg1, int arg2)
+char * Ai_Subsystem_004cc1e8(int x, int arg2)
 
 {
   char *pcVar1;
   
-  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) == -1) {
+  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) == -1) {
     pcVar1 = &DAT_0052e5c8;
   }
   else {
-    pcVar1 = s_Swamp_0051aea9 + *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34;
+    pcVar1 = s_Swamp_0051aea9 + *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) * 0x34;
   }
   return pcVar1;
 }
@@ -16134,17 +16134,17 @@ char * Ai_Subsystem_004cc1e8(int arg1, int arg2)
  * Size: 108 bytes
  */
 
-int Ai_Subsystem_004cc25b(int arg1, int arg2)
+int Ai_Subsystem_004cc25b(int x, int arg2)
 
 {
   int status;
   
-  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) == -1) {
+  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) == -1) {
     status = 0;
   }
   else {
     status = (int)(char)(&DAT_0051aebf)
-                       [*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34];
+                       [*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) * 0x34];
   }
   return status;
 }
@@ -16161,17 +16161,17 @@ int Ai_Subsystem_004cc25b(int arg1, int arg2)
  * Size: 108 bytes
  */
 
-int Ai_Subsystem_004cc2cc(int arg1, int arg2)
+int Ai_Subsystem_004cc2cc(int x, int arg2)
 
 {
   int status;
   
-  if (*(int *)(&g_CardSlot_CardId + arg1 * 0x5b20 + arg2 * 0x120) == -1) {
+  if (*(int *)(&g_CardSlot_CardId + x * 0x5b20 + arg2 * 0x120) == -1) {
     status = 0;
   }
   else {
     status = (int)(char)(&DAT_0051aec0)
-                       [*(int *)(&g_CardSlot_CardId + arg1 * 0x5b20 + arg2 * 0x120) * 0x34];
+                       [*(int *)(&g_CardSlot_CardId + x * 0x5b20 + arg2 * 0x120) * 0x34];
   }
   return status;
 }
@@ -16190,7 +16190,7 @@ int Ai_Subsystem_004cc2cc(int arg1, int arg2)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-int Ai_Subsystem_004cc33d(int arg1, int arg2, int arg3)
+int Ai_Subsystem_004cc33d(int x, int arg2, int arg3)
 
 {
   if (arg2 == 0) {
@@ -16201,8 +16201,8 @@ int Ai_Subsystem_004cc33d(int arg1, int arg2, int arg3)
   }
   _DAT_006ab838 = arg3;
   DAT_006ab82e = 0xff;
-  DAT_006ab82c = (&DAT_0051aebe)[arg1 * 0x34];
-  _DAT_006ab84c = *(int *)(&DAT_0051aecc + arg1 * 0x34);
+  DAT_006ab82c = (&DAT_0051aebe)[x * 0x34];
+  _DAT_006ab84c = *(int *)(&DAT_0051aecc + x * 0x34);
   _DAT_006ab814 = 0xffffffff;
   return 0x4f;
 }
@@ -16219,7 +16219,7 @@ int Ai_Subsystem_004cc33d(int arg1, int arg2, int arg3)
  * Size: 52 bytes
  */
 
-int Ai_Subsystem_004cc3c4(int arg1, int arg2)
+int Ai_Subsystem_004cc3c4(int x, int arg2)
 
 {
   int u_res;
@@ -16228,7 +16228,7 @@ int Ai_Subsystem_004cc3c4(int arg1, int arg2)
     u_res = 0;
   }
   else {
-    u_res = Ai_EndDuel_ProcessRewards(arg1,arg2);
+    u_res = Ai_EndDuel_ProcessRewards(x,arg2);
   }
   return u_res;
 }
@@ -16245,11 +16245,11 @@ int Ai_Subsystem_004cc3c4(int arg1, int arg2)
  * Size: 53 bytes
  */
 
-void Ai_Subsystem_004cc3f8(int arg1, int arg2, int arg3, int arg4)
+void Ai_Subsystem_004cc3f8(int x, int arg2, int arg3, int arg4)
 
 {
   if (g_IsAiThinking != 1) {
-    Ai_Score_InitRegister(arg1,arg2,arg3,arg4);
+    Ai_Score_InitRegister(x,arg2,arg3,arg4);
   }
   return;
 }
@@ -16286,7 +16286,7 @@ void Ai_Overworld_LogAction(char * prompt_text)
  * Size: 69 bytes
  */
 
-int Ai_Subsystem_004cc455(int * arg1, int arg2, int arg3, int arg4, char * str_5)
+int Ai_Subsystem_004cc455(int * x, int arg2, int arg3, int arg4, char * str_5)
 
 {
   int u_res;
@@ -16295,7 +16295,7 @@ int Ai_Subsystem_004cc455(int * arg1, int arg2, int arg3, int arg4, char * str_5
     u_res = 1;
   }
   else {
-    u_res = Ai_ScoreCardPlay_Creature(arg1,0,arg2,arg3,arg4,str_5);
+    u_res = Ai_ScoreCardPlay_Creature(x,0,arg2,arg3,arg4,str_5);
   }
   return u_res;
 }
@@ -16312,7 +16312,7 @@ int Ai_Subsystem_004cc455(int * arg1, int arg2, int arg3, int arg4, char * str_5
  * Size: 71 bytes
  */
 
-int Ai_Subsystem_004cc49a(int * arg1, int arg2, int arg3, int arg4, int arg5, char * str_6)
+int Ai_Subsystem_004cc49a(int * x, int arg2, int arg3, int arg4, int arg5, char * str_6)
 
 {
   int u_res;
@@ -16321,7 +16321,7 @@ int Ai_Subsystem_004cc49a(int * arg1, int arg2, int arg3, int arg4, int arg5, ch
     u_res = 1;
   }
   else {
-    u_res = Ai_ScoreCardPlay_Creature(arg1,arg2,arg3,arg4,arg5,str_6);
+    u_res = Ai_ScoreCardPlay_Creature(x,arg2,arg3,arg4,arg5,str_6);
   }
   return u_res;
 }
@@ -16338,11 +16338,11 @@ int Ai_Subsystem_004cc49a(int * arg1, int arg2, int arg3, int arg4, int arg5, ch
  * Size: 41 bytes
  */
 
-void Ai_Util_004cc4e1(int arg1)
+void Ai_Util_004cc4e1(int x)
 
 {
   if (g_IsAiThinking != 1) {
-    Ai_CalcMana_ResetPool(arg1);
+    Ai_CalcMana_ResetPool(x);
   }
   return;
 }
@@ -16359,15 +16359,15 @@ void Ai_Util_004cc4e1(int arg1)
  * Size: 99 bytes
  */
 
-void Ai_Subsystem_004cc50a(int arg1, int arg2, char * str_3)
+void Ai_Subsystem_004cc50a(int x, int arg2, char * str_3)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      Sprite_Load_dungbutt_00484738(arg1,arg2,str_3);
+      Sprite_Load_dungbutt_00484738(x,arg2,str_3);
     }
     else {
-      Ai_CalcMana_AddSource(arg1,-1,-1);
+      Ai_CalcMana_AddSource(x,-1,-1);
     }
   }
   return;
@@ -16386,7 +16386,7 @@ void Ai_Subsystem_004cc50a(int arg1, int arg2, char * str_3)
  * Size: 595 bytes
  */
 
-int Ai_Deck_SelectStartingHand(int arg1, int arg2, int arg3, int arg4, int arg5, char * str_6, int arg7)
+int Ai_Deck_SelectStartingHand(int x, int arg2, int arg3, int arg4, int arg5, char * str_6, int arg7)
 
 {
   int status;
@@ -16396,10 +16396,10 @@ int Ai_Deck_SelectStartingHand(int arg1, int arg2, int arg3, int arg4, int arg5,
   int local_c;
   uint local_8;
   
-  if ((((g_IsAiThinking != 1) && (-1 < arg1)) && (-1 < arg2)) && (-1 < arg3)) {
+  if ((((g_IsAiThinking != 1) && (-1 < x)) && (-1 < arg2)) && (-1 < arg3)) {
     strcpy(local_26c,str_6);
     g_OverworldWorldState = 0;
-    if (g_CurrentTurnPhase == arg1) {
+    if (g_CurrentTurnPhase == x) {
       Ai_Subsystem_004b90de(arg2,arg3);
       strcat(&g_OverworldWorldState,&DAT_0052e5d8);
     }
@@ -16428,14 +16428,14 @@ int Ai_Deck_SelectStartingHand(int arg1, int arg2, int arg3, int arg4, int arg5,
        (*(int *)(&g_CardSlot_CardId + arg5 * 0x120 + arg4 * 0x5b20) == -1)) {
       Ai_Turn_ExecuteMainPhase(1,0xff);
     }
-    if ((g_CurrentTurnPhase == arg1) && (g_AiTurnDecisionFlag == 0)) {
+    if ((g_CurrentTurnPhase == x) && (g_AiTurnDecisionFlag == 0)) {
       local_274 = 1;
     }
     else {
       local_274 = 0;
     }
     status = Ai_EvalAbility_FirstStrike(arg2,arg3,arg4,arg5,&g_OverworldWorldState,local_274);
-    if ((g_CurrentTurnPhase == arg1) && (g_AiTurnDecisionFlag == 0)) {
+    if ((g_CurrentTurnPhase == x) && (g_AiTurnDecisionFlag == 0)) {
       arg7 = status;
     }
   }
@@ -16454,15 +16454,15 @@ int Ai_Deck_SelectStartingHand(int arg1, int arg2, int arg3, int arg4, int arg5,
  * Size: 79 bytes
  */
 
-void Ai_Subsystem_004cc7c5(int arg1, int arg2)
+void Ai_Subsystem_004cc7c5(int x, int arg2)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      FUN_00484df9(arg1,arg2);
+      FUN_00484df9(x,arg2);
     }
     else {
-      Ai_CalcMana_ClearAvailable(arg1,arg2);
+      Ai_CalcMana_ClearAvailable(x,arg2);
     }
   }
   return;
@@ -16480,15 +16480,15 @@ void Ai_Subsystem_004cc7c5(int arg1, int arg2)
  * Size: 107 bytes
  */
 
-INT_PTR Ai_Subsystem_004cc814(int arg1, char * output_str, INT_PTR arg3, char * str_4, char * str_5, char * str_6)
+INT_PTR Ai_Subsystem_004cc814(int x, char * output_str, INT_PTR arg3, char * str_4, char * str_5, char * str_6)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      arg3 = FUN_004854a4(arg1,output_str,arg3);
+      arg3 = FUN_004854a4(x,output_str,arg3);
     }
     else {
-      arg3 = Ai_ManaSelection_DialogProc(arg1,output_str,arg3,str_4,str_5,str_6);
+      arg3 = Ai_ManaSelection_DialogProc(x,output_str,arg3,str_4,str_5,str_6);
     }
   }
   return arg3;
@@ -16506,15 +16506,15 @@ INT_PTR Ai_Subsystem_004cc814(int arg1, char * output_str, INT_PTR arg3, char * 
  * Size: 95 bytes
  */
 
-INT_PTR Ai_Subsystem_004cc87f(int arg1, char * output_str, INT_PTR arg3)
+INT_PTR Ai_Subsystem_004cc87f(int x, char * output_str, INT_PTR arg3)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      arg3 = FUN_004854a4(arg1,output_str,arg3);
+      arg3 = FUN_004854a4(x,output_str,arg3);
     }
     else {
-      arg3 = Ai_Target_HighlightCandidate(arg1,output_str,arg3);
+      arg3 = Ai_Target_HighlightCandidate(x,output_str,arg3);
     }
   }
   return arg3;
@@ -16532,15 +16532,15 @@ INT_PTR Ai_Subsystem_004cc87f(int arg1, char * output_str, INT_PTR arg3)
  * Size: 95 bytes
  */
 
-INT_PTR Ai_Subsystem_004cc8de(int arg1, char * output_str, INT_PTR arg3)
+INT_PTR Ai_Subsystem_004cc8de(int x, char * output_str, INT_PTR arg3)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      arg3 = FUN_00485605(arg1,output_str,arg3);
+      arg3 = FUN_00485605(x,output_str,arg3);
     }
     else {
-      arg3 = Ai_Attack_ToggleAttacker(arg1,output_str,arg3);
+      arg3 = Ai_Attack_ToggleAttacker(x,output_str,arg3);
     }
   }
   return arg3;
@@ -16558,11 +16558,11 @@ INT_PTR Ai_Subsystem_004cc8de(int arg1, char * output_str, INT_PTR arg3)
  * Size: 65 bytes
  */
 
-int Ai_Subsystem_004cc93d(int arg1, int arg2, int arg3, int arg4, uint arg5)
+int Ai_Subsystem_004cc93d(int x, int arg2, int arg3, int arg4, uint arg5)
 
 {
   if (g_IsAiThinking != 1) {
-    arg4 = Ai_Quest_ProcessChoice(arg1,arg2,arg3,arg4,arg5);
+    arg4 = Ai_Quest_ProcessChoice(x,arg2,arg3,arg4,arg5);
   }
   return arg4;
 }
@@ -16607,7 +16607,7 @@ void Ai_Subsystem_004cc97e(char * prompt_text)
  * Size: 734 bytes
  */
 
-void Ai_Turn_ExecuteMainPhase(int arg1, int arg2)
+void Ai_Turn_ExecuteMainPhase(int x, int arg2)
 
 {
   int u_res;
@@ -16624,7 +16624,7 @@ void Ai_Turn_ExecuteMainPhase(int arg1, int arg2)
       if ((*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)) {
-        FUN_00473179(local_8,local_10,0x3c,0xffffffff);
+        Card_TapForMana(local_8,local_10,0x3c,0xffffffff);
       }
     }
   }
@@ -16635,9 +16635,9 @@ void Ai_Turn_ExecuteMainPhase(int arg1, int arg2)
       if ((*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)) {
-        FUN_00473179(local_8,local_10,0x34,0xffffffff);
-        FUN_00473179(local_8,local_10,0x32,0xffffffff);
-        FUN_00473179(local_8,local_10,0x33,0xffffffff);
+        Card_TapForMana(local_8,local_10,0x34,0xffffffff);
+        Card_TapForMana(local_8,local_10,0x32,0xffffffff);
+        Card_TapForMana(local_8,local_10,0x33,0xffffffff);
       }
     }
   }
@@ -16653,7 +16653,7 @@ void Ai_Turn_ExecuteMainPhase(int arg1, int arg2)
       }
     }
     if (g_AiCombatScore_Blocker == 0) {
-      Pic_Load_combat2_0048369c(arg1,arg2);
+      Pic_Load_combat2_0048369c(x,arg2);
     }
     else {
       SendMessageA(g_MainAppHwnd,0x464,0xffff,0);
@@ -16786,15 +16786,15 @@ void Ai_Subsystem_004cced8(void)
  * Size: 73 bytes
  */
 
-void Ai_Subsystem_004cd14f(int arg1)
+void Ai_Subsystem_004cd14f(int x)
 
 {
   if (g_IsAiThinking != 1) {
     if (g_AiCombatScore_Blocker == 0) {
-      FUN_00485234(arg1);
+      FUN_00485234(x);
     }
     else {
-      Ai_Eval_GetBestCandidate(arg1,1);
+      Ai_Eval_GetBestCandidate(x,1);
     }
   }
   return;
@@ -16880,7 +16880,7 @@ int Ai_Subsystem_004cd20e(void)
                      ,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green);
   FUN_00501736(0x78);
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
-    u_res = FUN_0040a1d2(5);
+    u_res = Math_RandomRange(5);
     switch(u_res) {
     case 0:
       FUN_00409f99(s_decks_0016_dck_0052e5ec,local_8,1,-1);

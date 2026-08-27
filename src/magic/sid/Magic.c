@@ -163,17 +163,17 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
  */
 
 
-bool Magic_ResolveSpellStack(int arg1,int arg2)
+bool Magic_ResolveSpellStack(int x,int arg2)
 
 {
   bool flag_1;
   
-  if (((&g_MasterCardFlagsTable)[*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x10)
+  if (((&g_MasterCardFlagsTable)[*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) * 0x34] & 0x10)
       == 0) {
     flag_1 = false;
   }
   else {
-    flag_1 = ((&g_MasterCardSubtypeTable)[*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 1
+    flag_1 = ((&g_MasterCardSubtypeTable)[*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20) * 0x34] & 1
             ) == 0;
   }
   return flag_1;
@@ -295,7 +295,7 @@ void Magic_UntapTurnPhase(void)
     (&g_ActivePlayerSpellPriority)[match_count] = 0;
     for (card_idx = 0; card_idx < (int)(&g_PlayerActiveCardCount)[match_count]; card_idx = card_idx + 1)
     {
-      val_1 = FUN_00471c32(match_count,card_idx);
+      val_1 = Card_IsTapped(match_count, card_idx);
       if (val_1 == 0) {
         if (*(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20) != -1) {
           (&g_ActivePlayerSpellPriority)[match_count] = (&g_ActivePlayerSpellPriority)[match_count] + 1;
@@ -305,8 +305,8 @@ void Magic_UntapTurnPhase(void)
         val_1 = *(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20);
         arg_1 = (&g_MasterCardColorTable)[val_1 * 0x34];
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 2) != 0) {
-          val_2 = FUN_00473179(match_count,card_idx,0x32,0xffffffff);
-          val_3 = FUN_00473179(match_count,card_idx,0x33,0xffffffff);
+          val_2 = Card_TapForMana(match_count, card_idx, 0x32, 0xffffffff);
+          val_3 = Card_TapForMana(match_count,card_idx,0x33,0xffffffff);
           val_4 = Rules_CalculateManaCostReduction(arg_1);
           *(int *)(&DAT_006b2e40 + val_4 * 4 + match_count * 0x20) =
                *(int *)(&DAT_006b2e40 + val_4 * 4 + match_count * 0x20) + val_2;
@@ -353,11 +353,11 @@ void Magic_UntapTurnPhase(void)
  */
 
 
-void Magic_CheckTurnTriggers(int arg1,int arg2)
+void Magic_CheckTurnTriggers(int x,int arg2)
 
 {
   if (g_IsAiThinking != 1) {
-    Ai_Subsystem_004cc3c4(arg1,arg2);
+    Ai_Subsystem_004cc3c4(x,arg2);
   }
   g_ActivePlayer = 0;
   return;
@@ -1204,7 +1204,7 @@ int FUN_0047643e(void)
  */
 
 
-int FUN_00476482(int arg1,int arg2)
+int FUN_00476482(int x,int arg2)
 
 {
   int slot_idx;
@@ -1217,9 +1217,9 @@ int FUN_00476482(int arg1,int arg2)
     if (*(int *)(&g_CardDisplayOrder_Player + slot_idx * 4) == -1) break;
     slot_idx = slot_idx + 1;
   }
-  *(int *)(&g_CardDisplayOrder_Player + slot_idx * 4) = arg1;
+  *(int *)(&g_CardDisplayOrder_Player + slot_idx * 4) = x;
   *(int *)(&g_CardDisplayOrder_Slot + slot_idx * 4) = arg2;
-  *(int *)(&g_CardSlot_DisplayIndex + arg2 * 0x120 + arg1 * 0x5b20) = slot_idx;
+  *(int *)(&g_CardSlot_DisplayIndex + arg2 * 0x120 + x * 0x5b20) = slot_idx;
   return slot_idx;
 }
 
@@ -1278,7 +1278,7 @@ void FUN_00476510(void)
  */
 
 
-int FUN_00476675(int arg1,int arg2)
+int FUN_00476675(int x,int arg2)
 
 {
   int uval_1;
@@ -1286,27 +1286,27 @@ int FUN_00476675(int arg1,int arg2)
   int match_count;
   uint32_t slot_idx;
   
-  if (((&g_CardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 0x10) == 0) {
+  if (((&g_CardSlot_Flags)[x * 0x5b20 + arg2 * 0x120] & 0x10) == 0) {
     uval_1 = 0;
   }
   else {
     match_count = 0;
     for (slot_idx = 1; (int)slot_idx < 7; slot_idx = slot_idx + 1) {
-      if ((&DAT_006a603c)[slot_idx + arg2 * 0x120 + arg1 * 0x5b20] != '\0') {
-        val_2 = FUN_0040d949(arg1,slot_idx,
-                             (int)(char)(&DAT_006a603c)[slot_idx + arg2 * 0x120 + arg1 * 0x5b20]);
+      if ((&DAT_006a603c)[slot_idx + arg2 * 0x120 + x * 0x5b20] != '\0') {
+        val_2 = Font_DrawString(x,slot_idx,
+                             (int)(char)(&DAT_006a603c)[slot_idx + arg2 * 0x120 + x * 0x5b20]);
         if (val_2 == 0) {
           return 0;
         }
-        match_count = match_count + (char)(&DAT_006a603c)[slot_idx + arg2 * 0x120 + arg1 * 0x5b20];
+        match_count = match_count + (char)(&DAT_006a603c)[slot_idx + arg2 * 0x120 + x * 0x5b20];
       }
     }
-    val_2 = FUN_0040d949(arg1,7,(char)(&DAT_006a603c)[arg1 * 0x5b20 + arg2 * 0x120] + match_count);
+    val_2 = Font_DrawString(x,7,(char)(&DAT_006a603c)[x * 0x5b20 + arg2 * 0x120] + match_count);
     if (val_2 == 0) {
       uval_1 = 0;
     }
     else {
-      Magic_TriggerCardEvent(arg1,arg2,0x88,1 - arg1,0xffffffff);
+      Magic_TriggerCardEvent(x,arg2,0x88,1 - x,0xffffffff);
       if (DAT_006b2e38 == 0) {
         uval_1 = 1;
       }
@@ -1373,19 +1373,19 @@ void FUN_004767ee(int player_id)
  */
 
 
-int FUN_004769c4(int arg1,int arg2)
+int FUN_004769c4(int x,int arg2)
 
 {
   int uval_1;
   int slot_idx;
   
-  if ((arg1 == -1) || (arg2 == -1)) {
+  if ((x == -1) || (arg2 == -1)) {
     uval_1 = 0;
   }
   else {
-    slot_idx = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
+    slot_idx = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
     if (DAT_006fd3f4 == slot_idx) {
-      slot_idx = *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + arg1 * 0x5b20);
+      slot_idx = *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + x * 0x5b20);
     }
     if (slot_idx == -1) {
       uval_1 = 0;
@@ -1418,7 +1418,7 @@ void FUN_00476a80(void)
   
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[slot_idx]; match_count = match_count + 1) {
-      val_1 = FUN_00471c32(slot_idx,match_count);
+      val_1 = Card_IsTapped(slot_idx,match_count);
       if (val_1 != 0) {
         *(int *)(&g_CardSlot_SpecialState + match_count * 0x120 + slot_idx * 0x5b20) = 0;
       }
@@ -1448,7 +1448,7 @@ void FUN_00476b0e(void)
     for (card_idx = 0; card_idx < (int)(&g_PlayerActiveCardCount)[slot_idx]; card_idx = card_idx + 1)
     {
       if (((&g_CardSlot_SpecialState)[card_idx * 0x120 + slot_idx * 0x5b20] & 4) == 0) {
-        val_1 = FUN_00471c32(slot_idx,card_idx);
+        val_1 = Card_IsTapped(slot_idx,card_idx);
         if (val_1 != 0) {
           for (match_count = 0; match_count < 7; match_count = match_count + 1) {
             (&DAT_006a603c)[match_count + slot_idx * 0x5b20 + card_idx * 0x120] = 0;
@@ -1656,7 +1656,7 @@ uint32_t UI_Register_WINBK_TellUser_004771fa(HWND hwnd,uint32_t y,LPSTR str_3,in
       slot_idx = (LPSTR)GetWindowLongA(hwnd,0);
       local_14c = BeginPaint(hwnd,&local_148);
       if (local_14c != (HDC)0x0) {
-        FUN_004f3955(local_14c);
+        GDI_RealizeAndFlushPalette_Magic(local_14c);
         GetClientRect(hwnd,&local_40);
         if (DAT_00538e40 == (HANDLE)0x0) {
           strcpy(local_254,&g_AiCurrentChoiceIndex);
@@ -1813,7 +1813,7 @@ uint32_t UI_Register_WINBK_TellUser_004771fa(HWND hwnd,uint32_t y,LPSTR str_3,in
   }
   else if (y < 0x312) {
     if (0x30e < y) {
-      uval_3 = FUN_004f5d1a(hwnd,y,(HWND)str_3,height);
+      uval_3 = GDI_RealizePaletteTree_Magic(hwnd,y,(HWND)str_3,height);
       return uval_3;
     }
     if (y == 0x201) {
@@ -2133,7 +2133,7 @@ int FUN_00478370(WPARAM arg_1,int y,int width,int height)
     }
     else {
       local_44 = GetDC((HWND)0x0);
-      FUN_004f3955(local_44);
+      GDI_RealizeAndFlushPalette_Magic(local_44);
       FUN_005017f0((int *)&local_30,width,height);
       local_48 = CreateDIBSection(local_44,&local_30,0,&local_38,(HANDLE)0x0,0);
       if (local_48 == (HBITMAP)0x0) {
@@ -2184,20 +2184,20 @@ int FUN_00478370(WPARAM arg_1,int y,int width,int height)
  */
 
 
-uint8_t * FUN_0047865c(int arg1,int arg2)
+uint8_t * FUN_0047865c(int x,int arg2)
 
 {
   uint8_t *match_count;
   int slot_idx;
   
   match_count = (uint8_t *)0x0;
-  if (arg1 == -1) {
+  if (x == -1) {
     match_count = (uint8_t *)0x0;
   }
   else {
     slot_idx = 0;
     while ((slot_idx < DAT_00680778 && (match_count == (uint8_t *)0x0))) {
-      if (((&DAT_006fefc0)[slot_idx * 6] == arg1) && ((&DAT_006fefc4)[slot_idx * 6] == arg2)) {
+      if (((&DAT_006fefc0)[slot_idx * 6] == x) && ((&DAT_006fefc4)[slot_idx * 6] == arg2)) {
         match_count = &DAT_006fefb0 + slot_idx * 0x18;
       }
       slot_idx = slot_idx + 1;
@@ -2324,18 +2324,18 @@ int FUN_0047884f(WPARAM arg_1,int y,int width,int height)
  */
 
 
-void FUN_004788e0(int arg1,int arg2)
+void FUN_004788e0(int x,int arg2)
 
 {
   bool flag_1;
   int card_idx;
   int match_count;
   
-  if (arg1 != -1) {
+  if (x != -1) {
     match_count = 0;
     flag_1 = false;
     while ((match_count < DAT_00680778 && (!flag_1))) {
-      if (((&DAT_006fefc0)[match_count * 6] == arg1) && ((&DAT_006fefc4)[match_count * 6] == arg2)) {
+      if (((&DAT_006fefc0)[match_count * 6] == x) && ((&DAT_006fefc4)[match_count * 6] == arg2)) {
         flag_1 = true;
         if (*(int *)(&DAT_006fefb0 + match_count * 0x18) != 0) {
           DeleteObject(*(HGDIOBJ *)(&DAT_006fefb0 + match_count * 0x18));
@@ -2561,7 +2561,7 @@ uint32_t UI_WndProc_00478c08(HWND hwnd,uint32_t uMsg,uint32_t *wParam,LONG *lPar
       match_count = (LONG *)GetWindowLongA(hwnd,8);
       local_128 = BeginPaint(hwnd,&local_108);
       if (local_128 != (HDC)0x0) {
-        FUN_004f3955(local_128);
+        GDI_RealizeAndFlushPalette_Magic(local_128);
         GetClientRect(hwnd,&local_88);
         local_b0 = SaveDC(DAT_00538e48);
         IntersectClipRect(DAT_00538e48,0,0,local_88.right,local_88.bottom);
@@ -2791,7 +2791,7 @@ uint32_t UI_WndProc_00478c08(HWND hwnd,uint32_t uMsg,uint32_t *wParam,LONG *lPar
     }
     else if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        uVar9 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+        uVar9 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
         return uVar9;
       }
       if (uMsg == 0x201) {
@@ -3054,11 +3054,11 @@ void FUN_00479e3f(HWND hwnd,LPRECT arg2)
  */
 
 
-int Mem_AllocOrFree_00479fb0(int arg1,int arg2)
+int Mem_AllocOrFree_00479fb0(int x,int arg2)
 
 {
   if (arg2 == 2) {
-    Mem_AllocOrFree_00479fdc(arg1);
+    Mem_AllocOrFree_00479fdc(x);
   }
   return 0;
 }
@@ -3088,7 +3088,7 @@ int Mem_AllocOrFree_00479fdc(int player_id)
  */
 
 
-int FUN_00479ff9(int arg1,int arg2)
+int FUN_00479ff9(int x,int arg2)
 
 {
   DWORD DVar1;
@@ -3104,14 +3104,14 @@ int FUN_00479ff9(int arg1,int arg2)
   int *slot_idx;
   
   *(int *)g_DisplaySurfaceScreen = 1;
-  val_2 = *(int *)(&DAT_00525f34 + arg1 * 0x10);
-  val_3 = *(int *)(&DAT_00525f30 + arg1 * 0x10);
+  val_2 = *(int *)(&DAT_00525f34 + x * 0x10);
+  val_3 = *(int *)(&DAT_00525f30 + x * 0x10);
   piVar5 = (int *)g_DisplaySurfaceBackBuffer;
   DVar1 = Ai_Util_004c3bc4(0x2d);
-  FUN_0050dce0((int *)g_DisplaySurfaceWork,*(uint32_t *)(&DAT_00525f30 + arg1 * 0x10),
-               *(int *)(&DAT_00525f34 + arg1 * 0x10),
-               g_AiManaColorCost_Red - *(int *)(&DAT_00525f30 + arg1 * 0x10),DVar1,piVar5,val_3,val_2);
-  switch(arg1) {
+  Surface_BlitToDevice((int *)g_DisplaySurfaceWork,*(uint32_t *)(&DAT_00525f30 + x * 0x10),
+               *(int *)(&DAT_00525f34 + x * 0x10),
+               g_AiManaColorCost_Red - *(int *)(&DAT_00525f30 + x * 0x10),DVar1,piVar5,val_3,val_2);
+  switch(x) {
   case 0:
     slot_idx = &DAT_005394d8;
     break;
@@ -3141,8 +3141,8 @@ int FUN_00479ff9(int arg1,int arg2)
     target_idx = 2;
     player_idx = 3;
   }
-  arg_2 = *(int *)(&DAT_00525f30 + arg1 * 0x10) + (DAT_00525f84 - DAT_00525f80) / 2;
-  arg_3 = *(int *)(&DAT_00525f34 + arg1 * 0x10) + (DAT_00525f84 - DAT_00525f80) / 2;
+  arg_2 = *(int *)(&DAT_00525f30 + x * 0x10) + (DAT_00525f84 - DAT_00525f80) / 2;
+  arg_3 = *(int *)(&DAT_00525f34 + x * 0x10) + (DAT_00525f84 - DAT_00525f80) / 2;
   val_2 = Ai_Util_004c3bc4(2);
   val_3 = Ai_Util_004c3bc4(2);
   if (arg2 == 2) {
@@ -3154,18 +3154,18 @@ int FUN_00479ff9(int arg1,int arg2)
                       *(int *)(&DAT_005394e8 + player_idx * 4));
   }
   val_2 = slot_idx[target_idx];
-  val_3 = *(int *)(&DAT_00525f38 + arg1 * 0x10);
+  val_3 = *(int *)(&DAT_00525f38 + x * 0x10);
   arg_5 = DAT_00525f80;
   val_4 = Ai_Util_004c3bc4(0x24);
   Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2 + val_4,arg_3,val_3,arg_5,val_2);
   *(int *)g_DisplaySurfaceScreen = 0;
-  val_2 = *(int *)(&DAT_00525f34 + arg1 * 0x10);
-  val_3 = *(int *)(&DAT_00525f30 + arg1 * 0x10);
+  val_2 = *(int *)(&DAT_00525f34 + x * 0x10);
+  val_3 = *(int *)(&DAT_00525f30 + x * 0x10);
   piVar5 = (int *)g_DisplaySurfaceScreen;
   DVar1 = Ai_Util_004c3bc4(0x2d);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,*(uint32_t *)(&DAT_00525f30 + arg1 * 0x10),
-               *(int *)(&DAT_00525f34 + arg1 * 0x10),
-               g_AiManaColorCost_Red - *(int *)(&DAT_00525f30 + arg1 * 0x10),DVar1,piVar5,val_3,val_2);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,*(uint32_t *)(&DAT_00525f30 + x * 0x10),
+               *(int *)(&DAT_00525f34 + x * 0x10),
+               g_AiManaColorCost_Red - *(int *)(&DAT_00525f30 + x * 0x10),DVar1,piVar5,val_3,val_2);
   return 0;
 }
 
@@ -3196,7 +3196,7 @@ int Sprite_Load_begin_0047a2e6(void)
   do {
     strcpy(match_count,s_magic3_map_00526a00);
     DAT_00525f28 = -1;
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     FileIO_OpenFileStream(1,0,0,s_menubak_pic_00526a0c,
                  (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
     Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
@@ -3304,19 +3304,19 @@ int Sprite_Load_begin_0047a2e6(void)
  */
 
 
-int FUN_0047a94c(int arg1,int arg2)
+int FUN_0047a94c(int x,int arg2)
 
 {
   bool flag_1;
   int uval_2;
   
   if (g_MouseCaptureFlag == 0) {
-    if ((g_MouseCursorX < *(int *)(arg1 + 0x10)) ||
-       (*(int *)(arg1 + 0x18) + *(int *)(arg1 + 0x10) < g_MouseCursorX)) {
+    if ((g_MouseCursorX < *(int *)(x + 0x10)) ||
+       (*(int *)(x + 0x18) + *(int *)(x + 0x10) < g_MouseCursorX)) {
       flag_1 = false;
     }
-    else if ((g_MouseCursorY < *(int *)(arg1 + 0x14)) ||
-            (*(int *)(arg1 + 0x14) + *(int *)(arg1 + 0x1c) < g_MouseCursorY)) {
+    else if ((g_MouseCursorY < *(int *)(x + 0x14)) ||
+            (*(int *)(x + 0x14) + *(int *)(x + 0x1c) < g_MouseCursorY)) {
       flag_1 = false;
     }
     else {
@@ -3326,13 +3326,13 @@ int FUN_0047a94c(int arg1,int arg2)
       return 0;
     }
   }
-  if (*(int *)(arg1 + 0x40) == 3) {
+  if (*(int *)(x + 0x40) == 3) {
     uval_2 = 0;
   }
   else {
-    FUN_00479ff9((arg1 + -0x525dd8) / 0x54,arg2);
-    if ((arg2 == 2) && (*(int *)(arg1 + 0x28) != 0)) {
-      (**(code **)(arg1 + 0x28))(arg1);
+    FUN_00479ff9((x + -0x525dd8) / 0x54,arg2);
+    if ((arg2 == 2) && (*(int *)(x + 0x28) != 0)) {
+      (**(code **)(x + 0x28))(x);
     }
     uval_2 = 1;
   }
@@ -3365,7 +3365,7 @@ int Sound_LoadWav_x_sound_button2_0047aa4a(int player_id)
  */
 
 
-int FUN_0047aa7c(int arg1,int arg2)
+int FUN_0047aa7c(int x,int arg2)
 
 {
   uint32_t arg_2;
@@ -3389,10 +3389,10 @@ int FUN_0047aa7c(int arg1,int arg2)
   else if (arg2 == 2) {
     target_idx = (int *)g_DisplaySurfaceWork;
   }
-  arg_2 = *(uint32_t *)(&DAT_00526150 + arg1 * 0x10);
-  arg_3 = *(int *)(&DAT_00526154 + arg1 * 0x10);
-  arg_4 = *(uint32_t *)(&DAT_00526158 + arg1 * 0x10);
-  arg_5 = *(DWORD *)(&DAT_0052615c + arg1 * 0x10);
+  arg_2 = *(uint32_t *)(&DAT_00526150 + x * 0x10);
+  arg_3 = *(int *)(&DAT_00526154 + x * 0x10);
+  arg_4 = *(uint32_t *)(&DAT_00526158 + x * 0x10);
+  arg_5 = *(DWORD *)(&DAT_0052615c + x * 0x10);
   if (arg2 == 2) {
     arg_8 = 0;
     arg_7 = 0;
@@ -3400,7 +3400,7 @@ int FUN_0047aa7c(int arg1,int arg2)
     arg_5_00 = arg_5;
     arg_6 = (int *)g_DisplaySurfaceBackBuffer;
     val_1 = Ai_Util_004c3bc4(0x43);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,200,arg_3 - val_1,arg_4_00,arg_5_00,arg_6,arg_7,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,200,arg_3 - val_1,arg_4_00,arg_5_00,arg_6,arg_7,
                  arg_8);
     Surface_StretchBlt(target_idx,arg_2,arg_3,arg_4,arg_5,(int *)g_DisplaySurfaceBackBuffer,4,4,
                        arg_4 - 4,arg_5 - 4);
@@ -3432,7 +3432,7 @@ int Pic_Load_menu2_hi_0047abf1(void)
   int uval_5;
   int slot_idx;
   
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   FileIO_OpenFileStream(1,0,0,s_menu2_pic_00526a38,
                (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
@@ -3500,19 +3500,19 @@ int Pic_Load_menu2_hi_0047abf1(void)
  */
 
 
-int FUN_0047afa2(int arg1,int arg2)
+int FUN_0047afa2(int x,int arg2)
 
 {
   bool flag_1;
   int uval_2;
   
   if (g_MouseCaptureFlag == 0) {
-    if ((g_MouseCursorX < *(int *)(arg1 + 0x10)) ||
-       (*(int *)(arg1 + 0x18) + *(int *)(arg1 + 0x10) < g_MouseCursorX)) {
+    if ((g_MouseCursorX < *(int *)(x + 0x10)) ||
+       (*(int *)(x + 0x18) + *(int *)(x + 0x10) < g_MouseCursorX)) {
       flag_1 = false;
     }
-    else if ((g_MouseCursorY < *(int *)(arg1 + 0x14)) ||
-            (*(int *)(arg1 + 0x14) + *(int *)(arg1 + 0x1c) < g_MouseCursorY)) {
+    else if ((g_MouseCursorY < *(int *)(x + 0x14)) ||
+            (*(int *)(x + 0x14) + *(int *)(x + 0x1c) < g_MouseCursorY)) {
       flag_1 = false;
     }
     else {
@@ -3522,13 +3522,13 @@ int FUN_0047afa2(int arg1,int arg2)
       return 0;
     }
   }
-  if (*(int *)(arg1 + 0x40) == 3) {
+  if (*(int *)(x + 0x40) == 3) {
     uval_2 = 0;
   }
   else {
-    FUN_0047aa7c(*(int *)(arg1 + 0x2c) + -1,arg2);
-    if ((arg2 == 2) && (*(int *)(arg1 + 0x28) != 0)) {
-      (**(code **)(arg1 + 0x28))(arg1);
+    FUN_0047aa7c(*(int *)(x + 0x2c) + -1,arg2);
+    if ((arg2 == 2) && (*(int *)(x + 0x28) != 0)) {
+      (**(code **)(x + 0x28))(x);
     }
     uval_2 = 1;
   }
@@ -3561,7 +3561,7 @@ int Sound_LoadWav_x_sound_button2_0047b097(int player_id)
  */
 
 
-int FUN_0047b0c9(int arg1,int arg2)
+int FUN_0047b0c9(int x,int arg2)
 
 {
   uint32_t arg_2;
@@ -3579,18 +3579,18 @@ int FUN_0047b0c9(int arg1,int arg2)
   else if (arg2 == 2) {
     slot_idx = (int *)&DAT_00676e20;
   }
-  arg_2 = *(uint32_t *)(&DAT_00526388 + arg1 * 0x10);
-  arg_3 = *(int *)(&DAT_0052638c + arg1 * 0x10);
-  arg_4 = *(uint32_t *)(&DAT_00526390 + arg1 * 0x10);
-  arg_5 = *(DWORD *)(&DAT_00526394 + arg1 * 0x10);
+  arg_2 = *(uint32_t *)(&DAT_00526388 + x * 0x10);
+  arg_3 = *(int *)(&DAT_0052638c + x * 0x10);
+  arg_4 = *(uint32_t *)(&DAT_00526390 + x * 0x10);
+  arg_5 = *(DWORD *)(&DAT_00526394 + x * 0x10);
   if (arg2 == 2) {
     Sprite_DrawScaled((int *)g_DisplaySurfaceWork,arg_2 + 2,arg_3 + 2,arg_4 - 4,arg_5 - 4,
-                      slot_idx[arg1]);
-    FUN_0050dce0((int *)g_DisplaySurfaceWork,arg_2,arg_3,arg_4,arg_5,(int *)g_DisplaySurfaceScreen,
+                      slot_idx[x]);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceWork,arg_2,arg_3,arg_4,arg_5,(int *)g_DisplaySurfaceScreen,
                  arg_2,arg_3);
   }
   else {
-    Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,arg_5,slot_idx[arg1]);
+    Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,arg_5,slot_idx[x]);
   }
   return 0;
 }
@@ -3618,7 +3618,7 @@ int Pic_Load_menu3_but1_0047b208(void)
   int match_count;
   int slot_idx;
   
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   FileIO_OpenFileStream(1,0,0,s_menu3_pic_00526a78,
                (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
@@ -3695,19 +3695,19 @@ int Pic_Load_menu3_but1_0047b208(void)
  */
 
 
-int FUN_0047b616(int arg1,int arg2)
+int FUN_0047b616(int x,int arg2)
 
 {
   bool flag_1;
   int uval_2;
   
   if (g_MouseCaptureFlag == 0) {
-    if ((g_MouseCursorX < *(int *)(arg1 + 0x10)) ||
-       (*(int *)(arg1 + 0x18) + *(int *)(arg1 + 0x10) < g_MouseCursorX)) {
+    if ((g_MouseCursorX < *(int *)(x + 0x10)) ||
+       (*(int *)(x + 0x18) + *(int *)(x + 0x10) < g_MouseCursorX)) {
       flag_1 = false;
     }
-    else if ((g_MouseCursorY < *(int *)(arg1 + 0x14)) ||
-            (*(int *)(arg1 + 0x14) + *(int *)(arg1 + 0x1c) < g_MouseCursorY)) {
+    else if ((g_MouseCursorY < *(int *)(x + 0x14)) ||
+            (*(int *)(x + 0x14) + *(int *)(x + 0x1c) < g_MouseCursorY)) {
       flag_1 = false;
     }
     else {
@@ -3717,13 +3717,13 @@ int FUN_0047b616(int arg1,int arg2)
       return 0;
     }
   }
-  if (*(int *)(arg1 + 0x40) == 3) {
+  if (*(int *)(x + 0x40) == 3) {
     uval_2 = 0;
   }
   else {
-    FUN_0047b0c9(*(int *)(arg1 + 0x2c) + -1,arg2);
-    if ((arg2 == 2) && (*(int *)(arg1 + 0x28) != 0)) {
-      (**(code **)(arg1 + 0x28))(arg1);
+    FUN_0047b0c9(*(int *)(x + 0x2c) + -1,arg2);
+    if ((arg2 == 2) && (*(int *)(x + 0x28) != 0)) {
+      (**(code **)(x + 0x28))(x);
     }
     uval_2 = 1;
   }
@@ -3756,7 +3756,7 @@ int Sound_LoadWav_x_sound_button2_0047b70b(int player_id)
  */
 
 
-int FUN_0047b73d(int arg1,int arg2)
+int FUN_0047b73d(int x,int arg2)
 
 {
   uint32_t arg_2;
@@ -3774,18 +3774,18 @@ int FUN_0047b73d(int arg1,int arg2)
   else if (arg2 == 2) {
     slot_idx = &DAT_00676d80;
   }
-  arg_2 = Ai_Util_004c3bc4(*(int *)(&DAT_005263f0 + arg1 * 0x54) + 0x1d);
-  arg_3 = Ai_Util_004c3bc4(*(int *)(&DAT_005263f4 + arg1 * 0x54));
+  arg_2 = Ai_Util_004c3bc4(*(int *)(&DAT_005263f0 + x * 0x54) + 0x1d);
+  arg_3 = Ai_Util_004c3bc4(*(int *)(&DAT_005263f4 + x * 0x54));
   arg_4 = Ai_Util_004c3bc4(0x4d);
   arg_5 = Ai_Util_004c3bc4(0x5f);
   if (arg2 == 2) {
     Sprite_DrawScaled((int *)g_DisplaySurfaceWork,arg_2 + 4,arg_3 + 4,arg_4 - 4,arg_5 - 4,
-                      slot_idx[arg1]);
-    FUN_0050dce0((int *)g_DisplaySurfaceWork,arg_2,arg_3,arg_4,arg_5,(int *)g_DisplaySurfaceScreen,
+                      slot_idx[x]);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceWork,arg_2,arg_3,arg_4,arg_5,(int *)g_DisplaySurfaceScreen,
                  arg_2,arg_3);
   }
   else {
-    Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,arg_5,slot_idx[arg1]);
+    Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,arg_5,slot_idx[x]);
   }
   return 0;
 }
@@ -3823,7 +3823,7 @@ int Sprite_Load__16faces_0047b899(void)
   int match_count;
   int slot_idx;
   
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   FileIO_OpenFileStream(1,0,0,s_pedstls_pic_00526ab8,
                (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
@@ -3981,7 +3981,7 @@ void Pic_Load_namepick_0047be64(char *filepath)
        *(int *)(g_DisplaySurfaceScreen + 0x20);
   FUN_0040d009((int)g_DisplaySurfaceBackBuffer,0xed,0x8b,0x19);
   FUN_0040d009((int)g_DisplaySurfaceBackBuffer,0xb4,0x8a,0x18);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,0x114,0x6a,(int *)g_DisplaySurfaceBackBuffer,0,
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,0x114,0x6a,(int *)g_DisplaySurfaceBackBuffer,0,
                200);
   FUN_0040d009((int)g_DisplaySurfaceBackBuffer,0xb4,0x8a,0x100);
   val_1 = Ai_Util_004c3bc4(0xbc);
@@ -3993,7 +3993,7 @@ void Pic_Load_namepick_0047be64(char *filepath)
     val_1 = FUN_0050f440((int *)g_DisplaySurfaceBackBuffer,filepath);
     if (arg_2 != 0) {
       FUN_0047c360(filepath,arg_2,0x19);
-      FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,0x114,0x6a,
+      Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,0x114,0x6a,
                    (int *)g_DisplaySurfaceBackBuffer,0,200);
       FUN_0040d009((int)g_DisplaySurfaceBackBuffer,0xb4,0x8a,0x100);
       val_2 = Ai_Util_004c3bc4(0xbc);
@@ -4020,19 +4020,19 @@ void Pic_Load_namepick_0047be64(char *filepath)
  */
 
 
-int FUN_0047c080(int arg1,int arg2)
+int FUN_0047c080(int x,int arg2)
 
 {
   bool flag_1;
   int uval_2;
   
   if (g_MouseCaptureFlag == 0) {
-    if ((g_MouseCursorX < *(int *)(arg1 + 0x10)) ||
-       (*(int *)(arg1 + 0x18) + *(int *)(arg1 + 0x10) < g_MouseCursorX)) {
+    if ((g_MouseCursorX < *(int *)(x + 0x10)) ||
+       (*(int *)(x + 0x18) + *(int *)(x + 0x10) < g_MouseCursorX)) {
       flag_1 = false;
     }
-    else if ((g_MouseCursorY < *(int *)(arg1 + 0x14)) ||
-            (*(int *)(arg1 + 0x14) + *(int *)(arg1 + 0x1c) < g_MouseCursorY)) {
+    else if ((g_MouseCursorY < *(int *)(x + 0x14)) ||
+            (*(int *)(x + 0x14) + *(int *)(x + 0x1c) < g_MouseCursorY)) {
       flag_1 = false;
     }
     else {
@@ -4042,13 +4042,13 @@ int FUN_0047c080(int arg1,int arg2)
       return 0;
     }
   }
-  if (*(int *)(arg1 + 0x40) == 3) {
+  if (*(int *)(x + 0x40) == 3) {
     uval_2 = 0;
   }
   else {
-    FUN_0047b73d(*(int *)(arg1 + 0x2c) + -1,arg2);
-    if ((arg2 == 2) && (*(int *)(arg1 + 0x28) != 0)) {
-      (**(code **)(arg1 + 0x28))(arg1);
+    FUN_0047b73d(*(int *)(x + 0x2c) + -1,arg2);
+    if ((arg2 == 2) && (*(int *)(x + 0x28) != 0)) {
+      (**(code **)(x + 0x28))(x);
     }
     uval_2 = 1;
   }
@@ -4437,7 +4437,7 @@ LRESULT UI_LifePointsDisplayWndProc(HWND hwnd,uint32_t uMsg,char *wParam,uint32_
       RestoreDC(g_HdcBackBuffer,local_254);
       local_2a0 = BeginPaint(hwnd,&local_298);
       if (local_2a0 != (HDC)0x0) {
-        FUN_004f3955(local_2a0);
+        GDI_RealizeAndFlushPalette_Magic(local_2a0);
         GetClientRect(hwnd,&local_220);
         if (DAT_0068a674 != 0) {
           hbr = GetStockObject(0);
@@ -4544,7 +4544,7 @@ LRESULT UI_LifePointsDisplayWndProc(HWND hwnd,uint32_t uMsg,char *wParam,uint32_
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar4 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar4 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar4;
     }
     if (uMsg == 0x204) {
@@ -5101,7 +5101,7 @@ uint32_t UI_Register_MAGICGAME_CardClass_0047da80(HWND hwnd,uint32_t y,HWND para
   else if (y < 0x15) {
     if (y == 0x14) {
       local_30c = param_3;
-      FUN_004f3955((HDC)param_3);
+      GDI_RealizeAndFlushPalette_Magic((HDC)param_3);
       GetClientRect(hwnd,&local_2e0);
       local_2d0 = SendDlgItemMessageA(hwnd,0,0xe1,0,0);
       if (DAT_00539590 == (HANDLE)0x0) {
@@ -5180,7 +5180,7 @@ uint32_t UI_Register_MAGICGAME_CardClass_0047da80(HWND hwnd,uint32_t y,HWND para
         if (local_4f0 == (HDC)0x0) {
           return local_4bc;
         }
-        FUN_004f3955(local_4f0);
+        GDI_RealizeAndFlushPalette_Magic(local_4f0);
         GetWindowRect(hwnd,&local_494);
         GetClientRect(hwnd,&local_56c);
         MapWindowPoints(hwnd,(HWND)0x0,(LPPOINT)&local_56c,2);
@@ -5485,7 +5485,7 @@ LAB_004810c3:
       return 1;
     }
     if ((0x30e < y) && (y < 0x312)) {
-      uval_8 = FUN_004f5d1a(hwnd,y,param_3,param_4);
+      uval_8 = GDI_RealizePaletteTree_Magic(hwnd,y,param_3,param_4);
       return uval_8;
     }
   }

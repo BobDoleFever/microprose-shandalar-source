@@ -64,7 +64,7 @@ UI_Register_MAGICGAME_BigCardCardClass_00401000(HWND hwnd,uint y,HDC hdc,undefin
   if (y < 0x15) {
     if (y == 0x14) {
       local_9c = hdc;
-      FUN_004f3955(hdc);
+      GDI_RealizeAndFlushPalette_Magic(hdc);
       GetClientRect(hwnd,&local_98);
       if (DAT_00536e70 == (HANDLE)0x0) {
         hbr = GetStockObject(0);
@@ -80,7 +80,7 @@ UI_Register_MAGICGAME_BigCardCardClass_00401000(HWND hwnd,uint y,HDC hdc,undefin
       UpdateWindow(pHVar6);
       local_128 = BeginPaint(hwnd,&local_124);
       if (local_128 != (HDC)0x0) {
-        FUN_004f3955(local_128);
+        GDI_RealizeAndFlushPalette_Magic(local_128);
         local_dc = Ai_Subsystem_004b5cbb(*DAT_00536d88,DAT_00536d88[1]);
         arg_1 = Ai_Subsystem_004b6e3b(*DAT_00536d88,DAT_00536d88[1]);
         local_e0 = Ai_Subsystem_004cbd67(arg_1);
@@ -273,7 +273,7 @@ LAB_0040152c:
     }
   }
   else if ((0x30e < y) && (y < 0x312)) {
-    uVar2 = FUN_004f5d1a(hwnd,y,(HWND)hdc,arg_4);
+    uVar2 = GDI_RealizePaletteTree_Magic(hwnd,y,(HWND)hdc,arg_4);
     return uVar2;
   }
   return 0;
@@ -576,7 +576,7 @@ LRESULT UI_WndProc_00401f70(HWND hwnd,uint uMsg,WPARAM wParam,LONG *lParam)
       local_c4 = 0x10000c9;
       local_364 = BeginPaint(hwnd,&local_35c);
       if (local_364 != (HDC)0x0) {
-        FUN_004f3955(local_364);
+        GDI_RealizeAndFlushPalette_Magic(local_364);
         GetClientRect(hwnd,&local_d4);
         SetBkMode(local_364,1);
         SelectObject(local_364,local_c);
@@ -722,7 +722,7 @@ LRESULT UI_WndProc_00401f70(HWND hwnd,uint uMsg,WPARAM wParam,LONG *lParam)
           local_94 = (uint)lParam & 0xffff;
           local_90 = (uint)lParam >> 0x10;
           local_8c = GetDC(hwnd);
-          FUN_004f3955(local_8c);
+          GDI_RealizeAndFlushPalette_Magic(local_8c);
           SelectObject(local_8c,local_c);
           GetTextMetricsA(local_8c,&local_78);
           local_a8 = local_78.tmExternalLeading + local_78.tmHeight;
@@ -842,7 +842,7 @@ LRESULT UI_WndProc_00401f70(HWND hwnd,uint uMsg,WPARAM wParam,LONG *lParam)
     case 0x30f:
     case 0x310:
     case 0x311:
-      LVar12 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar12 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar12;
     case 0x400:
       LVar5 = GetWindowLongA(hwnd,8);
@@ -941,7 +941,7 @@ LRESULT UI_WndProc_0040836a(HWND hwnd,uint uMsg,uint wParam,LPSTR lParam)
       local_8 = (HGDIOBJ)GetWindowLongA(hwnd,0);
       local_9c = BeginPaint(hwnd,&local_98);
       if (local_9c != (HDC)0x0) {
-        FUN_004f3955(local_9c);
+        GDI_RealizeAndFlushPalette_Magic(local_9c);
         GetClientRect(hwnd,&local_48);
         SetRect(&local_58,local_48.left,local_48.top,local_48.right + -2,local_48.bottom + -2);
         FillRect(local_9c,&local_48,DAT_005382e4);
@@ -992,7 +992,7 @@ LRESULT UI_WndProc_0040836a(HWND hwnd,uint uMsg,uint wParam,LPSTR lParam)
     case 0x30f:
     case 0x310:
     case 0x311:
-      LVar2 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar2 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar2;
     case 0x400:
       local_8 = (HGDIOBJ)GetWindowLongA(hwnd,0);
@@ -1001,7 +1001,7 @@ LRESULT UI_WndProc_0040836a(HWND hwnd,uint uMsg,uint wParam,LPSTR lParam)
       local_18 = lParam;
       local_2c = GetDC(hwnd);
       if (local_2c != (HDC)0x0) {
-        FUN_004f3955(local_2c);
+        GDI_RealizeAndFlushPalette_Magic(local_2c);
         SelectObject(local_2c,local_8);
         psizl = &local_14;
         c = lstrlenA(local_18);
@@ -1137,7 +1137,7 @@ LRESULT UI_WndProc_004090f6(HWND hwnd,uint uMsg,uint wParam,uint lParam)
       local_c = (HANDLE)GetWindowLongA(hwnd,0);
       local_190 = BeginPaint(hwnd,&local_18c);
       if (local_190 != (HDC)0x0) {
-        FUN_004f3955(local_190);
+        GDI_RealizeAndFlushPalette_Magic(local_190);
         GetClientRect(hwnd,&local_14c);
         if (local_c == (HANDLE)0x0) {
           hbr = GetStockObject(4);
@@ -1161,7 +1161,7 @@ LRESULT UI_WndProc_004090f6(HWND hwnd,uint uMsg,uint wParam,uint lParam)
       local_c = (HANDLE)GetWindowLongA(hwnd,0);
       local_8 = GetWindowLongA(hwnd,4);
       if ((local_c != (HANDLE)0x0) && (local_8 == 0)) {
-        FUN_004f4548(local_c);
+        GDI_DestroyDIBSection_Magic(local_c);
       }
       return 0;
     }
@@ -1248,7 +1248,7 @@ LRESULT UI_WndProc_004090f6(HWND hwnd,uint uMsg,uint wParam,uint lParam)
       return LVar1;
     }
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      LVar4 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar4 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar4;
     }
   }
@@ -1256,7 +1256,7 @@ LRESULT UI_WndProc_004090f6(HWND hwnd,uint uMsg,uint wParam,uint lParam)
     local_c = (HANDLE)GetWindowLongA(hwnd,0);
     local_8 = GetWindowLongA(hwnd,4);
     if ((local_c != (HANDLE)0x0) && (local_8 == 0)) {
-      FUN_004f4548(local_c);
+      GDI_DestroyDIBSection_Magic(local_c);
     }
     local_c = (HANDLE)wParam;
     local_8 = lParam;
@@ -1411,7 +1411,7 @@ undefined4 Prompts_Load_0041529a(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar1,arg_11_00,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar1,arg_11_00,
                          arg_12_00,arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,
                          arg_19_00);
   }
@@ -1451,8 +1451,7 @@ undefined4 Prompts_Load_0041529a(int spell_id,int target_id,int flags)
         (&g_PlayerCreatureCount)[spell_id] =
              (&g_PlayerCreatureCount)[spell_id] +
              *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20);
-        FUN_0041db67(iVar2,color_mask,
-                     *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20)
+        Card_ApplyCombatDamage(iVar2, color_mask, *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20)
                      ,spell_id,target_id);
         *(undefined4 *)(&DAT_006b3030 + spell_id * 4) = 0;
         *(undefined4 *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
@@ -1483,7 +1482,7 @@ undefined4 Prompts_Load_00415517(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     Ai_GetOpponentPlayerScore(0);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,0,0,0,0xffffffff,0xffffffff,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
   else {
@@ -1546,7 +1545,7 @@ undefined4 Prompts_Load_004156c9(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     Ai_GetOpponentPlayerScore(0);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x44,0,0,0,0,0,0xffffffff,0xffffffff,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x44,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
   else {
@@ -1656,7 +1655,7 @@ undefined4 Prompts_Load_00415920(int spell_id,int target_id,int flags)
     arg_12 = 0;
     arg_11 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x43,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x43,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
@@ -1797,7 +1796,7 @@ undefined4 Prompts_Load_00415df8(int spell_id,int target_id,int flags)
     arg_12 = 0;
     arg_11 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
@@ -1893,7 +1892,7 @@ undefined4 Prompts_Load_00416222(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    if ((g_ActivePlayerPriority == spell_id) && (iVar1 = FUN_0040d949(spell_id,7,2), iVar1 == 0)) {
+    if ((g_ActivePlayerPriority == spell_id) && (iVar1 = Font_DrawString(spell_id, 7, 2), iVar1 == 0)) {
       uVar2 = 0;
     }
     else {
@@ -1908,7 +1907,7 @@ undefined4 Prompts_Load_00416222(int spell_id,int target_id,int flags)
       arg_12_00 = 0;
       arg_11_00 = 0;
       uVar2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      uVar2 = FUN_00403250((int *)0x0,0,spell_id,2,spell_id,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,
+      uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,spell_id,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
     }
   }
@@ -1954,7 +1953,7 @@ undefined4 Prompts_Load_00416222(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar1 = FUN_00410cc0(spell_id,target_id,DAT_006a2854,iVar1,color_mask);
+        iVar1 = Card_ApplyTriggerEffect(spell_id, target_id, DAT_006a2854, iVar1, color_mask);
         if (iVar1 != -1) {
           *(short *)(&DAT_006a5f48 + iVar1 * 0x120 + spell_id * 0x5b20) =
                (short)*(undefined4 *)
@@ -2015,7 +2014,7 @@ undefined4 Prompts_Load_0041652b(int spell_id,int target_id,int flags)
       arg_12_00 = 0;
       arg_11_00 = 0;
       arg_10 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      iVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,
+      iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
       if (iVar1 != 0) {
         return 1;
@@ -2051,7 +2050,7 @@ undefined4 Prompts_Load_0041652b(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar2 = FUN_00410cc0(spell_id,target_id,DAT_006a4b64,iVar1,color_mask);
+        iVar2 = Card_ApplyTriggerEffect(spell_id,target_id,DAT_006a4b64,iVar1,color_mask);
         if (iVar2 != -1) {
           *(undefined4 *)(&g_CardSlot_ConvertedManaCost + iVar2 * 0x120 + spell_id * 0x5b20) = 0x80;
           *(undefined2 *)(&DAT_006a5f48 + iVar2 * 0x120 + spell_id * 0x5b20) =
@@ -2115,7 +2114,7 @@ undefined4 Prompts_Load_004167ac(int spell_id,int target_id,int flags)
     arg_12 = 0;
     arg_11 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
@@ -2167,7 +2166,7 @@ undefined4 Prompts_Load_004167ac(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        local_8 = FUN_00410cc0(spell_id,target_id,DAT_006a2854,local_10,local_c);
+        local_8 = Card_ApplyTriggerEffect(spell_id,target_id,DAT_006a2854,local_10,local_c);
         if (local_8 != -1) {
           *(undefined2 *)(&DAT_006a5f48 + local_8 * 0x120 + spell_id * 0x5b20) = 7;
           *(undefined2 *)(&DAT_006a5f4a + local_8 * 0x120 + spell_id * 0x5b20) = 7;
@@ -2227,7 +2226,7 @@ undefined4 Prompts_Load_00416a6a(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar2 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
+    uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -2262,10 +2261,10 @@ undefined4 Prompts_Load_00416a6a(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar4 = FUN_00410cc0(spell_id,target_id,DAT_006a2854,iVar3,color_mask);
+        iVar4 = Card_ApplyTriggerEffect(spell_id,target_id,DAT_006a2854,iVar3,color_mask);
         if (iVar4 != -1) {
           *(undefined2 *)(&DAT_006a5f48 + iVar4 * 0x120 + spell_id * 0x5b20) = 4;
-          sVar1 = FUN_0040a305(4,0,*(short *)(&DAT_006a5f46 + iVar3 * 0x5b20 + color_mask * 0x120) +
+          sVar1 = Math_Clamp(4, 0, *(short *)(&DAT_006a5f46 + iVar3 * 0x5b20 + color_mask * 0x120) +
                                    -1);
           *(short *)(&DAT_006a5f4a + iVar4 * 0x120 + spell_id * 0x5b20) = -sVar1;
         }
@@ -2323,7 +2322,7 @@ undefined4 Prompts_Load_00416d36(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -2355,7 +2354,7 @@ undefined4 Prompts_Load_00416d36(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar3 = FUN_00473179(iVar2,color_mask,0x32,0xffffffff);
+        iVar3 = Card_TapForMana(iVar2, color_mask, 0x32, 0xffffffff);
         (&g_PlayerCreatureCount)[iVar2] = (&g_PlayerCreatureCount)[iVar2] + iVar3;
         Pic_Subsystem_0044867e(iVar2,color_mask,4);
       }
@@ -2494,7 +2493,7 @@ undefined4 Prompts_Load_004172a6(int spell_id,int target_id,int flags)
       }
       else {
         if (g_IsAiThinking == 1) {
-          iVar2 = FUN_0040a1d2(3);
+          iVar2 = Math_RandomRange(3);
           g_AiDecisionScore = (uint)(iVar2 == 0);
           if (g_AiDecisionScore != 0) {
             iVar2 = Glue_Subsystem_004e654a(1 - spell_id,0x40);
@@ -2534,7 +2533,7 @@ undefined4 Prompts_Load_004172a6(int spell_id,int target_id,int flags)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = FUN_00471c32(local_8,local_c);
+          iVar2 = Card_IsTapped(local_8, local_c);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 0x40)
@@ -2598,7 +2597,7 @@ undefined4 Prompts_Load_0041765d(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -2642,7 +2641,7 @@ undefined4 Prompts_Load_0041765d(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar2 = FUN_00410cc0(spell_id,target_id,DAT_0069f6dc,iVar2,color_mask);
+        iVar2 = Card_ApplyTriggerEffect(spell_id,target_id,DAT_0069f6dc,iVar2,color_mask);
         if (iVar2 != -1) {
           *(undefined4 *)(&g_CardSlot_Abilities2 + iVar2 * 0x120 + spell_id * 0x5b20) = 0;
           *(undefined4 *)(&g_CardSlot_ConvertedManaCost + iVar2 * 0x120 + spell_id * 0x5b20) = 0x20;
@@ -2737,7 +2736,7 @@ undefined4 Prompts_Load_00417ff5(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar2 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11_00,arg_12_00,
+    uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11_00,arg_12_00,
                          arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -2775,7 +2774,7 @@ undefined4 Prompts_Load_00417ff5(int spell_id,int target_id,int flags)
                          * 0x5b20 +
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20)
                          * 0x120) * 0x34];
-        iVar4 = FUN_0040a305((int)(char)(&DAT_0051aec0)
+        iVar4 = Math_Clamp((int)(char)(&DAT_0051aec0)
                                         [*(int *)(&g_CardSlot_CardId +
                                                  *(int *)(&g_CardSlot_CombatTarget +
                                                          target_id * 0x120 + spell_id * 0x5b20) *
@@ -2839,7 +2838,7 @@ undefined4 Prompts_Load_00418254(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -2876,7 +2875,7 @@ undefined4 Prompts_Load_00418254(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar2 = FUN_00410cc0(spell_id,target_id,DAT_006a2854,iVar2,color_mask);
+        iVar2 = Card_ApplyTriggerEffect(spell_id,target_id,DAT_006a2854,iVar2,color_mask);
         if (iVar2 != -1) {
           *(undefined2 *)(&DAT_006a5f48 + iVar2 * 0x120 + spell_id * 0x5b20) = 3;
           *(undefined2 *)(&DAT_006a5f4a + iVar2 * 0x120 + spell_id * 0x5b20) = 3;
@@ -2885,7 +2884,7 @@ undefined4 Prompts_Load_00418254(int spell_id,int target_id,int flags)
       (&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] = 0;
       Pic_Subsystem_0044867e(spell_id,target_id,1);
     }
-    if ((flags == 0x3b) && (iVar2 = FUN_0040d949(spell_id,3,1), iVar2 != 0)) {
+    if ((flags == 0x3b) && (iVar2 = Font_DrawString(spell_id,3,1), iVar2 != 0)) {
       *(int *)(&DAT_00695eb0 + spell_id * 4) = *(int *)(&DAT_00695eb0 + spell_id * 4) + 3;
       *(int *)(&DAT_00695eb8 + spell_id * 4) = *(int *)(&DAT_00695eb8 + spell_id * 4) + 3;
     }
@@ -2939,7 +2938,7 @@ undefined4 Prompts_Load_004184e1(int spell_id,int target_id,int flags)
     arg_12_00 = 0;
     arg_11_00 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
@@ -3033,7 +3032,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
       arg_12 = 0;
       arg_11 = 0;
       uVar2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      uVar2 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0xff,0,0,uVar2,arg_11,arg_12,arg_13,
+      uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0xff,0,0,uVar2,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
     else if (((spell_id == g_CurrentTurnPhase) ||
@@ -3124,10 +3123,10 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
       else {
         local_14 = *(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120);
         local_10 = *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120);
-        local_c = FUN_00473cc5((&DAT_0051aebe)
+        local_c = Card_ColorMaskToColorIndex((&DAT_0051aebe)
                                [*(int *)(&g_CardSlot_CardId + spell_id * 0x5b20 + target_id * 0x120)
                                 * 0x34]);
-        bVar1 = FUN_0041d9d2(spell_id,target_id,local_c);
+        bVar1 = Card_SetTapState(spell_id, target_id, local_c);
         (&DAT_006a5f4d)[local_14 * 0x5b20 + local_10 * 0x120] = (char)(1 << (bVar1 & 0x1f));
         if (g_IsAiThinking != 1) {
           Magic_UpkeepPhase(0x1d);
@@ -3228,7 +3227,7 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
         (&g_CardSlot_TurnPlayed)[spell_id * 0x5b20 + target_id * 0x120] = 1;
       }
       if (g_ActivePlayer != 1) {
-        local_8 = FUN_0040a1d2(5);
+        local_8 = Math_RandomRange(5);
         local_8 = local_8 + 1;
         if (spell_id == g_CurrentTurnPhase) {
           iVar3 = Ai_Subsystem_004b3777
@@ -3241,8 +3240,8 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
             g_ActivePlayer = 1;
           }
           else {
-            iVar4 = FUN_00473cc5((byte)((uint)iVar3 >> 8));
-            iVar3 = FUN_00473cc5((byte)iVar3);
+            iVar4 = Card_ColorMaskToColorIndex((byte)((uint)iVar3 >> 8));
+            iVar3 = Card_ColorMaskToColorIndex((byte)iVar3);
             *(int *)(&g_CardSlot_ConvertedManaCost + spell_id * 0x5b20 + target_id * 0x120) =
                  iVar4 * 0x100 + iVar3;
           }
@@ -3264,19 +3263,19 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
                  [*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120) *
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120
                                    ) * 0x120] & 2) != 0) {
-              iVar3 = FUN_00473cc5((byte)local_e4);
-              bVar1 = FUN_0041d963(*(int *)(&g_CardSlot_CombatTarget +
+              iVar3 = Card_ColorMaskToColorIndex((byte)local_e4);
+              bVar1 = Card_UntapCard(*(int *)(&g_CardSlot_CombatTarget +
                                            spell_id * 0x5b20 + target_id * 0x120),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            spell_id * 0x5b20 + target_id * 0x120),iVar3);
               local_e4 = 1 << (bVar1 & 0x1f);
             }
             do {
-              local_e0 = FUN_0040a1d2(5);
+              local_e0 = Math_RandomRange(5);
               local_e0 = local_e0 + 1;
             } while ((local_e4 & 1 << ((byte)local_e0 & 0x1f)) == 0);
             do {
-              local_dc = FUN_0040a1d2(5);
+              local_dc = Math_RandomRange(5);
               local_dc = local_dc + 1;
             } while (local_dc == local_e0);
             if (g_IsAiThinking == 1) {
@@ -3421,7 +3420,7 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
         (&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] = 1;
       }
       if (g_ActivePlayer != 1) {
-        local_8 = FUN_0040a1d2(5);
+        local_8 = Math_RandomRange(5);
         local_8 = local_8 + 1;
         if (((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) && (DAT_006fedc0 == 0)) {
           iVar3 = Ai_Subsystem_004b3777
@@ -3434,8 +3433,8 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
             g_ActivePlayer = 1;
           }
           else {
-            iVar4 = FUN_00473cc5((byte)((uint)iVar3 >> 8));
-            iVar3 = FUN_00473cc5((byte)iVar3);
+            iVar4 = Card_ColorMaskToColorIndex((byte)((uint)iVar3 >> 8));
+            iVar3 = Card_ColorMaskToColorIndex((byte)iVar3);
             *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
                  iVar4 * 0x100 + iVar3;
           }
@@ -3457,19 +3456,19 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
                  [*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20) *
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20
                                    ) * 0x120] & 4) != 0) {
-              iVar3 = FUN_00473cc5((byte)local_e4);
-              bVar1 = FUN_0041d9d2(*(int *)(&g_CardSlot_CombatTarget +
+              iVar3 = Card_ColorMaskToColorIndex((byte)local_e4);
+              bVar1 = Card_SetTapState(*(int *)(&g_CardSlot_CombatTarget +
                                            target_id * 0x120 + spell_id * 0x5b20),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            target_id * 0x120 + spell_id * 0x5b20),iVar3);
               local_e4 = 1 << (bVar1 & 0x1f);
             }
             do {
-              local_e0 = FUN_0040a1d2(5);
+              local_e0 = Math_RandomRange(5);
               local_e0 = local_e0 + 1;
             } while ((local_e4 & 1 << ((byte)local_e0 & 0x1f)) == 0);
             do {
-              local_dc = FUN_0040a1d2(5);
+              local_dc = Math_RandomRange(5);
               local_dc = local_dc + 1;
             } while (local_dc == local_e0);
             if (g_IsAiThinking == 1) {
@@ -3575,10 +3574,10 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+      bVar2 = Card_SetTapState(spell_id,target_id,4);
       iVar4 = 1 << (bVar2 & 0x1f);
       uVar3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      uVar3 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
+      uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
     else {
@@ -3590,7 +3589,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       iVar6 = -1;
       iVar4 = -1;
       uVar5 = 0;
-      bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+      bVar2 = Card_SetTapState(spell_id,target_id,4);
       iVar4 = Rules_ParseFilter_0040360b
                         (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (bVar2 & 0x1f),uVar5,iVar4,iVar6,uVar7,uVar8,uVar9,uVar10,uVar12);
@@ -3618,7 +3617,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+        bVar2 = Card_SetTapState(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         iVar4 = Action_ValidateTarget_00405802
@@ -3650,7 +3649,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+        bVar2 = Card_SetTapState(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
@@ -3672,7 +3671,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar5 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+        bVar2 = Card_SetTapState(spell_id,target_id,4);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -3690,7 +3689,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         local_10 = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         local_c = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006a5f4d)[local_c * 0x120 + local_10 * 0x5b20];
-        bVar2 = FUN_0041d9d2(spell_id,target_id,4);
+        bVar2 = Card_SetTapState(spell_id,target_id,4);
         if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(local_10,local_c,2);
         }
@@ -3751,10 +3750,10 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+      bVar2 = Card_SetTapState(spell_id,target_id,2);
       iVar4 = 1 << (bVar2 & 0x1f);
       uVar3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      uVar3 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
+      uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
     else {
@@ -3766,7 +3765,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       iVar6 = -1;
       iVar4 = -1;
       uVar5 = 0;
-      bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+      bVar2 = Card_SetTapState(spell_id,target_id,2);
       iVar4 = Rules_ParseFilter_0040360b
                         (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (bVar2 & 0x1f),uVar5,iVar4,iVar6,uVar7,uVar8,uVar9,uVar10,uVar12);
@@ -3794,7 +3793,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+        bVar2 = Card_SetTapState(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         iVar4 = Action_ValidateTarget_00405802
@@ -3826,7 +3825,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+        bVar2 = Card_SetTapState(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
@@ -3848,7 +3847,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar5 = 0;
-        bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+        bVar2 = Card_SetTapState(spell_id,target_id,2);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -3866,7 +3865,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         local_10 = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         local_c = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006a5f4d)[local_10 * 0x5b20 + local_c * 0x120];
-        bVar2 = FUN_0041d9d2(spell_id,target_id,2);
+        bVar2 = Card_SetTapState(spell_id,target_id,2);
         if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(local_10,local_c,2);
         }
@@ -4097,7 +4096,7 @@ undefined4 Prompts_Load_0041c22f(int spell_id,int target_id,int flags)
       uVar2 = 1;
     }
     else {
-      iVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,0xffffffff,
+      iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,0xffffffff,
                            0xffffffff,0xffffffff,0x20,0,0);
       if (iVar1 == 0) {
         uVar2 = 0;
@@ -4232,7 +4231,7 @@ undefined4 Prompts_Load_0041c8e1(int spell_id,int target_id,int flags)
   if (flags == 0x74) {
     Ai_GetOpponentPlayerScore(0);
     if ((((byte)g_PlayerHandCardCount & 4) == 0) ||
-       (iVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,0xffffffff,
+       (iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,0xffffffff,
                              0xffffffff,0xffffffff,0x20,0,0), iVar1 == 0)) {
       uVar2 = 0;
     }
@@ -4331,7 +4330,7 @@ undefined4 Prompts_Load_0041d1ab(int spell_id,int target_id,int flags)
     arg_12 = 0;
     arg_11 = 0;
     uVar1 = Glue_Subsystem_004d0a42(spell_id,target_id);
-    uVar1 = FUN_00403250((int *)0x0,0,spell_id,2,2,0x200,3,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
+    uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,3,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
@@ -4481,7 +4480,7 @@ LRESULT UI_WndProc_0041dfe4(HWND hwnd,uint uMsg,WPARAM wParam,uint lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar5 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar5 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar5;
     }
     switch(uMsg) {
@@ -4575,7 +4574,7 @@ void Prompts_Load_0046fa40(int spell_id,int target_id,int flags)
       local_8 = 0;
       local_20 = 0;
       do {
-        local_1c = FUN_0040a1d2((&g_PlayerActiveCardCount)[spell_id]);
+        local_1c = Math_RandomRange((&g_PlayerActiveCardCount)[spell_id]);
         if (((*(int *)(&g_CardSlot_CardId + local_1c * 0x120 + spell_id * 0x5b20) != -1) &&
             (((&g_CardSlot_Flags)[local_1c * 0x120 + spell_id * 0x5b20] & 2) == 0)) &&
            (((&g_CardSlot_Flags)[local_1c * 0x120 + spell_id * 0x5b20] & 0x20) == 0)) {
@@ -4698,7 +4697,7 @@ uint UI_WndProc_004822b7(HWND hwnd,uint uMsg,uint wParam,int lParam)
       Ai_Subsystem_004b74b1(&local_dc,(undefined4 *)0x0);
       local_164 = BeginPaint(hwnd,&local_140);
       if (local_164 != (HDC)0x0) {
-        FUN_004f3955(local_164);
+        GDI_RealizeAndFlushPalette_Magic(local_164);
         GetClientRect(hwnd,&local_ec);
         SendMessageA(DAT_006b3064,0x14,(WPARAM)local_164,0);
         lpRect = &local_fc;
@@ -4790,7 +4789,7 @@ uint UI_WndProc_004822b7(HWND hwnd,uint uMsg,uint wParam,int lParam)
         if (local_58 == (HDC)0x0) {
           return local_44;
         }
-        FUN_004f3955(local_58);
+        GDI_RealizeAndFlushPalette_Magic(local_58);
         GetWindowRect(hwnd,&local_2c);
         GetClientRect(hwnd,&local_d0);
         MapWindowPoints(hwnd,(HWND)0x0,(LPPOINT)&local_d0,2);
@@ -4875,7 +4874,7 @@ uint UI_WndProc_004822b7(HWND hwnd,uint uMsg,uint wParam,int lParam)
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    uVar1 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+    uVar1 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
     return uVar1;
   }
   uVar1 = DefWindowProcA(hwnd,uMsg,wParam,lParam);
@@ -4904,7 +4903,7 @@ LRESULT UI_WndProc_00482dd6(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_18 = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&local_14);
       IntersectClipRect(local_18,0,0,local_14.right,local_14.bottom);
       if (DAT_0053957c == (HANDLE)0x0) {
@@ -4960,7 +4959,7 @@ LRESULT UI_WndProc_00482dd6(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      LVar1 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar1 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar1;
     }
     if (uMsg == 0x437) {
@@ -5074,7 +5073,7 @@ LRESULT UI_CreateWindow_0050bd27(HWND hwnd,uint y,HWND param_3,uint height)
       EnterCriticalSection((LPCRITICAL_SECTION)&DAT_006ff2f0);
       local_3f4 = BeginPaint(hwnd,&local_3f0);
       if (local_3f4 != (HDC)0x0) {
-        FUN_004f3955(local_3f4);
+        GDI_RealizeAndFlushPalette_Magic(local_3f4);
         GetClientRect(hwnd,&local_3b0);
         if (DAT_0068a674 != 0) {
           pHVar2 = GetStockObject(0);
@@ -5195,7 +5194,7 @@ LRESULT UI_CreateWindow_0050bd27(HWND hwnd,uint y,HWND param_3,uint height)
   }
   else if (y < 0x312) {
     if (0x30e < y) {
-      LVar4 = FUN_004f5d1a(hwnd,y,param_3,height);
+      LVar4 = GDI_RealizePaletteTree_Magic(hwnd,y,param_3,height);
       return LVar4;
     }
     if (y == 0x204) {
@@ -5291,7 +5290,7 @@ LRESULT UI_WndProc_0050c854(HWND hwnd,uint uMsg,HDC wParam,LPARAM lParam)
   tagRECT local_14;
   
   if (uMsg == 0x14) {
-    FUN_004f3955(wParam);
+    GDI_RealizeAndFlushPalette_Magic(wParam);
     GetClientRect(hwnd,&local_14);
     Palette_Subsystem_0049c6cb(wParam,&local_14);
     LVar1 = 0;
@@ -5300,7 +5299,7 @@ LRESULT UI_WndProc_0050c854(HWND hwnd,uint uMsg,HDC wParam,LPARAM lParam)
     LVar1 = DefWindowProcA(hwnd,uMsg,(WPARAM)wParam,lParam);
   }
   else {
-    LVar1 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+    LVar1 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
   }
   return LVar1;
 }

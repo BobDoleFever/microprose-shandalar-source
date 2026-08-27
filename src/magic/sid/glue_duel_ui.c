@@ -117,7 +117,7 @@ int Duel_MainArena_WndProc(HWND hwnd,uint32_t y,HWND wParam,uint32_t height)
     if (y == 0x14) {
       match_count = (HWND)GetWindowLongA(hwnd,8);
       local_548 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_544);
       if (DAT_0068a674 != 0) {
         pHVar5 = GetStockObject(0);
@@ -267,7 +267,7 @@ switchD_004eecac_caseD_403:
     }
     else if (y < 0x312) {
       if (0x30e < y) {
-        val_4 = FUN_004f5d1a(hwnd,y,wParam,height);
+        val_4 = GDI_RealizePaletteTree_Magic(hwnd,y,wParam,height);
         return val_4;
       }
       if (y == 0x201) {
@@ -1552,7 +1552,7 @@ LRESULT Duel_ChildCard_WndProc(HWND hwnd,uint32_t uMsg,WPARAM wParam,LPARAM lPar
       match_count = (HGDIOBJ)GetWindowLongA(hwnd,0);
       local_80 = BeginPaint(hwnd,&local_7c);
       if (local_80 != (HDC)0x0) {
-        FUN_004f3955(local_80);
+        GDI_RealizeAndFlushPalette_Magic(local_80);
         SetTextColor(local_80,DAT_00565a00);
         SetBkMode(local_80,1);
         SelectObject(local_80,match_count);
@@ -1614,7 +1614,7 @@ LRESULT Duel_ChildCard_WndProc(HWND hwnd,uint32_t uMsg,WPARAM wParam,LPARAM lPar
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar2 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar2 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar2;
     }
     if (uMsg == 0x201) {

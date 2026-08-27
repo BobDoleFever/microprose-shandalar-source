@@ -73,6 +73,26 @@ typedef uintptr_t UINT_PTR;
 typedef uint32_t  COLORREF;
 typedef void*     LPOFNHOOKPROC;
 typedef void*     LPOPENFILENAMEA;
+typedef int       (*FARPROC)(void);
+
+/* Bit concatenation macros used in decompiled bitfield manipulation */
+#ifndef CONCAT31
+#define CONCAT31(a,b) ((uint32_t)(((uint32_t)(a) << 8) | ((uint8_t)(b))))
+#endif
+#ifndef CONCAT11
+#define CONCAT11(a,b) ((uint16_t)(((uint16_t)(a) << 8) | ((uint8_t)(b))))
+#endif
+#ifndef CONCAT22
+#define CONCAT22(a,b) ((uint32_t)(((uint32_t)(a) << 16) | ((uint16_t)(b))))
+#endif
+
+/* Standard Win32 GDI & Object Protos */
+int   GetObjectA(HANDLE hgdiobj, int cbBuffer, void *lpvObject);
+int   DeleteObject(HANDLE hObject);
+int   CloseHandle(HANDLE hObject);
+int   DirectSoundCreate(void *lpGuid, void **ppDS, void *pUnkOuter);
+void  AVIFileInit(void);
+void  AVIFileExit(void);
 
 /* Ghidra Builtin Pseudo-types & Compatibility Aliases */
 typedef uint8_t   undefined;
@@ -155,6 +175,11 @@ typedef struct tagBITMAPINFOHEADER {
     DWORD biClrUsed;
     DWORD biClrImportant;
 } BITMAPINFOHEADER, *PBITMAPINFOHEADER, *LPBITMAPINFOHEADER;
+
+typedef struct tagBITMAPINFO {
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD          bmiColors[1];
+} BITMAPINFO, *PBITMAPINFO, *LPBITMAPINFO;
 
 typedef struct tagPAINTSTRUCT {
     HDC  hdc;

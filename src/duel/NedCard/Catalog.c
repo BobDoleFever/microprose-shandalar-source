@@ -117,15 +117,15 @@ bool FUN_0043433a(int arg_1)
  */
 
 
-undefined4 FUN_004343f6(int *arg1,int *arg2)
+undefined4 FUN_004343f6(int *csv_buffer,int *out_record)
 
 {
   undefined4 uVar1;
   
-  if (*arg2 < *arg1) {
+  if (*out_record < *csv_buffer) {
     uVar1 = 1;
   }
-  else if (*arg1 < *arg2) {
+  else if (*csv_buffer < *out_record) {
     uVar1 = 0xffffffff;
   }
   else {
@@ -143,19 +143,19 @@ undefined4 FUN_004343f6(int *arg1,int *arg2)
  */
 
 
-void * FUN_00434446(int arg1,byte *arg2)
+void * FUN_00434446(int csv_buffer,byte *out_record)
 
 {
   void *pvVar1;
   int local_8;
   
-  local_8 = FUN_0043456a(arg2);
-  if ((*(int *)(arg1 + 0xc) == 0) || (**(int **)(arg1 + 0xc) != local_8)) {
-    pvVar1 = _bsearch(&local_8,*(void **)(arg1 + 8),*(size_t *)(arg1 + 4),0xc,FUN_004343f6);
-    *(void **)(arg1 + 0xc) = pvVar1;
+  local_8 = FUN_0043456a(out_record);
+  if ((*(int *)(csv_buffer + 0xc) == 0) || (**(int **)(csv_buffer + 0xc) != local_8)) {
+    pvVar1 = _bsearch(&local_8,*(void **)(csv_buffer + 8),*(size_t *)(csv_buffer + 4),0xc,FUN_004343f6);
+    *(void **)(csv_buffer + 0xc) = pvVar1;
   }
   else {
-    pvVar1 = *(void **)(arg1 + 0xc);
+    pvVar1 = *(void **)(csv_buffer + 0xc);
   }
   return pvVar1;
 }
@@ -172,13 +172,13 @@ void * FUN_00434446(int arg1,byte *arg2)
 size_t FUN_004344c1(int arg_1,undefined4 arg_2,int *arg_3)
 
 {
-  undefined4 *arg1;
+  undefined4 *csv_buffer;
   int iVar1;
   size_t sVar2;
   void *pvVar3;
   
-  arg1 = (undefined4 *)(&DAT_006c0cb0 + (arg_1 + -1) * 0x114);
-  iVar1 = FUN_00434446((int)arg1,arg_2);
+  csv_buffer = (undefined4 *)(&DAT_006c0cb0 + (arg_1 + -1) * 0x114);
+  iVar1 = FUN_00434446((int)csv_buffer,arg_2);
   if (iVar1 == 0) {
     sVar2 = 0xffffffff;
   }
@@ -187,8 +187,8 @@ size_t FUN_004344c1(int arg_1,undefined4 arg_2,int *arg_3)
       pvVar3 = _malloc(*(int *)(iVar1 + 8) + 0x10);
       *arg_3 = (int)pvVar3;
     }
-    _fseek((FILE *)*arg1,*(long *)(iVar1 + 4),0);
-    sVar2 = _fread((void *)*arg_3,1,*(size_t *)(iVar1 + 8),(FILE *)*arg1);
+    _fseek((FILE *)*csv_buffer,*(long *)(iVar1 + 4),0);
+    sVar2 = _fread((void *)*arg_3,1,*(size_t *)(iVar1 + 8),(FILE *)*csv_buffer);
   }
   return sVar2;
 }
@@ -220,7 +220,7 @@ uint FUN_0043456a(byte *arg_1)
   local_8 = 0;
   __splitpath((char *)arg_1,(char *)local_134,local_124,(char *)&local_1c,(char *)local_134);
   arg_1 = (byte *)&local_1c;
-  FUN_004d9640(&local_1c,local_134);
+  Str_CopyFast(&local_1c, local_134);
   while( true ) {
     iVar1 = (int)(char)*arg_1;
     arg_1 = arg_1 + 1;
@@ -239,13 +239,13 @@ uint FUN_0043456a(byte *arg_1)
 
 
 /*
- * Decompiled function: FUN_00434660
+ * Decompiled function: Catalog_ParseCsvLine
  * Entry Point: 00434660
  * Size: 589 bytes
  */
 
 
-int FUN_00434660(uint *arg1,uint *arg2)
+int Catalog_ParseCsvLine(uint *csv_buffer,uint *out_record)
 
 {
   FILE *fp;
@@ -259,13 +259,13 @@ int FUN_00434660(uint *arg1,uint *arg2)
   int local_c;
   int local_8;
   
-  if (DAT_0066aaf4 != 1) {
+  if (g_DuelDebugModeFlag != 1) {
     Mem_AllocOrFree_004d9630(local_108,(uint *)&DAT_004f45f8);
-    FUN_004d9640(local_108,arg2);
-    FUN_004d9640(local_108,(uint *)&DAT_004f45fc);
+    Str_CopyFast(local_108,out_record);
+    Str_CopyFast(local_108,(uint *)&DAT_004f45fc);
     Mem_AllocOrFree_004d9630(local_210,(uint *)&DAT_005f76e0);
-    FUN_004d9640(local_210,(uint *)&DAT_004f4600);
-    Mem_AllocOrFree_004d9630(local_210,arg1);
+    Str_CopyFast(local_210,(uint *)&DAT_004f4600);
+    Mem_AllocOrFree_004d9630(local_210,csv_buffer);
     fp = _fopen((char *)local_210,&DAT_004f4604);
     if (fp != (FILE *)0x0) {
       do {
@@ -276,12 +276,12 @@ int FUN_00434660(uint *arg1,uint *arg2)
           local_c = 0;
           for (local_310 = 0; (local_310 < local_8 && (local_310 < 0x32)); local_310 = local_310 + 1
               ) {
-            pcVar2 = _fgets(&DAT_006679f0 + local_310 * 0xfa,0xfa,fp);
+            pcVar2 = _fgets(&g_DuelCardNameBuffer + local_310 * 0xfa,0xfa,fp);
             if (pcVar2 == (char *)0x0) {
               _fclose(fp);
               return -local_c;
             }
-            sVar3 = _strlen(&DAT_006679f0 + local_310 * 0xfa);
+            sVar3 = _strlen(&g_DuelCardNameBuffer + local_310 * 0xfa);
             (&DAT_006679ef)[local_310 * 0xfa + sVar3] = 0;
             local_c = local_c + 1;
           }
@@ -308,7 +308,7 @@ int FUN_00434660(uint *arg1,uint *arg2)
  */
 
 
-uint FUN_004348b2(undefined4 arg1,undefined4 arg2)
+uint FUN_004348b2(undefined4 csv_buffer,undefined4 out_record)
 
 {
   uint arg_1;
@@ -318,27 +318,27 @@ uint FUN_004348b2(undefined4 arg1,undefined4 arg2)
   int local_10;
   int local_c;
   
-  if (DAT_0066aaf4 == 1) {
+  if (g_DuelDebugModeFlag == 1) {
     arg_1 = 0;
   }
   else {
-    arg_1 = FUN_00434660(arg1,arg2);
+    arg_1 = Catalog_ParseCsvLine(csv_buffer,out_record);
     for (local_c = 0; iVar1 = Mem_AllocOrFree_004d9810(arg_1), local_c < iVar1;
         local_c = local_c + 1) {
-      sVar2 = _strlen(&DAT_006679f0 + local_c * 0xfa);
+      sVar2 = _strlen(&g_DuelCardNameBuffer + local_c * 0xfa);
       local_18 = 0;
       for (local_10 = 0; local_10 < (int)sVar2; local_10 = local_10 + 1) {
-        if (((&DAT_006679f0)[local_c * 0xfa + local_10] == '\\') &&
+        if (((&g_DuelCardNameBuffer)[local_c * 0xfa + local_10] == '\\') &&
            ((&DAT_006679f1)[local_c * 0xfa + local_10] == 'n')) {
-          (&DAT_006679f0)[local_c * 0xfa + local_18] = 10;
+          (&g_DuelCardNameBuffer)[local_c * 0xfa + local_18] = 10;
           local_10 = local_10 + 1;
         }
         else {
-          (&DAT_006679f0)[local_c * 0xfa + local_18] = (&DAT_006679f0)[local_c * 0xfa + local_10];
+          (&g_DuelCardNameBuffer)[local_c * 0xfa + local_18] = (&g_DuelCardNameBuffer)[local_c * 0xfa + local_10];
         }
         local_18 = local_18 + 1;
       }
-      (&DAT_006679f0)[local_c * 0xfa + local_18] = 0;
+      (&g_DuelCardNameBuffer)[local_c * 0xfa + local_18] = 0;
     }
   }
   return arg_1;
@@ -633,7 +633,7 @@ int FUN_00434fa1(int *arg_1)
  */
 
 
-void FUN_0043504d(uint arg1,uint *arg2)
+void FUN_0043504d(uint csv_buffer,uint *out_record)
 
 {
   int iVar1;
@@ -643,15 +643,15 @@ void FUN_0043504d(uint arg1,uint *arg2)
   uint uVar5;
   uint uVar6;
   
-  iVar1 = ((arg1 & 0xff0000) >> 0x10) * 8;
+  iVar1 = ((csv_buffer & 0xff0000) >> 0x10) * 8;
   uVar4 = *(uint *)(&DAT_00694f54 + iVar1);
-  iVar2 = (arg1 & 0xff) * 8;
+  iVar2 = (csv_buffer & 0xff) * 8;
   uVar5 = *(uint *)(&DAT_006bf954 + iVar2);
-  iVar3 = (arg1 >> 8 & 0xff) * 8;
+  iVar3 = (csv_buffer >> 8 & 0xff) * 8;
   uVar6 = *(uint *)(&DAT_006be134 + iVar3);
-  *arg2 = *(uint *)(&DAT_00694f50 + iVar1) | *(uint *)(&DAT_006bf950 + iVar2) |
+  *out_record = *(uint *)(&DAT_00694f50 + iVar1) | *(uint *)(&DAT_006bf950 + iVar2) |
           *(uint *)(&DAT_006be130 + iVar3);
-  arg2[1] = uVar4 | uVar5 | uVar6;
+  out_record[1] = uVar4 | uVar5 | uVar6;
   return;
 }
 
@@ -821,7 +821,7 @@ uint FUN_00435343(uint arg_1)
  */
 
 
-int FUN_004354bb(int *arg1,int *arg2)
+int FUN_004354bb(int *csv_buffer,int *out_record)
 
 {
   int iVar1;
@@ -829,17 +829,17 @@ int FUN_004354bb(int *arg1,int *arg2)
   int local_8;
   
   local_8 = 0;
-  if (*arg1 == 0) {
+  if (*csv_buffer == 0) {
     for (local_c = 0; local_c < 8; local_c = local_c + 1) {
-      if (arg1[local_c + 2] != 0) {
-        iVar1 = FUN_004354bb((int *)arg1[local_c + 2],arg2);
+      if (csv_buffer[local_c + 2] != 0) {
+        iVar1 = FUN_004354bb((int *)csv_buffer[local_c + 2],out_record);
         local_8 = local_8 + iVar1;
-        arg2 = arg2 + iVar1;
+        out_record = out_record + iVar1;
       }
     }
   }
   else {
-    *arg2 = arg1[1];
+    *out_record = csv_buffer[1];
     local_8 = 1;
   }
   return local_8;
@@ -1100,14 +1100,14 @@ int FUN_004356cf(int arg_1,int arg_2,uint *arg_3,int arg_4,int arg_5,int arg_6)
  */
 
 
-void FUN_00435c74(undefined4 *arg1,int arg2)
+void FUN_00435c74(undefined4 *csv_buffer,int out_record)
 
 {
   undefined4 uVar1;
   
-  uVar1 = *arg1;
-  FID_conflict__memcpy(arg1,arg1 + 1,arg2 * 4 - 4);
-  arg1[arg2 + -1] = uVar1;
+  uVar1 = *csv_buffer;
+  FID_conflict__memcpy(csv_buffer,csv_buffer + 1,out_record * 4 - 4);
+  csv_buffer[out_record + -1] = uVar1;
   return;
 }
 

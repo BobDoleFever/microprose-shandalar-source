@@ -134,7 +134,7 @@ void Merchant_ProcessBuy_00407b34(int arg_1)
   Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,arg_2,arg_3,arg_4,iVar1,(int)local_454);
   iVar1 = Ai_Util_004c3bc4(0x85);
   FUN_00407843(&g_OverworldWorldState,local_3f4,iVar1);
-  FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xfe,0x140,0xbc);
+  Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xfe,0x140,0xbc);
   Ai_Subsystem_004cd1d1();
   Mem_AllocOrFree_0050fc50(local_c);
   return;
@@ -175,7 +175,7 @@ int Castle_Process_0040b7fa(int arg_1)
       if (*(int *)(&DAT_0067a9a0 + arg_1 * 0x10) == 0) {
         return 0;
       }
-      FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+      Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                    (int *)g_DisplaySurfaceScreen,0,0);
       g_OverworldWorldState = '\0';
       switch(iVar1) {
@@ -319,7 +319,7 @@ undefined4 Dungeon_Process_0040fcfd(int arg_1,int arg_2,int arg_3)
     if (DAT_00538608 == 2) goto LAB_004102e4;
   }
   while( true ) {
-    iVar1 = FUN_0040a1d2(5);
+    iVar1 = Math_RandomRange(5);
     if (((iVar1 == 0) || (local_7e8 != 0)) || (arg_2 == 0)) {
       if ((DAT_005175c0 == -1) || (arg_2 != 0)) {
         iVar1 = rand();
@@ -338,7 +338,7 @@ undefined4 Dungeon_Process_0040fcfd(int arg_1,int arg_2,int arg_3)
         iVar1 = iVar1 - iVar2 * local_7f0;
         iVar2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Ai_Subsystem_004cd1d1();
         *(undefined1 *)(local_818[local_81c + 1] + -3) = 10;
         FUN_0040a883(s_wiseman3_pic_0051934c);
@@ -347,11 +347,11 @@ undefined4 Dungeon_Process_0040fcfd(int arg_1,int arg_2,int arg_3)
       return 1;
     }
 LAB_0040ff03:
-    iVar1 = FUN_0040a1d2(5);
+    iVar1 = Math_RandomRange(5);
     if ((iVar1 == 0) || (local_7e8 != 0)) break;
     DAT_00538608 = 2;
 LAB_004102e4:
-    iVar1 = FUN_0040a1d2(5);
+    iVar1 = Math_RandomRange(5);
     if ((iVar1 < 2) || (local_7e8 != 0)) {
       if (DAT_00522450 != 0xffffffff) {
         if (((DAT_0067f2c0 == 0) || (DAT_0067f2c0 == 2)) ||
@@ -378,7 +378,7 @@ LAB_004102e4:
           iVar1 = iVar1 + iVar2 * -2;
           iVar2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -394,7 +394,7 @@ LAB_004102e4:
           iVar1 = iVar1 + iVar2 * -3;
           iVar2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -420,7 +420,7 @@ LAB_004102e4:
           iVar1 = iVar1 + iVar2 * -3;
           iVar2 = Ai_Util_004c3bc4(0x50);
           FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           return 0;
         }
@@ -442,7 +442,7 @@ LAB_004102e4:
       iVar1 = iVar1 + iVar2 * -7;
       iVar2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       local_7e8 = 1;
       FUN_0040a883(s_wiseman3_pic_00519538);
@@ -457,7 +457,7 @@ LAB_004102e4:
         iVar1 = iVar1 + iVar2 * -7;
         iVar2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Ai_Subsystem_004cd1d1();
         FUN_0048ea81(local_7d8);
         uVar5 = Ai_Subsystem_004c05ba();
@@ -478,12 +478,12 @@ LAB_004102e4:
       iVar1 = iVar1 + iVar2 * -7;
       iVar2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       uVar5 = Ai_Subsystem_004cd1d1();
       return uVar5;
     case 4:
       if (DAT_00522454 == -1) {
-        iVar1 = FUN_0040a1d2(2);
+        iVar1 = Math_RandomRange(2);
         DAT_00522454 = Pic_Subsystem_0045268f
                                  (*(int *)(&DAT_00517598 + (iVar1 + -2 + arg_1 * 2) * 4));
         strcat(&g_OverworldWorldState,s_provide_you_a_00519624);
@@ -495,7 +495,7 @@ LAB_004102e4:
         iVar1 = iVar1 + iVar2 * -7;
         iVar2 = Ai_Util_004c3bc4(0x50);
         FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         uVar5 = Ai_Subsystem_004cd1d1();
         return uVar5;
       }
@@ -510,7 +510,7 @@ LAB_004102e4:
       iVar1 = iVar1 + iVar2 * -7;
       iVar2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       FUN_0040f514((byte)arg_1);
       uVar5 = Ai_Subsystem_004c05ba();
@@ -525,7 +525,7 @@ LAB_004102e4:
       iVar1 = iVar1 + iVar2 * -7;
       iVar2 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar2,iVar1);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       *(int *)(&DAT_0067bdbc + arg_1 * 4) = *(int *)(&DAT_0067bdbc + arg_1 * 4) + -3;
       for (local_7dc = 0; local_7dc < 500; local_7dc = local_7dc + 1) {
@@ -599,7 +599,7 @@ LAB_00410182:
       iVar3 = Ai_Util_004c3bc4(0x50);
       FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar3,iVar2);
     }
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
     *(undefined1 *)(local_850[local_854 + 1] + -3) = 10;
     FUN_0040a883(s_wiseman3_pic_00519388);
@@ -654,10 +654,10 @@ undefined4 Castle_Process_00421b32(void)
   local_1c = local_40;
   local_14 = 0xb7;
   local_c = 0x1c;
-  FUN_005112b0(0,(short)DAT_00530d9c);
+  Surface_TransformPoint(0,(short)DAT_00530d9c);
   *(undefined4 *)(g_DisplaySurfaceBackBuffer + 0x20) = 4;
   *(undefined4 *)(g_DisplaySurfaceWork + 0x20) = 4;
-  Surface_FillRect((int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c,0);
+  Surface_FillRect((int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,0);
   LoadPalNoPic(s_advfac64_pic_0051ac9c);
   Sprite_LoadAll(local_364,s_statbutt_spr_0051acac);
   local_44 = 0;
@@ -688,17 +688,17 @@ LAB_00421d4c:
   DAT_0070a860 = DAT_0067bdd4;
   SelectObject(*(HDC *)(DAT_0067bdd4 + 4),DAT_0067bdd8);
   if (DAT_0070a880 == 8) {
-    FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_statbak_pic_0051acbc,(short *)0x1);
+    FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_statbak_pic_0051acbc,(short *)0x1);
   }
   else {
-    FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_statbak_pic_0051acc8,(short *)0x1);
+    FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_statbak_pic_0051acc8,(short *)0x1);
   }
-  FUN_004219e1(g_DisplaySurfaceBackBuffer,0x26,DAT_0052245c - 0x1d1,0x8c,0xac,
+  FUN_004219e1(g_DisplaySurfaceBackBuffer,0x26,g_DisplayScreenHeight - 0x1d1,0x8c,0xac,
                *(undefined4 *)(&DAT_0051ac18 + DAT_006410d8 * 8));
-  FUN_004219e1(g_DisplaySurfaceBackBuffer,0x27,DAT_0052245c - 0x1d0,0x8a,0xaa,
+  FUN_004219e1(g_DisplaySurfaceBackBuffer,0x27,g_DisplayScreenHeight - 0x1d0,0x8a,0xaa,
                *(undefined4 *)(&DAT_0051ac1c + DAT_006410d8 * 8));
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                     (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                     (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
   iVar1 = Ai_Util_004c3bc4(0xa9);
   iVar2 = Ai_Util_004c3bc4(0x89);
   iVar3 = Ai_Util_004c3bc4(0x11);
@@ -712,7 +712,7 @@ LAB_00421d4c:
   arg_4 = Ai_Util_004c3bc4(0x173);
   iVar1 = Ai_Util_004c3bc4(0x43);
   arg_2 = Ai_Util_004c3bc4(0xf7);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar1,arg_4,arg_5,arg_6,iVar2,iVar3);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar1,arg_4,arg_5,arg_6,iVar2,iVar3);
   str_7 = s_advfac64_pic_0051acd4;
   str_6 = s_prdblk_pic_0051ace4;
   iVar1 = Ai_Util_004c3bc4(0xa9);
@@ -722,19 +722,19 @@ LAB_00421d4c:
   FUN_00488fdb((undefined4 *)g_DisplaySurfaceBackBuffer,arg_2_00,iVar3,iVar2,iVar1,str_6,str_7);
   SelectObject(*(HDC *)(DAT_0070a860 + 4),*(HGDIOBJ *)(DAT_0070a860 + 0xc));
   DAT_0070a860 = 0;
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x4f,0x102);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb7,0x102);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x4f,0x102);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb7,0x102);
   Minit_Subsystem_00452827();
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x4f,0x138);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb7,0x138);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x29,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x4e,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x73,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x98,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xbd,0x161);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_c,0x69,0xc6);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_c,0x69,0xd6);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_c,0x10e,0x16c);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x4f,0x138);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb7,0x138);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x29,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x4e,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x73,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x98,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xbd,0x161);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_c,0x69,0xc6);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_c,0x69,0xd6);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_c,0x10e,0x16c);
   for (local_8 = 0; (int)local_8 < 5; local_8 = local_8 + 1) {
     if (*(int *)(&DAT_006410c0 + local_8 * 4) != 0) {
       iVar1 = (int)(&DAT_00538a10)[local_8];
@@ -745,7 +745,7 @@ LAB_00421d4c:
       Sprite_DrawScaled((int *)g_DisplaySurfaceBackBuffer,arg_2_01,iVar4,iVar3,iVar2,iVar1);
     }
   }
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_c,0x118,0xeb);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_c,0x118,0xeb);
   for (local_8 = 0; (int)local_8 < 0xc; local_8 = local_8 + 1) {
     *(undefined4 *)(&DAT_0051a528 + (local_8 + 10) * 0x54) = 3;
     *(undefined4 *)(&DAT_00538a30 + local_8 * 4) = 0;
@@ -796,20 +796,20 @@ LAB_00421d4c:
   FUN_0040b441((int *)&DAT_0051a830,0xc);
   FUN_00422f06();
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0x14,0x184);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x184);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x184);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0x14,0x196);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x196);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x196);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0x14,0x1a8);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x1a8);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x1a8);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0x14,0x1ba);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x1ba);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0xb2,0x1ba);
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0xe9,0x19a);
   for (local_8 = 0; (int)local_8 < 5; local_8 = local_8 + 1) {
     FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_14,local_8 * 0x39 + 0x165,0x19a);
   }
   FUN_0040d49d((int)g_DisplaySurfaceBackBuffer,local_c,0xe9,0x1c0);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_14,0x1a1,0x1c0);
-  FUN_0040d4d1((int)g_DisplaySurfaceBackBuffer,local_c,0x1b0,0x36);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_14,0x1a1,0x1c0);
+  Font_DrawTextInRect((int)g_DisplaySurfaceBackBuffer,local_c,0x1b0,0x36);
   if (DAT_0070a880 == 8) {
     memset((void *)((int)&DAT_0070a134 + 2),0,0x300);
     FUN_0050e8b0((short *)&DAT_0070a130);
@@ -820,18 +820,18 @@ LAB_00421d4c:
   else {
     LoadPalNoPic(s_advfac64_pic_0051ae18);
   }
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                (int *)g_DisplaySurfaceScreen,0,0);
   FUN_005115a0(0,(short)DAT_00530d9c);
-  if (DAT_00522458 == 0x280) {
+  if (g_DisplayScreenWidth == 0x280) {
     Mem_AllocOrFree_00510de0(1,s_creatures640_pic_0051ae28);
     DAT_0051a4c8 = 0;
   }
-  else if (DAT_00522458 == 800) {
+  else if (g_DisplayScreenWidth == 800) {
     Mem_AllocOrFree_00510de0(1,s_creatures800_pic_0051ae3c);
     DAT_0051a4c8 = 1;
   }
-  else if (DAT_00522458 == 0x400) {
+  else if (g_DisplayScreenWidth == 0x400) {
     Mem_AllocOrFree_00510de0(1,s_creatures1024_pic_0051ae50);
     DAT_0051a4c8 = 2;
   }
@@ -858,7 +858,7 @@ LAB_004228ce:
   FUN_0041f391();
   switch(DAT_00538a28) {
   case 1:
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Glue_Subsystem_004ec98e(0,0xffffffff);
     goto switchD_00422abd_caseD_6;
   case 2:
@@ -866,7 +866,7 @@ LAB_004228ce:
     goto switchD_00422abd_caseD_6;
   case 3:
     Mem_AllocOrFree_0050fc50(DAT_00538a10);
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     LoadPalNoPic(s_advfac64_pic_0051ae64);
     return 0;
   case 4:
@@ -896,10 +896,10 @@ LAB_004228ce:
     goto switchD_00422abd_caseD_6;
   }
   if (*(int *)(DAT_00538a28 * 4 + 0x641098) != 0) {
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     Glue_Subsystem_004ec98e(0x101,DAT_00538a28 - 9);
   }
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if (*(int *)(DAT_00538a28 * 4 + 0x641098) != 0) goto switchD_00422abd_caseD_6;
   goto LAB_004228ce;
 switchD_00422abd_caseD_6:
@@ -994,36 +994,36 @@ void Castle_Process_0046c8b0(void)
   local_668 = iVar2 + 3;
   Sprite_LoadAll(&DAT_006776a0,s_amsprite_spr_0052510c);
   uVar3 = 0x54;
-  pcVar1 = (char *)FUN_0046f172(s_cstline1_spr_0052511c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_cstline1_spr_0052511c);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00677820,pcVar1,uVar3);
   uVar3 = 0x10;
-  pcVar1 = (char *)FUN_0046f172(s_landtile_spr_0052512c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_landtile_spr_0052512c);
   local_8 = Sprite_LoadCount(&DAT_00677650,pcVar1,uVar3);
   uVar3 = 0x37;
-  pcVar1 = (char *)FUN_0046f172(s_land_spr_0052513c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_land_spr_0052513c);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00677450,pcVar1,uVar3);
   uVar3 = 0x37;
-  pcVar1 = (char *)FUN_0046f172(s_sland_spr_00525148);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_sland_spr_00525148);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00678010,pcVar1,uVar3);
   uVar3 = 0x37;
-  pcVar1 = (char *)FUN_0046f172(s_land2_spr_00525154);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_land2_spr_00525154);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_0067752c,pcVar1,uVar3);
   uVar3 = 0x37;
-  pcVar1 = (char *)FUN_0046f172(s_sland2_spr_00525160);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_sland2_spr_00525160);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_006780ec,pcVar1,uVar3);
   uVar3 = 0xc;
-  pcVar1 = (char *)FUN_0046f172(s_roads_spr_0052516c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_roads_spr_0052516c);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00677350,pcVar1,uVar3);
-  pcVar1 = (char *)FUN_0046f172(s_locatn01_spr_00525178);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn01_spr_00525178);
   local_8 = Sprite_LoadAll((undefined4 *)&DAT_00677a10,pcVar1);
-  pcVar1 = (char *)FUN_0046f172(s_locatn02_spr_00525188);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn02_spr_00525188);
   iVar2 = Sprite_LoadAll((undefined4 *)(&DAT_00677a10 + local_8 * 4),pcVar1);
   local_8 = local_8 + iVar2;
-  pcVar1 = (char *)FUN_0046f172(s_locatn03_spr_00525198);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn03_spr_00525198);
   local_14 = Sprite_LoadAll((undefined4 *)(&DAT_00677a10 + local_8 * 4),pcVar1);
   local_14 = local_8 + local_14;
   local_8 = local_14;
-  pcVar1 = (char *)FUN_0046f172(s_locatn04_spr_005251a8);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn04_spr_005251a8);
   iVar2 = Sprite_LoadAll((undefined4 *)(&DAT_00677a10 + local_8 * 4),pcVar1);
   local_8 = local_8 + iVar2;
   _DAT_00677ff4 = *(undefined4 *)(&DAT_00677a18 + local_14 * 4);
@@ -1031,11 +1031,11 @@ void Castle_Process_0046c8b0(void)
   _DAT_00677ff8 = *(undefined4 *)(&DAT_00677a30 + local_14 * 4);
   _DAT_00677ff0 = *(undefined4 *)(&DAT_00677a38 + local_14 * 4);
   DAT_006784f8 = *(undefined4 *)(&DAT_00677a28 + local_14 * 4);
-  pcVar1 = (char *)FUN_0046f172(s_locatn05_spr_005251b8);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn05_spr_005251b8);
   local_14 = Sprite_LoadAll((undefined4 *)(&DAT_00677a10 + local_8 * 4),pcVar1);
   local_14 = local_8 + local_14;
   local_8 = local_14;
-  pcVar1 = (char *)FUN_0046f172(s_locatn06_spr_005251c8);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn06_spr_005251c8);
   iVar2 = Sprite_LoadAll((undefined4 *)(&DAT_00677a10 + local_8 * 4),pcVar1);
   local_8 = local_8 + iVar2;
   _DAT_00677ffc = *(undefined4 *)(&DAT_00677a10 + local_14 * 4);
@@ -1052,7 +1052,7 @@ void Castle_Process_0046c8b0(void)
   for (local_8 = 0; local_8 < 0x20; local_8 = local_8 + 1) {
     *(undefined4 *)(&g_OverworldFoodAmount + local_8 * 0xb4) = 0;
   }
-  pcVar1 = (char *)FUN_0046f172(s_ego_f_spr_005251e8 +
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_ego_f_spr_005251e8 +
                                 ((*(int *)(&DAT_00525070 + DAT_006ff678 * 4) != 0) - 1 & 0xc));
   local_8 = Sprite_LoadAll(&DAT_00679370,pcVar1);
   local_990 = DAT_00679370;
@@ -1062,7 +1062,7 @@ void Castle_Process_0046c8b0(void)
   if (DAT_006784b0 < DAT_006779d0) {
     DAT_006779d0 = (DAT_006784b0 * 2) / 3;
   }
-  pcVar1 = (char *)FUN_0046f172(s_sego_f_spr_00525200);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_sego_f_spr_00525200);
   local_8 = Sprite_LoadAll(&DAT_00679424,pcVar1);
   local_994 = DAT_00679424;
   DAT_00678434 = (int)*(short *)(DAT_00679424 + 4);
@@ -1071,13 +1071,13 @@ void Castle_Process_0046c8b0(void)
   if (DAT_006784b4 < DAT_006779d4) {
     DAT_006779d4 = (DAT_006784b4 * 2) / 3;
   }
-  pcVar1 = (char *)FUN_0046f172(s_castles1_spr_0052520c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_castles1_spr_0052520c);
   local_8 = Sprite_LoadAll((undefined4 *)&DAT_00678660,pcVar1);
   uVar3 = 8;
-  pcVar1 = (char *)FUN_0046f172(s_castles2_spr_0052521c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_castles2_spr_0052521c);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00678690,pcVar1,uVar3);
   uVar3 = 0xc;
-  pcVar1 = (char *)FUN_0046f172(s_locatn07_spr_0052522c);
+  pcVar1 = (char *)Sprite_ResolveAssetPath(s_locatn07_spr_0052522c);
   local_8 = Sprite_LoadCount((undefined4 *)&DAT_00677420,pcVar1,uVar3);
   local_cb8 = 0;
   Sprite_LoadAll(local_cb4,s_dbox_spr_0052523c);
@@ -1106,15 +1106,15 @@ void Castle_Process_0046c8b0(void)
   }
   Mem_AllocOrFree_00510e20(1,s_tips_pic_00525288);
   Mem_AllocOrFree_0050fc00();
-  if (DAT_00522458 == 0x280) {
+  if (g_DisplayScreenWidth == 0x280) {
     DAT_00677fb0 = Sprite_EncodeFromSurface(1,1,1,5,0x10);
     DAT_00677fe4 = Sprite_EncodeFromSurface(1,10,1,3,2);
   }
-  else if (DAT_00522458 == 800) {
+  else if (g_DisplayScreenWidth == 800) {
     DAT_00677fb0 = Sprite_EncodeFromSurface(1,1,0x1d,6,0x14);
     DAT_00677fe4 = Sprite_EncodeFromSurface(1,10,0x1d,5,3);
   }
-  else if (DAT_00522458 == 0x400) {
+  else if (g_DisplayScreenWidth == 0x400) {
     DAT_00677fb0 = Sprite_EncodeFromSurface(1,1,0x39,8,0x1b);
     DAT_00677fe4 = Sprite_EncodeFromSurface(1,10,0x39,6,9);
   }
@@ -1255,7 +1255,7 @@ int Dungeon_Process_004856b0(uint arg1,int arg2)
     for (local_874 = 0; (int)local_874 < local_840; local_874 = local_874 + 1) {
       do {
         do {
-          local_878 = (LPVOID)FUN_0040a1d2(500);
+          local_878 = (LPVOID)Math_RandomRange(500);
         } while (*(int *)(&deck + (int)local_878 * 4) == -1);
       } while ((((&DAT_00702151)[(int)local_878 * 4] & 0x40) != 0) ||
               ((*(uint *)(&deck + (int)local_878 * 4) & 0xfff) < 5));
@@ -1267,13 +1267,13 @@ int Dungeon_Process_004856b0(uint arg1,int arg2)
     local_908 = s_prdgrn_pic_00527158;
     local_904 = s_prdrd_pic_00527170;
     local_900 = s_prdwt_pic_00527188;
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     FUN_00510b70(1,0,0,(char *)(&local_914)[arg2],
                  (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
     Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                       (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                       (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
     FUN_005115a0(0,(short)DAT_00530d9c);
-    FUN_004f3955(_hdcScreen);
+    GDI_RealizeAndFlushPalette_Magic(_hdcScreen);
     Mem_AllocOrFree_00510e20(1,s_prdfrma_pic_00527194);
     Mem_AllocOrFree_0050fc00();
     local_8f4 = (void *)Sprite_EncodeFromSurface(1,1,1,0x68,0x2c);
@@ -1322,11 +1322,11 @@ int Dungeon_Process_004856b0(uint arg1,int arg2)
     iVar8 = Ai_Util_004c3bc4(8);
     Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,iVar7 - iVar8,iVar6,iVar5,iVar4,iVar3);
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x188);
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0xbd,0x188);
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x1b5);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x188);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0xbd,0x188);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x5b,0x1b5);
     Minit_Subsystem_00452827();
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0xc3,0x1b5);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0xc3,0x1b5);
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 2;
     iVar3 = local_8c8;
     iVar4 = Ai_Util_004c3bc4((int)*(short *)(local_8c8 + 6));
@@ -1335,7 +1335,7 @@ int Dungeon_Process_004856b0(uint arg1,int arg2)
     iVar7 = Ai_Util_004c3bc4(0x1d4);
     Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,iVar7,iVar6,iVar5,iVar4,iVar3);
     Ai_CalcManaRequirement_004c003d();
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd2,0x21f,0x199);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd2,0x21f,0x199);
     FUN_0050fc20();
     Mem_AllocOrFree_0050fc50(local_8f4);
     iVar6 = 0;
@@ -1376,7 +1376,7 @@ int Dungeon_Process_004856b0(uint arg1,int arg2)
     if ((g_IsAiThinking == 0) && ((&DAT_0052262a)[(int)local_14 * 0x44] != '\v')) {
       FUN_0050b206(DAT_006b2dd0,0xe8,0x18,1,&DAT_005271e8);
     }
-    local_83c = FUN_0040a305(local_880 * 10,10,local_880 * 0x32);
+    local_83c = Math_Clamp(local_880 * 10, 10, local_880 * 0x32);
     if ((&DAT_0052262a)[(int)local_14 * 0x44] != '\v') {
       local_86c = 0;
       local_838 = 0;
@@ -1492,15 +1492,15 @@ LAB_0048627e:
       else {
         do {
           uVar11 = Ai_Util_004c3bc4(0x100);
-          iVar3 = DAT_00522458 / 2;
+          iVar3 = g_DisplayScreenWidth / 2;
           iVar4 = FUN_0050f440((int *)g_DisplaySurfaceScreen,&g_OverworldWorldState);
           local_870 = FUN_00489710(&g_OverworldWorldState,(iVar3 - iVar4 / 2) + -2,uVar11);
         } while (local_870 == 0xffffffff);
       }
       if (((((int)local_870 < 1) && (4 < local_850)) && (-(int)local_14 != DAT_0067f2c0)) &&
          (local_838 == 0)) {
-        local_964[10] = FUN_0040a1d2(3);
-        local_938 = FUN_0040a1d2(3);
+        local_964[10] = Math_RandomRange(3);
+        local_938 = Math_RandomRange(3);
         strcpy(&g_OverworldWorldState,s_I_thank_your_for_your_mercy_gran_005273f8);
         if (local_964[10] == 0) {
           strcat(&g_OverworldWorldState,s_A_spell_from_my_deck__00527430);
@@ -1517,7 +1517,7 @@ LAB_0048627e:
         if (local_938 == 0) {
           strcat(&g_OverworldWorldState,&DAT_0052748c);
           cVar1 = (&DAT_00522628)[(int)local_14 * 0x44];
-          iVar3 = FUN_0040a1d2(10 - DAT_0067f380);
+          iVar3 = Math_RandomRange(10 - DAT_0067f380);
           local_930 = (cVar1 + iVar3) * 10;
           pcVar10 = _itoa(local_930,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
@@ -1528,9 +1528,9 @@ LAB_0048627e:
         }
         else if (local_938 == 2) {
           strcat(&g_OverworldWorldState,&DAT_005274a4);
-          local_934 = FUN_0040a1d2(3);
+          local_934 = Math_RandomRange(3);
           local_934 = local_934 + 1;
-          local_92c = FUN_0040a1d2(5);
+          local_92c = Math_RandomRange(5);
           local_92c = local_92c + 1;
           pcVar10 = _itoa(local_934,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
@@ -1552,7 +1552,7 @@ LAB_0048627e:
             }
           }
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           FUN_0046f21e(s_dbox_spr_005274cc,0x71,0xe3);
           local_8bc = Pic_Load_004509e8(g_CurrentTurnPhase,0x69ef00,500,s_Pick_a_spell_005274dc,1);
           if ((*(int *)(&DAT_0069ef00 + local_8bc * 4) != -1) &&
@@ -1594,7 +1594,7 @@ LAB_0048627e:
               Glue_Subsystem_004ead96(0);
               Glue_Subsystem_004eadb7(0);
               SelectPalette(_hdcScreen,DAT_00626834,0);
-              FUN_005112b0(0,(short)DAT_00530d9c);
+              Surface_TransformPoint(0,(short)DAT_00530d9c);
               Ai_CastleEncounter_004c24b3(0);
             }
           }
@@ -1606,7 +1606,7 @@ LAB_0048627e:
             }
             else {
               SelectPalette(_hdcScreen,DAT_00626834,0);
-              FUN_005112b0(0,(short)DAT_00530d9c);
+              Surface_TransformPoint(0,(short)DAT_00530d9c);
               FUN_0048ea81(arg2 + -1);
             }
           }
@@ -1642,9 +1642,9 @@ LAB_0048627e:
             strcpy(&g_OverworldWorldState,s_Lost_this_card_00527590);
             Mem_AllocOrFree_00510e20(1,s_losedul2_pic_005275a0);
             Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                               (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                               (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
             FUN_0050b206(DAT_006b2d90,0x17,0x50,1,&g_OverworldWorldState);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
             FUN_00489630(DAT_006b2d90);
           }
@@ -1653,7 +1653,7 @@ LAB_0048627e:
           }
           LoadPalNoPic(s_Prdblk_pic_005275b0);
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           FUN_0050d560(0,0);
           LoadPalNoPic(s_advfac64_pic_005275bc);
           FUN_0046f21e(s_dbox_spr_005275cc,0x71,0xe3);
@@ -1662,7 +1662,7 @@ LAB_0048627e:
         if (local_864 == local_870) {
           Gold = Gold - local_83c;
           SelectPalette(_hdcScreen,DAT_00626834,0);
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           LoadPalNoPic(s_advfac64_pic_005275d8);
           FUN_0046f21e(s_dbox_spr_005275e8,0x71,0xe3);
           return 0;
@@ -1687,9 +1687,9 @@ LAB_0048627e:
     strcat(&g_OverworldWorldState,s_you_must____Duel_0052764c);
     Glue_Subsystem_004eaa19((int)local_14,1,0);
     strcat(&g_OverworldWorldState,&DAT_00527660);
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     uVar11 = Ai_Util_004c3bc4(0x100);
-    iVar3 = DAT_00522458 / 2;
+    iVar3 = g_DisplayScreenWidth / 2;
     iVar4 = FUN_0050f440((int *)g_DisplaySurfaceScreen,&g_OverworldWorldState);
     FUN_00489710(&g_OverworldWorldState,(iVar3 - iVar4 / 2) + -2,uVar11);
     Glue_Subsystem_004ebebf();
@@ -1708,7 +1708,7 @@ LAB_00487364:
     if ('\n' < (char)(&DAT_0052262a)[(int)local_14 * 0x44]) {
       local_848 = DAT_00626804;
     }
-    iVar3 = FUN_0040a305(3 - local_c / 3,0,3);
+    iVar3 = Math_Clamp(3 - local_c / 3,0,3);
     DAT_0063ee24 = -iVar3;
     if ((DAT_0067f380 == 3) || ('\n' < (char)(&DAT_0052262a)[(int)local_14 * 0x44])) {
       DAT_0063ee24 = 0;
@@ -1723,8 +1723,8 @@ LAB_00487364:
     if (local_8b8 != 0) {
       Glue_Subsystem_004ebcdc(s_x_sound_dsummon_wav_00527664,0xf,100,100,0);
       if ((((&DAT_00522638)[(int)local_14 * 0x44] & 4) != 0) &&
-         (iVar3 = FUN_0040a1d2(3), iVar3 == 0)) {
-        iVar3 = FUN_0040a1d2(0x23);
+         (iVar3 = Math_RandomRange(3), iVar3 == 0)) {
+        iVar3 = Math_RandomRange(0x23);
         local_878 = (LPVOID)(iVar3 + 1);
         strcpy(&g_OverworldWorldState,s_decks_0_00527678);
         if ((*(int *)(&DAT_0052262c + (int)local_878 * 0x44) < 100) &&
@@ -1741,10 +1741,10 @@ LAB_00487364:
         FUN_00489710(&g_OverworldWorldState,0xa0,0xa0);
       }
       if ((((*(uint *)(&DAT_00522638 + (int)local_14 * 0x44) & 0x110) != 0) &&
-          (iVar3 = FUN_0040a1d2(3), iVar3 == 0)) && (-(int)local_14 != DAT_0067f2c0)) {
+          (iVar3 = Math_RandomRange(3), iVar3 == 0)) && (-(int)local_14 != DAT_0067f2c0)) {
         do {
           do {
-            iVar3 = FUN_0040a1d2(3);
+            iVar3 = Math_RandomRange(3);
             local_878 = (LPVOID)((int)local_14 + iVar3 + 1);
           } while (local_878 == (LPVOID)0x37);
         } while (((int)local_878 < 0x24) && ((int)local_878 % 7 == 0));
@@ -1809,7 +1809,7 @@ LAB_00487364:
     }
     FUN_004909d3((int)local_14,local_8bc,(uint)local_878,local_848);
     Palette_Subsystem_00496eaf();
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     SelectPalette(_hdcScreen,DAT_00626834,0);
     FUN_0046f21e(s_dbox_spr_005276ec,0x71,0xe3);
     Pic_Subsystem_00423c82(0);
@@ -1837,7 +1837,7 @@ LAB_00487364:
           do {
             do {
               uVar13 = 1;
-              bVar2 = FUN_0040a1d2(6);
+              bVar2 = Math_RandomRange(6);
               local_8bc = Pic_Subsystem_00451d90(1 << (bVar2 & 0x1f),uVar13);
               iVar3 = Pic_Subsystem_004521a6
                                 (1 << ((byte)arg2 & 0x1f),
@@ -1859,21 +1859,21 @@ LAB_00487364:
         Glue_Subsystem_004ebfef(1);
         Mem_AllocOrFree_00510de0(1,s_winbak01_pic_00527708);
         Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                           (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                           (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
         local_8c0 = (int)(300 / (longlong)(int)(local_8c4 + 1));
         for (arg1 = 0; (int)arg1 < (int)local_8c4; arg1 = arg1 + 1) {
           iVar3 = Pic_Subsystem_00452551(auStack_8b0[arg1]);
           strcpy(&g_OverworldWorldState,(char *)(&DAT_0052b73c)[iVar3]);
           pcVar10 = &g_OverworldWorldState;
           iVar4 = 1;
-          iVar3 = FUN_0040a1d2(10);
+          iVar3 = Math_RandomRange(10);
           FUN_0050b206(auStack_8b0[arg1],
                        (local_8c0 * arg1 + 0x6f) - (int)((local_8c4 - 1) * local_8c0) / 2,
                        iVar3 + 0x10,iVar4,pcVar10);
         }
         if (local_830 == -1) {
           *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 5;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xff,0x140,0x15e);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xff,0x140,0x15e);
           Ai_Subsystem_004cd1d1();
           for (arg1 = 0; (int)arg1 < (int)local_8c4; arg1 = arg1 + 1) {
             local_878 = (LPVOID)Pic_Subsystem_00451e40(auStack_8b0[arg1]);
@@ -1948,12 +1948,12 @@ LAB_00487364:
             FUN_0048ea81(local_830);
           }
         }
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         local_10 = *(uint *)(&DAT_0052263c + (int)local_14 * 0x44);
         if (local_8b8 == 0) {
           local_10 = 0;
         }
-        iVar3 = FUN_0040a1d2(0x28);
+        iVar3 = Math_RandomRange(0x28);
         if (iVar3 < (int)local_880) {
           local_964[1] = 2;
           local_964[2] = 1;
@@ -1963,8 +1963,8 @@ LAB_00487364:
           *(int *)(&DAT_0067bdbc + arg2 * 4) = *(int *)(&DAT_0067bdbc + arg2 * 4) + 1;
           Mem_AllocOrFree_00510e20(1,s_winbak02_pic_005277c4);
           Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                             (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
-          FUN_0040a3e1();
+                             (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+          App_ProcessPendingMessages();
           strcpy(&g_OverworldWorldState,s_Won_this_Amulet__005277d4);
           local_964[0] = FUN_0050f440((int *)g_DisplaySurfaceScreen,&g_OverworldWorldState);
           iVar7 = 0;
@@ -1985,19 +1985,19 @@ LAB_00487364:
           iVar8 = Ai_Util_004c3bc4(0xd);
           Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,iVar7 - iVar8,iVar6,iVar5,iVar4,iVar3);
           if (local_10 == 0) {
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
           }
         }
         else if ((local_10 == 0) && (local_8b8 != 0)) {
-          bVar2 = FUN_0040a1d2(0xc);
+          bVar2 = Math_RandomRange(0xc);
           local_10 = 1 << (bVar2 & 0x1f) & 0x1a19;
         }
         if (local_10 != 0) {
           Glue_Subsystem_004ebcdc(s_x_sound_treasure_wav_0052783c,0xf,100,100,0);
           Mem_AllocOrFree_00510e20(1,s_winbak02_pic_00527854);
           Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                             (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                             (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
           iVar6 = 0;
           iVar5 = 1;
           iVar3 = Ai_Util_004c3bc4(0x23);
@@ -2011,7 +2011,7 @@ LAB_00487364:
           strcat(&g_OverworldWorldState,s_says_the_00527874);
           Glue_Subsystem_004eaa19((int)local_14,0,0);
           strcat(&g_OverworldWorldState,&DAT_00527880);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           local_964[8] = local_964[8] + 0x28;
           strcpy(&g_OverworldWorldState,s_You_get_00527884);
         }
@@ -2021,27 +2021,27 @@ LAB_00487364:
           pcVar10 = _itoa(g_PlayerCreatureCount,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
           strcat(&g_OverworldWorldState,s___carried_over_to_the_next_duel__005278a0);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((local_10 & 0x800) != 0) {
-          iVar3 = FUN_0040a1d2(4);
+          iVar3 = Math_RandomRange(4);
           DAT_00522454 = (LPVOID)(iVar3 + 1);
           strcat(&g_OverworldWorldState,&DAT_005278c4);
           pcVar10 = _itoa((int)DAT_00522454,&DAT_00539d50,10);
           strcat(&g_OverworldWorldState,pcVar10);
           strcat(&g_OverworldWorldState,s_lives_in_next_duel__005278c8);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((local_10 & 0x402) != 0) {
           do {
-            local_844 = FUN_0040a1d2(0x40);
-            local_868 = FUN_0040a1d2(0x40);
-            iVar3 = FUN_0040c761(local_844,local_868);
+            local_844 = Math_RandomRange(0x40);
+            local_868 = Math_RandomRange(0x40);
+            iVar3 = Surface_GetPixelColor(local_844, local_868);
           } while (iVar3 == 0);
           DAT_0052eff0 = local_844 * 0x20 + 0x10;
           DAT_0052eff4 = local_868 * 0x20 + 0x10;
           DAT_00641884 = 0;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((local_10 & 4) != 0) {
           DAT_00522454 = (LPVOID)Pic_Subsystem_0045268f
@@ -2058,7 +2058,7 @@ LAB_00487364:
         }
         if ((local_10 & 0x10) != 0) {
           DAT_00522454 = (LPVOID)0x0;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((local_10 & 0x20) != 0) {
           DAT_00522454 = (LPVOID)Pic_Subsystem_0045268f
@@ -2070,7 +2070,7 @@ LAB_00487364:
         if ((local_10 & 0x180) != 0) {
           do {
             do {
-              local_878 = (LPVOID)FUN_0040a1d2(g_MasterCardCount + -0x29);
+              local_878 = (LPVOID)Math_RandomRange(g_MasterCardCount + -0x29);
             } while (((&g_MasterCardColorTable)[(int)local_878 * 0x34] & 0x42) != 0x40);
           } while (((int)local_878 < 5) || (iVar3 = FUN_00485005((int)local_878), iVar3 == 0));
           DAT_00522454 = local_878;
@@ -2080,14 +2080,14 @@ LAB_00487364:
           FUN_0050b206((int)DAT_00522454,0xa0,0x70,1,&g_OverworldWorldState);
         }
         if ((local_10 & 0x200) != 0) {
-          iVar3 = FUN_0040a1d2(0x1e);
+          iVar3 = Math_RandomRange(0x1e);
           DAT_00522448 = DAT_00522448 + iVar3 + 0x14;
           strcat(&g_OverworldWorldState,s_Extra_FOOD__00527948);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
         }
         if ((local_10 & 0x40) != 0) {
           strcat(&g_OverworldWorldState,s_any_card_of_your_choice__00527954);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Ai_Subsystem_004cd1d1();
           Glue_Subsystem_004ead96(1);
           local_8bc = Palette_Color_0049716e(s_Pick_a_card_00527970,0,0xffffffff,1,0);
@@ -2102,7 +2102,7 @@ LAB_00487364:
         }
         if ((local_10 & 0x1000) != 0) {
           strcat(&g_OverworldWorldState,s_a_duplicate_card_of_your_choice__00527988);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Ai_Subsystem_004cd1d1();
           Glue_Subsystem_004ead96(1);
           for (arg1 = 0; (int)arg1 < 500; arg1 = arg1 + 1) {
@@ -2121,18 +2121,18 @@ LAB_00487364:
         }
         if ((local_10 & 8) != 0) {
           strcat(&g_OverworldWorldState,s_Extra_GOLD__005279bc);
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,local_964[7],local_964[6],local_964[8]);
           Gold = Gold + 100;
         }
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         if (local_10 != 0) {
           Ai_Subsystem_004cd1d1();
         }
-        iVar3 = FUN_0040a1d2((int)(0x40 / (longlong)(DAT_0067f380 + 1)));
+        iVar3 = Math_RandomRange((int)(0x40 / (longlong)(DAT_0067f380 + 1)));
         if (iVar3 < (int)local_880) {
           *(LPVOID *)(&DAT_006a48f0 + arg2 * 4) = DAT_0052f000;
         }
-        iVar3 = FUN_0040a1d2((int)(0x80 / (longlong)(DAT_0067f380 + 1)));
+        iVar3 = Math_RandomRange((int)(0x80 / (longlong)(DAT_0067f380 + 1)));
         if (iVar3 < (int)local_880) {
           *(int *)(&DAT_006a4908 + arg2 * 4) = DAT_00626804;
         }
@@ -2142,10 +2142,10 @@ LAB_00487364:
       Glue_Subsystem_004ebfef(2);
       Mem_AllocOrFree_00510e20(1,s_losedul2_pic_005279c8);
       Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                         (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                         (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
       FUN_0040b3c2(2,local_14);
       for (local_884 = 0; local_884 < 3; local_884 = local_884 + 1) {
-        FUN_0040a305((Gold / 0x28) * 10,0,100);
+        Math_Clamp((Gold / 0x28) * 10,0,100);
         local_878 = (LPVOID)0x0;
         local_87c = (&DAT_006b2d90)[local_884];
         if (local_87c != 0xffffffff) {
@@ -2157,7 +2157,7 @@ LAB_00487364:
             strcat(&g_OverworldWorldState,s_gold__005279f0);
           }
           FUN_0050b206(local_87c,0x17,0x50,1,&g_OverworldWorldState);
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           Ai_Subsystem_004cd1d1();
           FUN_00489630(local_87c);
         }
@@ -2166,23 +2166,23 @@ LAB_00487364:
     if (local_8 == -1) {
       Mem_AllocOrFree_00510e20(1,s_losedul2_pic_005279f8);
       Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                         (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                         (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
       iVar5 = 0;
       iVar4 = 1;
       iVar3 = Ai_Util_004c3bc4(0x3c);
       Pic_Load_advfac64_00489188
-                (local_14,(int)(DAT_00522458 + (DAT_00522458 >> 0x1f & 3U)) >> 2,iVar3,iVar4,iVar5);
+                (local_14,(int)(g_DisplayScreenWidth + (g_DisplayScreenWidth >> 0x1f & 3U)) >> 2,iVar3,iVar4,iVar5);
       *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
       strcpy(&g_OverworldWorldState,s_The_people_are_disappointed_you_c_00527a08);
       Glue_Subsystem_004eaa19((int)local_14,0,0);
       iVar3 = Ai_Util_004c3bc4(300);
       FUN_0040d201((int)g_DisplaySurfaceScreen,0xca,
-                   (int)(DAT_00522458 + (DAT_00522458 >> 0x1f & 3U)) >> 2,iVar3);
+                   (int)(g_DisplayScreenWidth + (g_DisplayScreenWidth >> 0x1f & 3U)) >> 2,iVar3);
       iVar3 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
       iVar3 = Ai_Util_004c3bc4(iVar3 * 4 + 300);
       FUN_0040d201((int)g_DisplaySurfaceScreen,0xca,
-                   (int)(DAT_00522458 + (DAT_00522458 >> 0x1f & 3U)) >> 2,iVar3);
-      FUN_0040a3e1();
+                   (int)(g_DisplayScreenWidth + (g_DisplayScreenWidth >> 0x1f & 3U)) >> 2,iVar3);
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
     }
   }
@@ -2190,12 +2190,12 @@ LAB_00488f4b:
   FUN_0046f21e(s_dbox_spr_00527a78,0x71,0xe3);
   SelectPalette(_hdcScreen,DAT_00626834,0);
   LoadPalNoPic(s_advfac64_pic_00527a84);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   return local_8;
 LAB_00486fd1:
   do {
     do {
-      local_878 = (LPVOID)FUN_0040a1d2(500);
+      local_878 = (LPVOID)Math_RandomRange(500);
     } while (*(int *)(&deck + (int)local_878 * 4) == -1);
   } while ((((&DAT_00702151)[(int)local_878 * 4] & 0x40) != 0) ||
           ((*(uint *)(&deck + (int)local_878 * 4) & 0xfff) < 5));
@@ -2282,11 +2282,11 @@ void Castle_Process_0048f523(void)
       *(undefined4 *)(&DAT_0052800c + local_14b0 * 0x54) = uVar2;
     }
   }
-  FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_dung_bd_pic_00528568,(short *)0x0);
+  FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_dung_bd_pic_00528568,(short *)0x0);
   uStackY_3c = 0x48f7d7;
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                     (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                     (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                (int *)g_DisplaySurfaceScreen,0,0);
   Mem_AllocOrFree_0050fc00();
   for (local_12cc = 0; (int)local_12cc < 0xf; local_12cc = local_12cc + 1) {
@@ -2320,11 +2320,11 @@ void Castle_Process_0048f523(void)
   Mem_AllocOrFree_0041f159(0);
 LAB_0048fa24:
   if (local_12d0 == 0) {
-    FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_dung_bd_pic_00528574,(short *)0x0);
+    FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_dung_bd_pic_00528574,(short *)0x0);
     uStackY_3c = 0x48fa87;
-    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                       (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                       (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                  (int *)g_DisplaySurfaceScreen,0,0);
   }
   local_12d0 = 0;
@@ -2348,10 +2348,10 @@ LAB_0048fa24:
       }
     }
     FUN_0041f213();
-    FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_dung_bd_pic_00528580,(short *)0x0);
+    FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_dung_bd_pic_00528580,(short *)0x0);
     uStackY_3c = 0x48fbaf;
-    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                       (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
+    Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                       (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
     *(undefined4 *)g_DisplaySurfaceScreen = 1;
     local_12dc = 0;
     *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 1;
@@ -2477,13 +2477,13 @@ LAB_0048fa24:
     uVar7 = Ai_Util_004c3bc4(0x208);
     iVar6 = Ai_Util_004c3bc4(0x46);
     arg_2 = Ai_Util_004c3bc4(0x50);
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar6,uVar7,arg_5,arg_6,iVar5,iVar9);
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar6,uVar7,arg_5,arg_6,iVar5,iVar9);
     DAT_0054aae0 = -5;
     local_12d4 = 0xffffffff;
     while( true ) {
       do {
         if (DAT_0054aae0 != -5) {
-          FUN_0040a3e1();
+          App_ProcessPendingMessages();
           FUN_0041f391();
           Mem_AllocOrFree_0050fc50(DAT_00676bd0);
           if ((local_12c8 != 0) && (local_14ac[0] != (void *)0x0)) {
@@ -2494,8 +2494,8 @@ LAB_0048fa24:
         local_12cc = 0xffffffff;
         Pic_Subsystem_0044b84b();
         if (DAT_007039c4 == 0) {
-          iVar9 = (DAT_0067bda8 * 0x1e0) / (int)DAT_0052245c;
-          iVar5 = (DAT_0067bda4 * 0x280) / (int)DAT_00522458;
+          iVar9 = (DAT_0067bda8 * 0x1e0) / (int)g_DisplayScreenHeight;
+          iVar5 = (DAT_0067bda4 * 0x280) / (int)g_DisplayScreenWidth;
           iVar6 = FUN_0048edeb(iVar5,iVar9,0x54,0x49,0xfb,0x174);
           if (iVar6 == 0) {
             iVar5 = FUN_0048edeb(iVar5,iVar9,0x15b,0x49,0xfd,0x174);
@@ -2522,8 +2522,8 @@ LAB_0048fa24:
           }
         }
         else {
-          iVar9 = (DAT_0067bda8 * 0x1e0) / (int)DAT_0052245c;
-          iVar5 = (DAT_0067bda4 * 0x280) / (int)DAT_00522458;
+          iVar9 = (DAT_0067bda8 * 0x1e0) / (int)g_DisplayScreenHeight;
+          iVar5 = (DAT_0067bda4 * 0x280) / (int)g_DisplayScreenWidth;
           iVar6 = FUN_0048edeb(iVar5,iVar9,0x54,0x49,0xfb,0x174);
           if (iVar6 == 0) {
             iVar5 = FUN_0048edeb(iVar5,iVar9,0x15b,0x49,0xfd,0x174);
@@ -2539,7 +2539,7 @@ LAB_0048fa24:
             iVar5 = Ai_Util_004c3bc4(((int)local_12cc / 2) * 0x3e + 0x69);
             iVar6 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
             FUN_0040cf6d((int)g_DisplaySurfaceScreen,0xbe,iVar9,iVar5 - iVar6 / 2);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Castle_Process_00492ddf(auStackY_13e4[local_12cc]);
             goto LAB_0048fa24;
           }
@@ -2575,7 +2575,7 @@ LAB_0048fa24:
       bVar11 = local_14c8 != iVar5;
       local_14c8 = iVar5;
       if (bVar11) break;
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
     }
   } while( true );
 }
@@ -2652,12 +2652,12 @@ void Town_Process_00490d7b(void)
   Glue_Subsystem_004eadb7(1);
   *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 1;
   *(undefined4 *)(g_DisplaySurfaceBackBuffer + 0x20) = 1;
-  FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_cityinfo_pic_0052865c,(short *)0x0);
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                     (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
+  FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_cityinfo_pic_0052865c,(short *)0x0);
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                     (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
   FUN_00510b70(2,0,*(int *)(g_DisplaySurfaceWork + 0x10) + -0x46,s_cinfopce_pic_0052866c,
                (short *)0x0);
-  arg_2 = (int)((int)DAT_00522458 / 2 + DAT_00522458 * 0x30) / 0x280;
+  arg_2 = (int)((int)g_DisplayScreenWidth / 2 + g_DisplayScreenWidth * 0x30) / 0x280;
   local_8 = Ai_Util_004c3bc4(0x52);
   arg_4 = Ai_Util_004c3bc4(0x231);
   arg_5 = Ai_Util_004c3bc4(0x2a);
@@ -2672,7 +2672,7 @@ void Town_Process_00490d7b(void)
     FUN_0050e040((int *)g_DisplaySurfaceWork,0,0x80,arg_4,arg_5,(int *)g_DisplaySurfaceBackBuffer,
                  arg_2,local_42c * arg_5 + local_8);
   }
-  FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+  FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                (int *)g_DisplaySurfaceScreen,0,0);
   for (local_10 = 0; local_10 < 0x80; local_10 = local_10 + 1) {
     if (((((&DAT_0067be00)[local_10 * 100] & 2) != 0) || (DAT_0067b9a4 != 0)) &&
@@ -2682,7 +2682,7 @@ void Town_Process_00490d7b(void)
     }
   }
   for (local_42c = 0; local_42c < 5; local_42c = local_42c + 1) {
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xfe,local_42c * 0x2a + 0xcc,0x2a);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xfe,local_42c * 0x2a + 0xcc,0x2a);
   }
 LAB_00491326:
   do {
@@ -2947,7 +2947,7 @@ undefined4 Castle_Process_00491d8f(undefined4 arg_1,int y,int width,int height)
     local_18 = local_18 + 1;
   }
   strcat(&g_OverworldWorldState,&DAT_00528688);
-  uVar2 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + y * 100),*(int *)(&DAT_0067bdf8 + y * 100));
+  uVar2 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + y * 100),*(int *)(&DAT_0067bdf8 + y * 100));
   local_3c[6] = Glue_Subsystem_004ea7a6(uVar2);
   if (((&DAT_0067be00)[y * 100] & 1) == 0) {
     local_c = 0xe3;
@@ -2967,7 +2967,7 @@ undefined4 Castle_Process_00491d8f(undefined4 arg_1,int y,int width,int height)
     iVar3 = Ai_Util_004c3bc4(width + 0x20c);
     FUN_0040d269((int)g_DisplaySurfaceBackBuffer,local_c,iVar3,iVar5);
   }
-  uVar2 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + y * 100),*(int *)(&DAT_0067bdf8 + y * 100));
+  uVar2 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + y * 100),*(int *)(&DAT_0067bdf8 + y * 100));
   local_3c[6] = Glue_Subsystem_004ea7a6(uVar2);
   local_8 = 0;
   for (local_18 = 1; (int)local_18 < 6; local_18 = local_18 + 1) {
@@ -2995,7 +2995,7 @@ undefined4 Castle_Process_00491d8f(undefined4 arg_1,int y,int width,int height)
       local_1c = local_1c + iVar5;
     }
   }
-  local_3c[6] = FUN_00473cc5((byte)*(undefined4 *)(&DAT_0067bdfc + y * 100));
+  local_3c[6] = Card_ColorMaskToColorIndex((byte)*(undefined4 *)(&DAT_0067bdfc + y * 100));
   g_OverworldWorldState = 0;
   if ((&DAT_0067bdfc)[y * 100] == '\0') {
     strcat(&g_OverworldWorldState,&DAT_00528690);
@@ -3088,7 +3088,7 @@ void Castle_Process_00492ddf(int arg_1)
   local_8 = 0x98;
   local_18 = 0xab;
   local_14 = 0x3a;
-  FUN_005112b0(0,(short)DAT_00530d9c);
+  Surface_TransformPoint(0,(short)DAT_00530d9c);
   LoadPalNoPic(s_advfac64_pic_005289ec);
   Mem_AllocOrFree_00510e20(1,s_cluebutn_pic_005289fc);
   Mem_AllocOrFree_0050fc00();
@@ -3108,10 +3108,10 @@ void Castle_Process_00492ddf(int arg_1)
   Mem_AllocOrFree_0041f12b(local_20);
   FUN_0041f17e(0x527f98,1,local_20);
   FUN_0050fc20();
-  FUN_00510b70(1,0,DAT_0052245c - 0x1e0,s_clueback_pic_00528a0c,(short *)0x0);
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c - 0x1e0,0x280,0x1e0,
-                     (int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c);
-  FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+  FUN_00510b70(1,0,g_DisplayScreenHeight - 0x1e0,s_clueback_pic_00528a0c,(short *)0x0);
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight - 0x1e0,0x280,0x1e0,
+                     (int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+  FUN_0050e040((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                (int *)g_DisplaySurfaceScreen,0,0);
   iVar8 = 0;
   iVar7 = 0;
@@ -3120,7 +3120,7 @@ void Castle_Process_00492ddf(int arg_1)
   arg_4 = Ai_Util_004c3bc4(0x5a);
   iVar3 = Ai_Util_004c3bc4(0x1a2);
   arg_2 = Ai_Util_004c3bc4(0x16);
-  FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar3,arg_4,arg_5,piVar6,iVar7,iVar8);
+  Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,arg_2,iVar3,arg_4,arg_5,piVar6,iVar7,iVar8);
   FUN_0041f213();
   *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
   g_OverworldWorldState = 0;
@@ -3339,7 +3339,7 @@ int Town_Process_00506580(uint arg_1)
   int local_8;
   
   DAT_0061e0d4 = arg_1;
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if ((&DAT_0067be01)[arg_1 * 100] == '\0') {
     if (*(int *)(&DAT_0067bdf0 + arg_1 * 100) == 4) {
       local_64[1] = s_0246_pic_00531a34;
@@ -3347,10 +3347,10 @@ int Town_Process_00506580(uint arg_1)
       local_64[3] = s_0335_pic_00531a64;
       local_54 = s_0737_pic_00531a7c;
       local_50 = s_0028_pic_00531a94;
-      uVar4 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + arg_1 * 100),
+      uVar4 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + arg_1 * 100),
                            *(int *)(&DAT_0067bdf8 + arg_1 * 100));
       bVar1 = Glue_Subsystem_004ea7a6(uVar4);
-      DAT_006b2d64 = FUN_00473cc5(bVar1);
+      DAT_006b2d64 = Card_ColorMaskToColorIndex(bVar1);
       FUN_0040aaf1(local_64[DAT_006b2d64]);
       *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 1;
       strcpy(&g_OverworldWorldState,s_Who_dares_to_challenge_the_Might_00531aa0);
@@ -3375,10 +3375,10 @@ int Town_Process_00506580(uint arg_1)
       local_6c = s_0335_pic_00531b5c;
       local_68 = s_0737_pic_00531b74;
       local_64[0] = s_0028_pic_00531b8c;
-      uVar4 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + arg_1 * 100),
+      uVar4 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + arg_1 * 100),
                            *(int *)(&DAT_0067bdf8 + arg_1 * 100));
       bVar1 = Glue_Subsystem_004ea7a6(uVar4);
-      DAT_006b2d64 = FUN_00473cc5(bVar1);
+      DAT_006b2d64 = Card_ColorMaskToColorIndex(bVar1);
       FUN_0040aaf1((&local_78)[DAT_006b2d64]);
       strcpy(&g_OverworldWorldState,s_The_Mighty_00531b98);
       pcVar2 = (char *)Mem_AllocOrFree_00473d7e(DAT_006b2d64);
@@ -3553,7 +3553,7 @@ int Town_Process_00506580(uint arg_1)
         if ((local_10 != -1) && ((_DAT_0067f374 & 1 << ((byte)local_10 & 0x1f)) == 0)) {
           Mem_AllocOrFree_00510e20(1,s_worlbak1_pic_00531e54);
           Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                             (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                             (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
           local_30 = Glue_Subsystem_004f0de8(local_10);
           iVar3 = *(int *)(&DAT_006782a0 + local_10 * 4);
           local_24 = (0x4e - *(short *)(iVar3 + 6)) / 2 + 0x4c;
@@ -3567,7 +3567,7 @@ int Town_Process_00506580(uint arg_1)
           local_24 = (local_24 + *(short *)(iVar3 + 6) + 0x10) / 2;
           local_1c = (local_1c + (int)*(short *)(iVar3 + 4) / 2) / 2;
           *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
-          FUN_0040d4d1((int)g_DisplaySurfaceScreen,0x7b,0x176,0x4b);
+          Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0x7b,0x176,0x4b);
           g_OverworldWorldState = 0;
           local_24 = local_24 + -5;
           strcat(&g_OverworldWorldState,(&PTR_s_Sleight_of_hand_005225d0)[local_10]);
@@ -3592,7 +3592,7 @@ int Town_Process_00506580(uint arg_1)
               strcpy(&g_OverworldWorldState,s_Insufficient_Funds_00531f1c);
               FUN_0040c336(&g_OverworldWorldState,local_1c,local_24,0xbe);
               local_24 = local_24 + 8;
-              FUN_0040a3e1();
+              App_ProcessPendingMessages();
               Ai_Subsystem_004cd1d1();
             }
             else {
@@ -3606,9 +3606,9 @@ int Town_Process_00506580(uint arg_1)
               strcat(&g_OverworldWorldState,pcVar2);
               strcat(&g_OverworldWorldState,s_gold_pieces__00531ee4);
               strcat(&g_OverworldWorldState,s_Will_you____Never_mind_Pay_the_g_00531ef4);
-              FUN_0040a3e1();
+              App_ProcessPendingMessages();
               local_30 = FUN_004896be(&g_OverworldWorldState,
-                                      (-(uint)(DAT_00522458 == 0x280) & 0xffffffce) + 0xbe,0x88);
+                                      (-(uint)(g_DisplayScreenWidth == 0x280) & 0xffffffce) + 0xbe,0x88);
               DAT_00531590 = local_10;
               iVar3 = DAT_00531590;
               if (local_30 == 1) {
@@ -3638,7 +3638,7 @@ int Town_Process_00506580(uint arg_1)
             FUN_0040c336(&g_OverworldWorldState,local_1c,local_24,0x8d);
             local_24 = local_24 + 8;
             DAT_00531590 = local_10;
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
           }
         }
@@ -3714,7 +3714,7 @@ int Town_Process_00506580(uint arg_1)
     strcat(&g_OverworldWorldState,s_to_free_the_city__Never_mind__Du_005319a4);
     iVar3 = FUN_004896be(&g_OverworldWorldState,0x78,0x38);
     if (iVar3 == 1) {
-      iVar3 = FUN_0040a1d2(3);
+      iVar3 = Math_RandomRange(3);
       DAT_0068a64c = Pic_Subsystem_0045268f
                                (*(int *)(&DAT_00527f10 + iVar3 * 4 + (local_3c * 3 + -3) * 4));
       _DAT_0067f354 = local_3c;
@@ -3731,7 +3731,7 @@ int Town_Process_00506580(uint arg_1)
         ;
         Mem_AllocOrFree_00510de0(1,s_celeb_pic_005319dc);
         Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                           (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                           (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
         g_OverworldWorldState = 0;
         Ai_TownEncounter_004c3b19(arg_1);
         strcat(&g_OverworldWorldState,s_is_freed__The_people_rejoice__005319e8);
@@ -3745,10 +3745,10 @@ int Town_Process_00506580(uint arg_1)
           if (local_34 != 0xffffffff) {
             Mem_AllocOrFree_00510de0(1,s_losedul2_pic_00531a08);
             Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                               (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                               (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
             strcpy(&g_OverworldWorldState,s_Lost_this_card_00531a18);
             FUN_0050b206(local_34,0x17,0x50,1,&g_OverworldWorldState);
-            FUN_0040a3e1();
+            App_ProcessPendingMessages();
             Ai_Subsystem_004cd1d1();
             FUN_00489630(local_34);
           }
@@ -3798,9 +3798,9 @@ undefined4 Town_Process_00507c86(uint arg_1)
   undefined4 local_c;
   int local_8;
   
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   DAT_0062680c = arg_1;
-  uVar2 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + arg_1 * 100),*(int *)(&DAT_0067bdf8 + arg_1 * 100));
+  uVar2 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + arg_1 * 100),*(int *)(&DAT_0067bdf8 + arg_1 * 100));
   local_50 = Glue_Subsystem_004ea7a6(uVar2);
   local_20 = *(int *)(&DAT_0067bdf0 + DAT_0062680c * 100) + 3;
   if (DAT_005224f8 == 0) {
@@ -3811,7 +3811,7 @@ undefined4 Town_Process_00507c86(uint arg_1)
   }
   local_14 = 0xffffffff;
   for (local_3c = 0; (int)local_3c < 199; local_3c = local_3c + 1) {
-    iVar3 = FUN_0040a1d2(5);
+    iVar3 = Math_RandomRange(5);
     local_44 = iVar3 + 1;
     if (((*(int *)(&DAT_0067bdbc + local_44 * 4) != 0) || (0x50 < (int)local_3c)) &&
        ((local_50 & 1 << ((byte)local_44 & 0x1f)) != 0)) {
@@ -3822,11 +3822,11 @@ undefined4 Town_Process_00507c86(uint arg_1)
   DAT_006265f8 = -1;
   DAT_0061e0fc = arg_1;
   if (arg_1 == DAT_00531594) goto LAB_005085a9;
-  iVar3 = FUN_0040a1d2(3);
+  iVar3 = Math_RandomRange(3);
   if (((iVar3 == 0) && (((&DAT_0067be00)[arg_1 * 100] & 1) == 0)) ||
      (*(int *)(&DAT_0067bdf0 + arg_1 * 100) != 1)) {
 LAB_00507faa:
-    local_44 = FUN_0040a1d2(6);
+    local_44 = Math_RandomRange(6);
     if (*(int *)(&DAT_0067f2d0 + local_44 * 0x14) < 1) {
       DAT_0061e100 = 0xffffffff;
     }
@@ -3834,10 +3834,10 @@ LAB_00507faa:
       DAT_0061e100 = arg_1;
       DAT_0061e05c = -*(int *)(&DAT_0067f2d0 + local_44 * 0x14);
     }
-    iVar3 = FUN_0040a1d2(4);
+    iVar3 = Math_RandomRange(4);
     if ((iVar3 == 0) || (DAT_0061e100 == 0xffffffff)) {
       DAT_0061e100 = arg_1;
-      iVar3 = FUN_0040a1d2(8);
+      iVar3 = Math_RandomRange(8);
       iVar3 = Glue_Subsystem_004ea97c(local_14,iVar3 * 2 + 4);
       DAT_0061e05c = -iVar3;
       FUN_0046e70d(0,8);
@@ -3847,7 +3847,7 @@ LAB_00507faa:
   else {
     local_1c = 0;
     do {
-      DAT_0061e100 = FUN_0040a1d2(0x80);
+      DAT_0061e100 = Math_RandomRange(0x80);
       local_18 = FUN_0040a36f(*(int *)(&DAT_0067bdf4 + arg_1 * 100) -
                               *(int *)(&DAT_0067bdf4 + DAT_0061e100 * 100),
                               *(int *)(&DAT_0067bdf8 + arg_1 * 100) -
@@ -3860,7 +3860,7 @@ LAB_00507faa:
              (((local_18 < 8 ||
                (((int)(local_1c + (local_1c >> 0x1f & 0xfU)) >> 4) + 0x10 < local_18)) ||
               ((*(uint *)(&DAT_0067be00 + DAT_0061e100 * 100) & 0xff01) != 0))))));
-    iVar3 = FUN_0040a1d2(2);
+    iVar3 = Math_RandomRange(2);
     if (iVar3 == 0) {
       DAT_0061e05c = 2;
     }
@@ -3871,20 +3871,20 @@ LAB_00507faa:
       if (((&DAT_0067be00)[arg_1 * 100] & 1) == 0) goto LAB_00507faa;
       DAT_0061e100 = 0xffffffff;
     }
-    iVar3 = FUN_0040a1d2(5);
+    iVar3 = Math_RandomRange(5);
     local_44 = iVar3 + 1;
     iVar3 = Pic_Subsystem_004521a6(1 << ((byte)local_44 & 0x1f),1 << ((byte)local_14 & 0x1f),3);
-    if ((iVar3 == 0) && (iVar3 = FUN_0040a1d2(2), iVar3 != 0)) {
+    if ((iVar3 == 0) && (iVar3 = Math_RandomRange(2), iVar3 != 0)) {
       DAT_0061e05c = 1;
       _DAT_0061e058 = local_44;
     }
   }
   if (DAT_0061e05c != 1) {
-    uVar2 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + DAT_0061e100 * 100),
+    uVar2 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + DAT_0061e100 * 100),
                          *(int *)(&DAT_0067bdf8 + DAT_0061e100 * 100));
     local_44 = Glue_Subsystem_004ea7a6(uVar2);
     do {
-      iVar3 = FUN_0040a1d2(5);
+      iVar3 = Math_RandomRange(5);
       _DAT_0061e058 = iVar3 + 1;
     } while ((local_44 & 1 << (DAT_0061e058 & 0x1f)) == 0);
   }
@@ -3908,20 +3908,20 @@ LAB_00507faa:
       }
     }
   }
-  local_44 = FUN_0040a1d2(local_20);
+  local_44 = Math_RandomRange(local_20);
   for (local_3c = 0; (int)local_3c < local_20; local_3c = local_3c + 1) {
     if ((*(int *)(&DAT_0061e060 + local_3c * 4) == -1) &&
        (DAT_0067f380 * 5 + 0xf <=
         DAT_00641020 - *(int *)(&DAT_0067be24 + local_3c * 4 + arg_1 * 100))) {
-      bVar1 = FUN_0040a1d2(7);
+      bVar1 = Math_RandomRange(7);
       local_34 = 1 << (bVar1 & 0x1f);
       do {
         if (local_3c == local_44) {
-          local_58 = FUN_0040a1d2(5);
+          local_58 = Math_RandomRange(5);
           *(uint *)(&DAT_0061e060 + local_3c * 4) = local_58;
         }
         else {
-          local_58 = FUN_0040a1d2(g_MasterCardCount + -0x29);
+          local_58 = Math_RandomRange(g_MasterCardCount + -0x29);
           *(uint *)(&DAT_0061e060 + local_3c * 4) = local_58;
         }
         local_4c = 0;
@@ -3962,7 +3962,7 @@ LAB_00507faa:
     }
   }
   if (local_a4 != 0) {
-    iVar3 = FUN_0040a1d2(local_a4);
+    iVar3 = Math_RandomRange(local_a4);
     DAT_006265f8 = aiStack_a0[iVar3 * 2];
     DAT_00626808 = aiStack_a0[iVar3 * 2];
   }
@@ -3981,7 +3981,7 @@ LAB_00507faa:
           local_30 = (local_30 * 3) / 2;
         }
       }
-      uVar2 = FUN_0040a305((local_30 / 0x32) * 5,5,1000);
+      uVar2 = Math_Clamp((local_30 / 0x32) * 5,5,1000);
       *(undefined4 *)(&DAT_0061e0a0 + local_3c * 4) = uVar2;
     }
   }
@@ -3993,7 +3993,7 @@ LAB_005085a9:
   Glue_Subsystem_004ec5be(s_x_sound_button_wav_00531f44,0x12,0);
   do {
     if (local_20 == 0) {
-      iVar3 = FUN_00473cc5((byte)local_50);
+      iVar3 = Card_ColorMaskToColorIndex((byte)local_50);
       *(int *)(&DAT_0061e060 + local_20 * 4) = iVar3 + -1;
       *(undefined4 *)(&DAT_0061e0a0 + local_20 * 4) = 0x28;
       local_20 = local_20 + 1;
@@ -4254,7 +4254,7 @@ void Town_Process_00508cd7(void)
     iVar2 = iVar2 + iVar3 * -4;
     iVar3 = Ai_Util_004c3bc4(0x50);
     FUN_0040d1cd((int)g_DisplaySurfaceScreen,0xc1,iVar3,iVar2);
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
     FUN_0040a95d(s_village_pic_005320a8 + ((*(int *)(&DAT_0067bdf0 + arg_1 * 100) == 1) - 1 & 0xc));
   }
@@ -4298,8 +4298,8 @@ void Merchant_ProcessBuy_00509517(void)
   
   local_a8 = DAT_0062680c;
   local_ac = 0;
-  FUN_0040a3e1();
-  arg_1 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + local_a8 * 100),
+  App_ProcessPendingMessages();
+  arg_1 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + local_a8 * 100),
                        *(int *)(&DAT_0067bdf8 + local_a8 * 100));
   local_bc = Glue_Subsystem_004ea7a6(arg_1);
   local_ac = *(int *)(&DAT_0067bdf0 + local_a8 * 100) + 3;
@@ -4307,7 +4307,7 @@ void Merchant_ProcessBuy_00509517(void)
     local_ac = *(int *)(&DAT_0067bdf0 + local_a8 * 100) + 4;
   }
   if (local_ac == 0) {
-    iVar1 = FUN_00473cc5((byte)local_bc);
+    iVar1 = Card_ColorMaskToColorIndex((byte)local_bc);
     *(int *)(&DAT_0061e060 + local_ac * 4) = iVar1 + -1;
     *(undefined4 *)(&DAT_0061e0a0 + local_ac * 4) = 0x28;
     local_ac = local_ac + 1;
@@ -4325,18 +4325,18 @@ void Merchant_ProcessBuy_00509517(void)
   for (local_100 = 0; local_100 < 3; local_100 = local_100 + 1) {
     *(undefined4 *)(&DAT_0061e0e0 + local_100 * 4) = auStack_f0[local_100 + 6];
   }
-  FUN_00510b70(1,0,DAT_0052245c + -0x118,s_buycards_pic_00532284,(short *)0x0);
+  FUN_00510b70(1,0,g_DisplayScreenHeight + -0x118,s_buycards_pic_00532284,(short *)0x0);
   iVar1 = Ai_Util_004c3ba3(0x8c);
   iVar2 = Ai_Util_004c3ba3(0x100);
   iVar3 = Ai_Util_004c3ba3(0x18);
   iVar4 = Ai_Util_004c3ba3(0x20);
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c + -0x118,0x200,0x118,
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight + -0x118,0x200,0x118,
                      (int *)g_DisplaySurfaceScreen,iVar4,iVar3,iVar2,iVar1);
   iVar1 = Ai_Util_004c3ba3(0x8c);
   iVar2 = Ai_Util_004c3ba3(0x100);
   iVar3 = Ai_Util_004c3ba3(0x18);
   iVar4 = Ai_Util_004c3ba3(0x20);
-  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,DAT_0052245c + -0x118,0x200,0x118,
+  Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,g_DisplayScreenHeight + -0x118,0x200,0x118,
                      (int *)g_DisplaySurfaceBackBuffer,iVar4,iVar3,iVar2,iVar1);
   FUN_0050b9d5(g_DisplaySurfaceScreen);
   if (DAT_006265f8 != -1) {
@@ -4365,8 +4365,8 @@ LAB_00509872:
   *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 4;
   iVar1 = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceScreen + 0x20));
   iVar2 = FUN_0040c465(s_Cards_for_Sale_005322a4);
-  Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,(DAT_00522458 / 2 - iVar2 / 2) + -0x14,
-                    (DAT_0052245c * 0x1f) / 0xf0 - iVar1,iVar2 + 0x28,iVar1 * 3,DAT_0061e114);
+  Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,(g_DisplayScreenWidth / 2 - iVar2 / 2) + -0x14,
+                    (g_DisplayScreenHeight * 0x1f) / 0xf0 - iVar1,iVar2 + 0x28,iVar1 * 3,DAT_0061e114);
   FUN_0040c336(s_Cards_for_Sale_005322b4,0xa0,0x1f,0x1b);
   local_b0 = 0x40;
   local_c4 = (int)(0xf4 / (longlong)local_ac);
@@ -4387,9 +4387,9 @@ LAB_00509872:
       pcVar5 = &DAT_005322cc;
       iVar3 = 0;
       iVar1 = (*(uint *)(&DAT_0061e060 + local_b4 * 4) & 7) + local_b0 + 4;
-      iVar2 = FUN_0040a305(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,DAT_00522458 + -0x62);
+      iVar2 = Math_Clamp(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_DisplayScreenWidth + -0x62);
       FUN_0050b206(*(int *)(&DAT_0061e060 + local_b4 * 4),iVar2,iVar1,iVar3,pcVar5);
-      iVar1 = FUN_0040a305(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,DAT_00522458 + -0x62);
+      iVar1 = Math_Clamp(local_c4 * local_b4 + local_c4 / 2 + 0x12,0,g_DisplayScreenWidth + -0x62);
       iVar1 = Ai_Util_004c3ba3(iVar1);
       local_a4[local_b4 * 4] = iVar1;
       iVar1 = Ai_Util_004c3ba3((*(uint *)(&DAT_0061e060 + local_b4 * 4) & 7) + local_b0 + 4);
@@ -4444,7 +4444,7 @@ LAB_00509872:
   Sprite_DrawScaled((int *)g_DisplaySurfaceScreen,iVar4 / 2,iVar3,iVar2,iVar1,(int)arg_6);
   FUN_0050b3de(*(int *)(&DAT_0061e060 + local_b4 * 4),0x7a,0x29,0x4b,0x70,1,&DAT_005322ec);
   FUN_0040d339((int)g_DisplaySurfaceScreen,0x1b,0x140,0x47);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   local_b8 = FUN_0048ac2f();
   if (((local_b8 == 0x79) || (local_b8 == 0x59)) && (*(int *)(&DAT_0061e0a0 + local_b4 * 4) <= Gold)
      ) {
@@ -4456,7 +4456,7 @@ LAB_00509872:
     if (DAT_00626808 == local_b4) {
       DAT_006265f8 = -1;
     }
-    iVar1 = FUN_0040a1d2(5);
+    iVar1 = Math_RandomRange(5);
     *(int *)(&DAT_0067be24 + local_b4 * 4 + local_a8 * 100) =
          iVar1 * (DAT_0067f380 + 2) + DAT_00641020;
     FUN_0040a566();
@@ -4502,7 +4502,7 @@ void Town_Process_0050a065(void)
   
   iVar1 = DAT_0062680c;
   Glue_Subsystem_004ebcdc(s_x_sound_button2_wav_00532320,0xf,100,100,0);
-  FUN_005112b0(0,(short)DAT_00530d9c);
+  Surface_TransformPoint(0,(short)DAT_00530d9c);
   DeckBuilderMain(_hwndScreen,1,3);
   Pic_Load_advfac64_0040a4fc();
   Ai_Subsystem_004c05ba();
@@ -4591,7 +4591,7 @@ void Town_Process_0050a262(void)
   
   iVar1 = DAT_0062680c;
   Glue_Subsystem_004ebcdc(s_x_sound_button2_wav_005323bc,0xf,100,100,0);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   Castle_Process_00421b32();
   Ai_Subsystem_004c05ba();
   Ai_Subsystem_004c3c5c(1);
@@ -4615,7 +4615,7 @@ int SellPrice(int arg_1)
   int local_8;
   
                     /* 0x10a8ae  7  SellPrice */
-  arg_1_00 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + DAT_0061e0fc * 100),
+  arg_1_00 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + DAT_0061e0fc * 100),
                           *(int *)(&DAT_0067bdf8 + DAT_0061e0fc * 100));
   iVar1 = Glue_Subsystem_004ea7a6(arg_1_00);
   local_8 = FUN_0050a9bf(arg_1);

@@ -27,7 +27,7 @@
  * Size: 151 bytes
  */
 
-int CardQuery_PlayerControlsColor(int arg1,byte arg2)
+int CardQuery_PlayerControlsColor(int player,byte arg2)
 
 {
   int status;
@@ -35,13 +35,13 @@ int CardQuery_PlayerControlsColor(int arg1,byte arg2)
   
   local_8 = 0;
   while( true ) {
-    if ((int)(&g_PlayerActiveCardCount)[arg1] <= local_8) {
+    if ((int)(&g_PlayerActiveCardCount)[player] <= local_8) {
       return 0;
     }
-    status = FUN_00471c32(arg1,local_8);
+    status = Card_IsTapped(player,local_8);
     if ((status != 0) &&
        ((arg2 & (&g_MasterCardColorTable)
-                [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + arg1 * 0x5b20) * 0x34]) != 0))
+                [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + player * 0x5b20) * 0x34]) != 0))
     break;
     local_8 = local_8 + 1;
   }
@@ -61,7 +61,7 @@ int CardQuery_PlayerControlsColor(int arg1,byte arg2)
  * Size: 210 bytes
  */
 
-void CardQuery_ForEachPermanent(uint8_t *arg1,int arg2)
+void CardQuery_ForEachPermanent(uint8_t *player,int arg2)
 
 {
   int local_10;
@@ -73,7 +73,7 @@ void CardQuery_ForEachPermanent(uint8_t *arg1,int arg2)
           local_10 = local_10 + 1) {
         if ((*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
            (((&g_CardSlot_Flags)[local_10 * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
-          (*(code *)arg1)(local_8,local_10,
+          (*(code *)player)(local_8,local_10,
                           *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20));
         }
       }
@@ -232,7 +232,7 @@ uint Card_GetCounters(int player,int card_index)
  * Size: 300 bytes
  */
 
-bool CardTarget_PromptTargetCreature(int arg1,uint arg2,int arg3)
+bool CardTarget_PromptTargetCreature(int player,uint arg2,int arg3)
 
 {
   uint arg_8;
@@ -266,21 +266,21 @@ bool CardTarget_PromptTargetCreature(int arg1,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(arg1,arg3);
+  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,2,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
+                    (player,2,arg2,0x200,2,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
     *(int *)
      (&g_CardSlot_AttachedAura +
-     arg1 * 0x5b20 +
-     arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] * 8) = local_8;
+     player * 0x5b20 +
+     arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] * 8) = local_8;
     *(int *)(&g_CardSlot_CombatTarget +
-            arg1 * 0x5b20 +
-            arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] * 8) =
+            player * 0x5b20 +
+            arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] * 8) =
          local_c;
-    (&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] =
-         (&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] + '\x01';
+    (&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] =
+         (&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] + '\x01';
   }
   return status != 0;
 }
@@ -297,7 +297,7 @@ bool CardTarget_PromptTargetCreature(int arg1,uint arg2,int arg3)
  * Size: 285 bytes
  */
 
-bool CardTarget_SetTargetCreature(int arg1,uint arg2,int arg3)
+bool CardTarget_SetTargetCreature(int player,uint arg2,int arg3)
 
 {
   int status;
@@ -308,19 +308,19 @@ bool CardTarget_SetTargetCreature(int arg1,uint arg2,int arg3)
     arg2 = 2;
   }
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                    (player,2,arg2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
     *(int *)(&g_CardSlot_CombatTarget +
             arg3 * 0x120 +
-            arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) =
+            player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) =
          local_c;
     *(int *)
      (&g_CardSlot_AttachedAura +
      arg3 * 0x120 +
-     arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) = local_8;
-    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] =
-         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] + '\x01';
+     player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) = local_8;
+    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] =
+         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] + '\x01';
   }
   return status != 0;
 }
@@ -337,7 +337,7 @@ bool CardTarget_SetTargetCreature(int arg1,uint arg2,int arg3)
  * Size: 461 bytes
  */
 
-int CardTarget_HasValidCreatureTarget(int arg1)
+int CardTarget_HasValidCreatureTarget(int player)
 
 {
   int status;
@@ -350,9 +350,9 @@ int CardTarget_HasValidCreatureTarget(int arg1)
   int local_c;
   int local_8;
   
-  if ((arg1 == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
+  if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
     status = Action_ValidateTarget_00405802
-                      (arg1,arg1,arg1,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                      (player,player,player,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                        &g_OverworldGoldAmount,0,&local_1c);
     if (status == 0) {
       local_20 = -1;
@@ -364,13 +364,13 @@ int CardTarget_HasValidCreatureTarget(int arg1)
   else {
     local_20 = -1;
     local_14 = 0x7fff;
-    for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[arg1]; local_10 = local_10 + 1) {
-      local_c = *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + arg1 * 0x5b20);
-      if ((((local_c != -1) && (((&g_CardSlot_Flags)[local_10 * 0x120 + arg1 * 0x5b20] & 2) != 0))
+    for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[player]; local_10 = local_10 + 1) {
+      local_c = *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + player * 0x5b20);
+      if ((((local_c != -1) && (((&g_CardSlot_Flags)[local_10 * 0x120 + player * 0x5b20] & 2) != 0))
           && (((&g_MasterCardColorTable)[local_c * 0x34] & 2) != 0)) &&
-         ((&DAT_006a5f50)[local_10 * 0x120 + arg1 * 0x5b20] != '\x03')) {
-        status = FUN_00473179(arg1,local_10,0x32,0xffffffff);
-        val_result = FUN_00473179(arg1,local_10,0x33,0xffffffff);
+         ((&DAT_006a5f50)[local_10 * 0x120 + player * 0x5b20] != '\x03')) {
+        status = Card_TapForMana(player, local_10, 0x32, 0xffffffff);
+        val_result = Card_TapForMana(player,local_10,0x33,0xffffffff);
         local_8 = (status + 2) * (val_result + 2);
         if (local_8 < local_14) {
           local_20 = local_10;
@@ -397,7 +397,7 @@ int CardTarget_HasValidCreatureTarget(int arg1)
  * Size: 300 bytes
  */
 
-bool CardTarget_PromptTargetPermanent(int arg1,uint arg2,int arg3)
+bool CardTarget_PromptTargetPermanent(int player,uint arg2,int arg3)
 
 {
   uint arg_8;
@@ -431,21 +431,21 @@ bool CardTarget_PromptTargetPermanent(int arg1,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(arg1,arg3);
+  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,1,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
+                    (player,2,arg2,0x200,1,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
     *(int *)(&g_CardSlot_CombatTarget +
-            arg1 * 0x5b20 +
-            arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] * 8) =
+            player * 0x5b20 +
+            arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] * 8) =
          local_c;
     *(int *)
      (&g_CardSlot_AttachedAura +
-     arg1 * 0x5b20 +
-     arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] * 8) = local_8;
-    (&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] =
-         (&g_CardSlot_TurnPlayed)[arg1 * 0x5b20 + arg3 * 0x120] + '\x01';
+     player * 0x5b20 +
+     arg3 * 0x120 + (char)(&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] * 8) = local_8;
+    (&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] =
+         (&g_CardSlot_TurnPlayed)[player * 0x5b20 + arg3 * 0x120] + '\x01';
   }
   return status != 0;
 }
@@ -462,7 +462,7 @@ bool CardTarget_PromptTargetPermanent(int arg1,uint arg2,int arg3)
  * Size: 285 bytes
  */
 
-bool CardTarget_SetTargetPermanent(int arg1,uint arg2,int arg3)
+bool CardTarget_SetTargetPermanent(int player,uint arg2,int arg3)
 
 {
   int status;
@@ -473,19 +473,19 @@ bool CardTarget_SetTargetPermanent(int arg1,uint arg2,int arg3)
     arg2 = 2;
   }
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                    (player,2,arg2,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
     *(int *)(&g_CardSlot_CombatTarget +
             arg3 * 0x120 +
-            arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) =
+            player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) =
          local_c;
     *(int *)
      (&g_CardSlot_AttachedAura +
      arg3 * 0x120 +
-     arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) = local_8;
-    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] =
-         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] + '\x01';
+     player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) = local_8;
+    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] =
+         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] + '\x01';
   }
   return status != 0;
 }
@@ -502,7 +502,7 @@ bool CardTarget_SetTargetPermanent(int arg1,uint arg2,int arg3)
  * Size: 142 bytes
  */
 
-int CardTarget_HasValidPermanentTarget(int arg1)
+int CardTarget_HasValidPermanentTarget(int player)
 
 {
   int status;
@@ -511,7 +511,7 @@ int CardTarget_HasValidPermanentTarget(int arg1)
   int local_8;
   
   status = Action_ValidateTarget_00405802
-                    (arg1,arg1,arg1,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                    (player,player,player,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&local_c);
   if (status == 0) {
     u_temp = 0;
@@ -538,7 +538,7 @@ int CardTarget_HasValidPermanentTarget(int arg1)
  * Size: 300 bytes
  */
 
-bool CardTarget_PromptTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
+bool CardTarget_PromptTargetPlayerOrCreature(int player,uint arg2,int arg3)
 
 {
   uint arg_8;
@@ -572,21 +572,21 @@ bool CardTarget_PromptTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(arg1,arg3);
+  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,0x40,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,
+                    (player,2,arg2,0x200,0x40,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
     *(int *)(&g_CardSlot_CombatTarget +
             arg3 * 0x120 +
-            arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) =
+            player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) =
          local_c;
     *(int *)
      (&g_CardSlot_AttachedAura +
      arg3 * 0x120 +
-     arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) = local_8;
-    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] =
-         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] + '\x01';
+     player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) = local_8;
+    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] =
+         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] + '\x01';
   }
   return status != 0;
 }
@@ -603,7 +603,7 @@ bool CardTarget_PromptTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
  * Size: 285 bytes
  */
 
-bool CardTarget_SetTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
+bool CardTarget_SetTargetPlayerOrCreature(int player,uint arg2,int arg3)
 
 {
   int status;
@@ -614,19 +614,19 @@ bool CardTarget_SetTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
     arg2 = 2;
   }
   status = Action_ValidateTarget_00405802
-                    (arg1,2,arg2,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                    (player,2,arg2,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
     *(int *)(&g_CardSlot_CombatTarget +
             arg3 * 0x120 +
-            arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) =
+            player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) =
          local_c;
     *(int *)
      (&g_CardSlot_AttachedAura +
      arg3 * 0x120 +
-     arg1 * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] * 8) = local_8;
-    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] =
-         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + arg1 * 0x5b20] + '\x01';
+     player * 0x5b20 + (char)(&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] * 8) = local_8;
+    (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] =
+         (&g_CardSlot_TurnPlayed)[arg3 * 0x120 + player * 0x5b20] + '\x01';
   }
   return status != 0;
 }
@@ -643,7 +643,7 @@ bool CardTarget_SetTargetPlayerOrCreature(int arg1,uint arg2,int arg3)
  * Size: 142 bytes
  */
 
-int CardTarget_HasValidPlayerOrCreatureTarget(int arg1)
+int CardTarget_HasValidPlayerOrCreatureTarget(int player)
 
 {
   int status;
@@ -652,7 +652,7 @@ int CardTarget_HasValidPlayerOrCreatureTarget(int arg1)
   int local_8;
   
   status = Action_ValidateTarget_00405802
-                    (arg1,arg1,arg1,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
+                    (player,player,player,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&local_c);
   if (status == 0) {
     u_temp = 0;

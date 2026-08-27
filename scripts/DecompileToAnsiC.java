@@ -46,9 +46,8 @@ public class DecompileToAnsiC extends GhidraScript {
         }
 
         File progDir = new File(baseOutputDir, cleanBase);
-        File funcsDir = new File(progDir, "functions");
         File includeDir = new File(baseOutputDir, "include");
-        funcsDir.mkdirs();
+        progDir.mkdirs();
         includeDir.mkdirs();
 
         println("=========================================================");
@@ -69,8 +68,8 @@ public class DecompileToAnsiC extends GhidraScript {
             return;
         }
 
-        // 3. Export all functions to individual and grouped ANSI C files
-        exportFunctions(decompiler, progDir, funcsDir, includeDir, cleanBase);
+        // 3. Export all functions to unified ANSI C and header files
+        exportFunctions(decompiler, progDir, includeDir, cleanBase);
 
         // 4. Export symbols and global variables
         exportGlobalsAndSymbols(progDir, includeDir, cleanBase);
@@ -114,7 +113,7 @@ public class DecompileToAnsiC extends GhidraScript {
         }
     }
 
-    private void exportFunctions(DecompInterface decompiler, File progDir, File funcsDir, File includeDir, String cleanBase) throws Exception {
+    private void exportFunctions(DecompInterface decompiler, File progDir, File includeDir, String cleanBase) throws Exception {
         println("[2/4] Decompiling all individual functions...");
 
         File allCFile = new File(progDir, cleanBase + "_all.c");
@@ -158,7 +157,7 @@ public class DecompileToAnsiC extends GhidraScript {
         allCWtr.println("#include \"" + cleanBase + ".h\"");
         allCWtr.println();
 
-        indexWtr.println("Address,FunctionName,ReturnType,ParameterCount,BodySize,Status,Filename");
+        indexWtr.println("Address,FunctionName,ReturnType,ParameterCount,BodySize,Status");
 
         FunctionIterator iter = currentProgram.getListing().getFunctions(true);
         int totalFuncs = 0;
@@ -172,7 +171,6 @@ public class DecompileToAnsiC extends GhidraScript {
 
             Address entry = func.getEntryPoint();
             String name = func.getName();
-            String safeName = sanitizeFilename(name) + "_" + entry.toString();
             long bodySize = func.getBody().getNumAddresses();
 
             DecompileResults results = decompiler.decompileFunction(func, TIMEOUT_SECS, monitor);
@@ -192,25 +190,12 @@ public class DecompileToAnsiC extends GhidraScript {
                 allCWtr.println(cCode);
                 allCWtr.println();
 
-                // Write individual function file
-                File funcFile = new File(funcsDir, safeName + ".c");
-                try (PrintWriter funcWtr = new PrintWriter(new OutputStreamWriter(new FileOutputStream(funcFile), StandardCharsets.UTF_8))) {
-                    funcWtr.println("/*");
-                    funcWtr.println(" * Decompiled function: " + name);
-                    funcWtr.println(" * Entry Point: " + entry);
-                    funcWtr.println(" * Size: " + bodySize + " bytes");
-                    funcWtr.println(" */");
-                    funcWtr.println("#include \"" + cleanBase + ".h\"");
-                    funcWtr.println();
-                    funcWtr.println(cCode);
-                }
-
-                indexWtr.println(entry + ",\"" + name + "\",\"" + func.getReturnType().getDisplayName() + "\"," + func.getParameterCount() + "," + bodySize + ",SUCCESS,\"" + funcFile.getName() + "\"");
+                indexWtr.println(entry + ",\"" + name + "\",\"" + func.getReturnType().getDisplayName() + "\"," + func.getParameterCount() + "," + bodySize + ",SUCCESS");
                 decompSuccess++;
             } else {
                 String errorMsg = (results != null) ? results.getErrorMessage() : "Null results";
                 allCWtr.println("/* DECOMPILATION FAILED FOR: " + name + " @ " + entry + ": " + errorMsg + " */");
-                indexWtr.println(entry + ",\"" + name + "\",\"" + func.getReturnType().getDisplayName() + "\"," + func.getParameterCount() + "," + bodySize + ",FAILED,\"\"");
+                indexWtr.println(entry + ",\"" + name + "\",\"" + func.getReturnType().getDisplayName() + "\"," + func.getParameterCount() + "," + bodySize + ",FAILED");
                 decompFailed++;
             }
 

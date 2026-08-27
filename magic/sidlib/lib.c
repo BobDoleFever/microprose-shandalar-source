@@ -459,13 +459,13 @@ void Surface_FillRect(int *arg_1,int arg_2,int arg_3,int arg_4,int arg_5,uint ar
 
 
 /*
- * Decompiled function: FUN_0050dce0
+ * Decompiled function: Surface_BlitToDevice
  * Entry Point: 0050dce0
  * Size: 853 bytes
  */
 
 
-void FUN_0050dce0(int *arg_1,uint arg_2,int arg_3,uint arg_4,DWORD arg_5,int *arg_6,int arg_7,
+void Surface_BlitToDevice(int *arg_1,uint arg_2,int arg_3,uint arg_4,DWORD arg_5,int *arg_6,int arg_7,
                  int arg_8)
 
 {

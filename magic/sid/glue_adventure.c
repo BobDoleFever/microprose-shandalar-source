@@ -31,7 +31,7 @@ int Adventure_EnterTownLocation(void)
 
 {
   bool is_valid;
-  byte arg1;
+  byte color_mask;
   int val_result;
   int uVar3;
   int iVar4;
@@ -57,33 +57,33 @@ int Adventure_EnterTownLocation(void)
   Sprite_LoadAll(&DAT_006781d0,s_dbox_spr_0052f0d0);
   do {
     val_result = Sprite_Load_begin_0047a2e6();
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     switch(val_result) {
     case 0:
       while( true ) {
         DAT_0067f380 = Pic_Load_menu2_hi_0047abf1();
-        FUN_005112b0(0,(short)DAT_00530d9c);
+        Surface_TransformPoint(0,(short)DAT_00530d9c);
         if (DAT_0067f380 == -1) break;
         while( true ) {
           DAT_0052effc = Pic_Load_menu3_but1_0047b208();
           DAT_006410d8 = DAT_0052effc;
           DAT_006fe448 = DAT_0052effc;
-          DAT_006fe44c = FUN_0040a1d2(3);
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          DAT_006fe44c = Math_RandomRange(3);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           if (DAT_006410d8 == -1) break;
           DAT_006ff678 = Sprite_Load__16faces_0047b899();
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           if (DAT_006ff678 != -1) {
             DAT_0052f000 = 1 << ((byte)DAT_0052effc & 0x1f);
             LoadPalNoPic(s_advfac64_pic_0052f0dc);
             Mem_AllocOrFree_00510e20(1,PTR_s_advinter800_pic_00530d98);
-            FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,DAT_00522458,DAT_0052245c,
+            Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight,
                          (int *)g_DisplaySurfaceScreen,0,0);
             DAT_0067f388 = 0;
             Palette_Subsystem_00496ccf();
             is_valid = true;
             *(int *)(g_DisplaySurfaceScreen + 0x20) = 5;
-            FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xff,0x140,0xbc);
+            Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xff,0x140,0xbc);
             DAT_0064101c = 1;
             FUN_0046e960();
             Pic_Subsystem_0044d680();
@@ -103,10 +103,10 @@ int Adventure_EnterTownLocation(void)
 switchD_004e765f_default:
       for (local_c = 0; local_c < 0x80; local_c = local_c + 1) {
         if (*(int *)(&DAT_0067bdf0 + local_c * 100) == 5) {
-          uVar3 = FUN_0040c761(*(int *)(&DAT_0067bdf4 + local_c * 100),
+          uVar3 = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + local_c * 100),
                                *(int *)(&DAT_0067bdf8 + local_c * 100));
-          arg1 = Adventure_GetLocationEncounterIndex(uVar3);
-          iVar4 = FUN_00473cc5(arg1);
+          color_mask = Adventure_GetLocationEncounterIndex(uVar3);
+          iVar4 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_006410c0 + (iVar4 + -1) * 4) = 1;
         }
       }
@@ -125,11 +125,11 @@ switchD_004e765f_default:
       if (val_result == 0) {
         do {
           do {
-            val_result = FUN_0040a1d2(0x40);
+            val_result = Math_RandomRange(0x40);
             DAT_0052eff0 = val_result * 0x20 + 0x10;
-            val_result = FUN_0040a1d2(0x40);
+            val_result = Math_RandomRange(0x40);
             DAT_0052eff4 = val_result * 0x20 + 0x10;
-            uVar3 = FUN_0040c761((int)(DAT_0052eff0 + (DAT_0052eff0 >> 0x1f & 0x1fU)) >> 5,
+            uVar3 = Surface_GetPixelColor((int)(DAT_0052eff0 + (DAT_0052eff0 >> 0x1f & 0x1fU)) >> 5,
                                  (int)(DAT_0052eff4 + (DAT_0052eff4 >> 0x1f & 0x1fU)) >> 5);
             uVar5 = Adventure_GetLocationEncounterIndex(uVar3);
           } while ((uVar5 & DAT_0052f000) == 0);
@@ -164,10 +164,10 @@ switchD_004e765f_default:
         Pic_Subsystem_0044b84b();
         FUN_0041f3ea(DAT_0067bda4,DAT_0067bda8,DAT_007039c4);
         DAT_0067f37c = DAT_0067f37c + 1;
-        FUN_0040a3e1();
+        App_ProcessPendingMessages();
         Mem_AllocOrFree_0040a422();
       } while (DAT_006fe3f0 == 0);
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       FUN_00409db6();
       uVar3 = Palette_Util_00496d20();
       return uVar3;
@@ -253,11 +253,11 @@ void Adventure_PromptLocationMenu(void)
  * Size: 756 bytes
  */
 
-int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
+int Adventure_HandleLocationMenuChoice(int color_mask,int arg2)
 
 {
   int status;
-  int arg1;
+  int color_mask;
   int local_40 [10];
   int local_18;
   int local_14;
@@ -275,14 +275,14 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
   local_40[7] = 0x4700;
   local_40[8] = 0x4800;
   status = Ai_Util_004c3bc4(0x40);
-  if ((((arg1 < status) || (status = Ai_Util_004c3bc4(0x240), status < arg1)) ||
+  if ((((color_mask < status) || (status = Ai_Util_004c3bc4(0x240), status < color_mask)) ||
       (status = Ai_Util_004c3bc4(0x30), arg2 < status)) ||
      (status = Ai_Util_004c3bc4(0x148), status < arg2)) {
     status = -1;
   }
   else {
     status = Ai_Util_004c3bc4(0x130);
-    if (((status < arg1) && (status = Ai_Util_004c3bc4(0x158), arg1 < status)) &&
+    if (((status < color_mask) && (status = Ai_Util_004c3bc4(0x158), color_mask < status)) &&
        ((status = Ai_Util_004c3bc4(0xa8), status < arg2 &&
         (status = Ai_Util_004c3bc4(0xdd), arg2 < status)))) {
       status = 0x20;
@@ -290,16 +290,16 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
     else {
       local_14 = Ai_Util_004c3bc4(0x140);
       local_18 = Ai_Util_004c3bc4(0xbc);
-      status = arg1 - local_14;
-      arg1 = local_18 - arg2;
+      status = color_mask - local_14;
+      color_mask = local_18 - arg2;
       local_c = abs(status);
-      local_10 = abs(arg1);
-      if ((status < 0) || (arg1 < 0)) {
-        if ((status < 0) || (-1 < arg1)) {
-          if ((status < 0) && (arg1 < 0)) {
+      local_10 = abs(color_mask);
+      if ((status < 0) || (color_mask < 0)) {
+        if ((status < 0) || (-1 < color_mask)) {
+          if ((status < 0) && (color_mask < 0)) {
             local_8 = 4;
           }
-          else if ((status < 0) && (-1 < arg1)) {
+          else if ((status < 0) && (-1 < color_mask)) {
             local_8 = 6;
           }
         }
@@ -322,7 +322,7 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
       case 4:
       case 7:
         local_40[9] = local_c * 0x9a85 >> 0xe;
-        if (arg1 < 0) {
+        if (color_mask < 0) {
           local_40[9] = -local_40[9];
         }
         break;
@@ -331,7 +331,7 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
       case 5:
       case 6:
         local_40[9] = local_c * 0x1a82 >> 0xe;
-        if (arg1 < 0) {
+        if (color_mask < 0) {
           local_40[9] = -local_40[9];
         }
       }
@@ -340,7 +340,7 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
       case 1:
       case 2:
       case 3:
-        if (arg1 < local_40[9]) {
+        if (color_mask < local_40[9]) {
           local_8 = local_8 + 1;
         }
         break;
@@ -348,7 +348,7 @@ int Adventure_HandleLocationMenuChoice(int arg1,int arg2)
       case 5:
       case 6:
       case 7:
-        if (local_40[9] < arg1) {
+        if (local_40[9] < color_mask) {
           local_8 = local_8 + 1;
         }
       }
@@ -491,14 +491,14 @@ LAB_004e8168:
       val_result = local_34 + -0x30;
       if ((*(int *)(&DAT_0067bdbc + val_result * 4) != 0) &&
          ((_DAT_0067f374 & 1 << ((char)val_result * '\x02' & 0x1fU)) != 0)) {
-        iVar4 = FUN_0040a1d2(4 - DAT_0067f380);
+        iVar4 = Math_RandomRange(4 - DAT_0067f380);
         if (iVar4 == 0) {
           *(int *)(&DAT_0067bdbc + val_result * 4) = *(int *)(&DAT_0067bdbc + val_result * 4) + -1;
         }
         Ai_Subsystem_004c05ba();
         switch(local_34) {
         case 0x31:
-          FUN_005112b0(0,(short)DAT_00530d9c);
+          Surface_TransformPoint(0,(short)DAT_00530d9c);
           DeckBuilderMain(_hwndScreen,1,1);
           Pic_Load_advfac64_0040a4fc();
           FUN_0050d560(0,7);
@@ -506,9 +506,9 @@ LAB_004e8168:
           break;
         case 0x32:
           do {
-            val_result = FUN_0040a1d2(0x40);
-            iVar4 = FUN_0040a1d2(0x40);
-            iVar5 = FUN_0040c761(val_result,iVar4);
+            val_result = Math_RandomRange(0x40);
+            iVar4 = Math_RandomRange(0x40);
+            iVar5 = Surface_GetPixelColor(val_result,iVar4);
           } while (iVar5 == 0);
           FUN_0040b3c2(0x12,2);
           DAT_0052eff0 = val_result * 0x20 + 0x10;
@@ -568,7 +568,7 @@ LAB_004e8168:
   }
   else if (local_34 < 0x3c01) {
     if (local_34 == 0x3c00) {
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_CastleEncounter_004c24b3(0);
       Ai_Subsystem_004c05ba();
     }
@@ -577,7 +577,7 @@ LAB_004e8168:
         local_34 = 0x31;
         goto LAB_004e8168;
       }
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       DeckBuilderMain(_hwndScreen,1,0);
       Pic_Load_advfac64_0040a4fc();
       Ai_Subsystem_004c05ba();
@@ -585,19 +585,19 @@ LAB_004e8168:
   }
   else if (local_34 < 0x3e01) {
     if (local_34 == 0x3e00) {
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Castle_Process_0048f523(1);
       Ai_Subsystem_004c05ba();
     }
     else if (local_34 == 0x3d00) {
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Town_Process_00490d7b(1);
       Ai_Subsystem_004c05ba();
     }
   }
   else if (local_34 < 0x4001) {
     if (local_34 == 0x4000) {
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Adventure_Map_UpdateLightingAndPalette(0,0xffffffff);
       Ai_Subsystem_004c05ba();
     }
@@ -642,7 +642,7 @@ LAB_004e8570:
     Ai_Subsystem_004cd20e();
     DAT_005659bc = 300;
   }
-  val_result = FUN_0040c761((int)(*(int *)(&DAT_00522378 + DAT_0052f010 * 4) + DAT_0052eff0 +
+  val_result = Surface_GetPixelColor((int)(*(int *)(&DAT_00522378 + DAT_0052f010 * 4) + DAT_0052eff0 +
                             ((int)(*(int *)(&DAT_00522378 + DAT_0052f010 * 4) + DAT_0052eff0) >>
                              0x1f & 0x1fU)) >> 5,
                        (int)(*(int *)(&DAT_005223e0 + DAT_0052f010 * 4) + DAT_0052eff4 +
@@ -654,7 +654,7 @@ LAB_004e8570:
   }
   else {
     do {
-      local_40 = FUN_0040a1d2(5);
+      local_40 = Math_RandomRange(5);
       local_40 = local_40 + 1;
     } while ((uVar3 & 1 << ((byte)local_40 & 0x1f)) == 0);
   }
@@ -677,7 +677,7 @@ LAB_004e8570:
     local_c = 1;
   }
   if (DAT_00522448 == 0) {
-    local_c = FUN_0040a305(local_c + 2,0,4);
+    local_c = Math_Clamp(local_c + 2, 0, 4);
   }
   u_res = DAT_0052eff4;
   uVar3 = DAT_0052eff0;
@@ -705,9 +705,9 @@ LAB_004e8570:
     }
     if (DAT_0052f010 != 0) {
       height = 0;
-      iVar5 = FUN_0040a1d2(0x28);
+      iVar5 = Math_RandomRange(0x28);
       iVar5 = iVar5 + 0x50;
-      iVar6 = FUN_0040a1d2(0x19);
+      iVar6 = Math_RandomRange(0x19);
       Adventure_Audio_PlayEffectAtVolume
                 (((DAT_006410dc & 1) - 2) + local_40 * 2,iVar6 + 0x4b,iVar5,height);
     }
@@ -724,7 +724,7 @@ LAB_004e8570:
       DAT_0052eff0 = DAT_0052eff0 + *(int *)(&DAT_00522378 + DAT_0052f010 * 4);
       DAT_0052eff4 = DAT_0052eff4 + *(int *)(&DAT_005223e0 + DAT_0052f010 * 4);
     }
-    iVar5 = FUN_0040c761((int)(DAT_0052eff0 + ((int)DAT_0052eff0 >> 0x1f & 0x1fU)) >> 5,
+    iVar5 = Surface_GetPixelColor((int)(DAT_0052eff0 + ((int)DAT_0052eff0 >> 0x1f & 0x1fU)) >> 5,
                          (int)(DAT_0052eff4 + ((int)DAT_0052eff4 >> 0x1f & 0x1fU)) >> 5);
     if ((iVar5 == 0) &&
        ((iVar6 = abs(DAT_0052eff0 - ((DAT_0052eff0 & 0xffffffe0) + 0x10)), iVar6 < 0xc ||
@@ -733,7 +733,7 @@ LAB_004e8570:
       DAT_0052eff0 = uVar3;
       DAT_0052eff4 = u_res;
     }
-    iVar6 = FUN_0040a1d2(0x28);
+    iVar6 = Math_RandomRange(0x28);
     if ((iVar6 == 0) && (DAT_0052f008 == 0)) {
       Adventure_Audio_PlayTerrainAmbience(local_40);
     }
@@ -748,14 +748,14 @@ LAB_004e8570:
       DAT_00641020 = DAT_00641020 + 1;
       if ((DAT_0052f004 & 0x3f) == 0) {
         Adventure_NewsFlash_EnemyAttack();
-        iVar5 = FUN_0040a305(DAT_0067f380 +
+        iVar5 = Math_Clamp(DAT_0067f380 +
                              ((int)(DAT_0052f004 + ((int)DAT_0052f004 >> 0x1f & 0xffU)) >> 8),0,0x10
                             );
         DAT_0052f004 = DAT_0052f004 + iVar5;
       }
       if (((byte)DAT_0052f004 & 0x3f) == 0x18) {
         Adventure_NewsFlash_DominionSpell();
-        iVar5 = FUN_0040a305(DAT_0067f380 * 2 +
+        iVar5 = Math_Clamp(DAT_0067f380 * 2 +
                              ((int)(DAT_0052f004 + ((int)DAT_0052f004 >> 0x1f & 0x3fU)) >> 6),0,0x20
                             );
         DAT_0052f004 = DAT_0052f004 + iVar5;
@@ -782,7 +782,7 @@ LAB_004e8570:
           local_68 = val_result;
         }
       }
-      val_result = FUN_0040a305(0x80 - local_68,0,100);
+      val_result = Math_Clamp(0x80 - local_68,0,100);
       if ((val_result < 0xb) || (*(int *)(&DAT_0067bdf0 + local_58 * 100) < 1)) {
         if (DAT_0052f014 != 0) {
           Pic_Subsystem_00423c82(0x10);
@@ -1061,24 +1061,24 @@ void Adventure_UpdateWorldMapLoop(void)
     if (((int)local_40 < 6) &&
        (((*(int *)(&DAT_0067f2d0 + local_40 * 0x14) == -1 || (4 < iVar5)) || (4 < iVar6)))) {
       do {
-        iVar5 = FUN_0040a1d2(2);
+        iVar5 = Math_RandomRange(2);
         if (iVar5 == 0) {
-          iVar5 = FUN_0040a1d2(2);
+          iVar5 = Math_RandomRange(2);
           local_3c = (-(uint)(iVar5 == 0) & 0xfffffff8) + 4 + DAT_00641014;
-          iVar5 = FUN_0040a1d2(9);
+          iVar5 = Math_RandomRange(9);
           local_28 = DAT_00641010 + iVar5 + -4;
         }
         else {
-          iVar5 = FUN_0040a1d2(2);
+          iVar5 = Math_RandomRange(2);
           local_28 = (-(uint)(iVar5 == 0) & 0xfffffff8) + 4 + DAT_00641010;
-          iVar5 = FUN_0040a1d2(9);
+          iVar5 = Math_RandomRange(9);
           local_3c = DAT_00641014 + iVar5 + -4;
         }
-        uVar7 = FUN_0040c761(local_28,local_3c);
+        uVar7 = Surface_GetPixelColor(local_28,local_3c);
         uVar8 = Adventure_GetLocationEncounterIndex(uVar7);
       } while (uVar8 == 0);
       do {
-        iVar5 = FUN_0040a1d2(6);
+        iVar5 = Math_RandomRange(6);
         local_44._0_1_ = (byte)iVar5;
         bVar3 = (byte)local_44;
       } while ((uVar8 & 1 << ((byte)local_44 & 0x1f)) == 0);
@@ -1088,8 +1088,8 @@ void Adventure_UpdateWorldMapLoop(void)
           local_44 = local_44 + 1;
         }
       }
-      iVar6 = FUN_0040a305((int)(0x80 / (longlong)(local_44 + 4)),6,0x14);
-      iVar6 = FUN_0040a1d2(iVar6);
+      iVar6 = Math_Clamp((int)(0x80 / (longlong)(local_44 + 4)),6,0x14);
+      iVar6 = Math_RandomRange(iVar6);
       switch(iVar6 + (int)(5 / (longlong)(local_44 + 1))) {
       case 0:
         local_24 = 10;
@@ -1143,7 +1143,7 @@ void Adventure_UpdateWorldMapLoop(void)
         local_24 = 0;
       }
       if (local_24 == 10) {
-        local_24 = FUN_0040a1d2(200);
+        local_24 = Math_RandomRange(200);
         if (local_24 < 0x32) {
           local_24 = 10;
         }
@@ -1201,7 +1201,7 @@ void Adventure_UpdateWorldMapLoop(void)
           *(int *)(&DAT_0067f2d0 + local_40 * 0x14) = 0xffffffff;
         }
         else if (uVar8 != 0) {
-          uVar7 = FUN_00473cc5((byte)uVar8);
+          uVar7 = Card_ColorMaskToColorIndex((byte)uVar8);
           *(int *)(&DAT_0067f2dc + local_40 * 0x14) = uVar7;
         }
       }
@@ -1310,9 +1310,9 @@ void Adventure_UpdateWorldMapLoop(void)
         local_64 = DAT_0052eff4 - status;
       }
       else {
-        iVar9 = FUN_0040a305(iVar4 / 3,0,DAT_0067f380 << 4);
+        iVar9 = Math_Clamp(iVar4 / 3,0,DAT_0067f380 << 4);
         local_60 = (iVar9 * *(int *)(&DAT_00522378 + DAT_006410d4 * 4) + DAT_0052eff0) - iVar6;
-        iVar9 = FUN_0040a305(iVar4 / 3,0,DAT_0067f380 << 4);
+        iVar9 = Math_Clamp(iVar4 / 3,0,DAT_0067f380 << 4);
         local_64 = (iVar9 * *(int *)(&DAT_005223e0 + DAT_006410d4 * 4) + DAT_0052eff4) - status;
       }
       if (((&DAT_00522630)[iVar5 * 0x44] & 1) != 0) {
@@ -1341,7 +1341,7 @@ void Adventure_UpdateWorldMapLoop(void)
         local_64 = (*(int *)(&DAT_0067bdf8 + iVar9 * 100) * 0x20 - status) +
                    ((DAT_0067f37c & 0x3e) >> 1);
       }
-      uVar7 = FUN_0040c761((int)(*(int *)(&DAT_0067f2d4 + local_40 * 0x14) +
+      uVar7 = Surface_GetPixelColor((int)(*(int *)(&DAT_0067f2d4 + local_40 * 0x14) +
                                 (*(int *)(&DAT_0067f2d4 + local_40 * 0x14) >> 0x1f & 0x1fU)) >> 5,
                            (int)(*(int *)(&DAT_0067f2d8 + local_40 * 0x14) +
                                 (*(int *)(&DAT_0067f2d8 + local_40 * 0x14) >> 0x1f & 0x1fU)) >> 5);
@@ -1417,9 +1417,9 @@ void Adventure_UpdateWorldMapLoop(void)
       }
       if (is_match) {
         if ((((&DAT_00522630)[iVar5 * 0x44] & 4) != 0) && ((DAT_0067f37c & 0x3f) == 0)) {
-          iVar9 = FUN_0040a1d2(2);
+          iVar9 = Math_RandomRange(2);
           if (iVar9 == 0) {
-            iVar9 = FUN_0040a1d2(2);
+            iVar9 = Math_RandomRange(2);
             if (iVar9 == 0) {
               *(int *)(&DAT_0067f2d8 + local_40 * 0x14) =
                    *(int *)(&DAT_0067f2d8 + local_40 * 0x14) + -0x20;
@@ -1430,7 +1430,7 @@ void Adventure_UpdateWorldMapLoop(void)
             }
           }
           else {
-            iVar9 = FUN_0040a1d2(2);
+            iVar9 = Math_RandomRange(2);
             if (iVar9 == 0) {
               *(int *)(&DAT_0067f2d4 + local_40 * 0x14) =
                    *(int *)(&DAT_0067f2d4 + local_40 * 0x14) + -0x20;
@@ -1441,7 +1441,7 @@ void Adventure_UpdateWorldMapLoop(void)
             }
           }
         }
-        uVar7 = FUN_0040c761((int)(*(int *)(&DAT_0067f2d4 + local_40 * 0x14) +
+        uVar7 = Surface_GetPixelColor((int)(*(int *)(&DAT_0067f2d4 + local_40 * 0x14) +
                                   (*(int *)(&DAT_0067f2d4 + local_40 * 0x14) >> 0x1f & 0x1fU)) >> 5,
                              (int)(*(int *)(&DAT_0067f2d8 + local_40 * 0x14) +
                                   (*(int *)(&DAT_0067f2d8 + local_40 * 0x14) >> 0x1f & 0x1fU)) >> 5)
@@ -1451,7 +1451,7 @@ void Adventure_UpdateWorldMapLoop(void)
            (local_40 != 7)) {
           *(int *)(&DAT_0067f2d4 + local_40 * 0x14) = iVar6;
           *(int *)(&DAT_0067f2d8 + local_40 * 0x14) = status;
-          uVar7 = FUN_0040c761((int)(iVar6 + (iVar6 >> 0x1f & 0x1fU)) >> 5,
+          uVar7 = Surface_GetPixelColor((int)(iVar6 + (iVar6 >> 0x1f & 0x1fU)) >> 5,
                                (int)(status + (status >> 0x1f & 0x1fU)) >> 5);
           uVar8 = Adventure_GetLocationEncounterIndex(uVar7);
           (&DAT_0067f2e1)[local_40 * 0x14] = 0;
@@ -1491,7 +1491,7 @@ void Adventure_UpdateWorldMapLoop(void)
           FUN_0048c970(3);
         }
         else if (((iVar5 != 0) && ((&DAT_0067f2e1)[local_40 * 0x14] != '\0')) &&
-                ((iVar4 < 0x50 && (iVar6 = FUN_0040a1d2(iVar4), iVar6 < 4)))) {
+                ((iVar4 < 0x50 && (iVar6 = Math_RandomRange(iVar4), iVar6 < 4)))) {
           Adventure_PlayMonsterEncounterSound
                     (iVar5,0x68 - iVar4 / 2,100 - iVar4 / 3,
                      *(int *)(&DAT_00522378 +
@@ -1520,12 +1520,12 @@ void Adventure_UpdateWorldMapLoop(void)
  * Size: 248 bytes
  */
 
-int Adventure_GetLocationEncounterIndex(int arg1)
+int Adventure_GetLocationEncounterIndex(int color_mask)
 
 {
   int local_8;
   
-  switch(arg1) {
+  switch(color_mask) {
   case 1:
     local_8 = 4;
     break;
@@ -1589,12 +1589,12 @@ int Adventure_GetLocationEncounterIndex(int arg1)
  * Size: 128 bytes
  */
 
-int Adventure_SetLocationEncounterIndex(int arg1)
+int Adventure_SetLocationEncounterIndex(int color_mask)
 
 {
   int local_8;
   
-  switch(arg1) {
+  switch(color_mask) {
   case 1:
     local_8 = 2;
     break;
@@ -1629,7 +1629,7 @@ int Adventure_SetLocationEncounterIndex(int arg1)
  * Size: 157 bytes
  */
 
-int Adventure_CheckMonsterEncounter(int arg1,int arg2)
+int Adventure_CheckMonsterEncounter(int color_mask,int arg2)
 
 {
   int status;
@@ -1637,12 +1637,12 @@ int Adventure_CheckMonsterEncounter(int arg1,int arg2)
   
   local_c = 0;
   while( true ) {
-    status = FUN_0040a1d2(DAT_00523524 + -1);
+    status = Math_RandomRange(DAT_00523524 + -1);
     status = status + 1;
     local_c = local_c + 1;
     if (0x3e6 < local_c) break;
     if (((char)(&DAT_00522628)[status * 0x44] == arg2) &&
-       ((arg1 == 0 || ((1 << ((byte)arg1 & 0x1f) & (int)(char)(&DAT_0052262b)[status * 0x44]) != 0)))
+       ((color_mask == 0 || ((1 << ((byte)color_mask & 0x1f) & (int)(char)(&DAT_0052262b)[status * 0x44]) != 0)))
        ) break;
   }
   if (local_c == 999) {
@@ -1663,7 +1663,7 @@ int Adventure_CheckMonsterEncounter(int arg1,int arg2)
  * Size: 131 bytes
  */
 
-void Adventure_FormatNewsString(int arg1,int arg2,int arg3)
+void Adventure_FormatNewsString(int color_mask,int arg2,int arg3)
 
 {
   char c_res;
@@ -1671,12 +1671,12 @@ void Adventure_FormatNewsString(int arg1,int arg2,int arg3)
   int local_10;
   
   if (arg2 != 0) {
-    Adventure_AppendNewsDetails((int)(char)(&DAT_00522600)[arg1 * 0x44],arg3);
+    Adventure_AppendNewsDetails((int)(char)(&DAT_00522600)[color_mask * 0x44],arg3);
   }
   local_10 = 0;
   sVar2 = strlen(&g_OverworldWorldState);
   do {
-    c_res = (&DAT_00522600)[arg1 * 0x44 + local_10];
+    c_res = (&DAT_00522600)[color_mask * 0x44 + local_10];
     (&g_OverworldWorldState)[local_10 + sVar2] = c_res;
     local_10 = local_10 + 1;
   } while (c_res != '\0');
@@ -1695,10 +1695,10 @@ void Adventure_FormatNewsString(int arg1,int arg2,int arg3)
  * Size: 176 bytes
  */
 
-int Adventure_AppendNewsDetails(int arg1,int arg2)
+int Adventure_AppendNewsDetails(int color_mask,int arg2)
 
 {
-  switch(arg1) {
+  switch(color_mask) {
   case 0x41:
   case 0x45:
   case 0x49:
@@ -1822,11 +1822,11 @@ void Adventure_TriggerDuelFromEncounter(void)
  * Size: 33 bytes
  */
 
-void Adventure_ReloadWorldPalette(int arg1)
+void Adventure_ReloadWorldPalette(int color_mask)
 
 {
   DAT_005659b4 = 0xffffffff;
-  Adventure_LoadFacePalette(arg1);
+  Adventure_LoadFacePalette(color_mask);
   return;
 }
 
@@ -1842,12 +1842,12 @@ void Adventure_ReloadWorldPalette(int arg1)
  * Size: 46 bytes
  */
 
-void Adventure_LoadFacePalette(int arg1)
+void Adventure_LoadFacePalette(int color_mask)
 
 {
-  if (arg1 != DAT_005659b4) {
+  if (color_mask != DAT_005659b4) {
     LoadPalNoPic(s_advfac64_pic_0052f500);
-    DAT_005659b4 = arg1;
+    DAT_005659b4 = color_mask;
   }
   return;
 }
@@ -1869,7 +1869,7 @@ void Adventure_NewsFlash_EnemyAttack(void)
 
 {
   int *piVar1;
-  byte arg1;
+  byte color_mask;
   int u_temp;
   char *file_name;
   int aiStack_80 [7];
@@ -1887,17 +1887,17 @@ void Adventure_NewsFlash_EnemyAttack(void)
   int local_8;
   
   if (DAT_006410b0 == 0) {
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     for (local_18 = 0; local_18 < 7; local_18 = local_18 + 1) {
       aiStack_34[local_18] = -1;
       aiStack_80[local_18] = 0;
     }
     for (local_18 = 0; local_18 < 0x80; local_18 = local_18 + 1) {
       if (*(int *)(&DAT_0067bdf0 + local_18 * 100) == 4) {
-        u_temp = FUN_0040c761(*(int *)(&DAT_0067bdf4 + local_18 * 100),
+        u_temp = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + local_18 * 100),
                              *(int *)(&DAT_0067bdf8 + local_18 * 100));
-        arg1 = Adventure_GetLocationEncounterIndex(u_temp);
-        local_60 = FUN_00473cc5(arg1);
+        color_mask = Adventure_GetLocationEncounterIndex(u_temp);
+        local_60 = Card_ColorMaskToColorIndex(color_mask);
         aiStack_34[local_60] = *(int *)(&DAT_0067bdf4 + local_18 * 100);
         aiStack_50[local_60] = *(int *)(&DAT_0067bdf8 + local_18 * 100);
       }
@@ -1926,7 +1926,7 @@ void Adventure_NewsFlash_EnemyAttack(void)
             }
           }
         }
-        local_8 = FUN_0040a1d2(0x80);
+        local_8 = Math_RandomRange(0x80);
         local_8 = local_8 + aiStack_80[local_60] * 0x20;
         if (local_8 < local_5c) {
           local_5c = local_8;
@@ -1982,9 +1982,9 @@ void Adventure_NewsFlash_EnemyAttack(void)
       Ai_TownEncounter_004c3b19(local_64);
       strcat(&g_OverworldWorldState,&DAT_0052f56c);
       *(int *)(g_DisplaySurfaceScreen + 0x20) = 5;
-      FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
+      Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
       *(int *)(g_DisplaySurfaceScreen + 0x20) = 1;
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       Ai_Subsystem_004c05ba();
       DAT_006410b0 = 1;
@@ -2005,7 +2005,7 @@ void Adventure_NewsFlash_EnemyAttack(void)
  * Size: 1302 bytes
  */
 
-void Adventure_NewsFlash_Retaliation(int arg1)
+void Adventure_NewsFlash_Retaliation(int color_mask)
 
 {
   int *piVar1;
@@ -2027,18 +2027,18 @@ void Adventure_NewsFlash_Retaliation(int arg1)
   int local_8;
   
   if (DAT_006410b0 == 0) {
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     for (local_18 = 0; local_18 < 7; local_18 = local_18 + 1) {
       aiStack_34[local_18] = -1;
       aiStack_80[local_18] = 0;
     }
     for (local_18 = 0; local_18 < 0x80; local_18 = local_18 + 1) {
       if (*(int *)(&DAT_0067bdf0 + local_18 * 100) == 4) {
-        u_temp = FUN_0040c761(*(int *)(&DAT_0067bdf4 + local_18 * 100),
+        u_temp = Surface_GetPixelColor(*(int *)(&DAT_0067bdf4 + local_18 * 100),
                              *(int *)(&DAT_0067bdf8 + local_18 * 100));
         arg_1_00 = Adventure_GetLocationEncounterIndex(u_temp);
-        local_60 = FUN_00473cc5(arg_1_00);
-        if (local_60 == arg1) {
+        local_60 = Card_ColorMaskToColorIndex(arg_1_00);
+        if (local_60 == color_mask) {
           aiStack_34[local_60] = *(int *)(&DAT_0067bdf4 + local_18 * 100);
           aiStack_50[local_60] = *(int *)(&DAT_0067bdf8 + local_18 * 100);
         }
@@ -2067,7 +2067,7 @@ void Adventure_NewsFlash_Retaliation(int arg1)
             }
           }
         }
-        local_8 = FUN_0040a1d2(0x80);
+        local_8 = Math_RandomRange(0x80);
         local_8 = local_8 + aiStack_80[local_60] * 0x20;
         if (local_8 < local_5c) {
           local_5c = local_8;
@@ -2124,9 +2124,9 @@ void Adventure_NewsFlash_Retaliation(int arg1)
       Ai_TownEncounter_004c3b19(local_64);
       strcat(&g_OverworldWorldState,&DAT_0052f5f8);
       *(int *)(g_DisplaySurfaceScreen + 0x20) = 5;
-      FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
+      Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
       *(int *)(g_DisplaySurfaceScreen + 0x20) = 1;
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       Ai_Subsystem_004c05ba();
       DAT_006410b0 = 1;
@@ -2162,7 +2162,7 @@ void Adventure_NewsFlash_DominionSpell(void)
   local_34[7] = 7;
   DAT_006410b0 = 0;
   if (DAT_0067f35c != -1) {
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     local_10 = *(uint *)(&DAT_0067f2dc + local_34[7] * 0x14);
     local_34[8] = Duel_GetCardDrawOriginY
                             ((int)(*(int *)(&DAT_0067f2d4 + local_34[7] * 0x14) +
@@ -2224,9 +2224,9 @@ void Adventure_NewsFlash_DominionSpell(void)
     }
     DAT_006410b4 = DAT_006410b4 + 1;
     *(int *)(g_DisplaySurfaceScreen + 0x20) = 5;
-    FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
+    Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xbe,0x140,0xf7);
     *(int *)(g_DisplaySurfaceScreen + 0x20) = 1;
-    FUN_0040a3e1();
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
     FUN_0046e70d(local_34[7],local_34[7] + 8);
     *(int *)(&DAT_0067f2d0 + local_34[7] * 0x14) = 0xffffffff;
@@ -2234,10 +2234,10 @@ void Adventure_NewsFlash_DominionSpell(void)
     Ai_Subsystem_004c05ba();
     DAT_006410b0 = 0;
     if (local_c <= local_34[6]) {
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       Mem_AllocOrFree_00510de0(1,s_uth_arz_pic_0052f708);
       g_OverworldWorldState = 0;
-      if ((DAT_00522458 == 0x280) || (DAT_00522458 == 800)) {
+      if ((g_DisplayScreenWidth == 0x280) || (g_DisplayScreenWidth == 800)) {
         local_34[0] = 0x14;
       }
       else {
@@ -2255,10 +2255,10 @@ void Adventure_NewsFlash_DominionSpell(void)
       val_result = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceBackBuffer + 0x20));
       FUN_0040d269((int)g_DisplaySurfaceBackBuffer,0xea,0x140,val_result * -7 + 0x1e0);
       Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                         (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
-      FUN_0040a3e1();
+                         (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       DAT_006fe3f0 = 1;
       FUN_00409db6();
       Palette_Util_00496d20();
@@ -2283,7 +2283,7 @@ void Adventure_NewsFlash_DominionSpell(void)
  * Size: 134 bytes
  */
 
-void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5)
+void Adventure_Audio_PlayEffect(char *color_mask,int arg2,int arg3,int arg4,int arg5)
 
 {
   int local_24;
@@ -2292,7 +2292,7 @@ void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5)
   uint local_8;
   
   Pic_Subsystem_00423b93(arg2);
-  Adventure_Audio_InitSoundTrack(arg1,arg2,0);
+  Adventure_Audio_InitSoundTrack(color_mask,arg2,0);
   memset(&local_24,0,0x20);
   local_24 = arg3 << 2;
   local_20 = (arg4 * 0x5622) / 100;
@@ -2314,7 +2314,7 @@ void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5)
  * Size: 104 bytes
  */
 
-void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height)
+void Adventure_Audio_PlayEffectAtVolume(int color_mask,int y,int width,int height)
 
 {
   int local_24;
@@ -2327,7 +2327,7 @@ void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height)
   local_20 = (width * 0x5622) / 100;
   local_1c = height << 2;
   local_8 = local_8 & 0xffffffee;
-  Pic_Subsystem_00423bf4(arg1,&local_24);
+  Pic_Subsystem_00423bf4(color_mask,&local_24);
   return;
 }
 
@@ -2343,7 +2343,7 @@ void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height)
  * Size: 80 bytes
  */
 
-void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3)
+void Adventure_Audio_PlayEffectLooped(int color_mask,int arg2,int arg3)
 
 {
   int local_24 [7];
@@ -2354,7 +2354,7 @@ void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3)
   local_24[1] = 0x5622;
   local_24[2] = arg3 << 2;
   local_8 = local_8 | 1;
-  Pic_Subsystem_00423bf4(arg1,local_24);
+  Pic_Subsystem_00423bf4(color_mask,local_24);
   return;
 }
 
@@ -2370,7 +2370,7 @@ void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3)
  * Size: 71 bytes
  */
 
-void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3)
+void Adventure_Audio_StopEffectChannel(int color_mask,int arg2,int arg3)
 
 {
   int local_24 [8];
@@ -2379,7 +2379,7 @@ void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3)
   local_24[0] = arg2 << 2;
   local_24[1] = 0x5622;
   local_24[2] = arg3 << 2;
-  Pic_Subsystem_00423bf4(arg1,local_24);
+  Pic_Subsystem_00423bf4(color_mask,local_24);
   return;
 }
 
@@ -2395,7 +2395,7 @@ void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3)
  * Size: 94 bytes
  */
 
-void Adventure_Audio_SetPlaybackPosition(char *arg1,int arg2)
+void Adventure_Audio_SetPlaybackPosition(char *color_mask,int arg2)
 
 {
   int local_24;
@@ -2408,7 +2408,7 @@ void Adventure_Audio_SetPlaybackPosition(char *arg1,int arg2)
   local_24 = 400;
   local_20 = 0;
   local_1c = 0;
-  Adventure_Audio_InitSoundTrack(arg1,arg2,&local_24);
+  Adventure_Audio_InitSoundTrack(color_mask,arg2,&local_24);
   Pic_Subsystem_00423f10(arg2,1);
   return;
 }
@@ -2447,15 +2447,15 @@ void Adventure_Audio_StopAllTracks(void)
  * Size: 231 bytes
  */
 
-void Adventure_Audio_PlayCastleVictory(int arg1)
+void Adventure_Audio_PlayCastleVictory(int color_mask)
 
 {
   Adventure_Audio_StopAllTracks();
   if (DAT_0052f018 != -1) {
     Pic_Subsystem_00423b93(0x10);
   }
-  DAT_0052f018 = arg1 + 0x15;
-  switch(arg1) {
+  DAT_0052f018 = color_mask + 0x15;
+  switch(color_mask) {
   case 1:
     Adventure_Audio_SetPlaybackPosition(s_x_sound_bcastle_wav_0052f860,0x10);
     break;
@@ -2491,7 +2491,7 @@ void Adventure_Audio_PlayCastleVictory(int arg1)
  * Size: 102 bytes
  */
 
-void Adventure_Audio_PlayDuelIntro(int arg1)
+void Adventure_Audio_PlayDuelIntro(int color_mask)
 
 {
   if (DAT_0052f018 != -1) {
@@ -2499,7 +2499,7 @@ void Adventure_Audio_PlayDuelIntro(int arg1)
   }
   DAT_0052f018 = 0x15;
   DAT_0052f064 = 0xffffffff;
-  Adventure_Audio_SetPlaybackPosition((&PTR_s_x_sound_dueltune_wav_0052f070)[arg1],0x10);
+  Adventure_Audio_SetPlaybackPosition((&PTR_s_x_sound_dueltune_wav_0052f070)[color_mask],0x10);
   Adventure_Audio_StopEffectChannel(0x10,0x80,0);
   DAT_0052f014 = 1;
   return;
@@ -2517,24 +2517,24 @@ void Adventure_Audio_PlayDuelIntro(int arg1)
  * Size: 680 bytes
  */
 
-void Adventure_Audio_PlayTerrainAmbience(int arg1)
+void Adventure_Audio_PlayTerrainAmbience(int color_mask)
 
 {
   int arg_1_00;
   int status;
   int val_result;
   
-  arg_1_00 = arg1 + 9;
-  status = FUN_0040a1d2(200);
+  arg_1_00 = color_mask + 9;
+  status = Math_RandomRange(200);
   status = status + -100;
-  val_result = FUN_0040a1d2(0x32);
+  val_result = Math_RandomRange(0x32);
   Adventure_Audio_PlayEffectAtVolume(arg_1_00,100,val_result + 0x46,status);
-  status = FUN_0040a1d2(3);
+  status = Math_RandomRange(3);
   if (status == 0) {
     Pic_Subsystem_00423b93(arg_1_00);
-    switch(arg1) {
+    switch(color_mask) {
     case 1:
-      status = FUN_0040a1d2(3);
+      status = Math_RandomRange(3);
       if (status == 0) {
         Adventure_Audio_InitSoundTrack(s_x_sound_kbird1_wav_0052f8d8,arg_1_00,0);
       }
@@ -2546,7 +2546,7 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
       }
       break;
     case 2:
-      status = FUN_0040a1d2(3);
+      status = Math_RandomRange(3);
       if (status == 0) {
         Adventure_Audio_InitSoundTrack(s_x_sound_bbird1_wav_0052f914,arg_1_00,0);
       }
@@ -2558,7 +2558,7 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
       }
       break;
     case 3:
-      status = FUN_0040a1d2(2);
+      status = Math_RandomRange(2);
       if (status == 0) {
         Adventure_Audio_InitSoundTrack(s_x_sound_gbird1_wav_0052f950,arg_1_00,0);
       }
@@ -2567,7 +2567,7 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
       }
       break;
     case 4:
-      status = FUN_0040a1d2(2);
+      status = Math_RandomRange(2);
       if (status == 0) {
         Adventure_Audio_InitSoundTrack(s_x_sound_rbird1_wav_0052f978,arg_1_00,0);
       }
@@ -2576,7 +2576,7 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
       }
       break;
     case 5:
-      status = FUN_0040a1d2(2);
+      status = Math_RandomRange(2);
       if (status == 0) {
         Adventure_Audio_InitSoundTrack(s_x_sound_wbird1_wav_0052f9a0,arg_1_00,0);
       }
@@ -2711,12 +2711,12 @@ char Adventure_Audio_GetMusicDrivePath(void)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-void Adventure_Audio_FreeSoundTrack(void *arg1)
+void Adventure_Audio_FreeSoundTrack(void *color_mask)
 
 {
   _DAT_00640f0c = _DAT_00640f0c + 1;
-  Pic_Subsystem_00423b57(arg1,*(int *)((int)arg1 + 0x100),(int)arg1 + 0x104);
-  free(arg1);
+  Pic_Subsystem_00423b57(color_mask,*(int *)((int)color_mask + 0x100),(int)color_mask + 0x104);
+  free(color_mask);
   _DAT_00640f0c = _DAT_00640f0c + -1;
   return;
 }
@@ -2769,12 +2769,12 @@ int Adventure_Audio_InitSoundTrack(char *name_or_path,int arg2,int arg3)
  * Size: 115 bytes
  */
 
-int Adventure_Audio_GetTrackStatus(int arg1)
+int Adventure_Audio_GetTrackStatus(int color_mask)
 
 {
   int u_res;
   
-  switch(arg1) {
+  switch(color_mask) {
   case 1:
     u_res = 4;
     break;
@@ -2811,7 +2811,7 @@ int Adventure_Audio_GetTrackStatus(int arg1)
  * Size: 271 bytes
  */
 
-int Adventure_Map_GetTerrainAtCoord(uint arg1)
+int Adventure_Map_GetTerrainAtCoord(uint color_mask)
 
 {
   int local_24;
@@ -2820,11 +2820,11 @@ int Adventure_Map_GetTerrainAtCoord(uint arg1)
   uint local_18 [5];
   
   local_1c = 0;
-  local_18[0] = arg1 & 0x20;
-  local_18[1] = arg1 & 0x10;
-  local_18[2] = arg1 & 4;
-  local_18[3] = arg1 & 8;
-  local_18[4] = arg1 & 2;
+  local_18[0] = color_mask & 0x20;
+  local_18[1] = color_mask & 0x10;
+  local_18[2] = color_mask & 4;
+  local_18[3] = color_mask & 8;
+  local_18[4] = color_mask & 2;
   for (local_20 = 0; local_20 < 5; local_20 = local_20 + 1) {
     if (local_18[local_20] != 0) {
       local_1c = local_1c + 1;
@@ -2838,7 +2838,7 @@ int Adventure_Map_GetTerrainAtCoord(uint arg1)
     }
   }
   else {
-    local_24 = FUN_0040a1d2(local_1c);
+    local_24 = Math_RandomRange(local_1c);
     local_24 = local_24 + 1;
     for (local_20 = 0; local_20 < 5; local_20 = local_20 + 1) {
       if (local_18[local_20] != 0) {
@@ -2931,7 +2931,7 @@ void Adventure_Map_RedrawViewport(void)
  * Size: 841 bytes
  */
 
-int Adventure_Map_UpdateLightingAndPalette(uint arg1,uint arg2)
+int Adventure_Map_UpdateLightingAndPalette(uint color_mask,uint arg2)
 
 {
   uint local_40 [7];
@@ -2944,7 +2944,7 @@ int Adventure_Map_UpdateLightingAndPalette(uint arg1,uint arg2)
   int local_c;
   int local_8;
   
-  FUN_005112b0(0,(short)DAT_00530d9c);
+  Surface_TransformPoint(0,(short)DAT_00530d9c);
   FUN_0050d560(0,0);
   LoadPalNoPic(s_advfac64_pic_0052fb10);
   local_14 = GetThreadPriority(DAT_00627850);
@@ -2981,15 +2981,15 @@ int Adventure_Map_UpdateLightingAndPalette(uint arg1,uint arg2)
   DAT_0064105d = 0;
   DAT_0064105e = 0;
   DAT_0064105f = 0;
-  if ((char)arg1 == '\x01') {
-    if ((arg1 & 0x100) == 0) {
+  if ((char)color_mask == '\x01') {
+    if ((color_mask & 0x100) == 0) {
       *(int *)(&DAT_006410bc + arg2 * 4) = 1;
     }
     DAT_0064105d = Adventure_Audio_GetTrackStatus(arg2);
     *(int *)(&DAT_00641030 + (uint)DAT_0064105d * 4) = 0;
-    arg1 = arg1 & 0xff;
+    color_mask = color_mask & 0xff;
   }
-  if (arg1 == 2) {
+  if (color_mask == 2) {
     local_40[0] = arg2 >> 0x10;
     local_40[1] = 4;
     local_40[2] = 2;
@@ -2998,17 +2998,17 @@ int Adventure_Map_UpdateLightingAndPalette(uint arg1,uint arg2)
     local_40[5] = 0;
     arg2 = arg2 & 0xffff;
     if ((&DAT_0052262b)[arg2 * 0x44] == -1) {
-      arg1 = 0;
+      color_mask = 0;
     }
     else {
       DAT_0064105e = (uint8_t)arg2;
       DAT_0064105d = (byte)local_40[local_40[0]];
     }
   }
-  if (arg1 == 3) {
+  if (color_mask == 3) {
     DAT_0064105f = (uint8_t)arg2;
   }
-  Mem_AllocOrFree_00409e13(&DAT_00641030,arg1);
+  Mem_AllocOrFree_00409e13(&DAT_00641030,color_mask);
   SetThreadPriority(DAT_00627850,local_14);
   SetThreadPriority(DAT_00626820,local_8);
   SetForegroundWindow(_hwndScreen);
@@ -3051,11 +3051,11 @@ void Adventure_ShowDefeatScreen(void)
     }
   }
   if (local_8 == 0) {
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     Mem_AllocOrFree_00510de0(1,s_uth_arz_pic_0052fb3c);
     g_OverworldWorldState = 0;
     *(int *)(g_DisplaySurfaceBackBuffer + 0x20) = 5;
-    if ((DAT_00522458 == 0x280) || (DAT_00522458 == 800)) {
+    if ((g_DisplayScreenWidth == 0x280) || (g_DisplayScreenWidth == 800)) {
       local_10 = 0x14;
     }
     else {
@@ -3071,10 +3071,10 @@ void Adventure_ShowDefeatScreen(void)
     status = Mem_AllocOrFree_0050f740(*(int *)(g_DisplaySurfaceBackBuffer + 0x20));
     FUN_0040d269((int)g_DisplaySurfaceBackBuffer,0xea,0x140,status * -7 + 0x1e0);
     Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                       (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
-    FUN_0040a3e1();
+                       (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
+    App_ProcessPendingMessages();
     Ai_Subsystem_004cd1d1();
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     DAT_006fe3f0 = 1;
     FUN_00409db6();
     Palette_Util_00496d20();

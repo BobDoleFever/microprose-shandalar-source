@@ -967,13 +967,13 @@ Ai_AssignCombatDamage
         FUN_0043753a(1,1);
         UpdateWindow(DAT_00617438);
       }
-      slot_idx = DialogBoxParamA(DAT_00664680,(LPCSTR)0xf4,DAT_00618990,Ai_DuelDialogProc,
+      slot_idx = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf4,g_DuelMainHwnd,Ai_DuelDialogProc,
                                 (LPARAM)&card_idx);
       FUN_0043753a(1,0);
     }
     FUN_004d7946(1);
     FUN_004d7946(0);
-    FUN_00451482(0,0x30);
+    Duel_UpdateBoardState(0,0x30);
     if (((card_idx == 1) && (match_count != 0)) || ((card_idx == 0 && (match_count == 0)))) {
       local_2c = 1;
     }
@@ -989,7 +989,7 @@ Ai_AssignCombatDamage
       DAT_0060cc60 = 1;
       FUN_004baa8b(DAT_00663df4);
     }
-    slot_idx = DialogBoxParamA(DAT_00664680,(LPCSTR)0xe3,DAT_00618990,Ai_StartDuelWndProc,
+    slot_idx = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xe3,g_DuelMainHwnd,Ai_StartDuelWndProc,
                               (LPARAM)&local_2c);
     local_30 = (uint32_t)(slot_idx != 0);
     *arg_1 = local_2c;
@@ -999,7 +999,7 @@ Ai_AssignCombatDamage
     if (local_30 != 0) {
       PostMessageA(DAT_006152b0,0x40c,0,0);
     }
-    UpdateWindow(DAT_00618990);
+    UpdateWindow(g_DuelMainHwnd);
     uval_1 = 1;
   }
   return uval_1;
@@ -1083,14 +1083,14 @@ HGDIOBJ Ai_DuelDialogProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
     }
     if (uMsg == 0x14) {
       local_180 = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       GetClientRect(hwnd,&local_17c);
       if (DAT_00516af8 == (HANDLE)0x0) {
         hbr = GetStockObject(2);
         FillRect((HDC)local_180,&local_17c,hbr);
       }
       else {
-        FUN_004709ae((int)local_180,(int)&local_17c,DAT_00516af8);
+        GDI_DrawBitmapToHDC((int)local_180,(int)&local_17c,DAT_00516af8);
       }
       return (HGDIOBJ)0x1;
     }
@@ -1128,7 +1128,7 @@ HGDIOBJ Ai_DuelDialogProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
         SendMessageA(hwnd,0x401,0x486,0);
       }
       local_14c = GetDC(hwnd);
-      FUN_004707a4(local_14c);
+      GDI_RealizeAndFlushPalette(local_14c);
       local_140 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x486,0x31,0,0);
       SelectObject(local_14c,local_140);
       GetDlgItemTextA(hwnd,0x486,local_134,200);
@@ -1180,7 +1180,7 @@ LAB_0043ea12:
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_15c = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       local_164 = lParam;
       local_160 = GetDlgCtrlID(lParam);
       SetBkMode((HDC)local_15c,1);
@@ -1205,7 +1205,7 @@ LAB_0043ea12:
     if (uMsg == 0x113) {
       if (wParam == (HWND)0x1) {
         KillTimer(hwnd,1);
-        local_184 = FUN_00439892(2);
+        local_184 = Duel_RandomRange(2);
         slot_idx = (HWND)GetWindowLongA(hwnd,8);
         *(int *)((int)slot_idx + 4) = local_184;
         if (local_184 == 0) {
@@ -1232,7 +1232,7 @@ LAB_0043ea12:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      buf_ptr_2 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,wParam,lParam);
+      buf_ptr_2 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,wParam,lParam);
       return buf_ptr_2;
     }
     if (uMsg == 0x4c8) {
@@ -1272,14 +1272,14 @@ void Ai_LoadStartDuel2Backdrop
   int32_t uval_1;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_StartDuel2_pic_004f7a40,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuel2_pic_004f7a40,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0;
-  _sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_004f7a58,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_004f7a58,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_3 = uval_1;
-  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDepresse_004f7a7c,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDepresse_004f7a7c,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_4 = uval_1;
   *arg_5 = 0x1000001;
@@ -1300,13 +1300,13 @@ void FUN_0043ec34(int player_id,int card_slot,int event_type)
 
 {
   if (arg_1 != 0) {
-    FUN_00471395((HANDLE)arg_1);
+    GDI_DestroyDIBSection((HANDLE)arg_1);
   }
   if (arg_2 != 0) {
-    FUN_00471395((HANDLE)arg_2);
+    GDI_DestroyDIBSection((HANDLE)arg_2);
   }
   if (arg_3 != 0) {
-    FUN_00471395((HANDLE)arg_3);
+    GDI_DestroyDIBSection((HANDLE)arg_3);
   }
   return;
 }
@@ -1371,14 +1371,14 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_208 = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       GetClientRect(hwnd,&local_204);
       if (DAT_00516a9c == (HANDLE)0x0) {
         hbr = GetStockObject(2);
         FillRect((HDC)local_208,&local_204,hbr);
       }
       else {
-        FUN_004709ae((int)local_208,(int)&local_204,DAT_00516a9c);
+        GDI_DrawBitmapToHDC((int)local_208,(int)&local_204,DAT_00516a9c);
       }
       return (HGDIOBJ)0x1;
     }
@@ -1392,7 +1392,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
       slot_idx = (HWND)GetWindowLongA(hwnd,8);
       hdc = BeginPaint(hwnd,&local_280);
       if (hdc != (HDC)0x0) {
-        FUN_004707a4(hdc);
+        GDI_RealizeAndFlushPalette(hdc);
         if (*(int *)((int)slot_idx + 8) != -1) {
           ptVar9 = &local_240;
           pHVar6 = GetDlgItem(hwnd,0x470);
@@ -1490,7 +1490,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
       ShowWindow(pHVar6,val_7);
       slot_idx[6].unused = 0;
       local_15c = GetDC(hwnd);
-      FUN_004707a4(local_15c);
+      GDI_RealizeAndFlushPalette(local_15c);
       local_150 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x415,0x31,0,0);
       SelectObject(local_15c,local_150);
       ptVar9 = &local_14c;
@@ -1575,7 +1575,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_1e0 = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       local_1e8 = lParam;
       local_1e4 = GetDlgCtrlID(lParam);
       SetBkMode((HDC)local_1e0,1);
@@ -1604,10 +1604,10 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
             Sleep(500);
             FUN_00448412((char *)local_1d4);
             if (*(int *)((int)slot_idx + 0x14) == 0) {
-              FUN_004d9640(local_1d4,(uint32_t *)s_decided_not_to_take_a_mulligan_004f7ba4);
+              Str_CopyFast(local_1d4, (uint32_t *)s_decided_not_to_take_a_mulligan_004f7ba4);
             }
             else {
-              FUN_004d9640(local_1d4,(uint32_t *)s_will_also_take_a_mulligan_004f7b88);
+              Str_CopyFast(local_1d4, (uint32_t *)s_will_also_take_a_mulligan_004f7b88);
             }
             SetDlgItemTextA(hwnd,0x416,(LPCSTR)local_1d4);
             val_7 = 5;
@@ -1631,7 +1631,7 @@ HGDIOBJ Ai_StartDuelWndProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        pvVar4 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,wParam,lParam);
+        pvVar4 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,wParam,lParam);
         return pvVar4;
       }
       if (uMsg != 0x200) {
@@ -1706,17 +1706,17 @@ void Ai_LoadStartDuelBackdrop
   int32_t uval_1;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_StartDuel_pic_004f7bc4,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuel_pic_004f7bc4,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0;
-  _sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_004f7bdc,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuelButtonNormal_p_004f7bdc,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_3 = uval_1;
-  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDepresse_004f7c00,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDepresse_004f7c00,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_4 = uval_1;
-  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDisabled_004f7c28,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_StartDuelButtonDisabled_004f7c28,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_5 = uval_1;
   *arg_6 = 0x1000001;
@@ -1737,16 +1737,16 @@ void FUN_0043fbce(int x,int y,int width,int height)
 
 {
   if (x != 0) {
-    FUN_00471395((HANDLE)x);
+    GDI_DestroyDIBSection((HANDLE)x);
   }
   if (y != 0) {
-    FUN_00471395((HANDLE)y);
+    GDI_DestroyDIBSection((HANDLE)y);
   }
   if (width != 0) {
-    FUN_00471395((HANDLE)width);
+    GDI_DestroyDIBSection((HANDLE)width);
   }
   if (height != 0) {
-    FUN_00471395((HANDLE)height);
+    GDI_DestroyDIBSection((HANDLE)height);
   }
   return;
 }
@@ -1772,7 +1772,7 @@ void Ai_ScoreBoardPermanents(int player_id)
   int32_t card_idx;
   int32_t match_count;
   
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   val_1 = FUN_00448799(local_7e0,0);
   if (val_1 == 0) {
     match_count = 0xffffffff;
@@ -1789,7 +1789,7 @@ void Ai_ScoreBoardPermanents(int player_id)
   }
   if (arg_1 == 0) {
     FUN_00448412((char *)local_918);
-    FUN_004d9640(local_918,(uint32_t *)&DAT_004f7c50);
+    Str_CopyFast(local_918,(uint32_t *)&DAT_004f7c50);
   }
   else if (arg_1 == 1) {
     Mem_AllocOrFree_004d9630(local_918,(uint32_t *)s_You_won__004f7c58);
@@ -1800,7 +1800,7 @@ void Ai_ScoreBoardPermanents(int player_id)
   local_7ec = 0;
   local_7e8 = match_count;
   local_7e4 = card_idx;
-  DialogBoxParamA(DAT_00664680,(LPCSTR)0xf6,DAT_00618990,Ai_DuelMainWndProc,(LPARAM)local_918);
+  DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf6,g_DuelMainHwnd,Ai_DuelMainWndProc,(LPARAM)local_918);
   return;
 }
 
@@ -1828,7 +1828,7 @@ INT_PTR Ai_CalculateCombatOdds
   int32_t card_idx;
   int32_t match_count;
   
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   val_1 = FUN_00448799(local_7e0,0);
   if (val_1 == 0) {
     match_count = 0xffffffff;
@@ -1847,7 +1847,7 @@ INT_PTR Ai_CalculateCombatOdds
   local_7ec = 1;
   local_7e8 = match_count;
   local_7e4 = card_idx;
-  IVar2 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xf6,DAT_00618990,Ai_DuelMainWndProc,
+  IVar2 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf6,g_DuelMainHwnd,Ai_DuelMainWndProc,
                           (LPARAM)local_918);
   return IVar2;
 }
@@ -1903,14 +1903,14 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_108 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_104);
       if (DAT_00516afc == (HANDLE)0x0) {
         hbr = GetStockObject(2);
         FillRect(local_108,&local_104,hbr);
       }
       else {
-        FUN_004709ae((int)local_108,(int)&local_104,DAT_00516afc);
+        GDI_DrawBitmapToHDC((int)local_108,(int)&local_104,DAT_00516afc);
       }
       return (HGDIOBJ)0x1;
     }
@@ -1929,7 +1929,7 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
       }
       hdc = BeginPaint(hwnd,&local_1b4);
       if (hdc != (HDC)0x0) {
-        FUN_004707a4(hdc);
+        GDI_RealizeAndFlushPalette(hdc);
         if (local_160 == 0) {
           local_15c = *(int *)((int)slot_idx + 0x130);
           local_174 = 0x491;
@@ -1997,7 +1997,7 @@ HGDIOBJ Ai_DuelMainWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
     if (uMsg == 0x135) {
 LAB_0044016c:
       local_e4 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       local_ec = lParam;
       local_e8 = GetDlgCtrlID(lParam);
       if ((local_e8 != 0x493) && (local_e8 != 0x494)) {
@@ -2030,7 +2030,7 @@ LAB_0044016c:
       pHVar4 = GetDlgItem(hwnd,0x491);
       ShowWindow(pHVar4,val_5);
       FUN_00448412((char *)local_d0);
-      FUN_004d9640(local_d0,(uint32_t *)s_next_draw__004f7ca8);
+      Str_CopyFast(local_d0,(uint32_t *)s_next_draw__004f7ca8);
       SetDlgItemTextA(hwnd,0x48e,(LPCSTR)local_d0);
       Mem_AllocOrFree_004d9630(local_d0,(uint32_t *)s_Your_next_draw__004f7cb4);
       SetDlgItemTextA(hwnd,0x48d,(LPCSTR)local_d0);
@@ -2126,7 +2126,7 @@ LAB_004404b6:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      buf_ptr_1 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      buf_ptr_1 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return buf_ptr_1;
     }
     if (uMsg == 0x4c8) {
@@ -2167,7 +2167,7 @@ void Ai_LoadEndDuelBackdrop
   HGDIOBJ pvVar4;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_EndDuel_pic_004f7ce4,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_EndDuel_pic_004f7ce4,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0x1000040;
@@ -2208,7 +2208,7 @@ void FUN_00440a9c(int x,HGDIOBJ arg_2,HGDIOBJ arg_3,HGDIOBJ arg_4)
 
 {
   if (x != 0) {
-    FUN_00471395((HANDLE)x);
+    GDI_DestroyDIBSection((HANDLE)x);
   }
   if (arg_2 != (HGDIOBJ)0x0) {
     DeleteObject(arg_2);
@@ -2236,7 +2236,7 @@ int32_t FUN_00440af9(int arg1,int arg2)
 {
   uint32_t slot_idx;
   
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
   if ((DAT_005f77e8 != arg1) || (DAT_006152e4 != arg2)) {
     slot_idx = slot_idx | 1;
@@ -2318,7 +2318,7 @@ LRESULT FUN_00440c1e(int32_t arg_1,int card_slot,int32_t arg_3,int32_t arg_4,int
     }
   }
   LeaveCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
-  FUN_00451482(0,0xff);
+  Duel_UpdateBoardState(0,0xff);
   GetCursorPos(&local_1d4);
   Point.y = local_1d4.y;
   Point.x = local_1d4.x;
@@ -2333,7 +2333,7 @@ LRESULT FUN_00440c1e(int32_t arg_1,int card_slot,int32_t arg_3,int32_t arg_4,int
   slot_idx = arg_11;
   Mem_AllocOrFree_004d9630(local_d4,local_1c8);
   local_d8 = arg_3;
-  local_f0 = SendMessageA(DAT_00618990,0x403,(WPARAM)&local_ec,(LPARAM)&local_100);
+  local_f0 = SendMessageA(g_DuelMainHwnd,0x403,(WPARAM)&local_ec,(LPARAM)&local_100);
   *arg_8 = local_100;
   *arg_9 = local_fc;
   arg_9[1] = local_f8;
@@ -2370,7 +2370,7 @@ LRESULT FUN_00440c1e(int32_t arg_1,int card_slot,int32_t arg_3,int32_t arg_4,int
     return local_f0;
   }
   local_1d8 = 0;
-  PostMessageA(DAT_00618990,0x401,0,0);
+  PostMessageA(g_DuelMainHwnd,0x401,0,0);
                     /* WARNING: Subroutine does not return */
   ExitThread(local_1d8);
 }
@@ -2387,7 +2387,7 @@ LRESULT FUN_00440c1e(int32_t arg_1,int card_slot,int32_t arg_3,int32_t arg_4,int
 void FUN_00440eff(void)
 
 {
-  SendMessageA(DAT_00618990,0x464,0xff,0);
+  SendMessageA(g_DuelMainHwnd,0x464,0xff,0);
   return;
 }
 
@@ -2424,7 +2424,7 @@ INT_PTR Ai_EvaluateCreatureCast
     local_30.lpfnWndProc = UI_WndProc_0044233e;
     local_30.cbClsExtra = 0;
     local_30.cbWndExtra = 0xc;
-    local_30.hInstance = DAT_00664680;
+    local_30.hInstance = g_DuelInstanceHandle;
     local_30.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
     local_30.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
     local_30.hbrBackground = (HBRUSH)0x6;
@@ -2450,7 +2450,7 @@ INT_PTR Ai_EvaluateCreatureCast
     else {
       Mem_AllocOrFree_004d9630(local_40,(uint32_t *)&DAT_004f7d10);
     }
-    IVar1 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xe9,DAT_00618990,Ai_EvaluateSpellCast,
+    IVar1 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xe9,g_DuelMainHwnd,Ai_EvaluateSpellCast,
                             (LPARAM)&local_690);
   }
   return IVar1;
@@ -2524,7 +2524,7 @@ LRESULT Ai_EvaluateSpellCast(HWND hwnd,uint32_t y,HDC hdc,int32_t *arg_4)
   if (y < 0x15) {
     if (y == 0x14) {
       local_84 = hdc;
-      FUN_004707a4(hdc);
+      GDI_RealizeAndFlushPalette(hdc);
       GetClientRect(hwnd,&local_80);
       FillRect(local_84,&local_80,DAT_00516ac8);
       return 1;
@@ -2579,7 +2579,7 @@ LAB_00441443:
         local_a8 = (uint32_t)(y != 0x85);
         local_c0 = GetWindowDC(hwnd);
         if (local_c0 != (HDC)0x0) {
-          FUN_004707a4(local_c0);
+          GDI_RealizeAndFlushPalette(local_c0);
           GetWindowRect(hwnd,&local_94);
           GetClientRect(hwnd,&local_134);
           MapWindowPoints(hwnd,(HWND)0x0,(LPPOINT)&local_134,2);
@@ -2725,7 +2725,7 @@ LAB_00441443:
       for (local_28 = 0; local_28 < (int)DAT_005169cc[0x191]; local_28 = local_28 + 1) {
         local_38 = CreateWindowExA(0,s_ShowListCard_004f7d20,s_List_Card_004f7d14,0x50000000,
                                    loop_idx,local_24,DAT_005169a4,DAT_00516b04,hwnd,
-                                   (HMENU)(local_28 + 10),DAT_00664680,
+                                   (HMENU)(local_28 + 10),g_DuelInstanceHandle,
                                    (LPVOID)DAT_005169cc[local_28 + 1]);
         if (DAT_005169cc[0x192] != 0) {
           SendMessageA(local_38,0x414,1,DAT_005169cc[local_28 + 0xc9]);
@@ -2813,7 +2813,7 @@ LAB_00441443:
   else {
     if (y == 0x201) goto LAB_00441443;
     if ((0x30e < y) && (y < 0x312)) {
-      LVar5 = FUN_00472b60(hwnd,y,(HWND)hdc,arg_4);
+      LVar5 = GDI_RealizePaletteTree(hwnd,y,(HWND)hdc,arg_4);
       return LVar5;
     }
   }
@@ -2946,7 +2946,7 @@ LRESULT UI_WndProc_0044233e(HWND hwnd,uint32_t uMsg,WPARAM wParam,LONG *lParam)
       }
       hdc = BeginPaint(hwnd,&local_60);
       if (hdc != (HDC)0x0) {
-        FUN_004707a4(hdc);
+        GDI_RealizeAndFlushPalette(hdc);
         BitBlt(hdc,0,0,loop_idx.right,loop_idx.bottom,DAT_0060157c,0,0,0xcc0020);
         EndPaint(hwnd,&local_60);
       }
@@ -2976,7 +2976,7 @@ LRESULT UI_WndProc_0044233e(HWND hwnd,uint32_t uMsg,WPARAM wParam,LONG *lParam)
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        LVar3 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+        LVar3 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
         return LVar3;
       }
       if (uMsg != 0x200) {
@@ -3152,7 +3152,7 @@ INT_PTR FUN_004428d2(int player_id,int32_t arg_2,INT_PTR arg_3,char *str_4,char 
         arg_3 = 1;
       }
       color_idx = arg_3;
-      arg_3 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xe4,DAT_00618990,UI_DialogProc_00442a9b,
+      arg_3 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xe4,g_DuelMainHwnd,UI_DialogProc_00442a9b,
                               (LPARAM)&loop_idx);
     }
   }
@@ -3256,7 +3256,7 @@ HWND UI_DialogProc_00442a9b(HWND hwnd,uint32_t uMsg,uint32_t wParam,int32_t *lPa
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    pHVar3 = (HWND)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+    pHVar3 = (HWND)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
     return pHVar3;
   }
   return (HWND)0x0;
@@ -3280,7 +3280,7 @@ INT_PTR FUN_00442e3c(int player_id,int32_t arg_2,INT_PTR arg_3)
   if (arg_1 == 0) {
     card_idx = arg_2;
     match_count = arg_3;
-    arg_3 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xe5,DAT_00618990,UI_DialogProc_00442e98,
+    arg_3 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xe5,g_DuelMainHwnd,UI_DialogProc_00442e98,
                             (LPARAM)&card_idx);
   }
   return arg_3;
@@ -3330,7 +3330,7 @@ int32_t UI_DialogProc_00442e98(HWND hwnd,uint32_t uMsg,uint32_t wParam,int32_t *
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    uval_2 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+    uval_2 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
     return uval_2;
   }
   return 0;
@@ -3356,7 +3356,7 @@ INT_PTR FUN_00443000(int player_id,int32_t arg_2,INT_PTR arg_3)
     player_idx = arg_2;
     card_idx = arg_3;
     match_count = 0;
-    arg_3 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xdc,DAT_00618990,UI_DialogProc_00443063,
+    arg_3 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xdc,g_DuelMainHwnd,UI_DialogProc_00443063,
                             (LPARAM)&player_idx);
   }
   return arg_3;
@@ -3408,7 +3408,7 @@ HGDIOBJ UI_DialogProc_00443063(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
       return (HGDIOBJ)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_44);
       EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00664b70);
       val_3 = SaveDC(DAT_0060157c);
@@ -3418,7 +3418,7 @@ HGDIOBJ UI_DialogProc_00443063(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
         FillRect(hDC,&local_44,hbr);
       }
       else {
-        FUN_004709ae((int)DAT_0060157c,(int)&local_44,DAT_00516b0c);
+        GDI_DrawBitmapToHDC((int)DAT_0060157c,(int)&local_44,DAT_00516b0c);
       }
       RestoreDC(DAT_0060157c,val_3);
       GetClientRect(hwnd,&local_44);
@@ -3430,7 +3430,7 @@ HGDIOBJ UI_DialogProc_00443063(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_24 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       local_2c = lParam;
       local_28 = GetDlgCtrlID(lParam);
       SetBkMode(local_24,1);
@@ -3491,7 +3491,7 @@ HGDIOBJ UI_DialogProc_00443063(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      buf_ptr_1 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      buf_ptr_1 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return buf_ptr_1;
     }
     if (uMsg == 0x201) {
@@ -3568,7 +3568,7 @@ void Pic_Load_WinbkQuestn
   HGDIOBJ pvVar4;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_QuestN_pic_004f7d30,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_QuestN_pic_004f7d30,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0x100009a;
@@ -3608,7 +3608,7 @@ void FUN_00443727(int x,HGDIOBJ arg_2,HGDIOBJ arg_3,HGDIOBJ arg_4)
 
 {
   if (x != 0) {
-    FUN_00471395((HANDLE)x);
+    GDI_DestroyDIBSection((HANDLE)x);
   }
   if (arg_2 != (HGDIOBJ)0x0) {
     DeleteObject(arg_2);
@@ -3740,7 +3740,7 @@ INT_PTR FUN_00443784(int player_id,int32_t arg_2,int32_t arg_3,int arg_4,uint32_
       player_idx = (uint32_t)(arg_4 != -1);
       card_idx = arg_3;
       match_count = arg_5;
-      loop_idx = DialogBoxParamA(DAT_00664680,(LPCSTR)0xde,DAT_00618990,UI_DialogProc_004b257c,
+      loop_idx = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xde,g_DuelMainHwnd,UI_DialogProc_004b257c,
                                  (LPARAM)&color_idx);
       if (loop_idx == -1) {
         loop_idx = -1;
@@ -3798,7 +3798,7 @@ HGDIOBJ UI_DialogProc_004b257c(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
       return (HGDIOBJ)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_48);
       EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00664b70);
       val_2 = SaveDC(DAT_0060157c);
@@ -3808,7 +3808,7 @@ HGDIOBJ UI_DialogProc_004b257c(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
         FillRect(hDC,&local_48,pHVar3);
       }
       else {
-        FUN_004709ae((int)DAT_0060157c,(int)&local_48,DAT_00516ad4);
+        GDI_DrawBitmapToHDC((int)DAT_0060157c,(int)&local_48,DAT_00516ad4);
       }
       FUN_00444a85(&local_48,hwnd,DAT_00516b18);
       if (DAT_00516a70 == (HANDLE)0x0) {
@@ -3817,7 +3817,7 @@ HGDIOBJ UI_DialogProc_004b257c(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
         DeleteObject(pHVar3);
       }
       else {
-        FUN_004709ae((int)hDC,(int)&local_48,DAT_00516a70);
+        GDI_DrawBitmapToHDC((int)hDC,(int)&local_48,DAT_00516a70);
       }
       pHVar4 = GetDlgItem(hwnd,0x422);
       BVar5 = IsWindowVisible(pHVar4);
@@ -3883,7 +3883,7 @@ HGDIOBJ UI_DialogProc_004b257c(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_28 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       local_30 = lParam;
       local_2c = GetDlgCtrlID(lParam);
       SetBkMode(local_28,1);
@@ -4069,7 +4069,7 @@ HGDIOBJ UI_DialogProc_004b257c(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      buf_ptr_1 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      buf_ptr_1 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return buf_ptr_1;
     }
     if (uMsg == 0x201) {
@@ -4119,29 +4119,29 @@ void Ai_CalcManaRequirement_004b32d1
   HGDIOBJ pvVar4;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_QuestMana_pic_004f7d80,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_QuestMana_pic_004f7d80,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0x1000031;
-  _sprintf(local_10c,s__s_WINBK_QuestManaSelection_pic_004f7d98,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_QuestManaSelection_pic_004f7d98,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_3 = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_Black_pic_004f7db8,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_Black_pic_004f7db8,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   arg_4[1] = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_White_pic_004f7dd0,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_White_pic_004f7dd0,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   arg_4[5] = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_Green_pic_004f7de8,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_Green_pic_004f7de8,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   arg_4[3] = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_Blue_pic_004f7e00,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_Blue_pic_004f7e00,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   arg_4[2] = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_Red_pic_004f7e18,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_Red_pic_004f7e18,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   arg_4[4] = uval_1;
-  _sprintf(local_10c,s__s_QUESTMANA_Gray_pic_004f7e30,&DAT_006189a0);
+  _sprintf(local_10c,s__s_QUESTMANA_Gray_pic_004f7e30,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_4 = uval_1;
   *arg_5 = 0x1000031;
@@ -4183,14 +4183,14 @@ void FUN_004449cf(int player_id,int card_slot,int event_type,HGDIOBJ arg_4,HGDIO
   int32_t slot_idx;
   
   if (arg_1 != 0) {
-    FUN_00471395((HANDLE)arg_1);
+    GDI_DestroyDIBSection((HANDLE)arg_1);
   }
   if (arg_2 != 0) {
-    FUN_00471395((HANDLE)arg_2);
+    GDI_DestroyDIBSection((HANDLE)arg_2);
   }
   for (slot_idx = 0; slot_idx < 6; slot_idx = slot_idx + 1) {
     if (*(int *)(arg_3 + slot_idx * 4) != 0) {
-      FUN_00471395(*(HANDLE *)(arg_3 + slot_idx * 4));
+      GDI_DestroyDIBSection(*(HANDLE *)(arg_3 + slot_idx * 4));
     }
   }
   if (arg_4 != (HGDIOBJ)0x0) {
@@ -4303,7 +4303,7 @@ INT_PTR FUN_00444c48(int player_id,int32_t *arg_2,int32_t arg_3,int arg_4,uint32
     player_idx = arg_5;
     card_idx = *arg_2;
     match_count = arg_2[1];
-    IVar1 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xea,DAT_00618990,UI_DialogProc_004b3847,
+    IVar1 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xea,g_DuelMainHwnd,UI_DialogProc_004b3847,
                             (LPARAM)&color_idx);
     if (IVar1 == -1) {
       IVar1 = -1;
@@ -4371,7 +4371,7 @@ HBRUSH UI_DialogProc_004b3847(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
     }
     if (uMsg == 0x14) {
       local_48 = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       GetClientRect(hwnd,&local_40);
       EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00664b70);
       local_44 = SaveDC(DAT_0060157c);
@@ -4381,7 +4381,7 @@ HBRUSH UI_DialogProc_004b3847(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
         FillRect((HDC)local_48,&local_40,pHVar1);
       }
       else {
-        FUN_004709ae((int)DAT_0060157c,(int)&local_40,DAT_005169e8);
+        GDI_DrawBitmapToHDC((int)DAT_0060157c,(int)&local_40,DAT_005169e8);
       }
       if (DAT_005169f0 != 0xffffffff) {
         ptVar4 = &local_40;
@@ -4403,7 +4403,7 @@ HBRUSH UI_DialogProc_004b3847(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
     if (uMsg == 0x135) {
 LAB_00445207:
       loop_idx = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       local_28 = lParam;
       local_24 = GetDlgCtrlID(lParam);
       if ((local_24 != 0x498) && (local_24 != 0x499)) {
@@ -4430,7 +4430,7 @@ LAB_00445207:
       SetWindowTextA(hwnd,(LPCSTR)slot_idx->unused);
       DAT_005169e0 = slot_idx[3].unused;
       DAT_005169e4 = slot_idx[4].unused;
-      DAT_005169f0 = FUN_00447184(DAT_005169e0,DAT_005169e4);
+      DAT_005169f0 = Deck_ValidateCardLimit(DAT_005169e0, DAT_005169e4);
       nCmdShow = 0;
       pHVar2 = GetDlgItem(hwnd,0x474);
       ShowWindow(pHVar2,nCmdShow);
@@ -4543,7 +4543,7 @@ LAB_004454c1:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      pHVar1 = (HBRUSH)FUN_00472b60(hwnd,uMsg,wParam,lParam);
+      pHVar1 = (HBRUSH)GDI_RealizePaletteTree(hwnd,uMsg,wParam,lParam);
       return pHVar1;
     }
     if (uMsg == 0x4c8) {
@@ -4588,7 +4588,7 @@ void Pic_Load_WinbkChangetext
   HGDIOBJ pvVar4;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_ChangeText_pic_004f7e98,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_ChangeText_pic_004f7e98,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0x1000098;
@@ -4628,7 +4628,7 @@ void FUN_0044573a(int x,HGDIOBJ arg_2,HGDIOBJ arg_3,HGDIOBJ arg_4)
 
 {
   if (x != 0) {
-    FUN_00471395((HANDLE)x);
+    GDI_DestroyDIBSection((HANDLE)x);
   }
   if (arg_2 != (HGDIOBJ)0x0) {
     DeleteObject(arg_2);
@@ -4687,15 +4687,15 @@ uint32_t FUN_004457a2(void)
   EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
   slot_idx = _memcmp(&DAT_00601620,&DAT_006826c0,0xb640);
   FID_conflict__memcpy(&DAT_00601620,&DAT_006826c0,0xb640);
-  if ((DAT_00666408 != DAT_00615458) || (DAT_0061545c != DAT_0066640c)) {
+  if ((g_DuelPlayerCreatureCount != DAT_00615458) || (DAT_0061545c != DAT_0066640c)) {
     slot_idx = 1;
   }
-  DAT_00615458 = DAT_00666408;
+  DAT_00615458 = g_DuelPlayerCreatureCount;
   DAT_0061545c = DAT_0066640c;
-  if ((DAT_00681ea8 != DAT_00616a00) || (DAT_00681eac != DAT_00664a50)) {
+  if ((g_DuelPlayerLifeTotals != DAT_00616a00) || (DAT_00681eac != DAT_00664a50)) {
     slot_idx = 1;
   }
-  DAT_00616a00 = DAT_00681ea8;
+  DAT_00616a00 = g_DuelPlayerLifeTotals;
   DAT_00664a50 = DAT_00681eac;
   if ((DAT_006668f0 != DAT_0060cc80) || (DAT_006668f4 != DAT_00664dac)) {
     slot_idx = 1;
@@ -4764,13 +4764,13 @@ uint32_t FUN_004457a2(void)
       (&DAT_00615470)[DAT_00618984 * 0x2b] = val_1;
       (&DAT_00615474)[DAT_00618984 * 0x2b] = val_2;
       (&DAT_00615518)[DAT_00618984 * 0x2b] =
-           (int)(char)(&DAT_006827b8)[val_2 * 0x120 + val_1 * 0x5b20];
-      for (card_idx = 0; card_idx < (char)(&DAT_006827b8)[val_2 * 0x120 + val_1 * 0x5b20];
+           (int)(char)(&g_DuelCardSlot_TapState)[val_2 * 0x120 + val_1 * 0x5b20];
+      for (card_idx = 0; card_idx < (char)(&g_DuelCardSlot_TapState)[val_2 * 0x120 + val_1 * 0x5b20];
           card_idx = card_idx + 1) {
         *(int32_t *)(&DAT_00615478 + card_idx * 8 + DAT_00618984 * 0xac) =
-             *(int32_t *)(&DAT_00682718 + val_2 * 0x120 + val_1 * 0x5b20 + card_idx * 8);
+             *(int32_t *)(&g_DuelCardSlot_TargetPlayer + val_2 * 0x120 + val_1 * 0x5b20 + card_idx * 8);
         *(int32_t *)(&DAT_0061547c + card_idx * 8 + DAT_00618984 * 0xac) =
-             *(int32_t *)(&DAT_0068271c + val_2 * 0x120 + val_1 * 0x5b20 + card_idx * 8);
+             *(int32_t *)(&g_DuelCardSlot_CombatTargetSlot + val_2 * 0x120 + val_1 * 0x5b20 + card_idx * 8);
       }
       DAT_00618984 = DAT_00618984 + 1;
     }
@@ -4841,7 +4841,7 @@ void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
   
   pHVar1 = GetStockObject(0);
   FUN_00471e86(s_CD_struct_004f7eb0,0xff0000,pHVar1);
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
   if (DAT_00601584 != DAT_0068f0f8) {
     DAT_00601584 = DAT_0068f0f8;
@@ -4852,7 +4852,7 @@ void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
   EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
   for (player_idx = 0; player_idx < 2; player_idx = player_idx + 1) {
     for (local_24 = 0; local_24 < 0x50; local_24 = local_24 + 1) {
-      val_2 = FUN_00447184(player_idx,local_24);
+      val_2 = Deck_ValidateCardLimit(player_idx,local_24);
       if (val_2 == DAT_0068f108) {
         *(uint32_t *)(&DAT_0060162c + local_24 * 0x120 + player_idx * 0x5b20) =
              *(uint32_t *)(&DAT_0060162c + local_24 * 0x120 + player_idx * 0x5b20) & 0xfffffffd;
@@ -4868,11 +4868,11 @@ void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
           local_2c = local_24;
           loop_idx = FUN_004471f7(player_idx,local_24);
           color_idx = FUN_00447114(player_idx,local_24);
-          local_28 = FUN_00447184(player_idx,local_24);
+          local_28 = Deck_ValidateCardLimit(player_idx,local_24);
           target_idx = FUN_00448124(player_idx,local_24);
           match_count = FUN_004472ad(player_idx,local_24);
           if (((color_idx == -1) || (((target_idx & 0x10000) != 0 && (DAT_00663e1c == 0)))) ||
-             ((DAT_0068f104 == color_idx && (val_2 = FUN_00446ea2(player_idx,local_24), val_2 == 0))))
+             ((g_DuelTargetCardId == color_idx && (val_2 = FUN_00446ea2(player_idx,local_24), val_2 == 0))))
           {
             SendMessageA(DAT_006152b0,0x40b,(WPARAM)&local_30,0);
             SendMessageA(DAT_00663df4,0x40b,(WPARAM)&local_30,0);
@@ -4913,7 +4913,7 @@ void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
               else {
                 FUN_0044743d(&local_38,player_idx,local_24);
                 while (((uval_4 = FUN_004472ad(local_38,local_34), (uval_4 & 0x10) != 0 &&
-                        (local_28 = FUN_00447184(local_38,local_34), local_28 != -1)) &&
+                        (local_28 = Deck_ValidateCardLimit(local_38,local_34), local_28 != -1)) &&
                        ((DAT_00666720 <= local_28 ||
                         ((*(int *)(&DAT_00618ad4 + local_28 * 0x98) == 2 &&
                          (*(int *)(&DAT_00618ad8 + local_28 * 0x98) != 0xda))))))) {
@@ -5010,7 +5010,7 @@ void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
   SendMessageA(DAT_0061737c,0x432,0,0);
   pHVar1 = GetStockObject(0);
   FUN_00471e86(&DAT_004f7ed8,0xff0000,pHVar1);
-  UpdateWindow(DAT_00618990);
+  UpdateWindow(g_DuelMainHwnd);
   return;
 }
 
@@ -5254,18 +5254,18 @@ int FUN_00446c16(int player_id,int card_slot,int event_type,int arg_4,int32_t ar
   int32_t card_idx;
   int32_t match_count;
   
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   if (arg_4 == 0xff) {
     arg_4 = -1;
   }
   if ((arg_1 != -1) && (arg_2 != -1)) {
-    val_1 = FUN_00447184(arg_1,arg_2);
+    val_1 = Deck_ValidateCardLimit(arg_1,arg_2);
     if (val_1 == -1) {
       FUN_004457a2();
     }
   }
   if ((arg_3 != -1) && (arg_4 != -1)) {
-    val_1 = FUN_00447184(arg_3,arg_4);
+    val_1 = Deck_ValidateCardLimit(arg_3,arg_4);
     if (val_1 == -1) {
       FUN_004457a2();
     }
@@ -5276,7 +5276,7 @@ int FUN_00446c16(int player_id,int card_slot,int event_type,int arg_4,int32_t ar
   player_idx = arg_4;
   card_idx = arg_5;
   match_count = arg_6;
-  IVar2 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xdf,DAT_00618990,Palette_Subsystem_0049608e,
+  IVar2 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xdf,g_DuelMainHwnd,Palette_Subsystem_0049608e,
                           (LPARAM)&loop_idx);
   if (IVar2 == 0) {
     val_1 = -1;
@@ -5299,7 +5299,7 @@ int FUN_00446c16(int player_id,int card_slot,int event_type,int arg_4,int32_t ar
 int32_t FUN_00446d17(void)
 
 {
-  if (DAT_0066aaf4 != 1) {
+  if (g_DuelDebugModeFlag != 1) {
     EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
     FID_conflict__memcpy(&DAT_006152c0,&DAT_0068f2e0,0x1c);
     FID_conflict__memcpy(&DAT_0060cc90,&DAT_0068f300,0x1c);
@@ -5550,13 +5550,13 @@ int32_t FUN_00447114(int arg1,int arg2)
 
 
 /*
- * Decompiled function: FUN_00447184
+ * Decompiled function: Deck_ValidateCardLimit
  * Entry Point: 00447184
  * Size: 110 bytes
  */
 
 
-int32_t FUN_00447184(int arg1,int arg2)
+int32_t Deck_ValidateCardLimit(int arg1,int arg2)
 
 {
   int val_1;
@@ -5635,7 +5635,7 @@ uint8_t FUN_004472ad(int arg1,int arg2)
     EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
     flag_2 = ((&DAT_0060162e)[arg2 * 0x120 + arg1 * 0x5b20] & 3) != 0;
     if ((((&DAT_0060162c)[arg2 * 0x120 + arg1 * 0x5b20] & 0x10) != 0) &&
-       (((&DAT_004ff594)[*(int *)(&DAT_00601624 + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x47) != 4
+       (((&g_DuelMasterCardTable)[*(int *)(&DAT_00601624 + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x47) != 4
        )) {
       flag_2 = flag_2 | 2;
     }
@@ -5744,7 +5744,7 @@ uint8_t FUN_00447604(int arg1,int arg2)
       uval_1 = 0;
     }
     else {
-      uval_1 = (&DAT_004ff594)[val_2 * 0x34];
+      uval_1 = (&g_DuelMasterCardTable)[val_2 * 0x34];
     }
   }
   else {
@@ -6212,15 +6212,15 @@ void Ai_Subsystem_004b69ba(int player_id,int card_slot,char *arg_3)
                    *(char *)(arg_2 * 0x120 + arg_1 * 0x5b20 + 0x60171f + color_idx) * 10);
       FUN_004718de(arg_3,s_PLAINSs_004f7f00,1,s_PLAINS_004f7ef8);
       Mem_AllocOrFree_004d9630(local_30,(uint32_t *)(color_idx * 10 + 0x6c12e0));
-      FUN_004d9640(local_30,(uint32_t *)&DAT_004f7f08);
+      Str_CopyFast(local_30,(uint32_t *)&DAT_004f7f08);
       Mem_AllocOrFree_004d9630
                 (target_idx,(uint32_t *)(&DAT_006c1360 +
                                   *(char *)(arg_2 * 0x120 + arg_1 * 0x5b20 + 0x60171f + color_idx) *
                                   10));
-      FUN_004d9640(target_idx,(uint32_t *)&DAT_004f7f10);
+      Str_CopyFast(target_idx,(uint32_t *)&DAT_004f7f10);
       FUN_004718de(arg_3,(char *)local_30,1,(char *)target_idx);
       Mem_AllocOrFree_004d9630(local_30,(uint32_t *)(color_idx * 10 + 0x6c12a0));
-      FUN_004d9640(local_30,(uint32_t *)&DAT_004f7f18);
+      Str_CopyFast(local_30,(uint32_t *)&DAT_004f7f18);
       FUN_004718de(arg_3,(char *)local_30,1,(char *)target_idx);
     }
   }
@@ -6952,7 +6952,7 @@ int FUN_00448b6f(void *arg_1,int y,int width,int height)
     while ((match_count == 0 && (local_8ac < height))) {
       do {
         if (local_8ac == 0) {
-          Mem_AllocOrFree_004d9630(local_8a4,(uint32_t *)&DAT_006679f0);
+          Mem_AllocOrFree_004d9630(local_8a4,(uint32_t *)&g_DuelCardNameBuffer);
         }
         else if (local_8ac == 1) {
           Mem_AllocOrFree_004d9630(local_8a4,(uint32_t *)&DAT_00667aea);
@@ -6994,10 +6994,10 @@ void FUN_00448d16(int32_t arg1,int32_t arg2)
   int32_t card_idx;
   int32_t match_count;
   
-  if (DAT_0066aaf4 != 1) {
+  if (g_DuelDebugModeFlag != 1) {
     card_idx = arg1;
     match_count = arg2;
-    DialogBoxParamA(DAT_00664680,(LPCSTR)0xf3,DAT_00618990,Ai_CalcManaRequirement_004b7897,
+    DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf3,g_DuelMainHwnd,Ai_CalcManaRequirement_004b7897,
                     (LPARAM)&card_idx);
   }
   return;
@@ -7030,20 +7030,20 @@ int32_t Ai_CalcManaRequirement_004b7897(HWND hwnd,uint32_t uMsg,HDC wParam,int32
   if (uMsg < 0x101) {
     if (uMsg == 0x100) {
 LAB_004490d7:
-      FUN_00471395(DAT_00516964);
+      GDI_DestroyDIBSection(DAT_00516964);
       EndDialog(hwnd,0);
       return 1;
     }
     if (uMsg == 0x14) {
       local_1ec = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_1e4);
       if (DAT_00516964 == (HANDLE)0x0) {
         hbr = GetStockObject(2);
         FillRect(local_1ec,&local_1e4,hbr);
       }
       else {
-        FUN_004709ae((int)local_1ec,(int)&local_1e4,DAT_00516964);
+        GDI_DrawBitmapToHDC((int)local_1ec,(int)&local_1e4,DAT_00516964);
       }
       local_1e8 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x496,0x31,0,0);
       SelectObject(local_1ec,local_1e8);
@@ -7085,13 +7085,13 @@ LAB_004490d7:
   else if (uMsg < 0x202) {
     if (uMsg == 0x201) {
 LAB_004490fb:
-      FUN_00471395(DAT_00516964);
+      GDI_DestroyDIBSection(DAT_00516964);
       EndDialog(hwnd,0);
       return 1;
     }
     if (uMsg == 0x110) {
       DAT_00516b00 = (int *)lParam;
-      _sprintf(local_10c,s__s_WINBK_ManaBurn_pic_004f7f28,&DAT_006189a0);
+      _sprintf(local_10c,s__s_WINBK_ManaBurn_pic_004f7f28,&g_DuelAssetDirectory);
       DAT_00516964 = (HANDLE)Pic_LoadKimPicture(local_10c);
       DAT_00516990 = 0x100009a;
       DAT_00516aa4 = 0x10000c9;
@@ -7106,7 +7106,7 @@ LAB_004490fb:
     }
     if (uMsg == 0x111) goto LAB_004490d7;
     if (uMsg == 0x113) {
-      FUN_00471395(DAT_00516964);
+      GDI_DestroyDIBSection(DAT_00516964);
       EndDialog(hwnd,0);
       return 1;
     }
@@ -7114,7 +7114,7 @@ LAB_004490fb:
   else {
     if (uMsg == 0x204) goto LAB_004490fb;
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      uval_1 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      uval_1 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return uval_1;
     }
   }
@@ -7139,13 +7139,13 @@ int FUN_004491fe(uint32_t *arg_1)
   int match_count;
   INT_PTR slot_idx;
   
-  KillTimer(DAT_00618990,DAT_00663610);
+  KillTimer(g_DuelMainHwnd,DAT_00663610);
   uval_1 = _rand();
   uval_2 = (int)uval_1 >> 0x1f;
   match_count = ((uval_1 ^ uval_2) - uval_2 & 1 ^ uval_2) - uval_2;
-  if (DAT_0066aaf4 != 1) {
+  if (g_DuelDebugModeFlag != 1) {
     Mem_AllocOrFree_004d9630(local_70,arg_1);
-    slot_idx = DialogBoxParamA(DAT_00664680,(LPCSTR)0xf0,DAT_00618990,UI_PlayCoinTossAvi,
+    slot_idx = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf0,g_DuelMainHwnd,UI_PlayCoinTossAvi,
                               (LPARAM)local_70);
     InvalidateRect(DAT_00617378,(RECT *)0x0,1);
     InvalidateRect(DAT_00618988,(RECT *)0x0,1);
@@ -7210,7 +7210,7 @@ LAB_00449583:
       return (HBRUSH)0x1;
     }
     if (uMsg == 0x14) {
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_148);
       FillRect(wParam,&local_148,DAT_005169a0);
       return (HBRUSH)0x1;
@@ -7239,12 +7239,12 @@ LAB_00449583:
       hWnd = GetDlgItem(hwnd,0x48a);
       MoveWindow(hWnd,X,Y,nWidth,nHeight,BVar3);
       if (DAT_00516ae8[0x19].unused == 0) {
-        _sprintf(local_12c,s__s_COINTOSS_Heads_AVI_004f7f98,&DAT_006189a0);
+        _sprintf(local_12c,s__s_COINTOSS_Heads_AVI_004f7f98,&g_DuelAssetDirectory);
       }
       else {
-        _sprintf(local_12c,s__s_COINTOSS_Tails_AVI_004f7f80,&DAT_006189a0);
+        _sprintf(local_12c,s__s_COINTOSS_Tails_AVI_004f7f80,&g_DuelAssetDirectory);
       }
-      DAT_004f79b8 = (HWND)MCIWndCreateA(hwnd,DAT_00664680,0x50000102,local_12c);
+      DAT_004f79b8 = (HWND)MCIWndCreateA(hwnd,g_DuelInstanceHandle,0x50000102,local_12c);
       GetWindowRect(DAT_004f79b8,&color_idx);
       BVar3 = 0;
       dwStyle = GetWindowLongA(hwnd,-0x10);
@@ -7264,7 +7264,7 @@ LAB_00449583:
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_130 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       local_138 = lParam;
       local_134 = GetDlgCtrlID(lParam);
       SetBkMode(local_130,1);
@@ -7275,7 +7275,7 @@ LAB_00449583:
       KillTimer(hwnd,(UINT_PTR)wParam);
       if (wParam == (HDC)0x1) {
         SendMessageA(DAT_004f79b8,0x806,0,0);
-        FUN_0048d00c(0x2f);
+        Sound_PlayTrackById(0x2f);
         SetFocus(hwnd);
       }
       else {
@@ -7295,7 +7295,7 @@ LAB_00449583:
       return (HBRUSH)0x1;
     }
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      pHVar2 = (HBRUSH)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      pHVar2 = (HBRUSH)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return pHVar2;
     }
   }
@@ -7376,7 +7376,7 @@ FUN_004497f1(int player_id,int card_slot,int32_t arg_3,int32_t arg_4,int32_t *ar
     target_idx = *arg_5;
     player_idx = *arg_6;
     match_count = CardIDFromType(arg_2);
-    IVar2 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xef,DAT_00618990,UI_DialogProc_004b8421,
+    IVar2 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xef,g_DuelMainHwnd,UI_DialogProc_004b8421,
                             (LPARAM)&loop_idx);
     if (IVar2 == -1) {
       uval_1 = 0;
@@ -7440,20 +7440,20 @@ HBRUSH UI_DialogProc_004b8421(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_b0 = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       GetClientRect(hwnd,&local_ac);
       if (DAT_00516ad0 == (HANDLE)0x0) {
         pHVar4 = GetStockObject(3);
         FillRect((HDC)local_b0,&local_ac,pHVar4);
       }
       else {
-        FUN_004709ae((int)local_b0,(int)&local_ac,DAT_00516ad0);
+        GDI_DrawBitmapToHDC((int)local_b0,(int)&local_ac,DAT_00516ad0);
       }
       return (HBRUSH)0x1;
     }
     if (uMsg == 0xf) {
       hdc = BeginPaint(hwnd,&local_118);
-      if ((hdc != (HDC)0x0) && (FUN_004707a4(hdc), DAT_00516984 != 0xffffffff)) {
+      if ((hdc != (HDC)0x0) && (GDI_RealizeAndFlushPalette(hdc), DAT_00516984 != 0xffffffff)) {
         ptVar7 = &local_d8;
         pHVar5 = GetDlgItem(hwnd,0x475);
         GetWindowRect(pHVar5,ptVar7);
@@ -7510,7 +7510,7 @@ HBRUSH UI_DialogProc_004b8421(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_8c = wParam;
-      FUN_004707a4((HDC)wParam);
+      GDI_RealizeAndFlushPalette((HDC)wParam);
       local_94 = lParam;
       local_90 = GetDlgCtrlID(lParam);
       pHVar5 = GetFocus();
@@ -7561,7 +7561,7 @@ HBRUSH UI_DialogProc_004b8421(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam)
   else {
     if (uMsg < 0x312) {
       if (0x30e < uMsg) {
-        pHVar4 = (HBRUSH)FUN_00472b60(hwnd,uMsg,wParam,lParam);
+        pHVar4 = (HBRUSH)GDI_RealizePaletteTree(hwnd,uMsg,wParam,lParam);
         return pHVar4;
       }
       if (uMsg != 0x200) {
@@ -7629,7 +7629,7 @@ void CardScript_Fireball
   HGDIOBJ pvVar4;
   char local_10c [264];
   
-  _sprintf(local_10c,s__s_WINBK_Fireball_pic_004f7fc8,&DAT_006189a0);
+  _sprintf(local_10c,s__s_WINBK_Fireball_pic_004f7fc8,&g_DuelAssetDirectory);
   uval_1 = Pic_LoadKimPicture(local_10c);
   *arg_1 = uval_1;
   *out_buffer = 0x10000b6;
@@ -7669,7 +7669,7 @@ void FUN_0044a267(int x,HGDIOBJ arg_2,HGDIOBJ arg_3,HGDIOBJ arg_4)
 
 {
   if (x != 0) {
-    FUN_00471395((HANDLE)x);
+    GDI_DestroyDIBSection((HANDLE)x);
   }
   if (arg_2 != (HGDIOBJ)0x0) {
     DeleteObject(arg_2);
@@ -7738,14 +7738,14 @@ uint8_t * Ai_Subsystem_004b8e4d(int arg1,int arg2)
       slot_idx = CardIDFromType(arg_1);
     }
     card_idx = (uint32_t)*(uint16_t *)(&DAT_00682704 + arg2 * 0x120 + arg1 * 0x5b20);
-    player_idx = (int)(char)(&DAT_006826d3)[arg2 * 0x120 + arg1 * 0x5b20];
+    player_idx = (int)(char)(&g_DuelCardSlot_Controller)[arg2 * 0x120 + arg1 * 0x5b20];
     target_idx = *(int *)(&DAT_006826ec + arg2 * 0x120 + arg1 * 0x5b20);
     if (slot_idx == DAT_00666720) {
       Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00516a08,(uint32_t *)s_Damage_004f7fe0);
     }
     else if (slot_idx == DAT_00666450) {
       _sprintf(&DAT_00516a08,s_Hunting___s_004f7fe8,
-               (&PTR_DAT_004f5500)[*(int *)(&DAT_006826e4 + arg2 * 0x120 + arg1 * 0x5b20)]);
+               (&PTR_DAT_004f5500)[*(int *)(&g_DuelCardSlot_Counters + arg2 * 0x120 + arg1 * 0x5b20)]);
     }
     else if (slot_idx == DAT_00666444) {
       Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00516a08,*(uint32_t **)(&DAT_005f7914 + card_idx * 0x14));
@@ -7756,10 +7756,10 @@ uint8_t * Ai_Subsystem_004b8e4d(int arg1,int arg2)
     else {
       DAT_00516a08 = '\0';
     }
-    if ((slot_idx == DAT_00666444) && (0 < *(int *)(&DAT_006826f0 + arg2 * 0x120 + arg1 * 0x5b20))) {
+    if ((slot_idx == DAT_00666444) && (0 < *(int *)(&g_DuelCardSlot_DisplayIndex + arg2 * 0x120 + arg1 * 0x5b20))) {
       Mem_AllocOrFree_004d9630(local_4c,(uint32_t *)&DAT_00516a08);
       FUN_00426b51(&DAT_00516a08,(char *)local_4c,
-                   *(int *)(&DAT_006826f0 + arg2 * 0x120 + arg1 * 0x5b20));
+                   *(int *)(&g_DuelCardSlot_DisplayIndex + arg2 * 0x120 + arg1 * 0x5b20));
     }
     val_1 = FUN_00450725(player_idx,target_idx);
     if ((val_1 == 0x361) || (val_1 == 0x360)) {
@@ -7791,7 +7791,7 @@ void FUN_0044a5a4(int arg1,int arg2)
   
   arg2_00 = (uint32_t *)Ai_Subsystem_004b8e4d(arg1,arg2);
   if (arg2_00 != (uint32_t *)0x0) {
-    FUN_004d9640((uint32_t *)&DAT_005f6810,arg2_00);
+    Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,arg2_00);
   }
   return;
 }
@@ -7819,7 +7819,7 @@ int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1)
   local_2c.lpfnWndProc = Ai_CalcManaRequirement_004b9284;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 4;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = (HICON)0x0;
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = (HBRUSH)0x6;
@@ -7830,8 +7830,8 @@ int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1)
     local_30 = 0;
   }
   DAT_00516b48 = CreatePopupMenu();
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__WINBK_ManaPool_pic_004f7ff4);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138,(uint32_t *)s__WINBK_ManaPool_pic_004f7ff4);
   DAT_00516b50 = Pic_LoadKimPicture((char *)local_138);
   lplf = (LOGFONTA *)FUN_00472731(s_ManaPool_004f8008,0);
   DAT_00516b4c = CreateFontIndirectA(lplf);
@@ -7855,7 +7855,7 @@ void FUN_0044a6ce(void)
   }
   DAT_00516b48 = (HMENU)0x0;
   if (DAT_00516b50 != (HANDLE)0x0) {
-    FUN_00471395(DAT_00516b50);
+    GDI_DestroyDIBSection(DAT_00516b50);
   }
   DAT_00516b50 = (HANDLE)0x0;
   if (DAT_00516b4c != (HGDIOBJ)0x0) {
@@ -7970,8 +7970,8 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
       local_30c = DAT_0060157c;
       local_2c8 = SaveDC(DAT_0060157c);
       if (DAT_00516b50 == (HANDLE)0x0) {
-        Mem_AllocOrFree_004d9630(local_43c,(uint32_t *)&DAT_006189a0);
-        FUN_004d9640(local_43c,(uint32_t *)s__WINBK_ManaPool_pic_004f8080);
+        Mem_AllocOrFree_004d9630(local_43c,(uint32_t *)&g_DuelAssetDirectory);
+        Str_CopyFast(local_43c,(uint32_t *)s__WINBK_ManaPool_pic_004f8080);
         DAT_00516b50 = (HANDLE)Pic_LoadKimPicture((char *)local_43c);
       }
       if (DAT_00516b50 == (HANDLE)0x0) {
@@ -7979,7 +7979,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
         FillRect(local_30c,&local_2b0,pHVar4);
       }
       else {
-        FUN_004709ae((int)local_30c,(int)&local_2b0,DAT_00516b50);
+        GDI_DrawBitmapToHDC((int)local_30c,(int)&local_2b0,DAT_00516b50);
       }
       SelectObject(local_30c,DAT_00516b4c);
       SetBkMode(local_30c,1);
@@ -8004,7 +8004,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
           RestoreDC(DAT_0060157c,local_2c8);
           local_30c = BeginPaint(hwnd,&local_308);
           if (local_30c != (HDC)0x0) {
-            FUN_004707a4(local_30c);
+            GDI_RealizeAndFlushPalette(local_30c);
             GetClientRect(hwnd,&local_2b0);
             if (DAT_00601580 != 0) {
               pHVar4 = GetStockObject(0);
@@ -8163,8 +8163,8 @@ LAB_0044b32b:
       if ((wParam & 0xffff) == 100) {
         local_120 = 0x7ea;
         Mem_AllocOrFree_004d9630(local_228,(uint32_t *)&DAT_005f76e0);
-        FUN_004d9640(local_228,(uint32_t *)s__duel_hlp_004f8074);
-        WinHelpA(DAT_00618990,(LPCSTR)local_228,1,local_120);
+        Str_CopyFast(local_228,(uint32_t *)s__duel_hlp_004f8074);
+        WinHelpA(g_DuelMainHwnd,(LPCSTR)local_228,1,local_120);
       }
       else {
         local_22c = wParam & 0xffff;
@@ -8175,7 +8175,7 @@ LAB_0044b32b:
           _DAT_00516b38 = 0xfffffffd;
           _DAT_00516b3c = 0xffffffff;
           _DAT_00516b40 = 0xffffffff;
-          PostMessageA(DAT_00618990,0x464,0,0x516b38);
+          PostMessageA(g_DuelMainHwnd,0x464,0,0x516b38);
         }
       }
       return 0;
@@ -8211,7 +8211,7 @@ LAB_0044b32b:
           _DAT_00516b28 = 0xfffffffd;
           _DAT_00516b2c = 0xffffffff;
           _DAT_00516b30 = 0xffffffff;
-          PostMessageA(DAT_00618990,0x464,0,0x516b28);
+          PostMessageA(g_DuelMainHwnd,0x464,0,0x516b28);
         }
       }
       return 0;
@@ -8229,7 +8229,7 @@ LAB_0044b32b:
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar5 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar5 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar5;
     }
     if (uMsg == 0x204) {
@@ -8312,7 +8312,7 @@ LAB_0044b32b:
       else {
         FUN_00448412((char *)local_6c);
       }
-      FUN_004d9640(local_6c,(uint32_t *)s_mana_pool_004f801c);
+      Str_CopyFast(local_6c,(uint32_t *)s_mana_pool_004f801c);
       if (local_9c == 1) {
         Mem_AllocOrFree_004d9630(local_8c,(uint32_t *)s_Black_004f8028);
       }
@@ -8446,7 +8446,7 @@ bool UI_RegisterClass_0044bd60(LPCSTR str_1)
   local_2c.lpfnWndProc = UI_WndProc_0044bde4;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 4;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = (HICON)0x0;
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = (HBRUSH)0x6;
@@ -8495,7 +8495,7 @@ LRESULT UI_WndProc_0044bde4(HWND hwnd,uint32_t uMsg,WPARAM wParam,uint32_t lPara
       slot_idx = GetWindowLongA(hwnd,DAT_004f80ec);
       local_90 = BeginPaint(hwnd,&local_88);
       if (local_90 != (HDC)0x0) {
-        FUN_004707a4(local_90);
+        GDI_RealizeAndFlushPalette(local_90);
         GetClientRect(hwnd,&local_40);
         DAT_004f80f0 = ((local_40.right - local_40.left) + -0x100) / 2;
         DAT_004f80f4 = ((local_40.bottom - local_40.top) + -0x100) / 2;

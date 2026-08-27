@@ -336,9 +336,9 @@ void __cdecl __NMSG_WRITE(int player_id)
         _strncpy((char *)card_idx,"...",3);
       }
       Mem_AllocOrFree_004d9630(local_1b4,(uint32_t *)"Runtime Error!\n\nProgram: ");
-      FUN_004d9640(local_1b4,card_idx);
-      FUN_004d9640(local_1b4,(uint32_t *)&DAT_004f0218);
-      FUN_004d9640(local_1b4,(uint32_t *)(&PTR_s_R6002___floating_point_not_loade_0050a684)[match_count * 2]
+      Str_CopyFast(local_1b4, card_idx);
+      Str_CopyFast(local_1b4,(uint32_t *)&DAT_004f0218);
+      Str_CopyFast(local_1b4,(uint32_t *)(&PTR_s_R6002___floating_point_not_loade_0050a684)[match_count * 2]
                   );
       ___crtMessageBoxA((LPCSTR)local_1b4,"Microsoft Visual C++ Runtime Library",0x12010);
     }

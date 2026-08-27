@@ -388,7 +388,7 @@ int32_t UI_Register_FACE_BLACK_00436820(LPCSTR str_1)
   local_2c.lpfnWndProc = Ai_CalcManaRequirement_004b9284;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = (HICON)0x0;
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = GetStockObject(4);
@@ -399,23 +399,23 @@ int32_t UI_Register_FACE_BLACK_00436820(LPCSTR str_1)
     local_30 = 0;
   }
   DAT_00516700 = CreatePopupMenu();
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_MULTI_pic_004f69d8);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_MULTI_pic_004f69d8);
   _DAT_00516708 = Pic_LoadKimPicture((char *)local_138);
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_BLACK_pic_004f69e8);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_BLACK_pic_004f69e8);
   _DAT_0051670c = Pic_LoadKimPicture((char *)local_138);
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_BLUE_pic_004f69f8);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_BLUE_pic_004f69f8);
   _DAT_00516710 = Pic_LoadKimPicture((char *)local_138);
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_GREEN_pic_004f6a08);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_GREEN_pic_004f6a08);
   _DAT_00516714 = Pic_LoadKimPicture((char *)local_138);
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_RED_pic_004f6a18);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_RED_pic_004f6a18);
   _DAT_00516718 = Pic_LoadKimPicture((char *)local_138);
-  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640(local_138,(uint32_t *)s__FACE_WHITE_pic_004f6a28);
+  Mem_AllocOrFree_004d9630(local_138,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast(local_138, (uint32_t *)s__FACE_WHITE_pic_004f6a28);
   _DAT_0051671c = Pic_LoadKimPicture((char *)local_138);
   lplf = (LOGFONTA *)FUN_00472731(&DAT_004f6a38,0);
   DAT_00516704 = CreateFontIndirectA(lplf);
@@ -444,7 +444,7 @@ void FUN_00436a52(void)
   DAT_00516700 = (HMENU)0x0;
   for (slot_idx = 0; slot_idx < 6; slot_idx = slot_idx + 1) {
     if (*(int *)(&DAT_00516708 + slot_idx * 4) != 0) {
-      FUN_00471395(*(HANDLE *)(&DAT_00516708 + slot_idx * 4));
+      GDI_DestroyDIBSection(*(HANDLE *)(&DAT_00516708 + slot_idx * 4));
       *(int32_t *)(&DAT_00516708 + slot_idx * 4) = 0;
     }
   }
@@ -495,7 +495,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
       match_count = (HANDLE)GetWindowLongA(hwnd,0);
       local_190 = BeginPaint(hwnd,&local_18c);
       if (local_190 != (HDC)0x0) {
-        FUN_004707a4(local_190);
+        GDI_RealizeAndFlushPalette(local_190);
         GetClientRect(hwnd,&local_14c);
         if (match_count == (HANDLE)0x0) {
           hbr = GetStockObject(4);
@@ -519,7 +519,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
       match_count = (HANDLE)GetWindowLongA(hwnd,0);
       slot_idx = GetWindowLongA(hwnd,4);
       if ((match_count != (HANDLE)0x0) && (slot_idx == 0)) {
-        FUN_00471395(match_count);
+        GDI_DestroyDIBSection(match_count);
       }
       return 0;
     }
@@ -533,8 +533,8 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
       else if (uval_2 == 0x65) {
         player_idx = 0xbdf;
         Mem_AllocOrFree_004d9630(local_11c,(uint32_t *)&DAT_005f76e0);
-        FUN_004d9640(local_11c,(uint32_t *)s__duel_hlp_004f6a40);
-        WinHelpA(DAT_00618990,(LPCSTR)local_11c,1,player_idx);
+        Str_CopyFast(local_11c,(uint32_t *)s__duel_hlp_004f6a40);
+        WinHelpA(g_DuelMainHwnd,(LPCSTR)local_11c,1,player_idx);
       }
       else if (uval_2 == 0x66) {
         card_idx = (uint32_t)(hwnd != DAT_00601550);
@@ -606,7 +606,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
       return LVar1;
     }
     if ((0x30e < uMsg) && (uMsg < 0x312)) {
-      LVar4 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar4 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar4;
     }
   }
@@ -614,7 +614,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint32_t uMsg,uint32_t wParam,
     match_count = (HANDLE)GetWindowLongA(hwnd,0);
     slot_idx = GetWindowLongA(hwnd,4);
     if ((match_count != (HANDLE)0x0) && (slot_idx == 0)) {
-      FUN_00471395(match_count);
+      GDI_DestroyDIBSection(match_count);
     }
     match_count = (HANDLE)wParam;
     slot_idx = lParam;
@@ -672,7 +672,7 @@ void FUN_004371ec(HDC hdc,RECT *arg_2,int event_type)
     FillRect(hdc,arg_2,hbr);
   }
   else {
-    FUN_004709ae((int)hdc,(int)arg_2,local_50);
+    GDI_DrawBitmapToHDC((int)hdc,(int)arg_2,local_50);
   }
   if (local_40 != (HANDLE)0x0) {
     GetObjectA(local_40,0x18,local_7c);
@@ -791,7 +791,7 @@ void FUN_00437681(int32_t arg_1)
   _DAT_005166f0 = 0;
   _DAT_005166f4 = arg_1;
   _DAT_005166f8 = 0xffffffff;
-  PostMessageA(DAT_00618990,0x464,0,0x5166f0);
+  PostMessageA(g_DuelMainHwnd,0x464,0,0x5166f0);
   return;
 }
 
@@ -849,22 +849,22 @@ int32_t Palette_Color_00495430(char *filepath)
   FUN_0047076e(&DAT_005f76e0);
   __chdir(&DAT_005f76e0);
   Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00664a60,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_00664a60,(uint32_t *)s__PlayDeck_004f6a98);
+  Str_CopyFast((uint32_t *)&DAT_00664a60,(uint32_t *)s__PlayDeck_004f6a98);
   Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00617470,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_00617470,(uint32_t *)s__Faces_004f6aa4);
+  Str_CopyFast((uint32_t *)&DAT_00617470,(uint32_t *)s__Faces_004f6aa4);
   Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f7800,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_005f7800,(uint32_t *)s__CardArt_004f6aac);
-  Mem_AllocOrFree_004d9630((uint32_t *)&DAT_006189a0,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_006189a0,(uint32_t *)s__DuelArt_004f6ab8);
+  Str_CopyFast((uint32_t *)&DAT_005f7800,(uint32_t *)s__CardArt_004f6aac);
+  Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelAssetDirectory,(uint32_t *)&DAT_005f76e0);
+  Str_CopyFast((uint32_t *)&g_DuelAssetDirectory,(uint32_t *)s__DuelArt_004f6ab8);
   Mem_AllocOrFree_004d9630((uint32_t *)&DAT_0060d4a0,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_0060d4a0,(uint32_t *)s__DuelSounds_004f6ac4);
-  Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00664c40,(uint32_t *)&DAT_006189a0);
-  FUN_004d9640((uint32_t *)&DAT_00664c40,(uint32_t *)s__Duel_dat_004f6ad0);
+  Str_CopyFast((uint32_t *)&DAT_0060d4a0,(uint32_t *)s__DuelSounds_004f6ac4);
+  Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00664c40,(uint32_t *)&g_DuelAssetDirectory);
+  Str_CopyFast((uint32_t *)&DAT_00664c40,(uint32_t *)s__Duel_dat_004f6ad0);
   Mem_AllocOrFree_004d9630((uint32_t *)&DAT_00615350,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640((uint32_t *)&DAT_00615350,(uint32_t *)s__SaveGame_004f6adc);
+  Str_CopyFast((uint32_t *)&DAT_00615350,(uint32_t *)s__SaveGame_004f6adc);
   FID_conflict___mkdir(&DAT_00615350);
   Mem_AllocOrFree_004d9630(local_118,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640(local_118,(uint32_t *)s__CARDS_DAT_004f6ae8);
+  Str_CopyFast(local_118,(uint32_t *)s__CARDS_DAT_004f6ae8);
   DAT_0061743c = Ai_CalcManaRequirement_004b9284((char *)local_118);
   if (DAT_0061743c == 0) {
     card_idx = 0;
@@ -874,7 +874,7 @@ int32_t Palette_Color_00495430(char *filepath)
     _sprintf(str_1 + len_1,pcVar4,puVar5);
   }
   Mem_AllocOrFree_004d9630(local_118,(uint32_t *)&DAT_005f76e0);
-  FUN_004d9640(local_118,(uint32_t *)s__LEGACY_CSV_004f6b1c);
+  Str_CopyFast(local_118,(uint32_t *)s__LEGACY_CSV_004f6b1c);
   val_2 = FUN_0043ce77((LPCSTR)local_118);
   if (val_2 == 0) {
     card_idx = 0;
@@ -887,7 +887,7 @@ int32_t Palette_Color_00495430(char *filepath)
   match_count = GetDC((HWND)0x0);
   if (match_count == (HDC)0x0) {
     card_idx = 0;
-    FUN_004d9640((uint32_t *)str_1,(uint32_t *)s_Not_enough_system_resources_to_d_004f6b88);
+    Str_CopyFast((uint32_t *)str_1,(uint32_t *)s_Not_enough_system_resources_to_d_004f6b88);
   }
   else {
     val_2 = GetDeviceCaps(match_count,0xc);
@@ -898,7 +898,7 @@ int32_t Palette_Color_00495430(char *filepath)
   val_2 = FUN_00471426();
   if (val_2 == 0) {
     card_idx = 0;
-    FUN_004d9640((uint32_t *)str_1,(uint32_t *)s_Couldn_t_create_the_palette_004f6bc8);
+    Str_CopyFast((uint32_t *)str_1,(uint32_t *)s_Couldn_t_create_the_palette_004f6bc8);
   }
   arg_7 = &DAT_0061897c;
   arg_6 = (int32_t *)&DAT_00664db0;
@@ -910,17 +910,17 @@ int32_t Palette_Color_00495430(char *filepath)
   val_2 = FUN_004707f3(val_3,val_2,arg_3,arg_4,arg_5,arg_6,arg_7);
   if (val_2 == 0) {
     card_idx = 0;
-    FUN_004d9640((uint32_t *)str_1,(uint32_t *)s_Couldn_t_create_the_app_wide_mem_004f6be8);
+    Str_CopyFast((uint32_t *)str_1,(uint32_t *)s_Couldn_t_create_the_app_wide_mem_004f6be8);
   }
   val_2 = Palette_Color_0049ae00();
   if (val_2 == 0) {
     card_idx = 0;
-    FUN_004d9640((uint32_t *)str_1,(uint32_t *)s_Couldn_t_initialize_for_card_dra_004f6c1c);
+    Str_CopyFast((uint32_t *)str_1,(uint32_t *)s_Couldn_t_initialize_for_card_dra_004f6c1c);
   }
   val_2 = FUN_004706d0();
   if (val_2 == 0) {
     card_idx = 0;
-    FUN_004d9640((uint32_t *)str_1,(uint32_t *)s_Couldn_t_initialize_for_utility_d_004f6c44);
+    Str_CopyFast((uint32_t *)str_1,(uint32_t *)s_Couldn_t_initialize_for_utility_d_004f6c44);
   }
   for (slot_idx = 0; slot_idx < 0x14; slot_idx = slot_idx + 1) {
     *(int32_t *)(&DAT_00664870 + slot_idx * 0x18) = 0;
@@ -1053,12 +1053,12 @@ int32_t Palette_Subsystem_00495958(uint8_t *arg_1)
   DAT_00601580 = 0;
   _DAT_0060d494 = 0;
   Rules_ParseFilter_0048111e();
-  DAT_00663e30 = LoadCursorA(DAT_00664680,s_Hand1_004f6cb8);
-  DAT_00663e34 = LoadCursorA(DAT_00664680,s_SwordWait_004f6cc0);
+  DAT_00663e30 = LoadCursorA(g_DuelInstanceHandle,s_Hand1_004f6cb8);
+  DAT_00663e34 = LoadCursorA(g_DuelInstanceHandle,s_SwordWait_004f6cc0);
   DAT_00663e60 = 3;
-  _DAT_00663e38 = LoadCursorA(DAT_00664680,s_Hand2_004f6ccc);
-  _DAT_00663e3c = LoadCursorA(DAT_00664680,s_Hand3_004f6cd4);
-  _DAT_00663e40 = LoadCursorA(DAT_00664680,s_Hand4_004f6cdc);
+  _DAT_00663e38 = LoadCursorA(g_DuelInstanceHandle,s_Hand2_004f6ccc);
+  _DAT_00663e3c = LoadCursorA(g_DuelInstanceHandle,s_Hand3_004f6cd4);
+  _DAT_00663e40 = LoadCursorA(g_DuelInstanceHandle,s_Hand4_004f6cdc);
   Palette_Subsystem_0049608e();
   OutputDebugStringA(s_Main__creating_windows_004f6ce4);
   local_60 = 0x82000000;
@@ -1069,24 +1069,24 @@ int32_t Palette_Subsystem_00495958(uint8_t *arg_1)
     lpParam = (LPVOID)0x0;
     hMenu = (HMENU)0x0;
     hWndParent = DAT_005f67ec;
-    hInstance = DAT_00664680;
+    hInstance = g_DuelInstanceHandle;
     val_5 = GetSystemMetrics(1);
     val_2 = GetSystemMetrics(0);
-    DAT_00618990 = CreateWindowExA(0,s_MAGICGAME_MainClass_004f6d20,s_Magic_004f6d18,local_60,1,0,
+    g_DuelMainHwnd = CreateWindowExA(0,s_MAGICGAME_MainClass_004f6d20,s_Magic_004f6d18,local_60,1,0,
                                    val_2 + -1,val_5,hWndParent,hMenu,hInstance,lpParam);
   }
   else {
-    DAT_00618990 = CreateWindowExA(0,s_MAGICGAME_MainClass_004f6d04,s_Magic_004f6cfc,local_60,1,0,
-                                   DAT_005071c8,DAT_005071cc,DAT_005f67ec,(HMENU)0x0,DAT_00664680,
+    g_DuelMainHwnd = CreateWindowExA(0,s_MAGICGAME_MainClass_004f6d04,s_Magic_004f6cfc,local_60,1,0,
+                                   DAT_005071c8,DAT_005071cc,DAT_005f67ec,(HMENU)0x0,g_DuelInstanceHandle,
                                    (LPVOID)0x0);
   }
-  if (DAT_00618990 == (HWND)0x0) {
+  if (g_DuelMainHwnd == (HWND)0x0) {
     local_40 = 0;
-    FUN_004d9640((uint32_t *)arg_1,(uint32_t *)s_Couldn_t_create_the_main_window_004f6d34);
+    Str_CopyFast((uint32_t *)arg_1,(uint32_t *)s_Couldn_t_create_the_main_window_004f6d34);
   }
-  DAT_00664c2c = LoadAcceleratorsA(DAT_00664680,(LPCSTR)0x6f);
+  DAT_00664c2c = LoadAcceleratorsA(g_DuelInstanceHandle,(LPCSTR)0x6f);
   if (((DAT_00663dfc & 4) != 0) || ((DAT_00663dfc & 2) != 0)) {
-    Sound_Init((int)DAT_00618990,0,0);
+    Sound_Init((int)g_DuelMainHwnd,0,0);
   }
   FUN_0048d320();
   if (local_40 == 0) {
@@ -1145,7 +1145,7 @@ void FUN_00437fb8(MSG *arg_1)
   uint32_t uval_4;
   WPARAM slot_idx;
   
-  val_1 = TranslateAcceleratorA(DAT_00618990,DAT_00664c2c,arg_1);
+  val_1 = TranslateAcceleratorA(g_DuelMainHwnd,DAT_00664c2c,arg_1);
   if ((val_1 == 0) && (val_1 = FUN_004381c6((int *)arg_1,0x4b), val_1 == 0)) {
     if (((DAT_00618158 == 0) ||
         (((BVar2 = IsWindowVisible(DAT_00664d90), BVar2 == 0 ||
@@ -1350,13 +1350,13 @@ int32_t FUN_00438636(HWND arg_1,uint32_t y,HWND arg_3,int32_t arg_4)
   int32_t uval_1;
   
   if (y == 0x30f) {
-    uval_1 = FUN_00472b60(arg_1,0x30f,arg_3,arg_4);
+    uval_1 = GDI_RealizePaletteTree(arg_1,0x30f,arg_3,arg_4);
   }
   else if ((y < 0x310) || (0x311 < y)) {
     uval_1 = 0;
   }
   else {
-    uval_1 = FUN_00472b60(arg_1,y,arg_3,arg_4);
+    uval_1 = GDI_RealizePaletteTree(arg_1,y,arg_3,arg_4);
   }
   return uval_1;
 }
@@ -1379,7 +1379,7 @@ int32_t Palette_Subsystem_004963e7(void)
   local_2c.lpfnWndProc = Palette_Subsystem_00496497;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = (HICON)0x0;
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = GetStockObject(1);
@@ -1387,7 +1387,7 @@ int32_t Palette_Subsystem_004963e7(void)
   local_2c.lpszClassName = s_KimDebug_004f7170;
   RegisterClassA(&local_2c);
   DAT_00694744 = CreateWindowExA(0,s_KimDebug_004f7180,&DAT_004f717c,0x80cc0000,10,10,0xfa,0x113,
-                                 DAT_00618990,(HMENU)0x0,DAT_00664680,(LPVOID)0x0);
+                                 g_DuelMainHwnd,(HMENU)0x0,g_DuelInstanceHandle,(LPVOID)0x0);
   return 1;
 }
 
@@ -1423,7 +1423,7 @@ LRESULT Palette_Subsystem_00496497(HWND hwnd,uint32_t y,WPARAM arg_3,uint32_t he
     switch(y) {
     case 1:
       DAT_00516734 = CreateWindowExA(0,s_LISTBOX_004f7190,&DAT_004f718c,0x50240000,0,0,0,0,hwnd,
-                                     (HMENU)0x0,DAT_00664680,(LPVOID)0x0);
+                                     (HMENU)0x0,g_DuelInstanceHandle,(LPVOID)0x0);
       LVar1 = 0;
       break;
     case 2:
@@ -1497,7 +1497,7 @@ int FUN_00438980(WPARAM arg_1,int card_slot,int width,int height)
     }
     else {
       local_44 = GetDC((HWND)0x0);
-      FUN_004707a4(local_44);
+      GDI_RealizeAndFlushPalette(local_44);
       FUN_00491750((int32_t *)&local_30,width,height);
       local_48 = CreateDIBSection(local_44,&local_30,0,&local_38,(HANDLE)0x0,0);
       if (local_48 == (HBITMAP)0x0) {
@@ -1527,7 +1527,7 @@ int FUN_00438980(WPARAM arg_1,int card_slot,int width,int height)
       *(void **)(&DAT_0060d5b4 + arg_1 * 0x10) = local_38;
       *(int *)(&DAT_0060d5b8 + arg_1 * 0x10) = width;
       *(int *)(&DAT_0060d5bc + arg_1 * 0x10) = height;
-      PostMessageA(DAT_00618990,0x433,arg_1,0);
+      PostMessageA(g_DuelMainHwnd,0x433,arg_1,0);
     }
   }
   else {
@@ -1602,7 +1602,7 @@ int FUN_00438c81(HDC hdc,RECT *arg_2,int width,int arg_4)
       slot_idx = 0;
     }
     else {
-      slot_idx = FUN_004709ae((int)hdc,(int)arg_2,*(HANDLE *)(&DAT_0060d5b0 + width * 0x10));
+      slot_idx = GDI_DrawBitmapToHDC((int)hdc,(int)arg_2,*(HANDLE *)(&DAT_0060d5b0 + width * 0x10));
     }
     if (slot_idx == 0) {
       hbr = GetStockObject(2);
@@ -1728,7 +1728,7 @@ int FUN_00438ec2(WPARAM arg_1,int y,int width,int height)
     }
     else {
       local_48 = GetDC((HWND)0x0);
-      FUN_004707a4(local_48);
+      GDI_RealizeAndFlushPalette(local_48);
       FUN_00491750((int32_t *)&local_34,width,height);
       local_4c = CreateDIBSection(local_48,&local_34,0,&local_3c,(HANDLE)0x0,0);
       if (local_4c == (HBITMAP)0x0) {
@@ -1761,7 +1761,7 @@ int FUN_00438ec2(WPARAM arg_1,int y,int width,int height)
       *(WPARAM *)(&DAT_00616a20 + DAT_00663df8 * 0x18) = arg_1;
       *(int *)(&DAT_00616a24 + DAT_00663df8 * 0x18) = y;
       DAT_00663df8 = DAT_00663df8 + 1;
-      PostMessageA(DAT_00618990,0x433,arg_1,y);
+      PostMessageA(g_DuelMainHwnd,0x433,arg_1,y);
     }
   }
   return local_44;
@@ -1832,7 +1832,7 @@ int FUN_00439208(HDC hdc,RECT *arg_2,int width,int height)
       match_count = match_count + 1;
     }
     if (flag_1) {
-      player_idx = FUN_004709ae((int)hdc,(int)arg_2,*(HANDLE *)(&DAT_00616a10 + card_idx * 0x18));
+      player_idx = GDI_DrawBitmapToHDC((int)hdc,(int)arg_2,*(HANDLE *)(&DAT_00616a10 + card_idx * 0x18));
     }
     else {
       player_idx = 0;
@@ -1994,7 +1994,7 @@ void FUN_004395d6(int arg1,int arg2)
       return;
     }
     if ((0 < (int)(&DAT_004f71c4)[arg1 * 0xa0 + slot_idx * 2]) &&
-       (val_1 = FUN_004d7d5e(*(int *)(&DAT_004f71c0 + slot_idx * 8 + arg1 * 0x280)), val_1 == arg2))
+       (val_1 = Card_IsValidCardId(*(int *)(&DAT_004f71c0 + slot_idx * 8 + arg1 * 0x280)), val_1 == arg2))
     break;
     slot_idx = slot_idx + 1;
   }
@@ -2055,12 +2055,12 @@ int FUN_004396ea(int player_id)
       val_1 = -1;
     }
     else {
-      match_count = FUN_00439892(card_idx);
+      match_count = Duel_RandomRange(card_idx);
       for (slot_idx = 0; slot_idx < 0x50; slot_idx = slot_idx + 1) {
         match_count = match_count - (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2];
         if (match_count < 0) {
           player_idx = *(int *)(&DAT_004f71c0 + slot_idx * 8 + arg_1 * 0x280);
-          if (DAT_0066aaf4 != 1) {
+          if (g_DuelDebugModeFlag != 1) {
             (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2] =
                  (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2] + -1;
           }
@@ -2090,7 +2090,7 @@ void FUN_0043982e(void)
 
 {
   Palette_Subsystem_004a5722
-            (DAT_00676510,(int *)&DAT_006671c0,500,s_Opponent_library_004f76c4,0,&DAT_004f76c0);
+            (g_DuelTargetPlayer,(int *)&DAT_006671c0,500,s_Opponent_library_004f76c4,0,&DAT_004f76c0);
   return;
 }
 
@@ -2107,20 +2107,20 @@ void Mem_AllocOrFree_00439863(void)
 
 {
   Palette_Subsystem_004a5722
-            (DAT_00676510,(int *)&DAT_006669f0,500,s_Your_Library_004f76dc,0,&DAT_004f76d8);
+            (g_DuelTargetPlayer,(int *)&DAT_006669f0,500,s_Your_Library_004f76dc,0,&DAT_004f76d8);
   return;
 }
 
 
 
 /*
- * Decompiled function: FUN_00439892
+ * Decompiled function: Duel_RandomRange
  * Entry Point: 00439892
  * Size: 44 bytes
  */
 
 
-int FUN_00439892(int player_id)
+int Duel_RandomRange(int player_id)
 
 {
   int val_1;
@@ -2217,10 +2217,10 @@ int32_t UI_DeckDialogProc_00439980(uint32_t *arg_1,uint32_t *arg_2,int32_t *arg_
   int32_t slot_idx;
   
   slot_idx = *arg_3;
-  IVar1 = DialogBoxParamA(DAT_00664680,(LPCSTR)0xdd,DAT_00618990,Palette_Subsystem_00496497,
+  IVar1 = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xdd,g_DuelMainHwnd,Palette_Subsystem_00496497,
                           (LPARAM)local_214);
   if (IVar1 == -1) {
-    MessageBoxA(DAT_00618990,s_Couldn_t_bring_up_the_Load_Decks_004f76f0,&DAT_004f76ec,0);
+    MessageBoxA(g_DuelMainHwnd,s_Couldn_t_bring_up_the_Load_Decks_004f76f0,&DAT_004f76ec,0);
     local_21c = 0;
   }
   else if (IVar1 == 1) {
@@ -2275,20 +2275,20 @@ HGDIOBJ Palette_Subsystem_00496497(HWND hwnd,uint32_t y,HDC hdc,HWND param_4)
     if (y == 0x110) {
       DAT_005168d8 = param_4;
       local_e0 = CreateWindowExA(0,s_LISTBOX_004f771c,&DAT_004f7718,0x40a00003,0,0,0,0,hwnd,
-                                 (HMENU)0x0,DAT_00664680,(LPVOID)0x0);
+                                 (HMENU)0x0,g_DuelInstanceHandle,(LPVOID)0x0);
       if (local_e0 == (HWND)0x0) {
         EndDialog(hwnd,-1);
         return (HGDIOBJ)0x1;
       }
       Mem_AllocOrFree_004d9630(local_1e8,(uint32_t *)&DAT_00664a60);
-      FUN_004d9640(local_1e8,(uint32_t *)s____DCK_004f7724);
+      Str_CopyFast(local_1e8,(uint32_t *)s____DCK_004f7724);
       SendMessageA(local_e0,0x18d,0,(LPARAM)local_1e8);
       local_dc = SendMessageA(local_e0,0x18b,0,0);
       for (card_idx = 0; (int)card_idx < local_dc; card_idx = card_idx + 1) {
         SendMessageA(local_e0,0x189,card_idx,(LPARAM)local_1e8);
         Mem_AllocOrFree_004d9630(local_2f0,(uint32_t *)&DAT_00664a60);
-        FUN_004d9640(local_2f0,(uint32_t *)&DAT_004f772c);
-        FUN_004d9640(local_2f0,local_1e8);
+        Str_CopyFast(local_2f0,(uint32_t *)&DAT_004f772c);
+        Str_CopyFast(local_2f0,local_1e8);
         match_count = _fopen((char *)local_2f0,&DAT_004f7730);
         if (match_count != (FILE *)0x0) {
           local_d8[0] = '\0';
@@ -2317,7 +2317,7 @@ HGDIOBJ Palette_Subsystem_00496497(HWND hwnd,uint32_t y,HDC hdc,HWND param_4)
       return (HGDIOBJ)0x0;
     }
     if (y == 0x14) {
-      FUN_004707a4(hdc);
+      GDI_RealizeAndFlushPalette(hdc);
       GetClientRect(hwnd,&local_334);
       hbr = GetStockObject(1);
       FillRect(hdc,&local_334,hbr);
@@ -2327,7 +2327,7 @@ HGDIOBJ Palette_Subsystem_00496497(HWND hwnd,uint32_t y,HDC hdc,HWND param_4)
   else {
     if (y == 0x111) {
       if (((uint32_t)hdc & 0xffff) == 0x3ef) {
-        FUN_00480690(DAT_00618990);
+        FUN_00480690(g_DuelMainHwnd);
         pHVar4 = GetDlgItem(hwnd,1);
         SetFocus(pHVar4);
       }
@@ -2380,19 +2380,19 @@ HGDIOBJ Palette_Subsystem_00496497(HWND hwnd,uint32_t y,HDC hdc,HWND param_4)
       }
       else if (((uint32_t)hdc & 0xffff) == 0x471) {
         FUN_004328ba(1);
-        DAT_0066aaf4 = 0xfffffffe;
+        g_DuelDebugModeFlag = 0xfffffffe;
         EndDialog(hwnd,0);
       }
       else if (((uint32_t)hdc & 0xffff) == 0x472) {
         FUN_004328ba(0);
-        DAT_0066aaf4 = 0xffffffff;
+        g_DuelDebugModeFlag = 0xffffffff;
         EndDialog(hwnd,0);
       }
       return (HGDIOBJ)0x1;
     }
     if ((y == 0x135) || (y == 0x138)) {
       local_31c = hdc;
-      FUN_004707a4(hdc);
+      GDI_RealizeAndFlushPalette(hdc);
       local_324 = param_4;
       local_320 = GetDlgCtrlID(param_4);
       if (local_320 != 0x3ea) {
@@ -2533,7 +2533,7 @@ bool UI_RegisterExpandedGraveyardClass(LPCSTR str_1)
   local_2c.lpfnWndProc = UI_GraveyardMenuProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0xc;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = GetStockObject(4);
@@ -2544,7 +2544,7 @@ bool UI_RegisterExpandedGraveyardClass(LPCSTR str_1)
   local_2c.lpfnWndProc = UI_WndProc_0043b02a;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = GetStockObject(4);
@@ -2555,7 +2555,7 @@ bool UI_RegisterExpandedGraveyardClass(LPCSTR str_1)
   local_2c.lpfnWndProc = UI_WndProc_0043b1a4;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 4;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = (HBRUSH)0x6;
@@ -2643,7 +2643,7 @@ LRESULT UI_GraveyardMenuProc(HWND hwnd,uint32_t uMsg,uint32_t wParam,uint32_t lP
       FillRect(DAT_0060157c,&local_210,pHVar2);
       if (local_200 == -1) {
         if (match_count != (HANDLE)0x0) {
-          FUN_004709ae((int)DAT_0060157c,(int)&local_210,match_count);
+          GDI_DrawBitmapToHDC((int)DAT_0060157c,(int)&local_210,match_count);
         }
       }
       else {
@@ -2653,7 +2653,7 @@ LRESULT UI_GraveyardMenuProc(HWND hwnd,uint32_t uMsg,uint32_t wParam,uint32_t lP
       }
       local_254 = BeginPaint(hwnd,&local_250);
       if (local_254 != (HDC)0x0) {
-        FUN_004707a4(local_254);
+        GDI_RealizeAndFlushPalette(local_254);
         if (DAT_00601580 != 0) {
           pHVar2 = GetStockObject(0);
           FillRect(local_254,&local_210,pHVar2);
@@ -2679,7 +2679,7 @@ LRESULT UI_GraveyardMenuProc(HWND hwnd,uint32_t uMsg,uint32_t wParam,uint32_t lP
     if (uMsg == 2) {
       match_count = (HGDIOBJ)GetWindowLongA(hwnd,8);
       if (match_count != (HANDLE)0x0) {
-        FUN_00471395(match_count);
+        GDI_DestroyDIBSection(match_count);
       }
       return 0;
     }
@@ -2725,8 +2725,8 @@ LRESULT UI_GraveyardMenuProc(HWND hwnd,uint32_t uMsg,uint32_t wParam,uint32_t lP
       case 0x67:
         local_f4 = 0x7e6;
         Mem_AllocOrFree_004d9630(local_1fc,(uint32_t *)&DAT_005f76e0);
-        FUN_004d9640(local_1fc,(uint32_t *)s__duel_hlp_004f7788);
-        WinHelpA(DAT_00618990,(LPCSTR)local_1fc,1,local_f4);
+        Str_CopyFast(local_1fc,(uint32_t *)s__duel_hlp_004f7788);
+        WinHelpA(g_DuelMainHwnd,(LPCSTR)local_1fc,1,local_f4);
       }
       return 0;
     }
@@ -2749,7 +2749,7 @@ LRESULT UI_GraveyardMenuProc(HWND hwnd,uint32_t uMsg,uint32_t wParam,uint32_t lP
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar5 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar5 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar5;
     }
     if (uMsg == 0x204) {
@@ -2896,7 +2896,7 @@ LAB_0043b07d:
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      LVar1 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar1 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar1;
     }
     if (uMsg == 0x437) {
@@ -2941,7 +2941,7 @@ LRESULT UI_WndProc_0043b1a4(HWND hwnd,uint32_t uMsg,WPARAM wParam,LPARAM lParam)
                 );
       hdc = BeginPaint(hwnd,&local_58);
       if (hdc != (HDC)0x0) {
-        FUN_004707a4(hdc);
+        GDI_RealizeAndFlushPalette(hdc);
         BitBlt(hdc,0,0,target_idx.right,target_idx.bottom,DAT_0060157c,0,0,0xcc0020);
         EndPaint(hwnd,&local_58);
       }
@@ -2956,7 +2956,7 @@ LRESULT UI_WndProc_0043b1a4(HWND hwnd,uint32_t uMsg,WPARAM wParam,LPARAM lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar4 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar4 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar4;
     }
     if (uMsg == 0x206) {
@@ -3028,7 +3028,7 @@ HWND UI_RegisterExpandedGraveyardClass(HWND hwnd,int arg2)
   GetWindowRect(hwnd,&local_24);
   player_idx.left = local_24.left;
   player_idx.top = local_24.top;
-  GetClientRect(DAT_00618990,&local_24);
+  GetClientRect(g_DuelMainHwnd,&local_24);
   player_idx.right = (local_24.right * 0x4b) / 100;
   player_idx.bottom = local_24.bottom;
   GetClientRect(hwnd,&local_24);
@@ -3040,7 +3040,7 @@ HWND UI_RegisterExpandedGraveyardClass(HWND hwnd,int arg2)
   local_28 = (uint32_t)(hwnd != DAT_00618978);
   local_30 = CreateWindowExA(0,s_ExpandedGraveyard_004f7800,
                              s_Graveyard_list_004f77dc + ((arg2 != 0) - 1 & 0x10),0x80000000,0,0,0,0
-                             ,DAT_00618990,(HMENU)0x0,DAT_00664680,(LPVOID)0x0);
+                             ,g_DuelMainHwnd,(HMENU)0x0,g_DuelInstanceHandle,(LPVOID)0x0);
   if (local_30 == (HWND)0x0) {
     local_30 = (HWND)0x0;
   }
@@ -3067,7 +3067,7 @@ HWND UI_RegisterExpandedGraveyardClass(HWND hwnd,int arg2)
       local_34 = CreateWindowExA(0,s_GraveyardCards_004f7838,
                                  s_Graveyard_card_004f7814 + ((arg2 != 0) - 1 & 0x10),0x54000000,
                                  local_830,local_38,local_24.right,local_2c,local_30,(HMENU)0x1,
-                                 DAT_00664680,(LPVOID)0x0);
+                                 g_DuelInstanceHandle,(LPVOID)0x0);
       if (local_34 != (HWND)0x0) {
         local_82c = local_82c + 1;
         SendMessageA(local_34,0x401,local_814[local_818],0);
@@ -3095,7 +3095,7 @@ HWND UI_RegisterExpandedGraveyardClass(HWND hwnd,int arg2)
       }
       player_idx.bottom =
            (local_40 + local_2c) * (local_834 + -1) + local_40 * 2 + player_idx.top + local_2c;
-      GetClientRect(DAT_00618990,&local_24);
+      GetClientRect(g_DuelMainHwnd,&local_24);
       if (local_24.bottom < player_idx.bottom) {
         OffsetRect(&player_idx,0,-(player_idx.bottom - local_24.bottom));
       }
@@ -3161,7 +3161,7 @@ int32_t FUN_0043b850(int player_id)
 void Mem_AllocOrFree_0043b8a8(void)
 
 {
-  DialogBoxParamA(DAT_00664680,(LPCSTR)0xeb,DAT_00618990,UI_AnteDisplayWndProc,0);
+  DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xeb,g_DuelMainHwnd,UI_AnteDisplayWndProc,0);
   return;
 }
 
@@ -3230,7 +3230,7 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       local_33c = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&local_324);
       local_338 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x43a,0x31,0,0);
       SelectObject(local_33c,local_338);
@@ -3241,13 +3241,13 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
         FillRect(local_33c,&local_324,hbr);
       }
       else {
-        FUN_004709ae((int)local_33c,(int)&local_324,DAT_005168e0);
+        GDI_DrawBitmapToHDC((int)local_33c,(int)&local_324,DAT_005168e0);
       }
       ptVar10 = &local_334;
       pHVar4 = GetDlgItem(hwnd,0x43a);
       GetWindowRect(pHVar4,ptVar10);
       MapWindowPoints((HWND)0x0,hwnd,(LPPOINT)&local_334,2);
-      FUN_004709ae((int)local_33c,(int)&local_334,DAT_005168e8);
+      GDI_DrawBitmapToHDC((int)local_33c,(int)&local_334,DAT_005168e8);
       GetDlgItemTextA(hwnd,0x43a,local_314,100);
       local_334.left =
            local_334.left +
@@ -3258,7 +3258,7 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
       pHVar4 = GetDlgItem(hwnd,0x43b);
       GetWindowRect(pHVar4,ptVar10);
       MapWindowPoints((HWND)0x0,hwnd,(LPPOINT)&local_334,2);
-      FUN_004709ae((int)local_33c,(int)&local_334,DAT_005168e8);
+      GDI_DrawBitmapToHDC((int)local_33c,(int)&local_334,DAT_005168e8);
       GetDlgItemTextA(hwnd,0x43b,local_314,100);
       local_334.left =
            local_334.left +
@@ -3270,7 +3270,7 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
     if (uMsg == 0xf) {
       local_3a0 = BeginPaint(hwnd,&local_39c);
       if (local_3a0 != (HDC)0x0) {
-        FUN_004707a4(local_3a0);
+        GDI_RealizeAndFlushPalette(local_3a0);
         FUN_00448897((int)local_420,&local_344,(int)local_3e0,&local_35c);
         if (local_344 != 0) {
           for (local_358 = 0; local_358 < local_344; local_358 = local_358 + 1) {
@@ -3309,18 +3309,18 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
       val_8 = 0;
       pHVar4 = GetDlgItem(hwnd,0x43b);
       ShowWindow(pHVar4,val_8);
-      _sprintf(local_1e4,s__s_WINBK_Ante_pic_004f7848,&DAT_006189a0);
+      _sprintf(local_1e4,s__s_WINBK_Ante_pic_004f7848,&g_DuelAssetDirectory);
       DAT_005168e0 = (HANDLE)Pic_LoadKimPicture(local_1e4);
-      _sprintf(local_1e4,s__s_WINBK_AnteLabel_pic_004f785c,&DAT_006189a0);
+      _sprintf(local_1e4,s__s_WINBK_AnteLabel_pic_004f785c,&g_DuelAssetDirectory);
       DAT_005168e8 = (HANDLE)Pic_LoadKimPicture(local_1e4);
       DAT_005168e4 = 0;
       FUN_00448412((char *)local_dc);
-      FUN_004d9640(local_dc,(uint32_t *)s_ante__004f7874);
+      Str_CopyFast(local_dc,(uint32_t *)s_ante__004f7874);
       SetDlgItemTextA(hwnd,0x43a,(LPCSTR)local_dc);
       Mem_AllocOrFree_004d9630(local_dc,(uint32_t *)s_Your_ante__004f787c);
       SetDlgItemTextA(hwnd,0x43b,(LPCSTR)local_dc);
       local_1fc = GetDC(hwnd);
-      FUN_004707a4(local_1fc);
+      GDI_RealizeAndFlushPalette(local_1fc);
       local_1f0 = (HGDIOBJ)SendDlgItemMessageA(hwnd,0x43a,0x31,0,0);
       SelectObject(local_1fc,local_1f0);
       GetDlgItemTextA(hwnd,0x43a,(LPSTR)local_dc,200);
@@ -3357,8 +3357,8 @@ HGDIOBJ UI_AnteDisplayWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,HWND lParam)
     }
     if (uMsg == 0x100) {
 LAB_0043bb82:
-      FUN_00471395(DAT_005168e0);
-      FUN_00471395(DAT_005168e8);
+      GDI_DestroyDIBSection(DAT_005168e0);
+      GDI_DestroyDIBSection(DAT_005168e8);
       EndDialog(hwnd,0);
       return (HGDIOBJ)0x1;
     }
@@ -3366,7 +3366,7 @@ LAB_0043bb82:
   else if (uMsg < 0x139) {
     if (uMsg == 0x138) {
       local_2a8 = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       local_2b0 = lParam;
       local_2ac = GetDlgCtrlID(lParam);
       SetBkMode(local_2a8,1);
@@ -3378,13 +3378,13 @@ LAB_0043bb82:
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      buf_ptr_3 = (HGDIOBJ)FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+      buf_ptr_3 = (HGDIOBJ)GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
       return buf_ptr_3;
     }
     if (uMsg != 0x200) {
       if (uMsg == 0x201) {
-        FUN_00471395(DAT_005168e0);
-        FUN_00471395(DAT_005168e8);
+        GDI_DestroyDIBSection(DAT_005168e0);
+        GDI_DestroyDIBSection(DAT_005168e8);
         EndDialog(hwnd,0);
         return (HGDIOBJ)0x1;
       }
@@ -3902,7 +3902,7 @@ uint8_t * FUN_0043d1d0(int player_id,int card_slot,int event_type)
     else {
       pHVar4 = GetDC((HWND)0x0);
       *(HDC *)(PTR_DAT_004f7914 + 4) = pHVar4;
-      FUN_004707a4(*(HDC *)(PTR_DAT_004f7914 + 4));
+      GDI_RealizeAndFlushPalette(*(HDC *)(PTR_DAT_004f7914 + 4));
       pHVar5 = CreateDIBSection(*(HDC *)(PTR_DAT_004f7914 + 4),
                                 *(BITMAPINFO **)(PTR_DAT_004f7914 + 0x10),(uint32_t)(arg_3 == 8),
                                 (void **)(PTR_DAT_004f7914 + 0x18),*(HANDLE *)PTR_DAT_004f7914,0);

@@ -637,8 +637,8 @@ void __assert(uint32_t *arg_1,uint32_t *arg_2,int event_type)
   }
   else {
     Mem_AllocOrFree_004d9630(local_220,(uint32_t *)"Assertion failed!");
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_00509410);
-    FUN_004d9640(local_220,(uint32_t *)"Program: ");
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_00509410);
+    Str_CopyFast(local_220, (uint32_t *)"Program: ");
     DVar2 = GetModuleFileNameA((HMODULE)0x0,(LPSTR)local_328,0x104);
     if (DVar2 == 0) {
       Mem_AllocOrFree_004d9630(local_328,(uint32_t *)"<program name unknown>");
@@ -650,9 +650,9 @@ void __assert(uint32_t *arg_1,uint32_t *arg_2,int event_type)
       local_224 = (uint32_t *)((int)local_224 + (len_3 - 0x31));
       _strncpy((char *)local_224,PTR_DAT_00509408,3);
     }
-    FUN_004d9640(local_220,local_224);
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_0050940c);
-    FUN_004d9640(local_220,(uint32_t *)"File: ");
+    Str_CopyFast(local_220,local_224);
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_0050940c);
+    Str_CopyFast(local_220, (uint32_t *)"File: ");
     local_224 = arg_2;
     len_3 = _strlen((char *)arg_2);
     if (0x3c < len_3 + 8) {
@@ -660,31 +660,31 @@ void __assert(uint32_t *arg_1,uint32_t *arg_2,int event_type)
       local_224 = (uint32_t *)((int)local_224 + (len_3 - 0x34));
       _strncpy((char *)local_224,PTR_DAT_00509408,3);
     }
-    FUN_004d9640(local_220,local_224);
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_0050940c);
-    FUN_004d9640(local_220,(uint32_t *)"Line: ");
+    Str_CopyFast(local_220,local_224);
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_0050940c);
+    Str_CopyFast(local_220, (uint32_t *)"Line: ");
     val_5 = 10;
     len_3 = _strlen((char *)local_220);
     __itoa(arg_3,(char *)((int)local_220 + len_3),val_5);
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_00509410);
-    FUN_004d9640(local_220,(uint32_t *)"Expression: ");
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_00509410);
+    Str_CopyFast(local_220, (uint32_t *)"Expression: ");
     len_3 = _strlen((char *)arg_1);
     sVar4 = _strlen((char *)local_220);
     if (len_3 + sVar4 + 0xb0 < 0x21d) {
-      FUN_004d9640(local_220,arg_1);
+      Str_CopyFast(local_220,arg_1);
     }
     else {
       len_3 = _strlen((char *)local_220);
       _strncat((char *)local_220,(char *)arg_1,0x21c - (len_3 + 0xb1));
-      FUN_004d9640(local_220,(uint32_t *)PTR_DAT_00509408);
+      Str_CopyFast(local_220, (uint32_t *)PTR_DAT_00509408);
     }
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_00509410);
-    FUN_004d9640(local_220,
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_00509410);
+    Str_CopyFast(local_220,
                  (uint32_t *)
                  "For information on how your program can cause an assertion\nfailure, see the Visual C++ documentation on asserts"
                 );
-    FUN_004d9640(local_220,(uint32_t *)PTR_DAT_00509410);
-    FUN_004d9640(local_220,(uint32_t *)"(Press Retry to debug the application - JIT must be enabled)");
+    Str_CopyFast(local_220, (uint32_t *)PTR_DAT_00509410);
+    Str_CopyFast(local_220, (uint32_t *)"(Press Retry to debug the application - JIT must be enabled)");
     val_5 = ___crtMessageBoxA((LPCSTR)local_220,"Microsoft Visual C++ Runtime Library",0x12012);
     if (val_5 == 3) {
       _raise(0x16);

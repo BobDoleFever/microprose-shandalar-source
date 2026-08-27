@@ -117,7 +117,7 @@ int Duel_MainArena_WndProc(HWND hwnd,uint y,HWND wParam,uint height)
     if (y == 0x14) {
       local_c = (HWND)GetWindowLongA(hwnd,8);
       local_548 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_544);
       if (DAT_0068a674 != 0) {
         pHVar5 = GetStockObject(0);
@@ -156,7 +156,7 @@ int Duel_MainArena_WndProc(HWND hwnd,uint y,HWND wParam,uint height)
       free(local_10);
       local_c = (HWND)GetWindowLongA(hwnd,8);
       if (local_c != (HANDLE)0x0) {
-        FUN_004f4548(local_c);
+        GDI_DestroyDIBSection_Magic(local_c);
       }
       return 0;
     }
@@ -267,7 +267,7 @@ switchD_004eecac_caseD_403:
     }
     else if (y < 0x312) {
       if (0x30e < y) {
-        iVar4 = FUN_004f5d1a(hwnd,y,wParam,height);
+        iVar4 = GDI_RealizePaletteTree_Magic(hwnd,y,wParam,height);
         return iVar4;
       }
       if (y == 0x201) {
@@ -1407,11 +1407,11 @@ int Duel_LogActionStatusBanner(int spell_id,int target_id,int flags,uint arg4,ui
           while( true ) {
             do {
               do {
-                local_110 = FUN_0040a1d2(local_110);
+                local_110 = Math_RandomRange(local_110);
                 _DAT_0063ee20 = aiStack_f4[local_110];
                 if (DAT_006fedc0 == 0) goto LAB_004f024d;
                 DAT_0063ee8c = 0;
-                status = FUN_0040a1d2(0x20);
+                status = Math_RandomRange(0x20);
                 if ((status == 0) || (DAT_0063ee10 != 0)) {
                   DAT_00627a84 = 0xffffffff;
                   DAT_00627a88 = 0xffffffff;
@@ -1440,7 +1440,7 @@ LAB_004f024d:
       }
       else {
         if (g_IsAiThinking == 1) {
-          g_AiDecisionScore = FUN_0040a1d2(local_110);
+          g_AiDecisionScore = Math_RandomRange(local_110);
           DAT_006fefa8 = CONCAT31((int3)((aiStack_f4[g_AiDecisionScore] == 0) - 1 >> 8),
                                   (char)aiStack_200[g_AiDecisionScore]) & 0x1ff | 0x4000;
           Ai_EvaluateCreaturePower();
@@ -1448,7 +1448,7 @@ LAB_004f024d:
         else {
           Ai_CalcCardAdvantage();
           if (g_AiDecisionScore == 99) {
-            g_AiDecisionScore = FUN_0040a1d2(local_110);
+            g_AiDecisionScore = Math_RandomRange(local_110);
           }
         }
         _DAT_0063ee20 = aiStack_f4[g_AiDecisionScore];
@@ -1552,7 +1552,7 @@ LRESULT Duel_ChildCard_WndProc(HWND hwnd,uint uMsg,WPARAM wParam,LPARAM lParam)
       local_c = (HGDIOBJ)GetWindowLongA(hwnd,0);
       local_80 = BeginPaint(hwnd,&local_7c);
       if (local_80 != (HDC)0x0) {
-        FUN_004f3955(local_80);
+        GDI_RealizeAndFlushPalette_Magic(local_80);
         SetTextColor(local_80,DAT_00565a00);
         SetBkMode(local_80,1);
         SelectObject(local_80,local_c);
@@ -1614,7 +1614,7 @@ LRESULT Duel_ChildCard_WndProc(HWND hwnd,uint uMsg,WPARAM wParam,LPARAM lParam)
   }
   else if (uMsg < 0x312) {
     if (0x30e < uMsg) {
-      LVar2 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar2 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar2;
     }
     if (uMsg == 0x201) {
@@ -1766,7 +1766,7 @@ int Duel_UpdateCardMotionStep(uint arg1)
     for (local_28 = 0; local_28 < 500; local_28 = local_28 + 1) {
       if ((*(int *)(&deck + local_28 * 4) != -1) && (((&DAT_00702151)[local_28 * 4] & 0x40) == 0)) {
         local_2c = local_2c + 1;
-        status = FUN_00473cc5((&DAT_0051aebe)[(*(uint *)(&deck + local_28 * 4) & 0xfff) * 0x34]);
+        status = Card_ColorMaskToColorIndex((&DAT_0051aebe)[(*(uint *)(&deck + local_28 * 4) & 0xfff) * 0x34]);
         aiStack_20[status] = aiStack_20[status] + 1;
       }
       if ((*(uint *)(&deck + local_28 * 4) & 0xffff7fff) == arg1) {

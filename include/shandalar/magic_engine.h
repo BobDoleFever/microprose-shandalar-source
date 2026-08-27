@@ -146,6 +146,33 @@ void Magic_DiscardToHandSize(int player_id);
  */
 void Magic_CleanupPhase(void);
 
+/*
+ * Deck_PickRandomSecondaryColor
+ * Purpose: Select a random color that is not already in the player deck.
+ * Parameter existing_color_mask: Bitmask of colors currently assigned.
+ * Returns: Bitmask for the new secondary color (1 << color_index).
+ */
+int Deck_PickRandomSecondaryColor(uint32_t existing_color_mask);
+
+/*
+ * Deck_GenerateStartingResources
+ * Purpose: Allocate starting deck cards, amulets, gold, and life for a new campaign.
+ */
+void Deck_GenerateStartingResources(void);
+
+/*
+ * Deck_PopulateCategoryCards
+ * Purpose: Select and insert random cards into the player deck matching quotas, color, and rarity.
+ * Parameter color_mask: Bitmask of valid colors.
+ * Parameter num_lands: Count of basic land cards to add.
+ * Parameter num_spells: Count of non-creature spell and artifact cards to add.
+ * Parameter num_creatures: Count of creature cards to add.
+ * Parameter guaranteed_rare_count: Count of guaranteed Rare cards to add (1 or 0).
+ * Parameter allow_colorless_artifacts: 1 to allow colorless artifact rolls, 0 for colored spells only.
+ * Returns: 0 on success.
+ */
+int32_t Deck_PopulateCategoryCards(uint32_t color_mask, int num_lands, int num_spells, int num_creatures, int guaranteed_rare_count, int allow_colorless_artifacts);
+
 #ifdef __cplusplus
 }
 #endif

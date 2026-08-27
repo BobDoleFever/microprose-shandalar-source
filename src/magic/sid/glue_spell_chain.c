@@ -324,7 +324,7 @@ uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND wParam,uint32_t height)
     }
     if (y == 0x14) {
       local_1760 = wParam;
-      FUN_004f3955((HDC)wParam);
+      GDI_RealizeAndFlushPalette_Magic((HDC)wParam);
       GetClientRect(hwnd,&local_1734);
       local_1724 = SendDlgItemMessageA(hwnd,0,0xe1,0,0);
       if (DAT_00565984 == (HANDLE)0x0) {
@@ -380,7 +380,7 @@ uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND wParam,uint32_t height)
         if (local_192c == (HDC)0x0) {
           return local_18f8;
         }
-        FUN_004f3955(local_192c);
+        GDI_RealizeAndFlushPalette_Magic(local_192c);
         GetWindowRect(hwnd,&local_18d4);
         GetClientRect(hwnd,&local_19a4);
         MapWindowPoints(hwnd,(HWND)0x0,(LPPOINT)&local_19a4,2);
@@ -629,7 +629,7 @@ LAB_004cf521:
       return 0;
     }
     if ((0x30e < y) && (y < 0x312)) {
-      uval_8 = FUN_004f5d1a(hwnd,y,wParam,height);
+      uval_8 = GDI_RealizePaletteTree_Magic(hwnd,y,wParam,height);
       return uval_8;
     }
   }
@@ -858,7 +858,7 @@ int SpellChain_GetCardCount(HWND hwnd)
  * Size: 333 bytes
  */
 
-void SpellChain_UpdateTargetPositions(HWND hwnd,int arg2)
+void SpellChain_UpdateTargetPositions(HWND hwnd,int card_slot)
 
 {
   LONG LVar1;
@@ -866,16 +866,16 @@ void SpellChain_UpdateTargetPositions(HWND hwnd,int arg2)
   int card_idx;
   int match_count;
   
-  if (((hwnd != (HWND)0x0) && (-1 < arg2)) && (arg2 < 0x65)) {
+  if (((hwnd != (HWND)0x0) && (-1 < card_slot)) && (card_slot < 0x65)) {
     LVar1 = GetWindowLongA(hwnd,0);
     LVar2 = GetWindowLongA(hwnd,4);
-    DestroyWindow(*(HWND *)(LVar1 + arg2 * 0x58));
-    for (card_idx = 0; card_idx < *(int *)(LVar1 + 0x54 + arg2 * 0x58); card_idx = card_idx + 1) {
-      if (*(int *)(arg2 * 0x58 + card_idx * 4 + 4 + LVar1) != 0) {
-        DestroyWindow(*(HWND *)(arg2 * 0x58 + card_idx * 4 + 4 + LVar1));
+    DestroyWindow(*(HWND *)(LVar1 + card_slot * 0x58));
+    for (card_idx = 0; card_idx < *(int *)(LVar1 + 0x54 + card_slot * 0x58); card_idx = card_idx + 1) {
+      if (*(int *)(card_slot * 0x58 + card_idx * 4 + 4 + LVar1) != 0) {
+        DestroyWindow(*(HWND *)(card_slot * 0x58 + card_idx * 4 + 4 + LVar1));
       }
     }
-    for (match_count = arg2; match_count < LVar2 + -1; match_count = match_count + 1) {
+    for (match_count = card_slot; match_count < LVar2 + -1; match_count = match_count + 1) {
       memcpy((void *)(match_count * 0x58 + LVar1),(void *)((match_count + 1) * 0x58 + LVar1),0x58);
     }
     SetWindowLongA(hwnd,4,LVar2 + -1);
@@ -930,7 +930,7 @@ bool SpellChain_HasActiveSpells(void)
  * Size: 569 bytes
  */
 
-int SpellChain_CreateCardSlot(HWND hwnd,int arg2,int arg3)
+int SpellChain_CreateCardSlot(HWND hwnd,int card_slot,int arg3)
 
 {
   LONG LVar1;
@@ -958,7 +958,7 @@ int SpellChain_CreateCardSlot(HWND hwnd,int arg2,int arg3)
     }
     else {
       local_6c = 1;
-      local_74 = arg2;
+      local_74 = card_slot;
       local_70 = arg3;
       local_5c = CreateWindowExA(0,s_MAGICGAME_CardClass_0052e7d0,s_Spell_Card_0052e7c4,0x50000000,0
                                  ,0,0,0,hwnd,(HMENU)0x1,g_AppHInstance,&local_74);
@@ -1018,21 +1018,21 @@ int SpellChain_CreateCardSlot(HWND hwnd,int arg2,int arg3)
  * Size: 229 bytes
  */
 
-void SpellChain_RemoveCardSlot(HWND hwnd,int arg2)
+void SpellChain_RemoveCardSlot(HWND hwnd,int card_slot)
 
 {
   LONG LVar1;
   int match_count;
   
-  if (((hwnd != (HWND)0x0) && (-1 < arg2)) && (arg2 < 0x65)) {
+  if (((hwnd != (HWND)0x0) && (-1 < card_slot)) && (card_slot < 0x65)) {
     LVar1 = GetWindowLongA(hwnd,0);
     GetWindowLongA(hwnd,4);
-    for (match_count = 0; match_count < *(int *)(LVar1 + 0x54 + arg2 * 0x58); match_count = match_count + 1) {
-      if (*(int *)(arg2 * 0x58 + match_count * 4 + 4 + LVar1) != 0) {
-        DestroyWindow(*(HWND *)(arg2 * 0x58 + match_count * 4 + 4 + LVar1));
+    for (match_count = 0; match_count < *(int *)(LVar1 + 0x54 + card_slot * 0x58); match_count = match_count + 1) {
+      if (*(int *)(card_slot * 0x58 + match_count * 4 + 4 + LVar1) != 0) {
+        DestroyWindow(*(HWND *)(card_slot * 0x58 + match_count * 4 + 4 + LVar1));
       }
     }
-    *(int *)(LVar1 + 0x54 + arg2 * 0x58) = 0;
+    *(int *)(LVar1 + 0x54 + card_slot * 0x58) = 0;
   }
   return;
 }
@@ -1119,7 +1119,7 @@ int SpellChain_CreateTargetSlot(HWND hwnd)
  * Size: 1550 bytes
  */
 
-void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
+void SpellChain_UpdateLayout(HWND hwnd,LPRECT card_slot)
 
 {
   LONG LVar1;
@@ -1162,8 +1162,8 @@ void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
       ShowWindow(DAT_00565940,0);
       UpdateWindow(g_AiSelectedActionCode);
     }
-    if (arg2 != (LPRECT)0x0) {
-      SetRect(arg2,0,0,0,0);
+    if (card_slot != (LPRECT)0x0) {
+      SetRect(card_slot,0,0,0,0);
     }
   }
   else {
@@ -1279,8 +1279,8 @@ void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
       FUN_004f59f7();
     }
     UpdateWindow(hwnd);
-    if (arg2 != (LPRECT)0x0) {
-      CopyRect(arg2,&local_48);
+    if (card_slot != (LPRECT)0x0) {
+      CopyRect(card_slot,&local_48);
     }
   }
   return;
@@ -1298,10 +1298,10 @@ void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
  * Size: 26 bytes
  */
 
-void SpellChain_SetWindowRect(int arg1,LPRECT arg2)
+void SpellChain_SetWindowRect(int player,LPRECT card_slot)
 
 {
-  CopyRect(arg2,(RECT *)&DAT_00565968);
+  CopyRect(card_slot,(RECT *)&DAT_00565968);
   return;
 }
 
@@ -1334,7 +1334,7 @@ LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t 
   if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       target_idx = wParam;
-      FUN_004f3955(wParam);
+      GDI_RealizeAndFlushPalette_Magic(wParam);
       GetClientRect(hwnd,&player_idx);
       IntersectClipRect(target_idx,0,0,player_idx.right,player_idx.bottom);
       if (DAT_00565980 == (HANDLE)0x0) {
@@ -1390,7 +1390,7 @@ LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t 
   }
   else if (0x30e < uMsg) {
     if (uMsg < 0x312) {
-      LVar1 = FUN_004f5d1a(hwnd,uMsg,(HWND)wParam,lParam);
+      LVar1 = GDI_RealizePaletteTree_Magic(hwnd,uMsg,(HWND)wParam,lParam);
       return LVar1;
     }
     if (uMsg == 0x437) {
@@ -1486,7 +1486,7 @@ int SpellChain_GetActiveCount(void)
  * Size: 645 bytes
  */
 
-uint32_t SpellChain_ProcessTriggerEvent(int arg1,int arg2)
+uint32_t SpellChain_ProcessTriggerEvent(int player,int card_slot)
 
 {
   char c_res;
@@ -1494,41 +1494,41 @@ uint32_t SpellChain_ProcessTriggerEvent(int arg1,int arg2)
   uint32_t uval_3;
   int slot_idx;
   
-  if (*(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) == DAT_006fd3f4) {
-    slot_idx = *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + arg1 * 0x5b20);
+  if (*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == DAT_006fd3f4) {
+    slot_idx = *(int *)(&g_ActiveCardsInPlay + card_slot * 0x120 + player * 0x5b20);
   }
   else {
-    slot_idx = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
+    slot_idx = *(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20);
   }
   if (((&g_MasterCardColorTable)[slot_idx * 0x34] & 4) == 0) {
     if (((&g_MasterCardColorTable)[slot_idx * 0x34] & 0x10) == 0) {
       if (((&g_MasterCardColorTable)[slot_idx * 0x34] & 0x20) == 0) {
         if (((&g_MasterCardColorTable)[slot_idx * 0x34] & 8) == 0) {
-          val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[arg2 * 0x120 + arg1 * 0x5b20]);
-          c_res = FUN_0041d9d2(arg1,arg2,val_result);
+          val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]);
+          c_res = Card_SetTapState(player,card_slot,val_result);
           uval_3 = 0x800 << (c_res - 1U & 0x1f);
         }
         else {
-          val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[arg2 * 0x120 + arg1 * 0x5b20]);
-          c_res = FUN_0041d9d2(arg1,arg2,val_result);
+          val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]);
+          c_res = Card_SetTapState(player,card_slot,val_result);
           uval_3 = 0x800 << (c_res - 1U & 0x1f) | 0x100000;
         }
       }
       else {
-        val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[arg2 * 0x120 + arg1 * 0x5b20]);
-        c_res = FUN_0041d9d2(arg1,arg2,val_result);
+        val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]);
+        c_res = Card_SetTapState(player,card_slot,val_result);
         uval_3 = 0x800 << (c_res - 1U & 0x1f) | 0x80000;
       }
     }
     else {
-      val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[arg2 * 0x120 + arg1 * 0x5b20]);
-      c_res = FUN_0041d9d2(arg1,arg2,val_result);
+      val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]);
+      c_res = Card_SetTapState(player,card_slot,val_result);
       uval_3 = 0x800 << (c_res - 1U & 0x1f) | 0x40000;
     }
   }
   else {
-    val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[arg2 * 0x120 + arg1 * 0x5b20]);
-    c_res = FUN_0041d9d2(arg1,arg2,val_result);
+    val_result = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]);
+    c_res = Card_SetTapState(player,card_slot,val_result);
     uval_3 = 0x800 << (c_res - 1U & 0x1f) | 0x20000;
   }
   return uval_3;

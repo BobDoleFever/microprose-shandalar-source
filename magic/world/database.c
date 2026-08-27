@@ -787,7 +787,7 @@ int Action_ValidateTarget_00405802
       }
       else {
         if (g_IsAiThinking == 1) {
-          g_AiDecisionScore = FUN_0040a1d2(local_124);
+          g_AiDecisionScore = Math_RandomRange(local_124);
           DAT_006fefa8 = CONCAT31((int3)((aiStack_118[g_AiDecisionScore] == 0) - 1 >> 8),
                                   (char)aiStack_214[g_AiDecisionScore]) & 0x1ff | 0x4000;
           DAT_0052ce1c = 3;
@@ -797,7 +797,7 @@ int Action_ValidateTarget_00405802
           DAT_0052ce1c = 3;
           Ai_CalcCardAdvantage();
           if ((g_AiDecisionScore == 99) || (local_124 <= g_AiDecisionScore)) {
-            g_AiDecisionScore = FUN_0040a1d2(local_124);
+            g_AiDecisionScore = Math_RandomRange(local_124);
           }
         }
         _DAT_0063ee20 = aiStack_118[g_AiDecisionScore];
@@ -1394,11 +1394,11 @@ int Save_ProcessGame_004207a8(int arg_1)
   FILE *local_8;
   
   local_10 = s_magic4_map_0051a438;
-  FUN_005112b0(0,(short)DAT_00530d9c);
+  Surface_TransformPoint(0,(short)DAT_00530d9c);
   FUN_00510b70(1,0,0,s_menopt_pic_0051a444,
                (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
-                     ,0,0,DAT_00522458,DAT_0052245c);
+                     ,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
   FUN_005115a0(0,(short)DAT_00530d9c);
   Mem_AllocOrFree_00510e20(1,s_optbox_pic_0051a450);
   Mem_AllocOrFree_0050fc00();
@@ -1475,14 +1475,14 @@ LAB_00420bf9:
   FUN_0041f391();
   Mem_AllocOrFree_0041f12b(local_1c);
   if (DAT_005387b0 == 0xe) {
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     return -1;
   }
   if (arg_1 == 0) {
 LAB_00421183:
     fclose(local_8);
     Mem_AllocOrFree_0050fc50(DAT_005387b8);
-    FUN_005112b0(0,(short)DAT_00530d9c);
+    Surface_TransformPoint(0,(short)DAT_00530d9c);
     return DAT_005387b0;
   }
   local_30 = DAT_005387b0 + -4;
@@ -1614,7 +1614,7 @@ void Action_PromptTarget_0049239e(int spell_id)
   LoadPalNoPic(s_advfac64_pic_005286e8);
   Mem_AllocOrFree_00510e20(1,s_tradscrn_pic_005286f8);
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
-                     ,0,0,DAT_00522458,DAT_0052245c);
+                     ,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
   Glue_Sound_004ebeeb(spell_id + 1);
   strcpy(&g_OverworldWorldState,s_You_have_defeated_the_dreaded_00528708);
   pcVar1 = (char *)Mem_AllocOrFree_00473d7e(local_24);
@@ -1650,7 +1650,7 @@ void Action_PromptTarget_0049239e(int spell_id)
   strcat(&g_OverworldWorldState,pcVar1);
   strcat(&g_OverworldWorldState,s_cards__005287bc);
   FUN_0040d469((int)g_DisplaySurfaceScreen,0xfe,0x140,200);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   Ai_Subsystem_004cd1d1();
   PTR_FUN_00527b3c = Mem_AllocOrFree_0040eea2;
   iVar2 = FUN_0041f354();
@@ -1670,19 +1670,19 @@ void Action_PromptTarget_0049239e(int spell_id)
       if (DAT_0067bdb4 != 0x3e) {
         Pic_Subsystem_00423c82(0x10);
       }
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       if (DAT_0067bdb4 != 0x3e) {
         return;
       }
       FUN_00501736(0x3c);
       Mem_AllocOrFree_00510de0(1,s_5thwiz_pic_0052880c);
       Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,
-                         (int *)g_DisplaySurfaceScreen,0,0,DAT_00522458,DAT_0052245c);
+                         (int *)g_DisplaySurfaceScreen,0,0,g_DisplayScreenWidth,g_DisplayScreenHeight);
       strcpy(&g_OverworldWorldState,s_You_have_defeated_all_five_wizar_00528818);
       strcat(&g_OverworldWorldState,s_Shandalar_is_free__Prepare_to_fa_00528840);
       *(undefined4 *)(g_DisplaySurfaceScreen + 0x20) = 5;
       FUN_0040d469((int)g_DisplaySurfaceScreen,99,0x140,0x100);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       local_20 = FUN_004922dc();
       strcpy(&g_OverworldWorldState,s_Your_battles_so_far_will_banish_t_0052887c);
@@ -1695,9 +1695,9 @@ void Action_PromptTarget_0049239e(int spell_id)
       strcat(&g_OverworldWorldState,s_years__Each_life_it_loses_in_the_005288c0);
       strcat(&g_OverworldWorldState,s_will_banish_it_for_10_additional_005288f0);
       FUN_0040d469((int)g_DisplaySurfaceScreen,99,0x140,0x15e);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       DeckBuilderMain(_hwndScreen,1,1);
       Pic_Load_advfac64_0040a4fc();
       local_14 = (LPVOID)Glue_Subsystem_004ea97c(0,100);
@@ -1713,10 +1713,10 @@ void Action_PromptTarget_0049239e(int spell_id)
       DAT_0068a64c = Pic_Subsystem_0045268f(0x1d);
       Pic_Load_0044ef70(0,local_14);
       FUN_0040b3c2(2,0xb7);
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       FUN_0050d560(0,0);
       LoadPalNoPic(s_advfac64_pic_00528924);
-      FUN_00409e6d(s_mtgend_avi_00528934,(DAT_00522458 + -0x230) / 2,(DAT_0052245c + -0x1a4) / 2,0);
+      FUN_00409e6d(s_mtgend_avi_00528934,(g_DisplayScreenWidth + -0x230) / 2,(g_DisplayScreenHeight + -0x1a4) / 2,0);
       SetForegroundWindow(_hwndScreen);
       BringWindowToTop(_hwndScreen);
       SetFocus(_hwndScreen);
@@ -1727,10 +1727,10 @@ void Action_PromptTarget_0049239e(int spell_id)
       Glue_Sound_004ebeeb(6);
       local_20 = local_20 + (100 - DAT_006a4a04) * 10;
       LoadPalNoPic(s_wingame_pic_0052895c);
-      if (DAT_00522458 == 0x280) {
+      if (g_DisplayScreenWidth == 0x280) {
         local_98 = 3;
       }
-      else if (DAT_00522458 == 800) {
+      else if (g_DisplayScreenWidth == 800) {
         local_98 = 4;
       }
       else {
@@ -1742,10 +1742,10 @@ void Action_PromptTarget_0049239e(int spell_id)
       strcat(&g_OverworldWorldState,pcVar1);
       strcat(&g_OverworldWorldState,s_years__005289ac);
       strcat(&g_OverworldWorldState,s_The_people_rejoice__Life_is_good_005289b8);
-      FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd8,0x140,0x81);
-      FUN_0040a3e1();
+      Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd8,0x140,0x81);
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
-      FUN_005112b0(0,(short)DAT_00530d9c);
+      Surface_TransformPoint(0,(short)DAT_00530d9c);
       LoadPalNoPic(s_advfac64_pic_005289dc);
       Palette_Subsystem_004a5fdc();
       Castle_Process_00421b32();

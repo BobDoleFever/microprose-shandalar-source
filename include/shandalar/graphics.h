@@ -14,9 +14,18 @@ extern "C" {
 int  Pic_Load(const char* filename, void** out_buffer);
 int  Pcx_Decode(const char* filename, void* dst_surface);
 void Sprite_Draw(void* sprite, int x, int y, int flags);
-void Palette_SetColors(const void* palette, int start, int count);
-void Haar_DecompressWavelet(const void* src, void* dst, int width, int height);
-void Font_DrawText(HDC hdc, const char* str, int x, int y, uint32_t color);
+/* Standard Win32 GDI Prototypes */
+HPALETTE SelectPalette(HDC hdc, HPALETTE hpal, BOOL bForceBackground);
+UINT     RealizePalette(HDC hdc);
+UINT     SetDIBColorTable(HDC hdc, UINT iStart, UINT cEntries, const RGBQUAD *prgbq);
+int      SetStretchBltMode(HDC hdc, int mode);
+BOOL     GdiFlush(void);
+BOOL     UnrealizeObject(HGDIOBJ hgdiobj);
+BOOL     FreeLibrary(HMODULE hLibModule);
+BOOL     BitBlt(HDC hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, HDC hdcSrc, int nXSrc, int nYSrc, DWORD dwRop);
+int      SetDIBitsToDevice(HDC hdc, int xDest, int yDest, DWORD w, DWORD h, int xSrc, int ySrc, UINT uStartScan, UINT cScanLines, const void *lpvBits, const void *lpbmi, UINT fuColorUse);
+BOOL     InvalidateRect(HWND hWnd, const RECT *lpRect, BOOL bErase);
+BOOL     EnumChildWindows(HWND hWndParent, void *lpEnumFunc, LPARAM lParam);
 
 #ifdef __cplusplus
 }

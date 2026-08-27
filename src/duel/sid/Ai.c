@@ -32,7 +32,7 @@ void Ai_SaveGameState(void)
   FID_conflict__memcpy(&DAT_0050dcc8,&DAT_0068f2e0,0x40);
   FID_conflict__memcpy(&DAT_00514e38,&DAT_0068ef50,0x40);
   FID_conflict__memcpy(&DAT_005127d8,&DAT_00666570,0x198);
-  FID_conflict__memcpy(&DAT_00512970,&DAT_00681ea8,8);
+  FID_conflict__memcpy(&DAT_00512970,&g_DuelPlayerLifeTotals,8);
   FID_conflict__memcpy(&DAT_00513580,&DAT_006668f0,8);
   FID_conflict__memcpy(&DAT_00514638,&DAT_0066aad0,8);
   FID_conflict__memcpy(&DAT_00514630,&DAT_006664f0,8);
@@ -40,16 +40,16 @@ void Ai_SaveGameState(void)
   FID_conflict__memcpy(&DAT_0050ecf0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00511ef0,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_00510e30,&DAT_00681ee0,2000);
-  DAT_00514eb8 = DAT_00681eb0;
-  DAT_0050f9b8 = DAT_0068f2c4;
-  DAT_006c1214 = DAT_0068f2c4;
+  DAT_00514eb8 = g_DuelPlayerManaPool;
+  DAT_0050f9b8 = g_DuelCombatPhaseState;
+  DAT_006c1214 = g_DuelCombatPhaseState;
   DAT_00514528 = DAT_0066644c;
   DAT_005126d4 = DAT_006826b0;
-  DAT_0050b378 = DAT_00681ea4;
+  DAT_0050b378 = g_DuelHumanPlayerIndex;
   FID_conflict__memcpy(&DAT_00511e70,&DAT_0068f240,0x80);
   FID_conflict__memcpy(&DAT_00514530,&DAT_0068efb0,0x100);
   FID_conflict__memcpy(&DAT_0050f840,&DAT_0068f120,0x100);
-  FID_conflict__memcpy(&DAT_00514e30,&DAT_00666408,8);
+  FID_conflict__memcpy(&DAT_00514e30,&g_DuelPlayerCreatureCount,8);
   if (DAT_006764b8 < 0) {
     __assert((uint32_t *)s_ScWilly>_0_004f3c94,(uint32_t *)s_D__Newmagic_sources_sid_Ai_c_004f3c74,0x176);
   }
@@ -84,7 +84,7 @@ void FUN_0042fea9(void)
   FID_conflict__memcpy(&DAT_0068f2e0,&DAT_0050dcc8,0x40);
   FID_conflict__memcpy(&DAT_0068ef50,&DAT_00514e38,0x40);
   FID_conflict__memcpy(&DAT_00666570,&DAT_005127d8,0x198);
-  FID_conflict__memcpy(&DAT_00681ea8,&DAT_00512970,8);
+  FID_conflict__memcpy(&g_DuelPlayerLifeTotals,&DAT_00512970,8);
   FID_conflict__memcpy(&DAT_006668f0,&DAT_00513580,8);
   FID_conflict__memcpy(&DAT_0066aad0,&DAT_00514638,8);
   FID_conflict__memcpy(&DAT_006664f0,&DAT_00514630,8);
@@ -92,15 +92,15 @@ void FUN_0042fea9(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_0050ecf0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00511ef0,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_00510e30,2000);
-  DAT_00681eb0 = DAT_00514eb8;
-  DAT_0068f2c4 = DAT_0050f9b8;
+  g_DuelPlayerManaPool = DAT_00514eb8;
+  g_DuelCombatPhaseState = DAT_0050f9b8;
   DAT_0066644c = DAT_00514528;
   DAT_006826b0 = DAT_005126d4;
-  DAT_00681ea4 = DAT_0050b378;
+  g_DuelHumanPlayerIndex = DAT_0050b378;
   FID_conflict__memcpy(&DAT_0068f240,&DAT_00511e70,0x80);
   FID_conflict__memcpy(&DAT_0068efb0,&DAT_00514530,0x100);
   FID_conflict__memcpy(&DAT_0068f120,&DAT_0050f840,0x100);
-  FID_conflict__memcpy(&DAT_00666408,&DAT_00514e30,8);
+  FID_conflict__memcpy(&g_DuelPlayerCreatureCount,&DAT_00514e30,8);
   DAT_006764b8 = DAT_0050db20;
   DAT_00666760 = DAT_0050f6b0;
   DAT_00690318 = DAT_00511e04;
@@ -132,7 +132,7 @@ void FUN_00430120(void)
   FID_conflict__memcpy(&DAT_0050f9d0,&DAT_0068f2e0,0x40);
   FID_conflict__memcpy(&DAT_0050f940,&DAT_0068ef50,0x40);
   FID_conflict__memcpy(&DAT_0050db28,&DAT_00666570,0x198);
-  FID_conflict__memcpy(&DAT_0050b380,&DAT_00681ea8,8);
+  FID_conflict__memcpy(&DAT_0050b380,&g_DuelPlayerLifeTotals,8);
   FID_conflict__memcpy(&DAT_0050f980,&DAT_006668f0,8);
   FID_conflict__memcpy(&DAT_0050f9a8,&DAT_0066aad0,8);
   FID_conflict__memcpy(&DAT_0050f9b0,&DAT_006664f0,8);
@@ -140,18 +140,18 @@ void FUN_00430120(void)
   FID_conflict__memcpy(&DAT_005109b0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00514640,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_0050b388,&DAT_00681ee0,2000);
-  DAT_0050f838 = DAT_00681eb0;
-  DAT_00513578 = DAT_0068f2c4;
+  DAT_0050f838 = g_DuelPlayerManaPool;
+  DAT_00513578 = g_DuelCombatPhaseState;
   DAT_0050f9bc = DAT_0066644c;
   DAT_0050f9c8 = DAT_006826b0;
-  DAT_00511e68 = DAT_00681ea4;
+  DAT_00511e68 = g_DuelHumanPlayerIndex;
   FID_conflict__memcpy(&DAT_0050caf8,&DAT_0068f240,0x80);
   FID_conflict__memcpy(&DAT_005126d8,&DAT_0068efb0,0x100);
   FID_conflict__memcpy(&DAT_0050f738,&DAT_0068f120,0x100);
-  FID_conflict__memcpy(&DAT_0050f9c0,&DAT_00666408,8);
+  FID_conflict__memcpy(&DAT_0050f9c0,&g_DuelPlayerCreatureCount,8);
   DAT_005126c0 = DAT_006764b8;
   DAT_0050dd08 = DAT_00666760;
-  DAT_0050dcc0 = DAT_0068f2d4;
+  DAT_0050dcc0 = g_DuelDamageAccumulator;
   FID_conflict__memcpy(&DAT_00514e10,&DAT_0068ece0,0x1c);
   return;
 }
@@ -177,7 +177,7 @@ void FUN_00430367(void)
   FID_conflict__memcpy(&DAT_0068f2e0,&DAT_0050f9d0,0x40);
   FID_conflict__memcpy(&DAT_0068ef50,&DAT_0050f940,0x40);
   FID_conflict__memcpy(&DAT_00666570,&DAT_0050db28,0x198);
-  FID_conflict__memcpy(&DAT_00681ea8,&DAT_0050b380,8);
+  FID_conflict__memcpy(&g_DuelPlayerLifeTotals,&DAT_0050b380,8);
   FID_conflict__memcpy(&DAT_006668f0,&DAT_0050f980,8);
   FID_conflict__memcpy(&DAT_0066aad0,&DAT_0050f9a8,8);
   FID_conflict__memcpy(&DAT_006664f0,&DAT_0050f9b0,8);
@@ -185,18 +185,18 @@ void FUN_00430367(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_005109b0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00514640,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_0050b388,2000);
-  DAT_00681eb0 = DAT_0050f838;
-  DAT_0068f2c4 = DAT_00513578;
+  g_DuelPlayerManaPool = DAT_0050f838;
+  g_DuelCombatPhaseState = DAT_00513578;
   DAT_0066644c = DAT_0050f9bc;
   DAT_006826b0 = DAT_0050f9c8;
-  DAT_00681ea4 = DAT_00511e68;
+  g_DuelHumanPlayerIndex = DAT_00511e68;
   FID_conflict__memcpy(&DAT_0068f240,&DAT_0050caf8,0x80);
   FID_conflict__memcpy(&DAT_0068efb0,&DAT_005126d8,0x100);
   FID_conflict__memcpy(&DAT_0068f120,&DAT_0050f738,0x100);
-  FID_conflict__memcpy(&DAT_00666408,&DAT_0050f9c0,8);
+  FID_conflict__memcpy(&g_DuelPlayerCreatureCount,&DAT_0050f9c0,8);
   DAT_006764b8 = DAT_005126c0;
   DAT_00666760 = DAT_0050dd08;
-  DAT_0068f2d4 = DAT_0050dcc0;
+  g_DuelDamageAccumulator = DAT_0050dcc0;
   FID_conflict__memcpy(&DAT_0068ece0,&DAT_00514e10,0x1c);
   return;
 }
@@ -239,7 +239,7 @@ void FUN_004305d3(void)
     (&DAT_00511a00)[slot_idx] = 99;
   }
   FUN_0042fea9();
-  if (DAT_0066aaf4 != 1) {
+  if (g_DuelDebugModeFlag != 1) {
     DAT_00666400 = 0xffffffff;
   }
   return;
@@ -261,7 +261,7 @@ void FUN_0043064a(void)
     *(uint32_t *)(&DAT_0050f170 + DAT_0050b37c * 4) = DAT_0068f0bc;
     *(int32_t *)(&DAT_00512d78 + DAT_0050b37c * 4) =
          *(int32_t *)
-          (&DAT_006826c4 + (DAT_0068f0bc & 0xff) * 0x120 + ((DAT_0068f0bc & 0x100) >> 8) * 0x5b20);
+          (&g_DuelCardSlot_CardId + (DAT_0068f0bc & 0xff) * 0x120 + ((DAT_0068f0bc & 0x100) >> 8) * 0x5b20);
     *(int32_t *)(&DAT_00513178 + DAT_0050b37c * 4) = DAT_004f3c6c;
     (&DAT_00511a00)[DAT_0050b37c] = DAT_0068f2c8;
     DAT_0050b37c = DAT_0050b37c + 1;
@@ -270,7 +270,7 @@ void FUN_0043064a(void)
     }
   }
   else {
-    DAT_00681ea4 = 1;
+    g_DuelHumanPlayerIndex = 1;
   }
   DAT_004f3c6c = 0;
   return;
@@ -279,16 +279,16 @@ void FUN_0043064a(void)
 
 
 /*
- * Decompiled function: FUN_0043071d
+ * Decompiled function: Card_DispatchRulesEvent
  * Entry Point: 0043071d
  * Size: 75 bytes
  */
 
 
-int32_t FUN_0043071d(int player_id)
+int32_t Card_DispatchRulesEvent(int player_id)
 
 {
-  if ((DAT_0066aaf4 != 1) &&
+  if ((g_DuelDebugModeFlag != 1) &&
      (DAT_0068f0bc = *(uint32_t *)(&DAT_0050ed70 + (arg_1 + DAT_0050b37c) * 4),
      DAT_0068f0bc != 0xffffffff)) {
     DAT_0068f0bc = DAT_0068f0bc & 0xfff;
@@ -308,7 +308,7 @@ int32_t FUN_0043071d(int player_id)
 int32_t FUN_00430768(int player_id)
 
 {
-  if ((DAT_0066aaf4 != 1) &&
+  if ((g_DuelDebugModeFlag != 1) &&
      (DAT_00666410 = (&DAT_00511600)[DAT_0050b37c + arg_1], DAT_00666410 == 99)) {
     DAT_00666410 = 0;
   }
@@ -438,31 +438,31 @@ int FUN_00430911(int player_id)
   FUN_00431f41(local_d4,local_d4 + 1);
   _memset(local_cc,0,0xa0);
   loop_idx = 0;
-  for (color_idx = 1; color_idx <= (int)(&DAT_00681ea8)[arg_1]; color_idx = color_idx + 1) {
+  for (color_idx = 1; color_idx <= (int)(&g_DuelPlayerLifeTotals)[arg_1]; color_idx = color_idx + 1) {
     loop_idx = loop_idx + (int)(0x18 / (longlong)color_idx) + 0xc;
   }
   val_1 = *(int *)(&DAT_00666710 + arg_1 * 4) * loop_idx;
   loop_idx = 0;
-  for (color_idx = 1; color_idx <= (int)(&DAT_00681ea8)[local_28]; color_idx = color_idx + 1) {
+  for (color_idx = 1; color_idx <= (int)(&g_DuelPlayerLifeTotals)[local_28]; color_idx = color_idx + 1) {
     loop_idx = loop_idx + (int)(0x18 / (longlong)color_idx) + 0xc;
   }
   match_count = ((int)(val_1 + (val_1 >> 0x1f & 7U)) >> 3) -
             ((int)(*(int *)(&DAT_00666710 + local_28 * 4) * loop_idx +
                   (*(int *)(&DAT_00666710 + local_28 * 4) * loop_idx >> 0x1f & 7U)) >> 3);
-  if ((int)(&DAT_00681ea8)[arg_1] < 1) {
-    match_count = match_count + ((&DAT_00681ea8)[arg_1] * 4 + -8) * 0x4b;
+  if ((int)(&g_DuelPlayerLifeTotals)[arg_1] < 1) {
+    match_count = match_count + ((&g_DuelPlayerLifeTotals)[arg_1] * 4 + -8) * 0x4b;
   }
-  if ((int)(&DAT_00681ea8)[local_28] < 1) {
-    match_count = match_count + ((&DAT_00681ea8)[local_28] + -2) * -0x100;
+  if ((int)(&g_DuelPlayerLifeTotals)[local_28] < 1) {
+    match_count = match_count + ((&g_DuelPlayerLifeTotals)[local_28] + -2) * -0x100;
   }
   if (DAT_005ef574 != 0) {
-    DAT_005f6810 = 0;
+    g_DuelCardChoicePrompt = 0;
   }
   slot_idx = 0;
   do {
     if (1 < slot_idx) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
-        for (color_idx = 0; color_idx < (int)(&DAT_00666408)[slot_idx]; color_idx = color_idx + 1) {
+        for (color_idx = 0; color_idx < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; color_idx = color_idx + 1) {
           if ((1 << ((uint8_t)arg_1 & 0x1f) & (int)(char)local_cc[slot_idx * 0x50 + color_idx]) != 0) {
             match_count = match_count + 2;
           }
@@ -472,14 +472,14 @@ int FUN_00430911(int player_id)
           }
         }
       }
-      if ((DAT_006c121c == 0) && (DAT_00666458 == arg_1)) {
+      if ((DAT_006c121c == 0) && (g_DuelDefendingPlayer == arg_1)) {
         match_count = FUN_004313b9(arg_1,match_count);
       }
       DAT_005ef980 = 0;
       return match_count;
     }
     local_28 = 1 - slot_idx;
-    card_idx = -(((-(uint32_t)(DAT_00676504 == slot_idx) & 0x30) + 0x18) *
+    card_idx = -(((-(uint32_t)(g_DuelTargetCardSlot == slot_idx) & 0x30) + 0x18) *
                 *(int *)(&DAT_0068f2fc + slot_idx * 0x20));
     for (color_idx = 1; color_idx < 6; color_idx = color_idx + 1) {
       for (local_24 = 1; local_24 <= *(int *)(&DAT_0068ef50 + color_idx * 4 + slot_idx * 0x20);
@@ -487,24 +487,24 @@ int FUN_00430911(int player_id)
         card_idx = card_idx + (int)(0x30 / (longlong)local_24);
       }
     }
-    for (color_idx = 0; color_idx < (int)(&DAT_00666408)[slot_idx]; color_idx = color_idx + 1) {
-      if (*(int *)(&DAT_006826c4 + color_idx * 0x120 + slot_idx * 0x5b20) != -1) {
-        player_idx = *(int *)(&DAT_006826c4 + color_idx * 0x120 + slot_idx * 0x5b20);
-        if (((&DAT_004ff594)[player_idx * 0x34] & 0x80) == 0) {
+    for (color_idx = 0; color_idx < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; color_idx = color_idx + 1) {
+      if (*(int *)(&g_DuelCardSlot_CardId + color_idx * 0x120 + slot_idx * 0x5b20) != -1) {
+        player_idx = *(int *)(&g_DuelCardSlot_CardId + color_idx * 0x120 + slot_idx * 0x5b20);
+        if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 0x80) == 0) {
           local_2c = 1;
-          if (((&DAT_004ff594)[player_idx * 0x34] & 2) != 0) {
-            uval_2 = FUN_0048b81a(slot_idx,color_idx,0x34,0xffffffff);
-            uval_3 = FUN_0048b81a(slot_idx,color_idx,0x32,0xffffffff);
+          if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 2) != 0) {
+            uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
+            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x32,0xffffffff);
             target_idx = (uval_3 & 0xffffbfff) * 2;
             if ((&DAT_004ff595)[player_idx * 0x34] == '\0') {
               target_idx = 0;
             }
             val_1 = target_idx;
-            uval_3 = FUN_0048b81a(slot_idx,color_idx,0x33,0xffffffff);
+            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x33,0xffffffff);
             uval_3 = uval_3 & 0xffffbfff;
             local_2c = (int)((val_1 + 3) * (uval_3 + 4)) / 2;
-            if ((((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
-               (DAT_00666458 == slot_idx)) {
+            if ((((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
+               (g_DuelDefendingPlayer == slot_idx)) {
               local_2c = local_2c + -1;
             }
             if ((uval_2 & 0x80) != 0) {
@@ -522,18 +522,18 @@ int FUN_00430911(int player_id)
             if ((uval_2 & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (DAT_00666458 == arg_1)) &&
-               (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
+            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_DuelDefendingPlayer == arg_1)) &&
+               (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
-              uval_2 = FUN_0048b81a(slot_idx,color_idx,0x34,0xffffffff);
-              for (local_24 = 0; local_24 < (int)(&DAT_00666408)[local_28]; local_24 = local_24 + 1)
+              uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
+              for (local_24 = 0; local_24 < (int)(&g_DuelPlayerCreatureCount)[local_28]; local_24 = local_24 + 1)
               {
                 val_4 = FUN_0048b2c9(local_28,local_24,slot_idx,color_idx,uval_2,local_d4[slot_idx]);
                 if (val_4 != 0) {
                   local_e4 = 1;
-                  val_4 = FUN_0048b81a(local_28,local_24,0x33,color_idx);
+                  val_4 = Duel_TapCardForMana(local_28,local_24,0x33,color_idx);
                   if ((val_1 < val_4) ||
-                     (val_4 = FUN_0048b81a(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
+                     (val_4 = Duel_TapCardForMana(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
                     local_e4 = 3;
                     break;
                   }
@@ -542,12 +542,12 @@ int FUN_00430911(int player_id)
               if ((local_e4 & 2) == 0) {
                 val_4 = *(int *)(&DAT_00666710 + local_28 * 4) * target_idx * 0x18;
                 card_idx = card_idx + ((int)(val_4 + (val_4 >> 0x1f & 0xfU)) >> 4);
-                if ((local_e4 == 0) && ((int)(&DAT_00681ea8)[local_28] <= val_1)) {
+                if ((local_e4 == 0) && ((int)(&g_DuelPlayerLifeTotals)[local_28] <= val_1)) {
                   card_idx = card_idx + 0x100;
                 }
               }
             }
-            if (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0) {
+            if (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0) {
               if (*(code **)(&DAT_004ff5a0 + player_idx * 0x34) == FUN_00464774) {
                 local_2c = 1;
               }
@@ -559,12 +559,12 @@ int FUN_00430911(int player_id)
                             ((int)(*(int *)(&DAT_00666718 + slot_idx * 4) * local_2c) >> 0x1f & 7U))
                        >> 3;
           }
-          if (((&DAT_004ff594)[player_idx * 0x34] & 1) != 0) {
-            if (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0) {
+          if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 1) != 0) {
+            if (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0) {
               local_2c = 2;
             }
             else {
-              bVar5 = ((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) == 0;
+              bVar5 = ((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) == 0;
               if (bVar5) {
                 local_2c = 1;
               }
@@ -574,36 +574,36 @@ int FUN_00430911(int player_id)
               local_2c = (uint32_t)bVar5;
             }
           }
-          if (((&DAT_004ff594)[player_idx * 0x34] == '@') &&
-             (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
+          if (((&g_DuelMasterCardTable)[player_idx * 0x34] == '@') &&
+             (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
             local_2c = (((char)(&DAT_004ff598)[player_idx * 0x34] * 3 + 3) * 4) / 2;
           }
-          if (((((&DAT_004ff594)[player_idx * 0x34] == '\x04') &&
-               (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) &&
-              ((&DAT_006826d2)[color_idx * 0x120 + slot_idx * 0x5b20] != -1)) &&
-             (*(int *)(&DAT_006826e8 + color_idx * 0x120 + slot_idx * 0x5b20) != -1)) {
-            local_cc[(char)(&DAT_006826d2)[color_idx * 0x120 + slot_idx * 0x5b20] * 0x50 +
-                     *(int *)(&DAT_006826e8 + color_idx * 0x120 + slot_idx * 0x5b20)] =
-                 local_cc[(char)(&DAT_006826d2)[color_idx * 0x120 + slot_idx * 0x5b20] * 0x50 +
-                          *(int *)(&DAT_006826e8 + color_idx * 0x120 + slot_idx * 0x5b20)] |
+          if (((((&g_DuelMasterCardTable)[player_idx * 0x34] == '\x04') &&
+               (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) &&
+              ((&g_DuelCardSlot_ColorMask)[color_idx * 0x120 + slot_idx * 0x5b20] != -1)) &&
+             (*(int *)(&g_DuelCardSlot_TargetSlot + color_idx * 0x120 + slot_idx * 0x5b20) != -1)) {
+            local_cc[(char)(&g_DuelCardSlot_ColorMask)[color_idx * 0x120 + slot_idx * 0x5b20] * 0x50 +
+                     *(int *)(&g_DuelCardSlot_TargetSlot + color_idx * 0x120 + slot_idx * 0x5b20)] =
+                 local_cc[(char)(&g_DuelCardSlot_ColorMask)[color_idx * 0x120 + slot_idx * 0x5b20] * 0x50 +
+                          *(int *)(&g_DuelCardSlot_TargetSlot + color_idx * 0x120 + slot_idx * 0x5b20)] |
                  (uint8_t)(1 << ((uint8_t)slot_idx & 0x1f));
           }
-          if ((((&DAT_004ff594)[player_idx * 0x34] & 0x38) != 0) &&
-             (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0)) {
+          if ((((&g_DuelMasterCardTable)[player_idx * 0x34] & 0x38) != 0) &&
+             (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0)) {
             val_1 = File_Load_Info(player_idx);
             local_2c = val_1 * 0xc;
           }
-          if ((((&DAT_004ff594)[player_idx * 0x34] & 4) != 0) &&
-             (((&DAT_006826cc)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0)) {
+          if ((((&g_DuelMasterCardTable)[player_idx * 0x34] & 4) != 0) &&
+             (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) == 0)) {
             local_2c = 3;
           }
           card_idx = card_idx + local_2c;
           if (((DAT_005ef574 & 2) != 0) && (slot_idx + 2U == DAT_005ef574)) {
             FUN_0044a5a4(slot_idx,color_idx);
-            FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3ca0);
+            Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3ca0);
             arg2 = (uint32_t *)__itoa(local_2c,&DAT_005126c8,10);
-            FUN_004d9640((uint32_t *)&DAT_005f6810,arg2);
-            FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3ca4);
+            Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,arg2);
+            Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3ca4);
           }
         }
       }
@@ -669,29 +669,29 @@ int FUN_004313b9(int arg1,int arg2)
     aiStack_154[player_idx * 3 + 1] = -1;
   }
   card_idx = 0;
-  for (local_1b0 = 0; local_1b0 < (int)(&DAT_00666408)[arg1]; local_1b0 = local_1b0 + 1) {
-    if (((*(int *)(&DAT_006826c4 + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
-        ((*(uint32_t *)(&DAT_006826cc + local_1b0 * 0x120 + arg1 * 0x5b20) & 0x402) != 0)) &&
-       (((&DAT_004ff594)[*(int *)(&DAT_006826c4 + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) !=
+  for (local_1b0 = 0; local_1b0 < (int)(&g_DuelPlayerCreatureCount)[arg1]; local_1b0 = local_1b0 + 1) {
+    if (((*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
+        ((*(uint32_t *)(&g_DuelCardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) & 0x402) != 0)) &&
+       (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) !=
         0)) {
       acStack_ac[local_1b0] = (char)card_idx;
-      val_1 = FUN_0048b81a(arg1,local_1b0,0x32,0xffffffff);
+      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x32,0xffffffff);
       aiStack_f0[card_idx] = val_1;
-      val_1 = FUN_0048b81a(arg1,local_1b0,0x33,0xffffffff);
+      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x33,0xffffffff);
       aiStack_194[card_idx] = val_1;
       aiStack_58[card_idx] = *(int *)(&DAT_00682700 + local_1b0 * 0x120 + arg1 * 0x5b20);
       card_idx = card_idx + 1;
     }
   }
-  for (local_1a0 = 0; local_1a0 < (int)(&DAT_00666408)[x]; local_1a0 = local_1a0 + 1) {
-    local_19c = *(int *)(&DAT_006826c4 + local_1a0 * 0x120 + x * 0x5b20);
-    if (((local_19c != -1) && (((&DAT_004ff594)[local_19c * 0x34] & 2) != 0)) &&
-       ((((&DAT_006826cc)[local_1a0 * 0x120 + x * 0x5b20] & 2) != 0 &&
+  for (local_1a0 = 0; local_1a0 < (int)(&g_DuelPlayerCreatureCount)[x]; local_1a0 = local_1a0 + 1) {
+    local_19c = *(int *)(&g_DuelCardSlot_CardId + local_1a0 * 0x120 + x * 0x5b20);
+    if (((local_19c != -1) && (((&g_DuelMasterCardTable)[local_19c * 0x34] & 2) != 0)) &&
+       ((((&g_DuelCardSlot_Flags)[local_1a0 * 0x120 + x * 0x5b20] & 2) != 0 &&
         (((&DAT_004ff595)[local_19c * 0x34] != '\0' ||
          (((&DAT_006826f9)[local_1a0 * 0x120 + x * 0x5b20] & 8) != 0)))))) {
-      local_1c0 = FUN_0048b81a(x,local_1a0,0x32,0xffffffff);
-      local_1bc = FUN_0048b81a(x,local_1a0,0x33,0xffffffff);
-      if (DAT_00676510 == x) {
+      local_1c0 = Duel_TapCardForMana(x,local_1a0,0x32,0xffffffff);
+      local_1bc = Duel_TapCardForMana(x,local_1a0,0x33,0xffffffff);
+      if (g_DuelTargetPlayer == x) {
         if (((&DAT_004ff5a8)[local_19c * 0x34] & 8) != 0) {
           val_1 = (**(code **)(&DAT_004ff5a0 + local_19c * 0x34))(x,local_1a0,0x39);
           local_1c0 = local_1c0 + val_1;
@@ -720,7 +720,7 @@ LAB_004317d2:
   player_idx = 0;
   do {
     if ((7 < player_idx) || (aiStack_154[player_idx * 3 + 1] == -1)) {
-      if (((int)(&DAT_00681ea8)[arg1] <= local_1a4) && (0 < (int)(&DAT_00681ea8)[x])) {
+      if (((int)(&g_DuelPlayerLifeTotals)[arg1] <= local_1a4) && (0 < (int)(&g_DuelPlayerLifeTotals)[x])) {
         arg2 = arg2 + -0x100;
       }
       for (local_1a0 = 0; local_1a0 < 8; local_1a0 = local_1a0 + 1) {
@@ -729,30 +729,30 @@ LAB_004317d2:
       return arg2;
     }
     local_1a0 = aiStack_154[player_idx * 3];
-    local_198 = FUN_0048b81a(x,local_1a0,0x34,0xffffffff);
+    local_198 = Duel_TapCardForMana(x,local_1a0,0x34,0xffffffff);
     val_1 = aiStack_154[player_idx * 3 + 1];
     val_3 = aiStack_154[player_idx * 3 + 2];
     local_1b4 = 0;
     local_1b8 = 0;
     local_f4 = 0;
     local_5c = 0x7fff;
-    for (local_1b0 = 0; local_1b0 < (int)(&DAT_00666408)[arg1]; local_1b0 = local_1b0 + 1) {
-      if (((*(int *)(&DAT_006826c4 + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
-          (((&DAT_006826cc)[local_1b0 * 0x120 + arg1 * 0x5b20] & 2) != 0)) &&
-         (((&DAT_004ff594)[*(int *)(&DAT_006826c4 + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2)
+    for (local_1b0 = 0; local_1b0 < (int)(&g_DuelPlayerCreatureCount)[arg1]; local_1b0 = local_1b0 + 1) {
+      if (((*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) != -1) &&
+          (((&g_DuelCardSlot_Flags)[local_1b0 * 0x120 + arg1 * 0x5b20] & 2) != 0)) &&
+         (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2)
           != 0)) {
         local_f4 = (int)acStack_ac[local_1b0];
         target_idx = aiStack_f0[local_f4];
         local_b0 = aiStack_194[local_f4];
         val_2 = FUN_0048af80(arg1,local_1b0);
-        if (((*(uint32_t *)(&DAT_006826cc + local_1b0 * 0x120 + arg1 * 0x5b20) &
+        if (((*(uint32_t *)(&g_DuelCardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) &
              (-(uint32_t)(val_2 == 0) & 4) + 8) == 0) &&
            (val_2 = FUN_0048b2c9(arg1,local_1b0,x,local_1a0,local_198,local_1a8), val_2 != 0)) {
           local_1b8 = 1;
           if ((val_1 < local_b0) || (val_3 <= target_idx)) {
             local_1b8 = 3;
-            *(uint32_t *)(&DAT_006826cc + local_1b0 * 0x120 + arg1 * 0x5b20) =
-                 *(uint32_t *)(&DAT_006826cc + local_1b0 * 0x120 + arg1 * 0x5b20) | 8;
+            *(uint32_t *)(&g_DuelCardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) =
+                 *(uint32_t *)(&g_DuelCardSlot_Flags + local_1b0 * 0x120 + arg1 * 0x5b20) | 8;
             break;
           }
           if (aiStack_58[local_f4] < local_5c) {
@@ -765,19 +765,19 @@ LAB_004317d2:
     if ((local_1b8 & 2) == 0) {
       val_3 = *(int *)(&DAT_00666710 + arg1 * 4) * val_1 * 0x18;
       val_3 = val_3 + (val_3 >> 0x1f & 3U);
-      val_2 = FUN_0049aa14((&DAT_00681ea8)[arg1] + 1,1,99);
+      val_2 = FUN_0049aa14((&g_DuelPlayerLifeTotals)[arg1] + 1,1,99);
       val_3 = (int)(CONCAT44(val_3 >> 0x1f,val_3 >> 2) / (longlong)val_2);
       val_2 = (int)(*(int *)(&DAT_00666718 + arg1 * 4) * local_5c +
                    (*(int *)(&DAT_00666718 + arg1 * 4) * local_5c >> 0x1f & 0xfU)) >> 4;
-      if ((local_1b8 == 0) || ((val_3 < val_2 && (val_1 + local_1a4 < (int)(&DAT_00681ea8)[arg1]))))
+      if ((local_1b8 == 0) || ((val_3 < val_2 && (val_1 + local_1a4 < (int)(&g_DuelPlayerLifeTotals)[arg1]))))
       {
         local_1a4 = local_1a4 + val_1;
         arg2 = arg2 - val_3;
       }
       else {
         arg2 = arg2 - val_2;
-        *(uint32_t *)(&DAT_006826cc + local_1b4 * 0x120 + arg1 * 0x5b20) =
-             *(uint32_t *)(&DAT_006826cc + local_1b4 * 0x120 + arg1 * 0x5b20) | 8;
+        *(uint32_t *)(&g_DuelCardSlot_Flags + local_1b4 * 0x120 + arg1 * 0x5b20) =
+             *(uint32_t *)(&g_DuelCardSlot_Flags + local_1b4 * 0x120 + arg1 * 0x5b20) | 8;
       }
     }
     player_idx = player_idx + 1;
@@ -805,16 +805,16 @@ int32_t Ai_ChooseBlockers(int arg1,int arg2)
   uint32_t match_count;
   int slot_idx;
   
-  Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3ca8);
+  Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3ca8);
   u_ptr_1 = (uint32_t *)__itoa(arg2,&DAT_005126c8,10);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,u_ptr_1);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3cac);
-  u_ptr_1 = (uint32_t *)__itoa(DAT_00681ea8,&DAT_005126c8,10);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,u_ptr_1);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3cb0);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,u_ptr_1);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3cac);
+  u_ptr_1 = (uint32_t *)__itoa(g_DuelPlayerLifeTotals,&DAT_005126c8,10);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,u_ptr_1);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3cb0);
   u_ptr_1 = (uint32_t *)__itoa(DAT_00681eac,&DAT_005126c8,10);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,u_ptr_1);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_____004f3cb4);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,u_ptr_1);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_____004f3cb4);
   slot_idx = 0;
   while( true ) {
     if (arg1 == 0) {
@@ -832,19 +832,19 @@ int32_t Ai_ChooseBlockers(int arg1,int arg2)
     }
     if (match_count != 0xffffffff) {
       if ((match_count & 0x1000) != 0) {
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_Cast_004f3cbc);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Cast_004f3cbc);
       }
       if ((match_count & 0x2000) != 0) {
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3cc4);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3cc4);
       }
       if ((match_count & 0x4000) != 0) {
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s____target_004f3ccc);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s____target_004f3ccc);
       }
       if ((match_count & 0x100) == 0) {
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3cd8);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3cd8);
       }
       if ((char)match_count == -1) {
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_Player_004f3cdc);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Player_004f3cdc);
       }
       else {
         if (arg1 == 0) {
@@ -853,13 +853,13 @@ int32_t Ai_ChooseBlockers(int arg1,int arg2)
         else {
           player_idx = *(int *)(&DAT_00512978 + slot_idx * 4);
         }
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)(s_Swamp_004ff581 + player_idx * 0x34));
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)(s_Swamp_004ff581 + player_idx * 0x34));
       }
-      FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f3ce4);
+      Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f3ce4);
     }
     slot_idx = slot_idx + 1;
   }
-  Ai_Subsystem_004cc56d(0,0,0,-1,-1,&DAT_005f6810,0);
+  Ai_Subsystem_004cc56d(0,0,0,-1,-1,&g_DuelCardChoicePrompt,0);
   return 0;
 }
 
@@ -946,7 +946,7 @@ int32_t FUN_00432822(void)
 {
   DAT_0068eed8 = 1;
   ShowWindow(DAT_005f67ec,0);
-  SetFocus(DAT_00618990);
+  SetFocus(g_DuelMainHwnd);
   return 0;
 }
 
@@ -1002,7 +1002,7 @@ int FUN_004328ba(int player_id)
   }
   else {
     if (arg_1 == -1) {
-      Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f4458);
+      Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f4458);
       _DAT_0068f0c0 = 0;
       for (slot_idx = 0; slot_idx < 10; slot_idx = slot_idx + 1) {
         s_D_MAGIC0_SVE_004f4350[7] = FUN_00432860(slot_idx);
@@ -1056,10 +1056,10 @@ uint32_t FUN_00432a0b(char *filepath,int arg2)
   else {
     DAT_00515e88 = __open(str_1,0x8000);
     if (DAT_00515e88 == -1) {
-      FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s__EMPTY__004f4478);
+      Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s__EMPTY__004f4478);
     }
     else {
-      FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f4474);
+      Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f4474);
     }
     __close(DAT_00515e88);
     uval_1 = (uint32_t)(DAT_00515e88 != -1);
@@ -1094,19 +1094,19 @@ void FUN_00432ac7(int player_id)
       val_1 = FUN_00432be5(s_D_MAGIC0_SVE_004f4350);
       if (val_1 != 0) {
         if (DAT_00515ea4 == 0) {
-          Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f6810,(uint32_t *)s_Game_has_been_saved__004f4484);
+          Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Game_has_been_saved__004f4484);
         }
         else {
-          Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f6810,(uint32_t *)s_Game_NOT_saved__004f449c);
+          Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Game_NOT_saved__004f449c);
           Mem_AllocOrFree_0049f628(DAT_005f6c50,0x40,0x7f,0xc0,0x22,0xc);
         }
         if (DAT_00515ea4 == 0xd) {
-          FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_Write_access_denied__004f44b0);
+          Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Write_access_denied__004f44b0);
         }
         if (DAT_00515ea4 == 0x1c) {
-          FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_Disk_Full__004f44c8);
+          Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Disk_Full__004f44c8);
         }
-        FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_Press_key_to_continue__004f44d8);
+        Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Press_key_to_continue__004f44d8);
       }
     }
   }
@@ -1125,8 +1125,8 @@ void FUN_00432ac7(int player_id)
 int32_t FUN_00432be5(char *arg_1)
 
 {
-  Mem_AllocOrFree_004d9630((uint32_t *)&DAT_005f6810,(uint32_t *)&DAT_004f44f4);
-  FUN_004d9640((uint32_t *)&DAT_005f6810,(uint32_t *)s_____save_in_progress__004f44f8);
+  Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)&DAT_004f44f4);
+  Str_CopyFast((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_____save_in_progress__004f44f8);
   FUN_00432d7b(arg_1);
   return 1;
 }
@@ -1209,8 +1209,8 @@ int32_t FUN_00432c99(char *filepath)
     __close(DAT_00515e88);
     for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
       for (match_count = 0; match_count < 0x50; match_count = match_count + 1) {
-        if (*(int *)(&DAT_006826c4 + slot_idx * 0x5b20 + match_count * 0x120) != -1) {
-          (&DAT_00666408)[slot_idx] = match_count;
+        if (*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x5b20 + match_count * 0x120) != -1) {
+          (&g_DuelPlayerCreatureCount)[slot_idx] = match_count;
         }
       }
     }
@@ -1453,194 +1453,194 @@ uint32_t FUN_00432e04(void)
   uint32_t uVar187;
   uint32_t uVar188;
   
-  uval_1 = FUN_00433bb6(&DAT_004ff580 + DAT_00665ed0 * 0x34,0x340);
-  uval_2 = FUN_00433bb6(&DAT_004f71c0,0x500);
-  uval_3 = FUN_00433bb6(&DAT_0068eef0,4);
-  uval_4 = FUN_00433bb6(&DAT_006663fc,4);
-  uval_5 = FUN_00433bb6(&DAT_006764bc,4);
-  uval_6 = FUN_00433bb6(&DAT_0066ab04,4);
-  uval_7 = FUN_00433bb6(&DAT_0066aac4,4);
-  uval_8 = FUN_00433bb6(&DAT_0066643c,4);
-  uVar9 = FUN_00433bb6(&DAT_00666728,4);
-  uVar10 = FUN_00433bb6(&DAT_0068eee4,4);
-  uVar11 = FUN_00433bb6(&DAT_0067650c,4);
-  uVar12 = FUN_00433bb6(&DAT_006c121c,4);
-  uVar13 = FUN_00433bb6(&DAT_006826b4,4);
-  uVar14 = FUN_00433bb6(&DAT_0068ef98,4);
-  uVar15 = FUN_00433bb6(&DAT_0068edd4,4);
-  uVar16 = FUN_00433bb6(&DAT_0068f0b4,4);
-  uVar17 = FUN_00433bb6(&DAT_00666724,4);
-  uVar18 = FUN_00433bb6(&DAT_0068f368,4);
-  uVar19 = FUN_00433bb6(&DAT_00681ed0,4);
-  uVar20 = FUN_00433bb6(&DAT_00681eb4,4);
-  uVar21 = FUN_00433bb6(&DAT_00666740,4);
-  uVar22 = FUN_00433bb6(&DAT_0068ed10,0x40);
-  uVar23 = FUN_00433bb6(&DAT_00666570,0x198);
-  uVar24 = FUN_00433bb6(&DAT_00666900,0x58);
-  uVar25 = FUN_00433bb6(&DAT_0068f360,8);
-  uVar26 = FUN_00433bb6(&DAT_0068f2e0,0x40);
-  uVar27 = FUN_00433bb6(&DAT_0068ef50,0x40);
-  uVar28 = FUN_00433bb6(&DAT_006669e4,4);
-  uVar29 = FUN_00433bb6(&DAT_006664e0,4);
-  uVar30 = FUN_00433bb6(&DAT_0068f0d0,4);
-  uVar31 = FUN_00433bb6(&DAT_0068eed8,4);
-  uVar32 = FUN_00433bb6(&DAT_006668f8,4);
-  uVar33 = FUN_00433bb6(&DAT_0068eef4,4);
-  uVar34 = FUN_00433bb6(&DAT_0068eed4,4);
-  uVar35 = FUN_00433bb6(&deck,2000);
-  uVar36 = FUN_00433bb6(&DAT_006826c0,0xb640);
-  uVar37 = FUN_00433bb6(&DAT_00690b00,0x140);
-  uVar38 = FUN_00433bb6(&DAT_0068f370,4000);
-  uVar39 = FUN_00433bb6(&DAT_0068dd10,4000);
-  uVar40 = FUN_00433bb6(&DAT_006669f0,4000);
-  uVar41 = FUN_00433bb6(&DAT_0068ed50,0x80);
-  uVar42 = FUN_00433bb6(&DAT_00690318,4);
-  uVar43 = FUN_00433bb6(&DAT_0068f0f8,4);
-  uVar44 = FUN_00433bb6(&DAT_0068f2c8,4);
-  uVar45 = FUN_00433bb6(&DAT_0068f0bc,4);
-  uVar46 = FUN_00433bb6(&DAT_0068ee70,0x60);
-  uVar47 = FUN_00433bb6(&DAT_00666430,8);
-  uVar48 = FUN_00433bb6(&DAT_0068ece0,0x1c);
-  uVar49 = FUN_00433bb6(&DAT_0068eeec,4);
-  uVar50 = FUN_00433bb6(&DAT_00666710,0x10);
-  uVar51 = FUN_00433bb6(&DAT_00681ea4,4);
-  uVar52 = FUN_00433bb6(&DAT_00666408,8);
-  uVar53 = FUN_00433bb6(&DAT_006663f8,4);
-  uVar54 = FUN_00433bb6(&DAT_00666500,100);
-  uVar55 = FUN_00433bb6(&DAT_00681ea8,8);
-  uVar56 = FUN_00433bb6(&DAT_006668f0,8);
-  uVar57 = FUN_00433bb6(&DAT_0068f228,8);
-  uVar58 = FUN_00433bb6(&DAT_00666730,0x10);
-  uVar59 = FUN_00433bb6(&DAT_00666458,4);
-  uVar60 = FUN_00433bb6(&DAT_0068ed00,4);
-  uVar61 = FUN_00433bb6(&DAT_0068f2d4,4);
-  uVar62 = FUN_00433bb6(&DAT_0068f2c4,4);
-  uVar63 = FUN_00433bb6(&DAT_00681eb0,4);
-  uVar64 = FUN_00433bb6(&DAT_006826b0,4);
-  uVar65 = FUN_00433bb6(&DAT_00666440,4);
-  uVar66 = FUN_00433bb6(&DAT_006669e8,4);
-  uVar67 = FUN_00433bb6(&DAT_006664e4,4);
-  uVar68 = FUN_00433bb6(&DAT_00681ea0,4);
-  uVar69 = FUN_00433bb6(&DAT_0068ed04,4);
-  uVar70 = FUN_00433bb6(&DAT_00676510,4);
-  uVar71 = FUN_00433bb6(&DAT_00676504,4);
-  uVar72 = FUN_00433bb6(&DAT_0068ecb0,4);
-  uVar73 = FUN_00433bb6(&DAT_00690c48,4);
-  uVar74 = FUN_00433bb6(&DAT_00681ecc,4);
-  uVar75 = FUN_00433bb6(&DAT_0068ee64,4);
-  uVar76 = FUN_00433bb6(&DAT_00690310,4);
-  uVar77 = FUN_00433bb6(&DAT_0068ecfc,4);
-  uVar78 = FUN_00433bb6(&DAT_0066642c,4);
-  uVar79 = FUN_00433bb6(&DAT_0066aadc,4);
-  uVar80 = FUN_00433bb6(&DAT_0066aae0,4);
-  uVar81 = FUN_00433bb6(&DAT_0066641c,4);
-  uVar82 = FUN_00433bb6(&DAT_0066644c,4);
-  uVar83 = FUN_00433bb6(&DAT_0068f0c8,4);
-  uVar84 = FUN_00433bb6(&DAT_0066aad8,4);
-  uVar85 = FUN_00433bb6(&DAT_00666748,4);
-  uVar86 = FUN_00433bb6(&DAT_0068f0f4,4);
-  uVar87 = FUN_00433bb6(&DAT_0068ecd0,4);
-  uVar88 = FUN_00433bb6(&DAT_0068eccc,4);
-  uVar89 = FUN_00433bb6(&DAT_0068ee68,4);
-  uVar90 = FUN_00433bb6(&DAT_0068f230,4);
-  uVar91 = FUN_00433bb6(&DAT_00666754,4);
-  uVar92 = FUN_00433bb6(&DAT_0068edd0,4);
-  uVar93 = FUN_00433bb6(&DAT_00690af0,4);
-  uVar94 = FUN_00433bb6(&DAT_0068efa0,4);
-  uVar95 = FUN_00433bb6(&DAT_00681ec4,4);
-  uVar96 = FUN_00433bb6(&DAT_00666744,4);
-  uVar97 = FUN_00433bb6(&DAT_00666418,4);
-  uVar98 = FUN_00433bb6(&DAT_0068ee60,4);
-  uVar99 = FUN_00433bb6(&DAT_0068f0b8,4);
-  uVar100 = FUN_00433bb6(&DAT_00666770,0x40);
-  uVar101 = FUN_00433bb6(&DAT_0066aae4,4);
-  uVar102 = FUN_00433bb6(&DAT_0068ecb8,8);
-  uVar103 = FUN_00433bb6(&DAT_0068ef00,0x40);
-  uVar104 = FUN_00433bb6(&DAT_00667990,4);
-  uVar105 = FUN_00433bb6(&DAT_0068ecc8,4);
-  uVar106 = FUN_00433bb6(&DAT_006663f0,4);
-  uVar107 = FUN_00433bb6(&DAT_00690c44,4);
-  uVar108 = FUN_00433bb6(&DAT_00666758,4);
-  uVar109 = FUN_00433bb6(&DAT_00666454,4);
-  uVar110 = FUN_00433bb6(&DAT_006663f4,4);
-  uVar111 = FUN_00433bb6(&DAT_0068ef44,4);
-  uVar112 = FUN_00433bb6(&DAT_0068ede0,0x40);
-  uVar113 = FUN_00433bb6(&DAT_0068ee20,0x40);
-  uVar114 = FUN_00433bb6(&DAT_0068f320,0x40);
-  uVar115 = FUN_00433bb6(&DAT_0066aad0,8);
-  uVar116 = FUN_00433bb6(&DAT_00681eb8,8);
-  uVar117 = FUN_00433bb6(&DAT_006764b0,4);
-  uVar118 = FUN_00433bb6(&DAT_0068ef94,4);
-  uVar119 = FUN_00433bb6(&DAT_00666400,4);
-  uVar120 = FUN_00433bb6(&DAT_006664f0,8);
-  uVar121 = FUN_00433bb6(&DAT_006764d0,0x30);
-  uVar122 = FUN_00433bb6(&DAT_00676508,4);
-  uVar123 = FUN_00433bb6(&DAT_0068f220,4);
-  uVar124 = FUN_00433bb6(&DAT_00681ec0,4);
-  uVar125 = FUN_00433bb6(&DAT_0066aaf0,4);
-  uVar126 = FUN_00433bb6(&DAT_006663e8,8);
-  uVar127 = FUN_00433bb6(&DAT_0068f240,0x80);
-  uVar128 = FUN_00433bb6(&DAT_0068efb0,0x100);
-  uVar129 = FUN_00433bb6(&DAT_0068f120,0x100);
-  uVar130 = FUN_00433bb6(&DAT_00666960,0x80);
-  uVar131 = FUN_00433bb6(&DAT_00666460,0x80);
-  uVar132 = FUN_00433bb6(&DAT_006764b8,4);
-  uVar133 = FUN_00433bb6(&DAT_00676500,4);
-  uVar134 = FUN_00433bb6(&DAT_0068dd04,4);
-  uVar135 = FUN_00433bb6(&DAT_00666448,4);
-  uVar136 = FUN_00433bb6(&DAT_0068edd8,4);
-  uVar137 = FUN_00433bb6(&DAT_00666404,4);
-  uVar138 = FUN_00433bb6(&DAT_006664ec,4);
-  uVar139 = FUN_00433bb6(&DAT_0068dd00,4);
-  uVar140 = FUN_00433bb6(&DAT_00690320,2000);
-  uVar141 = FUN_00433bb6(&DAT_00681ee0,2000);
-  uVar142 = FUN_00433bb6(&DAT_0068f2c0,4);
-  uVar143 = FUN_00433bb6(&DAT_0068ef90,4);
-  uVar144 = FUN_00433bb6(&DAT_00666428,4);
-  uVar145 = FUN_00433bb6(&DAT_0068f2d8,4);
-  uVar146 = FUN_00433bb6(&DAT_0068ecc4,4);
-  uVar147 = FUN_00433bb6(&DAT_0068eedc,4);
-  uVar148 = FUN_00433bb6(&DAT_0068f110,4);
-  uVar149 = FUN_00433bb6(&DAT_00505984,4);
-  uVar150 = FUN_00433bb6(&DAT_00505988,4);
-  uVar151 = FUN_00433bb6(&DAT_0050598c,4);
-  uVar152 = FUN_00433bb6(&DAT_005f2f50,4);
-  uVar153 = FUN_00433bb6(&DAT_005f2f58,4);
-  uVar154 = FUN_00433bb6(&DAT_005f2ea0,0xa0);
-  uVar155 = FUN_00433bb6(&DAT_005f6c48,4);
-  uVar156 = FUN_00433bb6(&DAT_005f6c4c,4);
-  uVar157 = FUN_00433bb6(&DAT_005f2f4c,4);
-  uVar158 = FUN_00433bb6(&DAT_005ef9c0,0x3200);
-  uVar159 = FUN_00433bb6(&DAT_005f2e90,4);
-  uVar160 = FUN_00433bb6(&DAT_005071c0,4);
-  uVar161 = FUN_00433bb6(&DAT_005ef570,4);
-  uVar162 = FUN_00433bb6(&DAT_005f2f8c,4);
-  uVar163 = FUN_00433bb6(&DAT_005ef9a4,4);
-  uVar164 = FUN_00433bb6(&DAT_005ef990,0x14);
-  uVar165 = FUN_00433bb6(&Gold,4);
-  uVar166 = FUN_00433bb6(&DAT_005071b8,4);
-  uVar167 = FUN_00433bb6(&DAT_005ef580,1000);
-  uVar168 = FUN_00433bb6(&DAT_005f2f44,4);
-  uVar169 = FUN_00433bb6(&Scards,0xc0);
-  uVar170 = FUN_00433bb6(&DAT_005ef984,4);
-  uVar171 = FUN_00433bb6(&DAT_005f2bc0,0x2d0);
-  uVar172 = FUN_00433bb6(&DAT_005f6c64,4);
-  uVar173 = FUN_00433bb6(&DAT_005f2f54,4);
-  uVar174 = FUN_00433bb6(&DAT_005f67f8,4);
-  uVar175 = FUN_00433bb6(&DAT_00664d48,4);
-  uVar176 = FUN_00433bb6(&DAT_005f76cc,4);
-  uVar177 = FUN_00433bb6(&DAT_006669e4,4);
-  uVar178 = FUN_00433bb6(&DAT_005071c4,4);
-  uVar179 = FUN_00433bb6(&DAT_005f67f4,4);
-  uVar180 = FUN_00433bb6(&DAT_005ee570,0x1000);
-  uVar181 = FUN_00433bb6(&DAT_005ef9a8,4);
-  uVar182 = FUN_00433bb6(&DAT_00663e28,4);
-  uVar183 = FUN_00433bb6(&DAT_00663e2c,4);
-  uVar184 = FUN_00433bb6(&DAT_006169f0,4);
-  uVar185 = FUN_00433bb6(&DAT_00663e6c,4);
-  uVar186 = FUN_00433bb6(&DAT_00617380,4);
-  uVar187 = FUN_00433bb6(&DAT_005f6c70,0x40);
-  uVar188 = FUN_00433bb6(&DAT_005f6c5c,4);
+  uval_1 = FileIo_ReadDataBlock(&DAT_004ff580 + DAT_00665ed0 * 0x34, 0x340);
+  uval_2 = FileIo_ReadDataBlock(&DAT_004f71c0,0x500);
+  uval_3 = FileIo_ReadDataBlock(&DAT_0068eef0,4);
+  uval_4 = FileIo_ReadDataBlock(&DAT_006663fc,4);
+  uval_5 = FileIo_ReadDataBlock(&DAT_006764bc,4);
+  uval_6 = FileIo_ReadDataBlock(&DAT_0066ab04,4);
+  uval_7 = FileIo_ReadDataBlock(&DAT_0066aac4,4);
+  uval_8 = FileIo_ReadDataBlock(&DAT_0066643c,4);
+  uVar9 = FileIo_ReadDataBlock(&DAT_00666728,4);
+  uVar10 = FileIo_ReadDataBlock(&DAT_0068eee4,4);
+  uVar11 = FileIo_ReadDataBlock(&DAT_0067650c,4);
+  uVar12 = FileIo_ReadDataBlock(&DAT_006c121c,4);
+  uVar13 = FileIo_ReadDataBlock(&DAT_006826b4,4);
+  uVar14 = FileIo_ReadDataBlock(&DAT_0068ef98,4);
+  uVar15 = FileIo_ReadDataBlock(&DAT_0068edd4,4);
+  uVar16 = FileIo_ReadDataBlock(&DAT_0068f0b4,4);
+  uVar17 = FileIo_ReadDataBlock(&DAT_00666724,4);
+  uVar18 = FileIo_ReadDataBlock(&DAT_0068f368,4);
+  uVar19 = FileIo_ReadDataBlock(&DAT_00681ed0,4);
+  uVar20 = FileIo_ReadDataBlock(&DAT_00681eb4,4);
+  uVar21 = FileIo_ReadDataBlock(&DAT_00666740,4);
+  uVar22 = FileIo_ReadDataBlock(&DAT_0068ed10,0x40);
+  uVar23 = FileIo_ReadDataBlock(&DAT_00666570,0x198);
+  uVar24 = FileIo_ReadDataBlock(&DAT_00666900,0x58);
+  uVar25 = FileIo_ReadDataBlock(&DAT_0068f360,8);
+  uVar26 = FileIo_ReadDataBlock(&DAT_0068f2e0,0x40);
+  uVar27 = FileIo_ReadDataBlock(&DAT_0068ef50,0x40);
+  uVar28 = FileIo_ReadDataBlock(&DAT_006669e4,4);
+  uVar29 = FileIo_ReadDataBlock(&DAT_006664e0,4);
+  uVar30 = FileIo_ReadDataBlock(&DAT_0068f0d0,4);
+  uVar31 = FileIo_ReadDataBlock(&DAT_0068eed8,4);
+  uVar32 = FileIo_ReadDataBlock(&DAT_006668f8,4);
+  uVar33 = FileIo_ReadDataBlock(&DAT_0068eef4,4);
+  uVar34 = FileIo_ReadDataBlock(&DAT_0068eed4,4);
+  uVar35 = FileIo_ReadDataBlock(&deck,2000);
+  uVar36 = FileIo_ReadDataBlock(&DAT_006826c0,0xb640);
+  uVar37 = FileIo_ReadDataBlock(&DAT_00690b00,0x140);
+  uVar38 = FileIo_ReadDataBlock(&DAT_0068f370,4000);
+  uVar39 = FileIo_ReadDataBlock(&DAT_0068dd10,4000);
+  uVar40 = FileIo_ReadDataBlock(&DAT_006669f0,4000);
+  uVar41 = FileIo_ReadDataBlock(&DAT_0068ed50,0x80);
+  uVar42 = FileIo_ReadDataBlock(&DAT_00690318,4);
+  uVar43 = FileIo_ReadDataBlock(&DAT_0068f0f8,4);
+  uVar44 = FileIo_ReadDataBlock(&DAT_0068f2c8,4);
+  uVar45 = FileIo_ReadDataBlock(&DAT_0068f0bc,4);
+  uVar46 = FileIo_ReadDataBlock(&DAT_0068ee70,0x60);
+  uVar47 = FileIo_ReadDataBlock(&DAT_00666430,8);
+  uVar48 = FileIo_ReadDataBlock(&DAT_0068ece0,0x1c);
+  uVar49 = FileIo_ReadDataBlock(&DAT_0068eeec,4);
+  uVar50 = FileIo_ReadDataBlock(&DAT_00666710,0x10);
+  uVar51 = FileIo_ReadDataBlock(&g_DuelHumanPlayerIndex,4);
+  uVar52 = FileIo_ReadDataBlock(&g_DuelPlayerCreatureCount,8);
+  uVar53 = FileIo_ReadDataBlock(&DAT_006663f8,4);
+  uVar54 = FileIo_ReadDataBlock(&DAT_00666500,100);
+  uVar55 = FileIo_ReadDataBlock(&g_DuelPlayerLifeTotals,8);
+  uVar56 = FileIo_ReadDataBlock(&DAT_006668f0,8);
+  uVar57 = FileIo_ReadDataBlock(&DAT_0068f228,8);
+  uVar58 = FileIo_ReadDataBlock(&DAT_00666730,0x10);
+  uVar59 = FileIo_ReadDataBlock(&g_DuelDefendingPlayer,4);
+  uVar60 = FileIo_ReadDataBlock(&DAT_0068ed00,4);
+  uVar61 = FileIo_ReadDataBlock(&g_DuelDamageAccumulator,4);
+  uVar62 = FileIo_ReadDataBlock(&g_DuelCombatPhaseState,4);
+  uVar63 = FileIo_ReadDataBlock(&g_DuelPlayerManaPool,4);
+  uVar64 = FileIo_ReadDataBlock(&DAT_006826b0,4);
+  uVar65 = FileIo_ReadDataBlock(&DAT_00666440,4);
+  uVar66 = FileIo_ReadDataBlock(&DAT_006669e8,4);
+  uVar67 = FileIo_ReadDataBlock(&DAT_006664e4,4);
+  uVar68 = FileIo_ReadDataBlock(&g_DuelTurnCounter,4);
+  uVar69 = FileIo_ReadDataBlock(&DAT_0068ed04,4);
+  uVar70 = FileIo_ReadDataBlock(&g_DuelTargetPlayer,4);
+  uVar71 = FileIo_ReadDataBlock(&g_DuelTargetCardSlot,4);
+  uVar72 = FileIo_ReadDataBlock(&g_DuelActivePlayer,4);
+  uVar73 = FileIo_ReadDataBlock(&g_DuelActiveCardSlot,4);
+  uVar74 = FileIo_ReadDataBlock(&DAT_00681ecc,4);
+  uVar75 = FileIo_ReadDataBlock(&DAT_0068ee64,4);
+  uVar76 = FileIo_ReadDataBlock(&DAT_00690310,4);
+  uVar77 = FileIo_ReadDataBlock(&DAT_0068ecfc,4);
+  uVar78 = FileIo_ReadDataBlock(&g_DuelCurrentTurnPhase,4);
+  uVar79 = FileIo_ReadDataBlock(&DAT_0066aadc,4);
+  uVar80 = FileIo_ReadDataBlock(&DAT_0066aae0,4);
+  uVar81 = FileIo_ReadDataBlock(&DAT_0066641c,4);
+  uVar82 = FileIo_ReadDataBlock(&DAT_0066644c,4);
+  uVar83 = FileIo_ReadDataBlock(&DAT_0068f0c8,4);
+  uVar84 = FileIo_ReadDataBlock(&DAT_0066aad8,4);
+  uVar85 = FileIo_ReadDataBlock(&DAT_00666748,4);
+  uVar86 = FileIo_ReadDataBlock(&DAT_0068f0f4,4);
+  uVar87 = FileIo_ReadDataBlock(&DAT_0068ecd0,4);
+  uVar88 = FileIo_ReadDataBlock(&DAT_0068eccc,4);
+  uVar89 = FileIo_ReadDataBlock(&DAT_0068ee68,4);
+  uVar90 = FileIo_ReadDataBlock(&g_DuelCurrentEventCode,4);
+  uVar91 = FileIo_ReadDataBlock(&DAT_00666754,4);
+  uVar92 = FileIo_ReadDataBlock(&DAT_0068edd0,4);
+  uVar93 = FileIo_ReadDataBlock(&g_DuelCombatAttackerPlayer,4);
+  uVar94 = FileIo_ReadDataBlock(&g_DuelCombatBlockerSlot,4);
+  uVar95 = FileIo_ReadDataBlock(&DAT_00681ec4,4);
+  uVar96 = FileIo_ReadDataBlock(&DAT_00666744,4);
+  uVar97 = FileIo_ReadDataBlock(&DAT_00666418,4);
+  uVar98 = FileIo_ReadDataBlock(&DAT_0068ee60,4);
+  uVar99 = FileIo_ReadDataBlock(&DAT_0068f0b8,4);
+  uVar100 = FileIo_ReadDataBlock(&DAT_00666770,0x40);
+  uVar101 = FileIo_ReadDataBlock(&DAT_0066aae4,4);
+  uVar102 = FileIo_ReadDataBlock(&DAT_0068ecb8,8);
+  uVar103 = FileIo_ReadDataBlock(&DAT_0068ef00,0x40);
+  uVar104 = FileIo_ReadDataBlock(&DAT_00667990,4);
+  uVar105 = FileIo_ReadDataBlock(&DAT_0068ecc8,4);
+  uVar106 = FileIo_ReadDataBlock(&DAT_006663f0,4);
+  uVar107 = FileIo_ReadDataBlock(&DAT_00690c44,4);
+  uVar108 = FileIo_ReadDataBlock(&DAT_00666758,4);
+  uVar109 = FileIo_ReadDataBlock(&DAT_00666454,4);
+  uVar110 = FileIo_ReadDataBlock(&DAT_006663f4,4);
+  uVar111 = FileIo_ReadDataBlock(&DAT_0068ef44,4);
+  uVar112 = FileIo_ReadDataBlock(&DAT_0068ede0,0x40);
+  uVar113 = FileIo_ReadDataBlock(&DAT_0068ee20,0x40);
+  uVar114 = FileIo_ReadDataBlock(&DAT_0068f320,0x40);
+  uVar115 = FileIo_ReadDataBlock(&DAT_0066aad0,8);
+  uVar116 = FileIo_ReadDataBlock(&DAT_00681eb8,8);
+  uVar117 = FileIo_ReadDataBlock(&DAT_006764b0,4);
+  uVar118 = FileIo_ReadDataBlock(&DAT_0068ef94,4);
+  uVar119 = FileIo_ReadDataBlock(&DAT_00666400,4);
+  uVar120 = FileIo_ReadDataBlock(&DAT_006664f0,8);
+  uVar121 = FileIo_ReadDataBlock(&DAT_006764d0,0x30);
+  uVar122 = FileIo_ReadDataBlock(&DAT_00676508,4);
+  uVar123 = FileIo_ReadDataBlock(&DAT_0068f220,4);
+  uVar124 = FileIo_ReadDataBlock(&DAT_00681ec0,4);
+  uVar125 = FileIo_ReadDataBlock(&DAT_0066aaf0,4);
+  uVar126 = FileIo_ReadDataBlock(&DAT_006663e8,8);
+  uVar127 = FileIo_ReadDataBlock(&DAT_0068f240,0x80);
+  uVar128 = FileIo_ReadDataBlock(&DAT_0068efb0,0x100);
+  uVar129 = FileIo_ReadDataBlock(&DAT_0068f120,0x100);
+  uVar130 = FileIo_ReadDataBlock(&DAT_00666960,0x80);
+  uVar131 = FileIo_ReadDataBlock(&DAT_00666460,0x80);
+  uVar132 = FileIo_ReadDataBlock(&DAT_006764b8,4);
+  uVar133 = FileIo_ReadDataBlock(&DAT_00676500,4);
+  uVar134 = FileIo_ReadDataBlock(&DAT_0068dd04,4);
+  uVar135 = FileIo_ReadDataBlock(&DAT_00666448,4);
+  uVar136 = FileIo_ReadDataBlock(&DAT_0068edd8,4);
+  uVar137 = FileIo_ReadDataBlock(&DAT_00666404,4);
+  uVar138 = FileIo_ReadDataBlock(&DAT_006664ec,4);
+  uVar139 = FileIo_ReadDataBlock(&DAT_0068dd00,4);
+  uVar140 = FileIo_ReadDataBlock(&DAT_00690320,2000);
+  uVar141 = FileIo_ReadDataBlock(&DAT_00681ee0,2000);
+  uVar142 = FileIo_ReadDataBlock(&DAT_0068f2c0,4);
+  uVar143 = FileIo_ReadDataBlock(&DAT_0068ef90,4);
+  uVar144 = FileIo_ReadDataBlock(&DAT_00666428,4);
+  uVar145 = FileIo_ReadDataBlock(&DAT_0068f2d8,4);
+  uVar146 = FileIo_ReadDataBlock(&DAT_0068ecc4,4);
+  uVar147 = FileIo_ReadDataBlock(&DAT_0068eedc,4);
+  uVar148 = FileIo_ReadDataBlock(&DAT_0068f110,4);
+  uVar149 = FileIo_ReadDataBlock(&DAT_00505984,4);
+  uVar150 = FileIo_ReadDataBlock(&DAT_00505988,4);
+  uVar151 = FileIo_ReadDataBlock(&DAT_0050598c,4);
+  uVar152 = FileIo_ReadDataBlock(&DAT_005f2f50,4);
+  uVar153 = FileIo_ReadDataBlock(&DAT_005f2f58,4);
+  uVar154 = FileIo_ReadDataBlock(&DAT_005f2ea0,0xa0);
+  uVar155 = FileIo_ReadDataBlock(&DAT_005f6c48,4);
+  uVar156 = FileIo_ReadDataBlock(&DAT_005f6c4c,4);
+  uVar157 = FileIo_ReadDataBlock(&DAT_005f2f4c,4);
+  uVar158 = FileIo_ReadDataBlock(&DAT_005ef9c0,0x3200);
+  uVar159 = FileIo_ReadDataBlock(&DAT_005f2e90,4);
+  uVar160 = FileIo_ReadDataBlock(&DAT_005071c0,4);
+  uVar161 = FileIo_ReadDataBlock(&DAT_005ef570,4);
+  uVar162 = FileIo_ReadDataBlock(&DAT_005f2f8c,4);
+  uVar163 = FileIo_ReadDataBlock(&DAT_005ef9a4,4);
+  uVar164 = FileIo_ReadDataBlock(&DAT_005ef990,0x14);
+  uVar165 = FileIo_ReadDataBlock(&Gold,4);
+  uVar166 = FileIo_ReadDataBlock(&DAT_005071b8,4);
+  uVar167 = FileIo_ReadDataBlock(&DAT_005ef580,1000);
+  uVar168 = FileIo_ReadDataBlock(&DAT_005f2f44,4);
+  uVar169 = FileIo_ReadDataBlock(&Scards,0xc0);
+  uVar170 = FileIo_ReadDataBlock(&DAT_005ef984,4);
+  uVar171 = FileIo_ReadDataBlock(&DAT_005f2bc0,0x2d0);
+  uVar172 = FileIo_ReadDataBlock(&DAT_005f6c64,4);
+  uVar173 = FileIo_ReadDataBlock(&DAT_005f2f54,4);
+  uVar174 = FileIo_ReadDataBlock(&DAT_005f67f8,4);
+  uVar175 = FileIo_ReadDataBlock(&DAT_00664d48,4);
+  uVar176 = FileIo_ReadDataBlock(&DAT_005f76cc,4);
+  uVar177 = FileIo_ReadDataBlock(&DAT_006669e4,4);
+  uVar178 = FileIo_ReadDataBlock(&DAT_005071c4,4);
+  uVar179 = FileIo_ReadDataBlock(&DAT_005f67f4,4);
+  uVar180 = FileIo_ReadDataBlock(&DAT_005ee570,0x1000);
+  uVar181 = FileIo_ReadDataBlock(&DAT_005ef9a8,4);
+  uVar182 = FileIo_ReadDataBlock(&DAT_00663e28,4);
+  uVar183 = FileIo_ReadDataBlock(&DAT_00663e2c,4);
+  uVar184 = FileIo_ReadDataBlock(&DAT_006169f0,4);
+  uVar185 = FileIo_ReadDataBlock(&DAT_00663e6c,4);
+  uVar186 = FileIo_ReadDataBlock(&DAT_00617380,4);
+  uVar187 = FileIo_ReadDataBlock(&DAT_005f6c70,0x40);
+  uVar188 = FileIo_ReadDataBlock(&DAT_005f6c5c,4);
   return uval_1 & 1 & uval_2 & uval_3 & uval_4 & uval_5 & uval_6 & uval_7 & uval_8 & uVar9 & uVar10 & uVar11
          & uVar12 & uVar13 & uVar14 & uVar15 & uVar16 & uVar17 & uVar18 & uVar19 & uVar20 & uVar21 &
          uVar22 & uVar23 & uVar24 & uVar25 & uVar26 & uVar27 & uVar28 & uVar29 & uVar30 & uVar31 &
@@ -1666,13 +1666,13 @@ uint32_t FUN_00432e04(void)
 
 
 /*
- * Decompiled function: FUN_00433bb6
+ * Decompiled function: FileIo_ReadDataBlock
  * Entry Point: 00433bb6
  * Size: 131 bytes
  */
 
 
-uint32_t FUN_00433bb6(void *arg1,uint32_t arg2)
+uint32_t FileIo_ReadDataBlock(void *arg1,uint32_t arg2)
 
 {
   uint32_t uval_1;
@@ -1759,12 +1759,12 @@ void FUN_00433caa(char *filepath)
   DAT_00515e88 = __open(str_1,0x8301,0x80);
   if (DAT_00515e88 != -1) {
     DAT_00515e80 = 0;
-    FUN_00433bb6(&DAT_0060cc64,4);
+    FileIo_ReadDataBlock(&DAT_0060cc64,4);
     FUN_00432e04();
-    FUN_00433bb6(&_PlayerFace,4);
-    FUN_00433bb6(&_OpponFace,4);
-    FUN_00433bb6(&DAT_00664b90,0x32);
-    FUN_00433bb6(&DAT_006015b0,0x32);
+    FileIo_ReadDataBlock(&_PlayerFace,4);
+    FileIo_ReadDataBlock(&_OpponFace,4);
+    FileIo_ReadDataBlock(&DAT_00664b90,0x32);
+    FileIo_ReadDataBlock(&DAT_006015b0,0x32);
     __close(DAT_00515e88);
   }
   return;
@@ -1796,14 +1796,14 @@ uint32_t FUN_00433d45(char *filepath)
   }
   else {
     DAT_00515e80 = 1;
-    uval_1 = FUN_00433bb6(&slot_idx,4);
+    uval_1 = FileIo_ReadDataBlock(&slot_idx,4);
     if (slot_idx == DAT_0060cc64) {
       uval_2 = FUN_00432e04();
-      uval_3 = FUN_00433bb6(&_PlayerFace,4);
-      uval_4 = FUN_00433bb6(&_OpponFace,4);
-      uval_5 = FUN_00433bb6(&DAT_00664b90,0x32);
+      uval_3 = FileIo_ReadDataBlock(&_PlayerFace,4);
+      uval_4 = FileIo_ReadDataBlock(&_OpponFace,4);
+      uval_5 = FileIo_ReadDataBlock(&DAT_00664b90,0x32);
       DAT_00664bc2 = 0;
-      match_count = FUN_00433bb6(&DAT_006015b0,0x32);
+      match_count = FileIo_ReadDataBlock(&DAT_006015b0,0x32);
       match_count = uval_1 & 1 & uval_2 & uval_3 & uval_4 & uval_5 & match_count;
       DAT_006015e2 = 0;
     }
@@ -1834,7 +1834,7 @@ bool UI_RegisterClass_00433e40(LPCSTR str_1)
   local_2c.lpfnWndProc = UI_WndProc_00433ed2;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
-  local_2c.hInstance = DAT_00664680;
+  local_2c.hInstance = g_DuelInstanceHandle;
   local_2c.hIcon = LoadIconA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hCursor = LoadCursorA((HINSTANCE)0x0,(LPCSTR)0x7f00);
   local_2c.hbrBackground = (HBRUSH)0x6;
@@ -1878,7 +1878,7 @@ LRESULT UI_WndProc_00433ed2(HWND hwnd,uint32_t uMsg,HDC wParam,LPARAM lParam)
   else if (uMsg < 0x15) {
     if (uMsg == 0x14) {
       color_idx = wParam;
-      FUN_004707a4(wParam);
+      GDI_RealizeAndFlushPalette(wParam);
       GetClientRect(hwnd,&target_idx);
       slot_idx = CreateSolidBrush(0xffff);
       FillRect(color_idx,&target_idx,slot_idx);
@@ -1888,7 +1888,7 @@ LRESULT UI_WndProc_00433ed2(HWND hwnd,uint32_t uMsg,HDC wParam,LPARAM lParam)
     if (uMsg == 0xf) {
       hdc = BeginPaint(hwnd,&local_134);
       if (hdc != (HDC)0x0) {
-        FUN_004707a4(hdc);
+        GDI_RealizeAndFlushPalette(hdc);
         GetWindowTextA(hwnd,local_f4,200);
         SetTextAlign(hdc,6);
         SetBkMode(hdc,1);
@@ -1901,7 +1901,7 @@ LRESULT UI_WndProc_00433ed2(HWND hwnd,uint32_t uMsg,HDC wParam,LPARAM lParam)
     }
   }
   else if ((0x30e < uMsg) && (uMsg < 0x312)) {
-    LVar1 = FUN_00472b60(hwnd,uMsg,(HWND)wParam,lParam);
+    LVar1 = GDI_RealizePaletteTree(hwnd,uMsg,(HWND)wParam,lParam);
     return LVar1;
   }
   LVar1 = DefWindowProcA(hwnd,uMsg,(WPARAM)wParam,lParam);

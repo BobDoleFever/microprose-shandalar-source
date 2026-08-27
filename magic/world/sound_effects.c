@@ -46,7 +46,7 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
   FUN_0050b9d5(g_DisplaySurfaceScreen);
   for (local_20 = 1; (int)local_20 < 4; local_20 = local_20 + 1) {
     do {
-      iVar1 = FUN_0040a1d2(3);
+      iVar1 = Math_RandomRange(3);
       if (iVar1 == 0) {
         local_2c = Pic_Subsystem_00451d90(0x40,1);
       }
@@ -57,25 +57,25 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
     } while ((((iVar1 != local_20) || (iVar1 = Glue_Subsystem_004f0b50(local_2c), iVar1 < 0)) ||
              (((&DAT_0051aed1)[local_2c * 0x34] & 9) != 0)) ||
             (iVar1 = FUN_00485005(local_2c), iVar1 == 0));
-    if ((local_20 == 1) && (iVar1 = FUN_0040a1d2(2), iVar1 != 0)) {
+    if ((local_20 == 1) && (iVar1 = Math_RandomRange(2), iVar1 != 0)) {
       local_2c = arg_1 - 1;
     }
     auStack_1c[local_20] = local_2c;
   }
   do {
     do {
-      iVar1 = FUN_0040a1d2(500);
+      iVar1 = Math_RandomRange(500);
     } while (*(int *)(&deck + iVar1 * 4) == -1);
     iVar2 = Pic_Subsystem_00452551(*(uint *)(&deck + iVar1 * 4) & 0xfff);
   } while ((iVar2 < 2) || (iVar2 = FUN_00485005(iVar1), iVar2 == 0));
   Glue_Subsystem_004eadb7(1);
   do {
     if ((int)(CONCAT44(DAT_0067f37c >> 0x1f,DAT_0067f37c >> 2) % 3) != 0) {
-      iVar1 = FUN_0040a1d2(2);
+      iVar1 = Math_RandomRange(2);
       if (iVar1 == 0) {
         do {
           do {
-            local_20 = FUN_0040a1d2(g_MasterCardCount + -0x29);
+            local_20 = Math_RandomRange(g_MasterCardCount + -0x29);
             iVar1 = Pic_Subsystem_004521a6
                               ((int)(char)(&DAT_0051aebe)[local_20 * 0x34],1 << ((byte)arg_1 & 0x1f)
                                ,1);
@@ -88,17 +88,17 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
       }
       goto switchD_0040e766_default;
     }
-    iVar2 = FUN_0040a1d2(0xe);
+    iVar2 = Math_RandomRange(0xe);
     iVar3 = iVar2 + 5;
     FUN_0040b3c2(5,iVar3);
-    FUN_0040a1d2(2);
+    Math_RandomRange(2);
   } while ((DAT_00522454 != -1) && ((iVar3 == 0xb || (iVar3 == 0x11))));
   strcpy(&g_OverworldWorldState,s_You_happen_upon_a_00518dc8);
   FUN_0040eb04(iVar3);
   strcat(&g_OverworldWorldState,&DAT_00518ddc);
   FUN_00489710(&g_OverworldWorldState,0x5a,100);
   local_20 = 0xffffffff;
-  iVar3 = FUN_0040a1d2(4);
+  iVar3 = Math_RandomRange(4);
   if (iVar3 == 0) {
     local_20 = FUN_0040eab1();
   }
@@ -116,7 +116,7 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
     }
     break;
   case 2:
-    iVar1 = FUN_0040a1d2(2);
+    iVar1 = Math_RandomRange(2);
     if ((iVar1 == 0) && (0x7f < DAT_0052f004)) {
       strcpy(&g_OverworldWorldState,s_Thieves_take_half_your_gold__00518e0c);
       Gold = Gold / 2;
@@ -173,7 +173,7 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
     } while (199 < Gold);
     break;
   case 8:
-    local_8 = FUN_0040a1d2(DAT_00523524 + -3);
+    local_8 = Math_RandomRange(DAT_00523524 + -3);
     local_8 = local_8 + 1;
     (&DAT_00522628)[(DAT_00523524 + -1) * 0x44] = 0x10;
     *(undefined4 *)(&DAT_0052262c + (DAT_00523524 + -1) * 0x44) =
@@ -191,7 +191,7 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
     }
     break;
   case 10:
-    iVar1 = FUN_0040a1d2(2);
+    iVar1 = Math_RandomRange(2);
     if ((iVar1 == 0) && (0x7f < DAT_0052f004)) {
       strcpy(&g_OverworldWorldState,s_Thieves_take_half_your_amulets__00518f48);
       for (local_24 = 0; local_24 < 5; local_24 = local_24 + 1) {
@@ -212,7 +212,7 @@ void Sound_LoadWav_x_DuelSounds_artifact_0040de30(int arg_1)
   case 0xb:
     local_2c = 0;
     do {
-      iVar1 = FUN_0040a1d2(5);
+      iVar1 = Math_RandomRange(5);
       if ((&DAT_0067bdc0)[iVar1] != 0) break;
       local_2c = local_2c + 1;
     } while ((int)local_2c < 99);
@@ -323,7 +323,7 @@ switchD_0040e766_default:
 undefined4 Sound_LoadWav_x_sound_button2_0041ed86(int arg_1)
 
 {
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   if (DAT_00640f08 == 0) {
     DAT_00640f08 = *(int *)(arg_1 + 0x2c);
   }

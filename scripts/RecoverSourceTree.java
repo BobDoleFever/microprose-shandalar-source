@@ -1,3 +1,6 @@
+import ghidra.app.decompiler.DecompInterface;
+import ghidra.app.decompiler.DecompileOptions;
+import ghidra.app.decompiler.DecompileResults;
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.data.StringDataInstance;
@@ -86,11 +89,10 @@ public class RecoverSourceTree extends GhidraScript {
         // 3. Propagate attribution to adjacent functions in the same code blocks / call trees
         propagateAttributions(funcToSourceFile);
 
-        // 4. Group individual decompiled C function files into authentic source modules
-        File funcDir = new File(decompRoot, baseName + "/functions");
+        // 4. Group functions into authentic source modules
         File mappingCsv = new File(decompRoot, baseName + "/source_mapping.csv");
         
-        Map<String, List<File>> moduleFiles = new TreeMap<>();
+        Map<String, List<Function>> moduleFunctions = new TreeMap<>();
         PrintWriter mappingWtr = new PrintWriter(new OutputStreamWriter(new FileOutputStream(mappingCsv), StandardCharsets.UTF_8));
         mappingWtr.println("Address,FunctionName,SourceFile,ModuleGroup");
 
@@ -100,22 +102,20 @@ public class RecoverSourceTree extends GhidraScript {
             Address entry = f.getEntryPoint();
             String name = f.getName();
             String srcFile = funcToSourceFile.getOrDefault(entry, "unattributed/" + baseName + "_core.c");
-            
-            String safeName = sanitizeFilename(name) + "_" + entry.toString() + ".c";
-            File singleFuncFile = new File(funcDir, safeName);
 
             mappingWtr.println(entry + ",\"" + name + "\",\"" + srcFile + "\",\"" + getCategory(srcFile) + "\"");
-
-            if (singleFuncFile.exists()) {
-                moduleFiles.computeIfAbsent(srcFile, k -> new ArrayList<>()).add(singleFuncFile);
-            }
+            moduleFunctions.computeIfAbsent(srcFile, k -> new ArrayList<>()).add(f);
         }
         mappingWtr.close();
 
         // 5. Build consolidated module C files under src/<module>/
-        for (Map.Entry<String, List<File>> modEntry : moduleFiles.entrySet()) {
+        DecompInterface decompiler = new DecompInterface();
+        decompiler.setOptions(new DecompileOptions());
+        decompiler.openProgram(currentProgram);
+
+        for (Map.Entry<String, List<Function>> modEntry : moduleFunctions.entrySet()) {
             String relativeSrc = modEntry.getKey();
-            List<File> files = modEntry.getValue();
+            List<Function> funcList = modEntry.getValue();
 
             File targetModuleFile = new File(srcModuleDir, relativeSrc);
             targetModuleFile.getParentFile().mkdirs();
@@ -124,7 +124,7 @@ public class RecoverSourceTree extends GhidraScript {
                 modWtr.println("/*");
                 modWtr.println(" * " + relativeSrc + " - Reconstructed MicroProse Source Module");
                 modWtr.println(" * Program: " + progName);
-                modWtr.println(" * Contained Functions: " + files.size());
+                modWtr.println(" * Contained Functions: " + funcList.size());
                 modWtr.println(" */");
                 modWtr.println("#include <stdio.h>");
                 modWtr.println("#include <stdlib.h>");
@@ -136,18 +136,21 @@ public class RecoverSourceTree extends GhidraScript {
                 modWtr.println("#include \"" + baseName + ".h\"");
                 modWtr.println();
 
-                for (File f : files) {
-                    List<String> lines = Files.readAllLines(f.toPath(), StandardCharsets.UTF_8);
-                    for (String line : lines) {
-                        // Skip local include in consolidated module
-                        if (line.startsWith("#include \"" + baseName + ".h\"")) continue;
-                        modWtr.println(line);
+                for (Function f : funcList) {
+                    DecompileResults res = decompiler.decompileFunction(f, 60, monitor);
+                    if (res != null && res.decompileCompleted()) {
+                        String cCode = res.getDecompiledFunction().getC();
+                        modWtr.println("/* ==========================================================================");
+                        modWtr.println(" * Function: " + f.getName() + " @ " + f.getEntryPoint());
+                        modWtr.println(" * ========================================================================== */");
+                        modWtr.println(cCode);
+                        modWtr.println();
                     }
-                    modWtr.println();
                 }
             }
-            println("   -> Created module: " + targetModuleFile.getAbsolutePath() + " (" + files.size() + " functions)");
+            println("   -> Created module: " + targetModuleFile.getAbsolutePath() + " (" + funcList.size() + " functions)");
         }
+        decompiler.dispose();
 
         println("=========================================================");
         println(" Source tree reconstruction for " + progName + " complete!");

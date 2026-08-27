@@ -1394,7 +1394,7 @@ int Save_ProcessGame_004207a8(int player_id)
   FILE *slot_idx;
   
   card_idx = s_magic4_map_0051a438;
-  FUN_005112b0(0,(short)g_MidiMusicTrackId);
+  Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
   FileIO_OpenFileStream(1,0,0,s_menopt_pic_0051a444,
                (short *)((int)&DAT_0070a130 + ((DAT_0070a880 == 8) - 1 & 0xff8f5ed1)));
   Surface_StretchBlt((int *)g_DisplaySurfaceBackBuffer,0,0,0x280,0x1e0,(int *)g_DisplaySurfaceScreen
@@ -1475,14 +1475,14 @@ LAB_00420bf9:
   FUN_0041f391();
   Mem_AllocOrFree_0041f12b(color_idx);
   if (DAT_005387b0 == 0xe) {
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     return -1;
   }
   if (arg_1 == 0) {
 LAB_00421183:
     fclose(slot_idx);
     Mem_AllocOrFree_0050fc50(DAT_005387b8);
-    FUN_005112b0(0,(short)g_MidiMusicTrackId);
+    Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
     return DAT_005387b0;
   }
   local_30 = DAT_005387b0 + -4;
@@ -1650,7 +1650,7 @@ void Action_PromptTarget_0049239e(int spell_id)
   strcat(&g_OverworldWorldState,char_ptr_1);
   strcat(&g_OverworldWorldState,s_cards__005287bc);
   FUN_0040d469((int)g_DisplaySurfaceScreen,0xfe,0x140,200);
-  FUN_0040a3e1();
+  App_ProcessPendingMessages();
   Ai_Subsystem_004cd1d1();
   PTR_FUN_00527b3c = Mem_AllocOrFree_0040eea2;
   val_2 = FUN_0041f354();
@@ -1670,7 +1670,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       if (DAT_0067bdb4 != 0x3e) {
         Pic_Subsystem_00423c82(0x10);
       }
-      FUN_005112b0(0,(short)g_MidiMusicTrackId);
+      Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
       if (DAT_0067bdb4 != 0x3e) {
         return;
       }
@@ -1682,7 +1682,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       strcat(&g_OverworldWorldState,s_Shandalar_is_free__Prepare_to_fa_00528840);
       *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 5;
       FUN_0040d469((int)g_DisplaySurfaceScreen,99,0x140,0x100);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
       loop_idx = FUN_004922dc();
       strcpy(&g_OverworldWorldState,s_Your_battles_so_far_will_banish_t_0052887c);
@@ -1695,9 +1695,9 @@ void Action_PromptTarget_0049239e(int spell_id)
       strcat(&g_OverworldWorldState,s_years__Each_life_it_loses_in_the_005288c0);
       strcat(&g_OverworldWorldState,s_will_banish_it_for_10_additional_005288f0);
       FUN_0040d469((int)g_DisplaySurfaceScreen,99,0x140,0x15e);
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
-      FUN_005112b0(0,(short)g_MidiMusicTrackId);
+      Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
       DeckBuilderMain(_hwndScreen,1,1);
       Pic_Load_advfac64_0040a4fc();
       player_idx = (LPVOID)Glue_Subsystem_004ea97c(0,100);
@@ -1713,7 +1713,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       g_GlobalEnchantmentCardId = Pic_Subsystem_0045268f(0x1d);
       Deck_LoadOneDeckProfile(0,player_idx);
       FUN_0040b3c2(2,0xb7);
-      FUN_005112b0(0,(short)g_MidiMusicTrackId);
+      Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
       FUN_0050d560(0,0);
       LoadPalNoPic(s_advfac64_pic_00528924);
       FUN_00409e6d(s_mtgend_avi_00528934,(g_AiManaColorCost_Red + -0x230) / 2,(g_AiManaColorCost_Green + -0x1a4) / 2,0);
@@ -1742,10 +1742,10 @@ void Action_PromptTarget_0049239e(int spell_id)
       strcat(&g_OverworldWorldState,char_ptr_1);
       strcat(&g_OverworldWorldState,s_years__005289ac);
       strcat(&g_OverworldWorldState,s_The_people_rejoice__Life_is_good_005289b8);
-      FUN_0040d4d1((int)g_DisplaySurfaceScreen,0xd8,0x140,0x81);
-      FUN_0040a3e1();
+      Font_DrawTextInRect((int)g_DisplaySurfaceScreen,0xd8,0x140,0x81);
+      App_ProcessPendingMessages();
       Ai_Subsystem_004cd1d1();
-      FUN_005112b0(0,(short)g_MidiMusicTrackId);
+      Surface_TransformPoint(0,(short)g_MidiMusicTrackId);
       LoadPalNoPic(s_advfac64_pic_005289dc);
       Palette_Subsystem_004a5fdc();
       Castle_Process_00421b32();

@@ -121,7 +121,7 @@ LAB_004f108c:
     }
     *(int *)g_DisplaySurfaceScreen = 0;
     uStackY_34 = 0x4f11b4;
-    FUN_0050dce0((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
+    Surface_BlitToDevice((int *)g_DisplaySurfaceBackBuffer,0,0,g_AiManaColorCost_Red,g_AiManaColorCost_Green,
                  (int *)g_DisplaySurfaceScreen,0,0);
     if (arg1 == 0) {
       Ai_Subsystem_004cd1d1();
@@ -219,7 +219,7 @@ LAB_004f108c:
       if (g_CombatAttackerSlotIndex == 1) {
         *(uint32_t *)(&deck + local_1790 * 4) = *(uint32_t *)(&deck + local_1790 * 4) ^ 0x4000;
       }
-      FUN_0040a3e1();
+      App_ProcessPendingMessages();
     }
   } while( true );
 }
