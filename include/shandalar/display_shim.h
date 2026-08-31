@@ -7,6 +7,7 @@
 
 #include "types.h"
 #include "graphics.h"
+#include "sprite.h"
 
 #ifdef __cplusplus
 extern "C" {

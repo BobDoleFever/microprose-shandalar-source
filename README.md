@@ -173,8 +173,16 @@ To build and run the Shandalar decompilation suite, ensure you have the followin
 
 ### macOS
 ```bash
+# Install the native SDL development tools.
 brew install sdl2 cmake
+
+# Install the i686 PE compiler and Wine runtime used by make game.
+brew bundle
+make pe-toolcheck
 ```
+
+The `Brewfile` installs MinGW-w64 and Wine 11. The project does not install
+packages automatically. Wine uses the isolated prefix `build/wineprefix`.
 
 ### Ubuntu / Debian Linux
 ```bash
@@ -225,37 +233,43 @@ cmake --build .
 
 ## Running the Engine & Game
 
-### 1. Launch the Full Game via Original `WinMain` Entry Point
-Launch the full reconstructed engine from its authentic `WinMain` entry point, specifying the directory where your authentic 1997 game files reside:
+### 1. Build and launch the recovered `MAGIC.EXE`
+
+`make game` generates and compiles a new i686 `MAGIC.EXE` from
+`magic/magic_unified.c`. It does not execute the retail `MAGIC.EXE`. The
+launcher maps the recovered initialized image as non-executable data and runs
+the new PE through Wine.
 
 ```bash
-# Using Makefile shortcut
-make game
+# Build the source-built PE without starting Wine.
+make game-build
 
-# Or executing directly with custom asset path and resolution
-./build/shandalar_game --dir "/Users/ben/Downloads/shand-extract/program" --cmd "/MTGshell /6"
+# Build and start it with a legally obtained data directory.
+make game DATA_DIR="/path/to/shandalar/program"
+
+# Use a different recovered command line when required.
+make game DATA_DIR="/path/to/shandalar/program" GAME_ARGS="/MTGshell /6"
 ```
 
-```
-=========================================================
- MicroProse Magic: The Gathering (Shandalar 1997)
- Launching Game From Original WinMain Entry Point
-=========================================================
-[Entry] Setting game working directory: /Users/ben/Downloads/shand-extract/program
-[Entry] Invoking authentic WinMain(hInstance, hPrevInstance, "/MTGshell /6", 1)...
-=========================================================
- MicroProse Magic: The Gathering (Shandalar 1997)
- Executing Authentic WinMain Entry Point
-=========================================================
-[WinMain] Resolution: 640x480
-[DisplayShim] Initialized modern display (640x480 -> 1280x960 scale)
-[SoundShim] Initialized modern audio subsystem (SDL2 Audio backend).
-[Sound] Triggering background music (sound/locmus1.wav)...
-[SoundShim] Playing sound file: sound/locmus1.wav
-[WinMain] Entering main game message pump loop...
+The data directory must contain `ADVINTER.pic`. During the first playable
+milestone it can also contain the retail companion DLL and EXE modules. The
+project will replace these temporary dependencies with source-built PE files.
+See [`docs/MAGIC_32BIT_PE_IMPLEMENTATION_PLAN.md`](docs/MAGIC_32BIT_PE_IMPLEMENTATION_PLAN.md)
+for the implementation status and remaining acceptance gates.
+
+Use `SHANDALAR_PE_TRACE=imports,calls,files,resources` for PE diagnostics. Use
+`SHANDALAR_PE_BREAK_ON_ERROR=1` to break into an attached debugger after a
+startup failure.
+
+### 2. Launch the Sid test program
+
+The former game target is available under its correct test name:
+
+```bash
+make sidtest
 ```
 
-### 2. Run the Automated Asset & Sprite Verification Test
+### 3. Run the Automated Asset & Sprite Verification Test
 Directly tests opening authentic `ICONS.SPR` from disk, unpacking all 24 sprites, and rendering 120 test frames in headless mode:
 
 ```bash

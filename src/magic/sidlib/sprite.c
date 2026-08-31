@@ -12,6 +12,8 @@
 
 #include "shandalar/shandalar.h"
 #include "shandalar/sprite.h"
+#include "shandalar/display_shim.h"
+#include "shandalar/win32_internal.h"
 
 /* Win32 / CRT IO compatibility helpers */
 #ifndef _fileno
@@ -584,5 +586,166 @@ void Sprite_DrawScaled(ScreenSurface *surf, int dst_x, int dst_y, int target_w, 
         dst_y++;
         g_SpriteScaleAccY += g_SpriteScaleStepY;
         frame_ptr += pitch;
+    }
+}
+
+/* ==========================================================================
+ * PCX / .PIC Full-Screen Backdrop & Panel Decoder
+ * ========================================================================== */
+
+#pragma pack(push, 1)
+typedef struct PcxHeaderOnDisk {
+    uint8_t  manufacturer;     /* 0x00: 0x0A */
+    uint8_t  version;          /* 0x01: 0x05 */
+    uint8_t  encoding;         /* 0x02: 0x01 */
+    uint8_t  bits_per_pixel;   /* 0x03: 8 */
+    uint16_t xmin;             /* 0x04 */
+    uint16_t ymin;             /* 0x06 */
+    uint16_t xmax;             /* 0x08 */
+    uint16_t ymax;             /* 0x0A */
+    uint16_t hres;             /* 0x0C */
+    uint16_t vres;             /* 0x0E */
+    uint8_t  palette_16[48];   /* 0x10 */
+    uint8_t  reserved;         /* 0x40 */
+    uint8_t  color_planes;     /* 0x41: 1 */
+    uint16_t bytes_per_line;   /* 0x42: scanline pitch */
+    uint16_t palette_type;     /* 0x44: 1 or 2 */
+    uint8_t  filler[58];       /* 0x46 */
+} PcxHeaderOnDisk;
+#pragma pack(pop)
+
+PicImage* Pic_LoadFile(const char *filename)
+{
+    if (!filename) return NULL;
+    FILE *fp = fopen(filename, "rb");
+    if (!fp) {
+        const char *resolved = Platform_ResolveAssetPath(filename);
+        if (resolved) {
+            fp = fopen(resolved, "rb");
+        }
+    }
+    if (!fp) return NULL;
+
+    fseek(fp, 0, SEEK_END);
+    long file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    if (file_size < 128 + 769) {
+        fclose(fp);
+        return NULL;
+    }
+
+    uint8_t *file_data = (uint8_t *)malloc(file_size);
+    if (!file_data) {
+        fclose(fp);
+        return NULL;
+    }
+    if (fread(file_data, 1, file_size, fp) != (size_t)file_size) {
+        free(file_data);
+        fclose(fp);
+        return NULL;
+    }
+    fclose(fp);
+
+    PcxHeaderOnDisk *hdr = (PcxHeaderOnDisk *)file_data;
+    if (hdr->manufacturer != 0x0A || hdr->encoding != 0x01 || hdr->bits_per_pixel != 8) {
+        free(file_data);
+        return NULL;
+    }
+
+    int width = (hdr->xmax - hdr->xmin) + 1;
+    int height = (hdr->ymax - hdr->ymin) + 1;
+    int bytes_per_line = hdr->bytes_per_line;
+    if (width <= 0 || height <= 0 || bytes_per_line < width) {
+        free(file_data);
+        return NULL;
+    }
+
+    PicImage *pic = (PicImage *)calloc(1, sizeof(PicImage));
+    if (!pic) {
+        free(file_data);
+        return NULL;
+    }
+
+    pic->width = width;
+    pic->height = height;
+    pic->pitch = width;
+    pic->pixels = (uint8_t *)malloc((size_t)width * (size_t)height);
+    if (!pic->pixels) {
+        free(pic);
+        free(file_data);
+        return NULL;
+    }
+
+    /* 256-color palette at EOF - 768 if flagged with 0x0C */
+    if (file_data[file_size - 769] == 0x0C) {
+        memcpy(pic->palette, &file_data[file_size - 768], 768);
+        pic->has_palette = true;
+    }
+
+    /* Decode RLE scanlines */
+    const uint8_t *src = file_data + 128;
+    const uint8_t *src_end = file_data + file_size - (pic->has_palette ? 769 : 0);
+
+    uint8_t *scanline = (uint8_t *)malloc(bytes_per_line);
+    if (!scanline) {
+        free(pic->pixels);
+        free(pic);
+        free(file_data);
+        return NULL;
+    }
+
+    for (int y = 0; y < height; y++) {
+        int x = 0;
+        while (x < bytes_per_line && src < src_end) {
+            uint8_t b = *src++;
+            if ((b & 0xC0) == 0xC0) {
+                int count = b & 0x3F;
+                if (src >= src_end) break;
+                uint8_t val = *src++;
+                for (int k = 0; k < count && x < bytes_per_line; k++) {
+                    scanline[x++] = val;
+                }
+            } else {
+                scanline[x++] = b;
+            }
+        }
+        memcpy(&pic->pixels[y * width], scanline, width);
+    }
+
+    free(scanline);
+    free(file_data);
+    return pic;
+}
+
+void Pic_Free(PicImage *pic)
+{
+    if (!pic) return;
+    if (pic->pixels) {
+        free(pic->pixels);
+        pic->pixels = NULL;
+    }
+    free(pic);
+}
+
+void Pic_Draw(ScreenSurface *surf, int dst_x, int dst_y, const PicImage *pic)
+{
+    if (!surf || !surf->pixels || !pic || !pic->pixels) return;
+
+    int sw = pic->width;
+    int sh = pic->height;
+
+    int min_x = (dst_x < surf->clip_left) ? (surf->clip_left - dst_x) : 0;
+    int max_x = (dst_x + sw > surf->clip_right) ? (surf->clip_right - dst_x) : sw;
+
+    int min_y = (dst_y < surf->clip_top) ? (surf->clip_top - dst_y) : 0;
+    int max_y = (dst_y + sh > surf->clip_bottom) ? (surf->clip_bottom - dst_y) : sh;
+
+    if (min_x >= max_x || min_y >= max_y) return;
+
+    for (int y = min_y; y < max_y; y++) {
+        const uint8_t *src_row = &pic->pixels[y * sw + min_x];
+        uint8_t *dst_row = &surf->pixels[(dst_y + y) * surf->pitch + (dst_x + min_x)];
+        memcpy(dst_row, src_row, max_x - min_x);
     }
 }

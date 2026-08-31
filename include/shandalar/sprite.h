@@ -83,6 +83,27 @@ void     Sprite_DrawClipped(ScreenSurface *surf, int dst_x, int dst_y, const voi
 /* Draw sprite with 16.16 fixed-point scaling / stretch blit */
 void     Sprite_DrawScaled(ScreenSurface *surf, int dst_x, int dst_y, int target_w, int target_h, const void *sprite_data);
 
+/*
+ * PCX / .PIC Full-Screen Backdrop & Panel Decoder
+ */
+typedef struct PicImage {
+    int      width;
+    int      height;
+    int      pitch;
+    uint8_t *pixels;
+    uint8_t  palette[768]; /* 256 RGB triplets */
+    bool     has_palette;
+} PicImage;
+
+/* Load and decode an 8-bit paletted MicroProse .PIC / PCX image file */
+PicImage* Pic_LoadFile(const char *filename);
+
+/* Free allocated PicImage memory */
+void      Pic_Free(PicImage *pic);
+
+/* Blit PicImage directly onto a ScreenSurface with bounds clipping */
+void      Pic_Draw(ScreenSurface *surf, int dst_x, int dst_y, const PicImage *pic);
+
 #ifdef __cplusplus
 }
 #endif

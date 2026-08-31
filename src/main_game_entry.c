@@ -26,13 +26,16 @@ int main(int argc, char *argv[])
     printf("=========================================================\n");
 
     const char *program_dir = "/Users/ben/Downloads/shand-extract/program";
-    char cmd_line[256] = "/MTGshell /6"; /* 640x480 resolution mode */
+    char cmd_line[512] = "/MTGshell /6"; /* 640x480 resolution mode */
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--dir") == 0 && i + 1 < argc) {
             program_dir = argv[++i];
         } else if (strcmp(argv[i], "--cmd") == 0 && i + 1 < argc) {
             strncpy(cmd_line, argv[++i], sizeof(cmd_line) - 1);
+        } else {
+            strncat(cmd_line, " ", sizeof(cmd_line) - strlen(cmd_line) - 1);
+            strncat(cmd_line, argv[i], sizeof(cmd_line) - strlen(cmd_line) - 1);
         }
     }
 

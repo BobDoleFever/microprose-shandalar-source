@@ -33,17 +33,24 @@ else()
 endif()
 
 # ------------------------------------------------------------------------------
+# SDL2 Dependencies
+# ------------------------------------------------------------------------------
+find_package(SDL2 REQUIRED)
+
+# ------------------------------------------------------------------------------
 # Include Directories
 # ------------------------------------------------------------------------------
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
+    ${SDL2_INCLUDE_DIRS}
 )
 
 # ------------------------------------------------------------------------------
 # Source Groups & Definitions
 # ------------------------------------------------------------------------------
 set(SHANDALAR_COMMON_HEADERS
+    include/windows_types.h
     include/shandalar/shandalar.h
     include/shandalar/types.h
     include/shandalar/sound.h
@@ -56,22 +63,33 @@ set(SHANDALAR_COMMON_HEADERS
     include/shandalar/graphics.h
     include/shandalar/fileio.h
     include/shandalar/ui.h
-    include/windows_types.h
+    include/shandalar/display_shim.h
+    include/shandalar/platform_handle.h
+    include/shandalar/api_manifest.h
+    include/shandalar/win32_internal.h
+    include/shandalar/win32_compat.h
+)
+
+set(SHANDALAR_PLATFORM_SOURCES
+    src/platform/platform_handle.c
+    src/platform/api_manifest.c
+    src/platform/win32_user.c
+    src/platform/win32_message.c
+    src/platform/win32_gdi.c
+    src/platform/win32_kernel.c
+    src/platform/win32_config.c
+    src/platform/win32_multimedia.c
+    src/platform/win32_compat.c
+    src/platform/display_shim_sdl2.c
+    src/platform/sound_shim.c
 )
 
 # Shared Subsystem Core Library
 set(SHANDALAR_CORE_SOURCES
     src/magic/sidlib/sprite.c
-    src/magic/sidlib/Fileio.c
-    src/magic/sidlib/text.c
-    src/magic/sidlib/Pcxw.c
     src/magic/NedCard/Catalog.c
-    src/magic/NedCard/Palette.c
-    src/magic/NedCard/haar.c
-    src/magic/sid/Ai.c
-    src/magic/sid/Magic.c
-    src/magic/sid/Minit.c
-    src/magic/sid/glue.c
+    src/magic/sid/Test.c
+    ${SHANDALAR_PLATFORM_SOURCES}
 )
 
 add_library(shandalar_core STATIC
@@ -82,45 +100,45 @@ add_library(shandalar_core STATIC
 target_include_directories(shandalar_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
+    ${SDL2_INCLUDE_DIRS}
+)
+
+target_link_libraries(shandalar_core PUBLIC
+    ${SDL2_LIBRARIES}
+    m
 )
 
 # ------------------------------------------------------------------------------
 # Executables
 # ------------------------------------------------------------------------------
 
-# 1. Main Game Engine (MAGIC.EXE equivalent)
-add_library(magic_monolithic STATIC
-    magic/magic_all.c
+# 1. Test Runner Executable
+add_executable(shandalar
+    src/main.c
 )
-target_include_directories(magic_monolithic PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
-)
+target_link_libraries(shandalar PRIVATE shandalar_core ${SDL2_LIBRARIES} m)
 
-# 2. Standalone Duel Match Engine (DUEL.EXE equivalent)
-add_library(duel_monolithic STATIC
-    duel/duel_all.c
+# 2. Authentic Game Entry Point Executable
+add_executable(shandalar_game
+    src/main_game_entry.c
 )
-target_include_directories(duel_monolithic PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
+target_link_libraries(shandalar_game PRIVATE shandalar_core ${SDL2_LIBRARIES} m)
+
+# 3. Win32 Compatibility Layer Unit Test Suite
+add_executable(test_win32_compat
+    tests/test_win32_compat.c
 )
+target_link_libraries(test_win32_compat PRIVATE shandalar_core ${SDL2_LIBRARIES} m)
 
 # ------------------------------------------------------------------------------
 # Tests & Verification
 # ------------------------------------------------------------------------------
 enable_testing()
 
-add_custom_target(check_syntax
-    COMMAND ${CMAKE_C_COMPILER} -fsyntax-only -std=c99
-            -I${CMAKE_CURRENT_SOURCE_DIR}/include
-            -I${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/magic/sidlib/sprite.c
-    COMMAND ${CMAKE_C_COMPILER} -fsyntax-only -std=c99
-            -I${CMAKE_CURRENT_SOURCE_DIR}/include
-            -I${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/shandalar/shandalar.h
-    COMMENT "Verifying Shandalar ANSI C headers and modules syntax..."
-)
+add_test(NAME Win32CompatTest COMMAND test_win32_compat)
+set_tests_properties(Win32CompatTest PROPERTIES ENVIRONMENT "SDL_VIDEODRIVER=dummy")
+
+add_test(NAME EngineVerificationTest COMMAND shandalar --test)
+set_tests_properties(EngineVerificationTest PROPERTIES ENVIRONMENT "SDL_VIDEODRIVER=dummy")
 
 message(STATUS "Configured ShandalarDecomp ANSI C Build System successfully.")
