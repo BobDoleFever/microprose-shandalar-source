@@ -8,8 +8,8 @@ SDL_CFLAGS ?= -I/opt/homebrew/include/SDL2 -D_THREAD_SAFE
 SDL_LDFLAGS ?= -L/opt/homebrew/lib -lSDL2 -lm
 
 CFLAGS ?= -std=c99 -Wall -Wextra -O2 -Iinclude -Iinclude/shandalar $(SDL_CFLAGS) \
-          -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
-          -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+		  -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
+		  -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
 
 BUILD_DIR = build
 OBJ_DIR = $(BUILD_DIR)/obj
@@ -35,72 +35,72 @@ PE_SYMBOLS = $(BUILD_DIR)/generated/magic_symbols.csv
 PE_EXE = $(PE_BIN_DIR)/MAGIC.EXE
 PE_ORDINALS = $(PE_GEN_DIR)/magic_module_ordinals.json
 PE_CFLAGS = -m32 -std=gnu99 -O2 -Wall -Wextra \
-            -Werror=implicit-function-declaration \
-            -Werror=incompatible-pointer-types \
-            -Werror=return-type \
-            -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
-            -I$(PE_GEN_DIR) -Iinclude -Iinclude/shandalar
+			-Werror=implicit-function-declaration \
+			-Werror=incompatible-pointer-types \
+			-Werror=return-type \
+			-Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
+			-I$(PE_GEN_DIR) -Iinclude -Iinclude/shandalar
 PE_RECOVERED_CFLAGS = -m32 -std=gnu99 -O0 -fpermissive -Wall -Wextra \
-            -Werror=implicit-function-declaration \
-            -Werror=return-type \
-            -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
-            -Wno-int-conversion -Wno-incompatible-pointer-types \
-            -Wno-sign-compare -Wno-pointer-sign -Wno-unused-but-set-variable \
-            -Wno-parentheses -Wno-compare-distinct-pointer-types \
-            -Wno-implicit-fallthrough \
-            -I$(PE_GEN_DIR) -Iinclude -Iinclude/shandalar
+			-Werror=implicit-function-declaration \
+			-Werror=return-type \
+			-Wno-unused-parameter -Wno-unused-variable -Wno-unused-function \
+			-Wno-int-conversion -Wno-incompatible-pointer-types \
+			-Wno-sign-compare -Wno-pointer-sign -Wno-unused-but-set-variable \
+			-Wno-parentheses -Wno-compare-distinct-pointer-types \
+			-Wno-implicit-fallthrough \
+			-I$(PE_GEN_DIR) -Iinclude -Iinclude/shandalar
 PE_LDFLAGS = -m32 -mwindows \
-             -Wl,--image-base,0x10000000 \
-             -Wl,--disable-dynamicbase \
-             -Wl,-Map,$(PE_BUILD_DIR)/MAGIC.map
+			 -Wl,--image-base,0x10000000 \
+			 -Wl,--disable-dynamicbase \
+			 -Wl,-Map,$(PE_BUILD_DIR)/MAGIC.map
 PE_IMPORT_LIBS = $(PE_BUILD_DIR)/libdeckdll.a \
-                 $(PE_BUILD_DIR)/libstatwin.a \
-                 $(PE_BUILD_DIR)/libmagsnd.a \
-                 $(PE_BUILD_DIR)/libmagvid.a
+				 $(PE_BUILD_DIR)/libstatwin.a \
+				 $(PE_BUILD_DIR)/libmagsnd.a \
+				 $(PE_BUILD_DIR)/libmagvid.a
 PE_LIBS = -L$(PE_BUILD_DIR) -ldeckdll -lstatwin -lmagsnd -lmagvid \
-          -lkernel32 -luser32 -lgdi32 -ladvapi32 -lwinmm \
-          -lcomdlg32 -lcomctl32 -lshell32 -lmsvfw32 -lvfw32
+		  -lkernel32 -luser32 -lgdi32 -ladvapi32 -lwinmm \
+		  -lcomdlg32 -lcomctl32 -lshell32 -lmsvfw32 -lvfw32
 
 # Platform & Win32 Compat Subsystems
 PLATFORM_OBJS = $(OBJ_DIR)/platform_handle.o \
-                $(OBJ_DIR)/api_manifest.o \
-                $(OBJ_DIR)/win32_user.o \
-                $(OBJ_DIR)/win32_message.o \
-                $(OBJ_DIR)/win32_gdi.o \
-                $(OBJ_DIR)/win32_kernel.o \
-                $(OBJ_DIR)/win32_config.o \
-                $(OBJ_DIR)/win32_multimedia.o \
-                $(OBJ_DIR)/win32_compat.o \
-                $(OBJ_DIR)/display_shim_sdl2.o \
-                $(OBJ_DIR)/sound_shim.o
+				$(OBJ_DIR)/api_manifest.o \
+				$(OBJ_DIR)/win32_user.o \
+				$(OBJ_DIR)/win32_message.o \
+				$(OBJ_DIR)/win32_gdi.o \
+				$(OBJ_DIR)/win32_kernel.o \
+				$(OBJ_DIR)/win32_config.o \
+				$(OBJ_DIR)/win32_multimedia.o \
+				$(OBJ_DIR)/win32_compat.o \
+				$(OBJ_DIR)/display_shim_sdl2.o \
+				$(OBJ_DIR)/sound_shim.o
 
 # Core Subsystems
 CORE_OBJS = $(OBJ_DIR)/sprite.o \
-            $(OBJ_DIR)/Catalog.o \
-            $(OBJ_DIR)/Test.o \
-            $(PLATFORM_OBJS)
+			$(OBJ_DIR)/Catalog.o \
+			$(OBJ_DIR)/Test.o \
+			$(PLATFORM_OBJS)
 
 HEADERS = include/windows_types.h \
-          include/shandalar/shandalar.h \
-          include/shandalar/types.h \
-          include/shandalar/sound.h \
-          include/shandalar/ai.h \
-          include/shandalar/magic_engine.h \
-          include/shandalar/catalog.h \
-          include/shandalar/sprite.h \
-          include/shandalar/haar.h \
-          include/shandalar/cards.h \
-          include/shandalar/graphics.h \
-          include/shandalar/fileio.h \
-          include/shandalar/ui.h \
-          include/shandalar/display_shim.h \
-          include/shandalar/platform_handle.h \
-          include/shandalar/api_manifest.h \
-          include/shandalar/win32_internal.h \
-          include/shandalar/win32_compat.h
+		  include/shandalar/shandalar.h \
+		  include/shandalar/types.h \
+		  include/shandalar/sound.h \
+		  include/shandalar/ai.h \
+		  include/shandalar/magic_engine.h \
+		  include/shandalar/catalog.h \
+		  include/shandalar/sprite.h \
+		  include/shandalar/haar.h \
+		  include/shandalar/cards.h \
+		  include/shandalar/graphics.h \
+		  include/shandalar/fileio.h \
+		  include/shandalar/ui.h \
+		  include/shandalar/display_shim.h \
+		  include/shandalar/platform_handle.h \
+		  include/shandalar/api_manifest.h \
+		  include/shandalar/win32_internal.h \
+		  include/shandalar/win32_compat.h
 
 .PHONY: all check run game game-build game-test game-native sidtest test clean \
-        help sync stats pe-toolcheck pe-audit wine-prefix
+		help sync stats pe-toolcheck pe-audit wine-prefix
 
 all: check $(BUILD_DIR)/shandalar $(BUILD_DIR)/shandalar_game $(BUILD_DIR)/test_win32_compat
 	@echo "Build complete."
@@ -348,7 +348,7 @@ game-native:
 	@false
 
 sidtest: $(BUILD_DIR)/shandalar_game
-	./$(BUILD_DIR)/shandalar_game
+	./$(BUILD_DIR)/shandalar_game --menu
 
 clean:
 	rm -rf $(OBJ_DIR) $(PE_BUILD_DIR) $(WINEPREFIX) $(PE_GEN_DIR)
