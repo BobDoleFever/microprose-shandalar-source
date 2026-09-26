@@ -38,15 +38,29 @@ itself. On this Apple Silicon Mac the original code now runs from the entry poin
 - drawing: GDI device contexts, 8-bit DIB sections kept in emulated memory (the game draws into them itself), palette
   changes (`SetDIBColorTable`) and `BitBlt`, onto a host surface saved as PNG.
 
-**Result: the whole title screen renders** (castle art, MAGIC logo, "Start New Game / Load Saved Game / Resume
-Game / Exit", with the game's own font), decoded and drawn by the original code. There is no input, sound or
-`DUEL.EXE` yet.
+**Result: the game runs from the title screen into the adventure screen, driven by injected input.** Scripted clicks
+and keys walked it through Start New Game, difficulty, colour, portrait ("Select Your Visage": all fourteen
+render) and the name prompt to the stained-glass adventure frame, every screen decoded and drawn by the original
+code. There is no sound and no `DUEL.EXE` yet, dialogs made with `DialogBoxParam` are not implemented, and the
+adventure screen has only been seen fading in.
+
+Run it the same way with `--script`:
+
+```
+python3 -m winemu.run --seconds 200 --script "30:move 300 308;32:click 300 308;50:move 350 120;52:click 350 120;72:move 160 90;74:click 160 90;105:move 130 100;107:click 130 100;130:key 13 13;185:shot adventure"
+```
+
+(times are host seconds; each screen takes the emulator several seconds to build).
 
 Things worth knowing that the run turned up:
 
 - MSVC's `feof` is a macro that reads `FILE._flag & 0x10` directly, so the emulated `FILE` structure must keep
   that flag: without it the game's read-until-EOF loops never end.
 - `_filelength(_fileno(f))` is used to size a buffer before `fread`, so it must work on `FILE*` descriptors.
+- Portraits and sprites are drawn with `SetDIBitsToDevice` one row-strip at a time, in `DIB_PAL_COLORS` mode: the
+  colour table is 16-bit *indices into the selected logical palette*, not colours. Reading it as RGBQUADs produced
+  black bands across every face. The call also takes a start scan line and a bottom-up source origin.
+- The game reads keys from `WM_KEYDOWN` and needs the scan code in `lParam`, or Enter is ignored.
 - The display must be modelled as **8-bit palettized**: the game draws into 8-bit DIB sections, blits them
   with `StretchBlt`, and fades by animating the *system palette* (`AnimatePalette`, `RealizePalette`), not by
   redrawing. Window surfaces therefore hold palette indices and colours are resolved when the screen is

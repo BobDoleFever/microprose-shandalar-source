@@ -741,13 +741,28 @@ def inject_mouse(m, kind, x, y):
     return True
 
 
+SCANCODES = {13: 0x1C, 27: 0x01, 32: 0x39, 8: 0x0E, 9: 0x0F, 37: 0x4B, 38: 0x48, 39: 0x4D, 40: 0x50, 46: 0x53}
+for _i, _c in enumerate("QWERTYUIOP"):
+    SCANCODES[ord(_c)] = 0x10 + _i
+for _i, _c in enumerate("ASDFGHJKL"):
+    SCANCODES[ord(_c)] = 0x1E + _i
+for _i, _c in enumerate("ZXCVBNM"):
+    SCANCODES[ord(_c)] = 0x2C + _i
+for _i, _c in enumerate("1234567890"):
+    SCANCODES[ord(_c)] = 0x02 + _i
+
+
 def inject_key(m, vk, char=None):
+    """A key press: WM_KEYDOWN (with its scan code), WM_CHAR if `char`, then WM_KEYUP."""
     st = _st(m)
     h = main_hwnd(m)
     if not h:
         return False
-    st["queue"].append((h, WM_KEYDOWN, vk, 1))
+    sc = SCANCODES.get(vk, 0) << 16
+    st["keys"][vk] = True
+    st["queue"].append((h, WM_KEYDOWN, vk, 1 | sc))
     if char is not None:
-        st["queue"].append((h, WM_CHAR, char, 1))
-    st["queue"].append((h, WM_KEYUP, vk, 0xC0000001))
+        st["queue"].append((h, WM_CHAR, char, 1 | sc))
+    st["queue"].append((h, WM_KEYUP, vk, 0xC0000001 | sc))
+    st["release"] = st.get("release", []) + [vk]
     return True
