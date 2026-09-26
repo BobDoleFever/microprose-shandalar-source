@@ -37,6 +37,8 @@ class Surface:
     def __init__(self, w, h):
         self.w, self.h = w, h
         self.idx = np.zeros((h, w), np.uint8)
+        self.rgb = np.zeros((h, w, 3), np.uint8)           # direct-colour pixels (24/32-bit sources, RGB fills)
+        self.direct = np.zeros((h, w), bool)               # where `rgb` overrides the palette lookup
 
 
 def system_lut(m):
@@ -44,7 +46,11 @@ def system_lut(m):
 
 
 def surface_rgb(m, surf, x0=0, y0=0, x1=None, y1=None):
-    return system_lut(m)[surf.idx[y0:y1, x0:x1]]
+    out = system_lut(m)[surf.idx[y0:y1, x0:x1]]
+    d = surf.direct[y0:y1, x0:x1]
+    if d.any():
+        out = np.where(d[:, :, None], surf.rgb[y0:y1, x0:x1], out)
+    return out
 
 
 def quantize(m, rgb):
@@ -106,9 +112,9 @@ class Bitmap:
         self.topdown = False
         self.palette = [(i, i, i) for i in range(256)]
         self.idxmap = None                        # DIB_PAL_COLORS: pixel value -> logical (= system) palette index
-        self.rgb = None
+        self.idx = None                           # ddb: palette indices in system-palette space (the device format)
         if kind == "ddb":
-            self.rgb = np.zeros((h, w, 3), np.uint8)
+            self.idx = np.zeros((h, w), np.uint8)
 
     @property
     def stride(self):
@@ -128,6 +134,9 @@ def read_dib_rgb(m, bmp, x0, y0, x1, y1):
     if bmp.bpp == 24:
         px = rows[y0:y1, x0 * 3:x1 * 3].reshape(y1 - y0, x1 - x0, 3)
         return px[:, :, ::-1].copy()
+    if bmp.bpp == 32:
+        px = rows[y0:y1, x0 * 4:x1 * 4].reshape(y1 - y0, x1 - x0, 4)
+        return px[:, :, 2::-1].copy()
     if bmp.bpp == 16:
         v = rows[y0:y1, x0 * 2:x1 * 2].copy().view("<u2").reshape(y1 - y0, x1 - x0).astype(np.uint16)
         r, g, b = ((v >> 10) & 31) << 3, ((v >> 5) & 31) << 3, (v & 31) << 3
@@ -138,6 +147,20 @@ def read_dib_rgb(m, bmp, x0, y0, x1, y1):
 def write_dib_rgb(m, bmp, x0, y0, rgb):
     """Store an RGB rectangle into a DIB section (8-bit: nearest palette entry)."""
     h, w = rgb.shape[:2]
+    if bmp.bpp in (24, 32):
+        px = rgb[:, :, ::-1]
+        if bmp.bpp == 32:
+            px = np.concatenate([px, np.zeros((h, w, 1), np.uint8)], axis=2)
+        for row in range(h):
+            y = y0 + row
+            if not 0 <= y < bmp.h:
+                continue
+            line = bmp.h - 1 - y if not bmp.topdown else y
+            xs, xe = max(x0, 0), min(x0 + w, bmp.w)
+            if xe > xs:
+                bp = bmp.bpp // 8
+                m.wr(bmp.bits + line * bmp.stride + xs * bp, np.ascontiguousarray(px[row, xs - x0:xe - x0]).tobytes())
+        return
     if bmp.bpp != 8:
         return
     lut = np.array(bmp.palette, np.int32)
@@ -245,7 +268,7 @@ def get_region(m, dc, x0, y0, x1, y1):
     if dc.kind == "memory":
         b = dc.bitmap
         if b.kind == "ddb":
-            return b.rgb[y0:y1, x0:x1].copy()
+            return system_lut(m)[b.idx[y0:y1, x0:x1]]
         return read_dib_rgb(m, b, x0, y0, x1, y1)
     from . import user32
     return surface_rgb(m, user32.window(m, dc.hwnd)["surface"], x0, y0, x1, y1)
@@ -273,19 +296,27 @@ def put_region(m, dc, x0, y0, rgb):
     if dc.kind == "memory":
         b = dc.bitmap
         if b.kind == "ddb":
-            b.rgb[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = rgb
+            b.idx[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = quantize(m, rgb)
         else:
             write_dib_rgb(m, b, x0, y0, rgb)
     else:
         from . import user32
-        user32.window(m, dc.hwnd)["surface"].idx[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = quantize(m, rgb)
+        surf = user32.window(m, dc.hwnd)["surface"]
+        surf.rgb[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = rgb
+        surf.direct[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = True
         user32.mark_dirty(m)
 
 
+def system_to_dib_lut(m, bmp):
+    """system-palette index -> index in an 8-bit DIB section (identity for DIB_PAL_COLORS ones)."""
+    if bmp.idxmap is not None:
+        return np.arange(256, dtype=np.uint8)
+    return dib_to_dib_lut([tuple(c) for c in system_lut(m)], bmp.palette)
+
+
 def put_indices(m, dc, x0, y0, idx):
-    """Write palette indices straight into a window surface (clipped to the DC clip and the surface)."""
-    from . import user32
-    surf = user32.window(m, dc.hwnd)["surface"]
+    """Write palette indices (system-palette space) to a window surface, a device bitmap or an 8-bit DIB,
+    clipped to the DC clip rectangle and the target."""
     h, w = idx.shape
     if dc.clip:
         cx0, cy0, cx1, cy1 = dc.clip
@@ -294,13 +325,47 @@ def put_indices(m, dc, x0, y0, idx):
             return
         idx = idx[ny0 - y0:ny1 - y0, nx0 - x0:nx1 - x0]
         x0, y0 = nx0, ny0
+    tw, th = target_size(m, dc)
     sx0, sy0 = max(0, -x0), max(0, -y0)
-    ex, ey = min(idx.shape[1], surf.w - x0), min(idx.shape[0], surf.h - y0)
+    ex, ey = min(idx.shape[1], tw - x0), min(idx.shape[0], th - y0)
     if ex <= sx0 or ey <= sy0:
         return
     idx = idx[sy0:ey, sx0:ex]
-    surf.idx[y0 + sy0:y0 + sy0 + idx.shape[0], x0 + sx0:x0 + sx0 + idx.shape[1]] = idx
+    x0, y0 = x0 + sx0, y0 + sy0
+    if dc.kind == "memory":
+        b = dc.bitmap
+        if b.kind == "ddb":
+            b.idx[y0:y0 + idx.shape[0], x0:x0 + idx.shape[1]] = idx
+        elif b.bpp == 8:
+            write_dib_indices(m, b, x0, y0, np.ascontiguousarray(system_to_dib_lut(m, b)[idx]))
+        return
+    from . import user32
+    surf = user32.window(m, dc.hwnd)["surface"]
+    surf.idx[y0:y0 + idx.shape[0], x0:x0 + idx.shape[1]] = idx
+    surf.direct[y0:y0 + idx.shape[0], x0:x0 + idx.shape[1]] = False
     user32.mark_dirty(m)
+
+
+def dc_indices(m, dc, x0, y0, x1, y1):
+    """Palette indices (system-palette space) of a rectangle of a DC's target; None when nothing is readable
+    without a colour conversion (24-bit DIBs, which go through RGB)."""
+    w, h = target_size(m, dc)
+    x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, w), min(y1, h)
+    if x1 <= x0 or y1 <= y0:
+        return x0, y0, np.zeros((0, 0), np.uint8)
+    if dc.kind == "memory":
+        b = dc.bitmap
+        if b.kind == "ddb":
+            return x0, y0, b.idx[y0:y1, x0:x1]
+        if b.bpp == 8:
+            lut = b.idxmap if b.idxmap is not None else dib_to_system_lut(m, b.palette)
+            return x0, y0, lut[read_dib_indices(m, b, x0, y0, x1, y1)]
+        return x0, y0, None
+    from . import user32
+    surf = user32.window(m, dc.hwnd)["surface"]
+    if surf.direct[y0:y1, x0:x1].any():
+        return x0, y0, None
+    return x0, y0, surf.idx[y0:y1, x0:x1]
 
 
 # ---- stock, create, select, delete ---------------------------------------------------------------------------
@@ -535,7 +600,7 @@ def set_dibits(m, a):
     y0 = a[2] if topdown else max(h - a[2] - a[3], 0)
     if bmp.kind == "ddb":
         hh = min(rgb.shape[0], bmp.h - y0)
-        bmp.rgb[y0:y0 + hh, :min(w, bmp.w)] = rgb[:hh, :min(w, bmp.w)]
+        bmp.idx[y0:y0 + hh, :min(w, bmp.w)] = quantize(m, np.ascontiguousarray(rgb[:hh, :min(w, bmp.w)]))
     else:
         write_dib_rgb(m, bmp, 0, y0, np.ascontiguousarray(rgb))
     return a[3]
@@ -573,8 +638,7 @@ def set_dibits_to_device(m, a):
             elif dc.bitmap is not None and dc.bitmap.kind == "dib" and dc.bitmap.bpp == 8:
                 write_dib_indices(m, dc.bitmap, x + dc.org[0], dy + dc.org[1], np.ascontiguousarray(row[None, :]))
             else:
-                t = np.array((dc.palette or [(i, i, i) for i in range(256)]) + [(0, 0, 0)] * 256, np.uint8)[:256]
-                put_region(m, dc, x + dc.org[0], dy + dc.org[1], t[row][None, :])
+                put_indices(m, dc, x + dc.org[0], dy + dc.org[1], np.ascontiguousarray(row[None, :]))
         return lines
     if bpp == 8:
         pal = pal or [(i, i, i) for i in range(256)]
@@ -592,8 +656,8 @@ def set_dibits_to_device(m, a):
                 write_dib_indices(m, dc.bitmap, x + dc.org[0], dy + dc.org[1],
                                   np.ascontiguousarray((lut[row] if lut is not None else row)[None, :]))
             else:
-                t = np.array(pal + [(0, 0, 0)] * (256 - len(pal)), np.uint8)[:256]
-                put_region(m, dc, x + dc.org[0], dy + dc.org[1], t[row][None, :])
+                put_indices(m, dc, x + dc.org[0], dy + dc.org[1],
+                            np.ascontiguousarray(dib_to_system_lut(m, pal)[row][None, :]))
         return lines
     if bpp == 24:
         for k, dy in placed:
@@ -605,11 +669,12 @@ def set_dibits_to_device(m, a):
 
 @g32("GetObjectA", 3)
 def get_object(m, a):
+    """GetObject(handle, cbBuffer, lpvObject): fills a BITMAP (24 bytes) for bitmaps, a LOGFONT for fonts."""
     o = obj(m, a[0])
     if isinstance(o, Bitmap):
-        if a[2] < 24 or not a[1]:
+        if a[1] < 24 or not a[2]:
             return 24
-        m.wr(a[1], struct.pack("<IIIIHHI", 0, o.w, o.h, o.stride if o.kind == "dib" else ((o.w * 8 + 31) // 32) * 4,
+        m.wr(a[2], struct.pack("<IIIIHHI", 0, o.w, o.h, o.stride if o.kind == "dib" else ((o.w * 8 + 31) // 32) * 4,
                                1, o.bpp, o.bits))
         return 24
     return 0
@@ -715,37 +780,26 @@ def _s32(v):
 
 
 def blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
-    """Index-preserving copy from an 8-bit DIB section to a window or another 8-bit DIB, with optional
-    nearest-neighbour stretch. Returns False when the combination is not handled (caller falls back to RGB)."""
-    sb = src.bitmap if src.kind == "memory" else None
-    if sb is None or sb.kind != "dib" or sb.bpp != 8 or w == 0 or h == 0:
-        return False
-    db = dst.bitmap if dst.kind == "memory" else None
-    if not (dst.kind == "window" or (db is not None and db.kind == "dib" and db.bpp == 8)):
-        return False
+    """Index-preserving copy between windows, device bitmaps and 8-bit DIB sections, with optional
+    nearest-neighbour stretch. Returns False when the source cannot be read as indices (caller falls back to RGB)."""
+    if w == 0 or h == 0 or sw == 0 or sh == 0:
+        return True
     ax0, ay0 = sx + src.org[0], sy + src.org[1]
     ax1, ay1 = ax0 + abs(sw), ay0 + abs(sh)
-    cx0, cy0, cx1, cy1 = max(ax0, 0), max(ay0, 0), min(ax1, sb.w), min(ay1, sb.h)
-    if cx1 <= cx0 or cy1 <= cy0:
+    cx0, cy0, idx = dc_indices(m, src, ax0, ay0, ax1, ay1)
+    if idx is None:
+        return False
+    if idx.size == 0:
         return True
-    idx = read_dib_indices(m, sb, cx0, cy0, cx1, cy1)
     if (abs(w), abs(h)) != (abs(sw), abs(sh)):                 # stretch: sample the source nearest-neighbour
         ys = np.minimum(np.arange(abs(h)) * abs(sh) // abs(h), abs(sh) - 1)
         xs = np.minimum(np.arange(abs(w)) * abs(sw) // abs(w), abs(sw) - 1)
         full = np.zeros((abs(sh), abs(sw)), np.uint8)
-        full[cy0 - ay0:cy1 - ay0, cx0 - ax0:cx1 - ax0] = idx
+        full[cy0 - ay0:cy0 - ay0 + idx.shape[0], cx0 - ax0:cx0 - ax0 + idx.shape[1]] = idx
         idx, ox, oy = full[ys][:, xs], x, y
     else:
         ox, oy = x + (cx0 - ax0), y + (cy0 - ay0)
-    if dst.kind == "window":
-        lut = sb.idxmap if sb.idxmap is not None else dib_to_system_lut(m, sb.palette)
-        put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], lut[idx])
-    else:
-        if sb.idxmap is not None and db.idxmap is not None:
-            idx = sb.idxmap[idx]
-        elif db.palette != sb.palette and sb.idxmap is None and db.idxmap is None:
-            idx = dib_to_dib_lut(sb.palette, db.palette)[idx]
-        write_dib_indices(m, db, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(idx))
+    put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(idx))
     return True
 
 
@@ -777,6 +831,11 @@ def bitblt(m, a):
         return 0
     if rop not in (0xCC0020,):
         _st(m).setdefault("odd_rops", set()).add(rop)
+    if m.state.get("gdi_debug") and dst.kind == "window":
+        sb = src.bitmap
+        _, _, ii = dc_indices(m, src, sx, sy, sx + w, sy + h)
+        m.log(f"   [gdi] BitBlt win 0x{dst.hwnd:x} {w}x{h} <- {sb.kind} {sb.w}x{sb.h} bpp{sb.bpp} "
+              f"idxmap={sb.idxmap is not None} nonzero={int((ii != 0).sum()) if ii is not None else None}")
     if blit_indices(m, dst, x, y, w, h, src, sx, sy, w, h):
         return 1
     px = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h)

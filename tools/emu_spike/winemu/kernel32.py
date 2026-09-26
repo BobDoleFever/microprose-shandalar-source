@@ -26,7 +26,10 @@ def new_handle(m, obj):
 
 
 def now_ms(m):
-    return int((_time.time() - _st(m)["t0"]) * 1000) + 60000
+    """Milliseconds since 'boot'. Frozen for the first two seconds so the game's srand(GetTickCount()) at
+    start-up gets the same seed every run (coin tosses and shuffles then repeat)."""
+    elapsed = _time.time() - _st(m)["t0"]
+    return 60000 if elapsed < 2 else int(elapsed * 1000) + 60000
 
 
 # ---- process and module ------------------------------------------------------------------------------
@@ -68,7 +71,15 @@ k32("GetCurrentThreadId", 0)(lambda m, a: m.cur.tid)
 k32("GetThreadPriority", 1)(lambda m, a: 0)
 k32("SetThreadPriority", 2)(lambda m, a: 1)
 k32("DuplicateHandle", 7)(lambda m, a: (m.w32(a[3], a[1]), 1)[1])
-k32("GetExitCodeThread", 2)(lambda m, a: (m.w32(a[1], 259), 1)[1])   # STILL_ACTIVE
+
+
+@k32("GetExitCodeThread", 2)
+def get_exit_code_thread(m, a):
+    obj = _st(m)["handles"].get(a[0])
+    done = isinstance(obj, tuple) and obj[0] == "thread" and obj[3].state == "done"
+    m.w32(a[1], obj[3].exit_code if done else 259)                      # 259 = STILL_ACTIVE
+    return 1
+
 k32("ExitThread", 1)(lambda m, a: m.exit_current_thread(a[0]) or 0)
 k32("CloseHandle", 1)(lambda m, a: (_st(m)["handles"].pop(a[0], None), 1)[1])
 
@@ -84,7 +95,22 @@ def wait_for_single_object(m, a):
             return 0x102                                     # WAIT_TIMEOUT
         return Block(ready=lambda: th.state == "done", until=None if a[1] == 0xFFFFFFFF else _time.time() + a[1] / 1000)
     return 0
-k32("DeviceIoControl", 8)(lambda m, a: 0)
+
+
+@k32("DeviceIoControl", 8)
+def device_io_control(m, a):
+    """MPSTIME.VXD, the game's high-resolution timer: code 1 returns the version, code 2 a tick counter
+    (the game divides differences by 0x151d / 100, which gives milliseconds at 54,050 ticks a second)."""
+    dev = _st(m)["handles"].get(a[0])
+    if dev == ("vxd", "mpstime") and a[4]:
+        if a[1] == 1:
+            m.w32(a[4], 0x100)
+        elif a[1] == 2:
+            m.w32(a[4], int((_time.time() - _st(m)["t0"]) * 54050))
+        if a[6]:
+            m.w32(a[6], 4)
+        return 1
+    return 0
 
 
 @k32("Sleep", 1)
@@ -200,11 +226,20 @@ class FileHandle:
 def create_file(m, a):
     path, access, disp = m.cstr(a[0]).decode("latin-1"), a[1], a[4]
     write = bool(access & 0x40000000)
+    if path.startswith("\\\\.\\"):                              # a Windows 9x virtual device (VxD)
+        dev = path[4:].lower()
+        if dev.startswith("mpstime"):
+            return new_handle(m, ("vxd", "mpstime"))
+        m.log(f"   CreateFileA({path!r}): unknown device")
+        return INVALID_HANDLE
     if path.startswith("\\\\"):
         return INVALID_HANDLE
     hp, exists = host_path(m.game_root, m.overlay_root, m.cwd, path, for_write=write or disp in (1, 2, 4))
     if not exists and disp in (3, 5):                 # OPEN_EXISTING / TRUNCATE_EXISTING
         m.state["lasterror"] = 2
+        return INVALID_HANDLE
+    if exists and os.path.isdir(hp) and not a[5] & 0x02000000:     # a directory needs FILE_FLAG_BACKUP_SEMANTICS
+        m.state["lasterror"] = 5
         return INVALID_HANDLE
     flags = os.O_RDWR if write else os.O_RDONLY
     if disp in (1, 2, 4):
@@ -219,7 +254,11 @@ def read_file(m, a):
     h = _st(m)["handles"].get(a[0])
     if not isinstance(h, FileHandle):
         return 0
-    data = os.read(h.fd, a[2])
+    try:
+        data = os.read(h.fd, a[2])
+    except OSError:
+        m.state["lasterror"] = 5
+        return 0
     if data:
         m.wr(a[1], data)
     if a[3]:

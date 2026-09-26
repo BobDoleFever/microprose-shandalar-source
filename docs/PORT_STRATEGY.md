@@ -38,7 +38,9 @@ itself. On this Apple Silicon Mac the original code now runs from the entry poin
 - drawing: GDI device contexts, 8-bit DIB sections kept in emulated memory (the game draws into them itself), palette
   changes (`SetDIBColorTable`) and `BitBlt`, onto a host surface saved as PNG.
 
-**Result: the game runs from the title screen into the adventure screen, driven by injected input.** Scripted clicks
+**Result (second stage): `DUEL.EXE` runs from its setup dialog through the coin toss and "Start the duel" into the
+first main phase**, drawing life totals, mana, the hand and the phase prompt, with the backgrounds and card art still
+missing. **First stage: the game runs from the title screen into the adventure screen, driven by injected input.** Scripted clicks
 and keys walked it through Start New Game, difficulty, colour, portrait ("Select Your Visage": all fourteen
 render) and the name prompt to the stained-glass adventure frame, every screen decoded and drawn by the original
 code. There is no sound and no `DUEL.EXE` yet, dialogs made with `DialogBoxParam` are not implemented, and the
@@ -65,6 +67,17 @@ Things worth knowing that the run turned up:
   with `StretchBlt`, and fades by animating the *system palette* (`AnimatePalette`, `RealizePalette`), not by
   redrawing. Window surfaces therefore hold palette indices and colours are resolved when the screen is
   composed; converting through RGB at blit time lost the picture while the palette was faded to black.
+- `DUEL.EXE` is a different build: a statically linked C runtime (so it calls the raw heap, locale, time and
+  startup APIs itself), and it loads the game's own DLLs (`DECKDLL.DLL`, `MAGSND.DLL`) from the game folder, whose
+  `DllMain` must run first. It opens a Windows 9x virtual device, `\\.\MPStime.VXD` ("Dave's Extra Cool Timer"), with
+  `CreateFile` and reads a tick counter with `DeviceIoControl`; the host emulates that device.
+- Dialogs are real: `DialogBoxParam` templates (the extended `DLGTEMPLATEEX` form) are parsed into child controls,
+  the control messages a game uses (combo boxes and list boxes with `LB_DIR`, radio buttons, text) are
+  implemented, and a modal loop waits mid-call while the host presses buttons (`--script "58:dlg 1"`).
+- Window messages are per thread: a window's messages go to the thread that created it (the duel engine and
+  the main thread both pump messages).
+- The duel draws in direct colour (24- and 32-bit DIB sections) while the title screens use the palette, so a window
+  surface keeps palette indices *and* a direct-colour overlay.
 - Files are looked up case-insensitively and writes go to a separate overlay folder, so the installed copy is
   never touched.
 - The import argument counts (needed for stdcall stack clean-up) come from the decompiled call sites of all

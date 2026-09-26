@@ -85,6 +85,12 @@ class Block:
         self.ready, self.until = ready, until
 
 
+class GenBlock:
+    """A generator handler that yielded a Block: the thread sleeps, then the generator is resumed."""
+    def __init__(self, block, gen):
+        self.block, self.gen = block, gen
+
+
 class Thread:
     def __init__(self, tid, name):
         self.tid, self.name = tid, name
@@ -95,6 +101,8 @@ class Thread:
         self.teb = 0
         self.exit_code = 0
         self.one_shot = False
+        self.gen = None                               # (gen, esp, ret, argc, addr) of a generator handler parked in a Block
+        self.stack_base = 0
         self.retry = None                             # (stub address, esp) to resume a blocked call
 
 
@@ -144,8 +152,10 @@ class Machine:
         self.handler_of = {}                        # trap address -> (fn, argc)
         self.unimplemented = {}                     # (dll, name) -> call count, for the report
         self.calls = 0
+        self.recent = []                            # last few import calls, for crash reports
         self.counts = {}                            # (dll, name) -> times called
         self.threads = []
+        self.pending_dll_inits = []
         self.cur = None
         self.next_tid = 1
         self.slice = 400_000
@@ -182,12 +192,16 @@ class Machine:
         self.wr(a, struct.pack("<H", v & 0xFFFF))
 
     def cstr(self, a, limit=65536):
+        """A NUL-terminated string, read a page-bounded chunk at a time (one emulator read per chunk)."""
         if not a:
             return b""
         out = bytearray()
         while len(out) < limit:
-            chunk = self.rd(a + len(out), 1)
-            if chunk == b"\0":
+            p = a + len(out)
+            chunk = bytes(self.uc.mem_read(p, min(4096 - (p & 4095), 256)))
+            z = chunk.find(b"\0")
+            if z >= 0:
+                out += chunk[:z]
                 break
             out += chunk
         return bytes(out)
@@ -242,16 +256,32 @@ class Machine:
         self.modules[mod["name"]] = mod
         for entry in getattr(pe, "DIRECTORY_ENTRY_IMPORT", []):
             dll = entry.dll.decode().lower()
+            real = self._load_game_dll(dll, path)
             for imp in entry.imports:
                 name = imp.name.decode() if imp.name else f"#{imp.ordinal}"
                 slot = imp.address - pe.OPTIONAL_HEADER.ImageBase + base
-                self.w32(slot, self.stub_for(dll, name))
+                target = real["exports"].get(name) if real else None
+                self.w32(slot, target or self.stub_for(dll, name))
         mod["exports"] = {}
         if hasattr(pe, "DIRECTORY_ENTRY_EXPORT"):
             for sym in pe.DIRECTORY_ENTRY_EXPORT.symbols:
                 key = sym.name.decode() if sym.name else f"#{sym.ordinal}"
                 mod["exports"][key] = base + sym.address
         mod["entry"] = base + pe.OPTIONAL_HEADER.AddressOfEntryPoint
+        return mod
+
+    def _load_game_dll(self, dll, importer_path):
+        """A DLL that ships with the game (DECKDLL, STATWIN, MAGSND, MAGVID) sits next to the importing program;
+        map it for real. System DLLs are answered by handlers instead. Its DllMain runs before the program."""
+        key = dll.lower()
+        if key in self.modules:
+            return self.modules[key]
+        here = os.path.dirname(importer_path)
+        cand = next((os.path.join(here, f) for f in os.listdir(here) if f.lower() == key), None)
+        if not cand or key in ("msvcrtd.dll", "msvcrt.dll"):
+            return None
+        mod = self.load_module(cand)
+        self.pending_dll_inits.append(mod)
         return mod
 
     def _free_dll_base(self, size):
@@ -293,6 +323,7 @@ class Machine:
         self.next_tid += 1
         t.one_shot = one_shot
         base = self.alloc(stack, zero=False)
+        t.stack_base = base
         top = base + stack - 16
         self._thread_teb(t, top, base)
         sp = top
@@ -371,6 +402,8 @@ class Machine:
         ret = self.r32(esp)
         dll, name = key
         self.counts[key] = self.counts.get(key, 0) + 1
+        self.recent.append((self.cur.tid, name, ret))
+        del self.recent[:-40]
         h = REG.handlers.get(key)
         if h is None and dll.startswith("msvcrt"):
             h = REG.handlers.get(("msvcrtd.dll", name))
@@ -404,13 +437,7 @@ class Machine:
             self.stop = True
             uc.emu_stop()
             return
-        n = 0 if cdecl else argc
-        if isinstance(res, Block):
-            self._block(res, address, esp)
-        elif isinstance(res, Cont):
-            self._start_cont(res, esp, ret, n, address)
-        else:
-            self._return(esp, ret, n, res or 0)
+        self._apply(res, esp, ret, 0 if cdecl else argc, address)
 
     def default_argc(self, dll, name):
         table = self.state.get("argc_table", {})
@@ -444,7 +471,16 @@ class Machine:
         res = then(r)
         if inspect.isgenerator(res):
             res = self._drive(res, None)
-        if isinstance(res, Block):
+        self._apply(res, esp, ret, argc, addr)
+
+    def _apply(self, res, esp, ret, argc, addr):
+        """Finish an import call from a handler's result: park (Block), wait mid-generator (GenBlock), run a
+        guest function first (Cont), or return a value."""
+        if isinstance(res, GenBlock):
+            self.cur.state, self.cur.wait = "blocked", res.block
+            self.cur.gen = (res.gen, esp, ret, argc, addr)
+            self.uc.emu_stop()
+        elif isinstance(res, Block):
             self._block(res, addr, esp)
         elif isinstance(res, Cont):
             self._start_cont(res, esp, ret, argc, addr)
@@ -457,6 +493,8 @@ class Machine:
             c = gen.send(value)
         except StopIteration as e:
             return e.value or 0
+        if isinstance(c, Block):
+            return GenBlock(c, gen)
         return Cont(c.fn, c.args, lambda r: self._drive(gen, r))
 
     def _on_unmapped(self, uc, access, address, size, value, user):
@@ -478,12 +516,21 @@ class Machine:
         uc.reg_write(UC_X86_REG_ESP, top)
         uc.reg_write(UC_X86_REG_EIP, entry or self.main["entry"])
         main.ctx = uc.context_save()
+        inits = [self.spawn(mod["entry"], [mod["base"], 1, 0], f"DllMain({mod['name']})", one_shot=True, stack=0x40000)
+                 for mod in self.pending_dll_inits]
+        self.pending_dll_inits = []
+        if inits:
+            main.state, main.wait = "blocked", Block(ready=lambda: all(t.state == "done" for t in inits))
         self.threads.append(main)
         self.stop = False
         rr = 0
         try:
             while not self.stop:
                 now = _time.time()
+                if self.state.get("hard_stop") and now > self.state["hard_stop"]:
+                    self.log("hard stop: time limit reached")
+                    self.report_threads()
+                    break
                 hook = self.state.get("on_schedule")
                 if hook:
                     hook(self)
@@ -497,6 +544,13 @@ class Machine:
                 t = runnable[rr % len(runnable)]
                 t.state, t.wait = "ready", None
                 self._switch_to(t)
+                if t.gen:
+                    gen, esp, ret, argc, addr = t.gen
+                    t.gen = None
+                    self._apply(self._drive(gen, None), esp, ret, argc, addr)
+                    if t.state == "blocked":                      # blocked again straight away
+                        t.ctx = uc.context_save()
+                        continue
                 if t.retry:
                     uc.reg_write(UC_X86_REG_EIP, t.retry[0])
                     uc.reg_write(UC_X86_REG_ESP, t.retry[1])
@@ -507,6 +561,7 @@ class Machine:
                 except UcError as e:
                     eip = uc.reg_read(UC_X86_REG_EIP)
                     self.log(f"emulation error: {e} at eip 0x{eip:08x} in thread {t.tid} ({t.name})")
+                    self.dump_crash(eip)
                     self.exit_code = -2
                     break
                 if t.state == "ready":
@@ -516,10 +571,57 @@ class Machine:
                 if t.tid == main.tid and t.state == "done":
                     self.exit_code = t.exit_code
                     break
+                for x in self.threads:
+                    if x.state == "done" and x is not main and x.stack_base:
+                        self.heap.release(x.stack_base)
+                        self.heap.release(x.teb)
+                        x.stack_base = 0
                 self.threads = [x for x in self.threads if x.state != "done" or x is main]
         finally:
             pass
         return self.exit_code
+
+    def report_threads(self):
+        """Where every thread is (a spinning thread shows up as the same eip range on each report)."""
+        for t in self.threads:
+            if t.ctx is None:
+                continue
+            keep = self.uc.context_save()
+            self.uc.context_restore(t.ctx)
+            eip, esp, ebp = (self.uc.reg_read(r) for r in (UC_X86_REG_EIP, UC_X86_REG_ESP, UC_X86_REG_EBP))
+            self.uc.context_restore(keep)
+            chain = []
+            try:
+                for _ in range(6):
+                    chain.append(self.r32(ebp + 4))
+                    ebp = self.r32(ebp)
+            except Exception:
+                pass
+            self.log(f"   thread {t.tid} ({t.name}) {t.state}: eip=0x{eip:08x} esp=0x{esp:08x} callers "
+                     + " ".join(f"0x{c:08x}" for c in chain))
+
+    def dump_crash(self, eip):
+        """Registers, the code around eip (disassembled if capstone is installed) and the return chain."""
+        r = self.regs()
+        self.log("   regs: " + " ".join(f"{k}={v:08x}" for k, v in r.items()))
+        try:
+            import capstone
+            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+            code = self.rd(eip - 24, 48)
+            for ins in md.disasm(code, eip - 24):
+                self.log(f"   {'=>' if ins.address == eip else '  '} {ins.address:08x}: {ins.mnemonic} {ins.op_str}")
+        except Exception:
+            pass
+        ebp = r["ebp"]
+        chain = []
+        for _ in range(8):
+            try:
+                chain.append(self.r32(ebp + 4))
+                ebp = self.r32(ebp)
+            except Exception:
+                break
+        self.log("   caller chain (ebp): " + " ".join(f"0x{c:08x}" for c in chain))
+        self.log("   last imports: " + " | ".join(f"t{t}:{n}<0x{r:x}" for t, n, r in self.recent[-16:]))
 
     def regs(self):
         u = self.uc

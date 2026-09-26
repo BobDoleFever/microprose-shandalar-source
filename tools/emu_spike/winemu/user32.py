@@ -8,6 +8,7 @@ from .gdi import (Surface, SCREEN_W, SCREEN_H, Bitmap, DC, dc_of, fill_rect, get
                   colorref, text_size, draw_text, _st as gdi_st)
 from .machine import Block, Cont, api, u32
 from . import kernel32
+from .dialogs import parse_dialog
 
 u = lambda name, argc: api("user32.dll", name, argc)
 S32 = lambda v: v - 0x100000000 if v & 0x80000000 else v
@@ -62,7 +63,7 @@ def new_window(m, cls, parent, style, exstyle, x, y, w, h, title, menu, param):
     win = dict(hwnd=hwnd, cls=cls, proc=c["proc"] if c else 0, parent=parent, style=style, exstyle=exstyle,
                x=x, y=y, w=w, h=h, title=title, visible=False, enabled=True, id=menu if style & WS_CHILD else 0,
                long={}, extra={}, invalid=True, surface=None, children=[], param=param, userdata=0,
-               builtin=c is None, hinst=c["hinst"] if c else 0)
+               builtin=c is None, hinst=c["hinst"] if c else 0, tid=m.cur.tid if m.cur else 1)
     st["windows"][hwnd] = win
     if parent and parent in st["windows"]:
         st["windows"][parent]["children"].append(hwnd)
@@ -86,10 +87,19 @@ def send(m, hwnd, msg, wp, lp):
     win = window(m, hwnd)
     if win is None:
         return 0
+    if win.get("dlgproc"):                                    # dialog procedures return BOOL: nonzero = handled
+        r = yield Cont(win["dlgproc"], [hwnd, msg, wp, lp])
+        if r:
+            return win.get("msgresult", 1) if msg != WM_INITDIALOG else 1
+        return default_proc(m, win, msg, wp, lp)
     if win["proc"]:
         r = yield Cont(win["proc"], [hwnd, msg, wp, lp])
         return r
     return default_proc(m, win, msg, wp, lp)
+
+
+BM_GETCHECK, BM_SETCHECK, BM_CLICK = 0xF0, 0xF1, 0xF5
+WM_SETTEXT, WM_GETTEXT, WM_GETTEXTLENGTH, WM_ENABLE = 0xC, 0xD, 0xE, 0xA
 
 
 def default_proc(m, win, msg, wp, lp):
@@ -99,6 +109,111 @@ def default_proc(m, win, msg, wp, lp):
         return 1
     if msg == WM_CLOSE:
         destroy(m, win["hwnd"])
+        return 0
+    cls = str(win.get("cls", "")).upper()
+    if cls in ("BUTTON", "STATIC", "EDIT", "COMBOBOX", "LISTBOX", "SCROLLBAR"):
+        return control_message(m, win, cls, msg, wp, lp)
+    if cls == "#32770":                                        # a dialog with no procedure result
+        if msg == WM_CLOSE:
+            win["ended"], win["result"] = True, 2
+        return 0
+    return 0
+
+
+def _items(win):
+    return win.setdefault("items", [])
+
+
+def control_message(m, win, cls, msg, wp, lp):
+    """The built-in behaviour of BUTTON, STATIC, EDIT, COMBOBOX and LISTBOX windows."""
+    if msg == WM_SETTEXT:
+        win["title"] = m.cstr(lp).decode("latin-1")
+        return 1
+    if msg == WM_GETTEXT:
+        b = win["title"].encode("latin-1")[:max(wp - 1, 0)]
+        m.put_cstr(lp, b)
+        return len(b)
+    if msg == WM_GETTEXTLENGTH:
+        return len(win["title"])
+    if msg == WM_ENABLE:
+        win["enabled"] = bool(wp)
+        return 0
+    if cls == "BUTTON":
+        if msg == BM_SETCHECK:
+            win["checked"] = wp
+            return 0
+        if msg == BM_GETCHECK:
+            return win.get("checked", 0)
+        return 0
+    if cls in ("COMBOBOX", "LISTBOX"):
+        cb = cls == "COMBOBOX"
+        items = _items(win)
+        sorted_ = bool(win["style"] & (0x100 if cb else 0x2))                # CBS_SORT / LBS_SORT
+        if msg == (0x143 if cb else 0x180):                                # ADDSTRING
+            text = m.cstr(lp).decode("latin-1")
+            i = len(items)
+            if sorted_:
+                i = next((k for k, it in enumerate(items) if it[0].lower() > text.lower()), len(items))
+            items.insert(i, [text, 0])
+            if win.get("sel", -1) >= i:
+                win["sel"] = win["sel"] + 1
+            return i
+        if msg == (0x145 if cb else 0x18D):                                # DIR: list files matching a pattern
+            import fnmatch
+            import os
+            from .paths import host_path, normalize
+            spec = normalize(m.cwd, m.cstr(lp).decode("latin-1"))
+            folder, pattern = spec.rsplit("\\", 1)
+            hp, ok = host_path(m.game_root, m.overlay_root, m.cwd, folder)
+            names = sorted(n.upper() for n in (os.listdir(hp) if ok and os.path.isdir(hp) else [])
+                           if fnmatch.fnmatch(n.upper(), pattern.upper()) and os.path.isfile(os.path.join(hp, n)))
+            for n in names:
+                items.append([n, 0])
+            if sorted_:
+                items.sort(key=lambda it: it[0].lower())
+            return len(items) - 1 if names else 0xFFFFFFFF
+        if msg == (0x14A if cb else 0x181):                                # INSERTSTRING
+            i = len(items) if S32(wp) < 0 else wp
+            items.insert(i, [m.cstr(lp).decode("latin-1"), 0])
+            return i
+        if msg == (0x144 if cb else 0x182):                                # DELETESTRING
+            if wp < len(items):
+                items.pop(wp)
+            return len(items)
+        if msg == (0x14B if cb else 0x184):                                # RESETCONTENT
+            items.clear()
+            win["sel"] = -1
+            return 0
+        if msg == (0x146 if cb else 0x18B):                                # GETCOUNT
+            return len(items)
+        if msg == (0x14E if cb else 0x186):                                # SETCURSEL
+            win["sel"] = S32(wp) if S32(wp) < len(items) else -1
+            return u32(win["sel"]) if win["sel"] >= 0 else 0xFFFFFFFF
+        if msg == (0x147 if cb else 0x188):                                # GETCURSEL
+            return u32(win.get("sel", -1))
+        if msg == (0x148 if cb else 0x189):                                # GETLBTEXT / GETTEXT
+            if wp < len(items):
+                b = items[wp][0].encode("latin-1")
+                m.put_cstr(lp, b)
+                return len(b)
+            return 0xFFFFFFFF
+        if msg == (0x149 if cb else 0x18A):                                # GETLBTEXTLEN
+            return len(items[wp][0]) if wp < len(items) else 0xFFFFFFFF
+        if msg == (0x150 if cb else 0x199):                                # GETITEMDATA
+            return items[wp][1] if wp < len(items) else 0xFFFFFFFF
+        if msg == (0x151 if cb else 0x19A):                                # SETITEMDATA
+            if wp < len(items):
+                items[wp][1] = lp
+                return 1
+            return 0xFFFFFFFF
+        if msg in ((0x14C, 0x14D) if cb else (0x18F, 0x18C)):              # FINDSTRING / SELECTSTRING
+            want = m.cstr(lp).decode("latin-1").lower()
+            for i, it in enumerate(items):
+                if it[0].lower().startswith(want):
+                    if msg in (0x14D, 0x18C):
+                        win["sel"] = i
+                    return i
+            return 0xFFFFFFFF
         return 0
     return 0
 
@@ -140,7 +255,9 @@ def create_window_ex(m, a):
     if not r:
         destroy(m, hwnd)
         return 0
-    yield from send(m, hwnd, WM_NCCALCSIZE, 0, 0)
+    rect = m.alloc(16)
+    m.wr(rect, struct.pack("<4i", x, y, x + win["w"], y + win["h"]))
+    yield from send(m, hwnd, WM_NCCALCSIZE, 0, rect)
     r = yield from send(m, hwnd, WM_CREATE, 0, cs)
     if S32(r) == -1:
         destroy(m, hwnd)
@@ -500,21 +617,29 @@ def dispatch_message(m, a):
     return r
 
 
+def _owned(m, hwnd):
+    """True if the message's window belongs to the calling thread (windows with no owner go to anyone)."""
+    w = window(m, hwnd)
+    return w is None or w.get("tid") == m.cur.tid
+
+
 def _next_message(m, remove, hwnd_filter=0):
-    """A pending message tuple, or None. Synthesizes WM_PAINT for invalid visible windows, and due timers."""
+    """A pending message for the calling thread, or None. Synthesizes WM_PAINT for invalid visible windows and
+    WM_TIMER for due timers. Queues are per thread, as in Windows: a window's messages go to the thread that
+    created it."""
     st = _st(m)
     for i, msg in enumerate(st["queue"]):
-        if not hwnd_filter or msg[0] == hwnd_filter:
+        if (not hwnd_filter or msg[0] == hwnd_filter) and _owned(m, msg[0]):
             if remove:
                 st["queue"].pop(i)
             return msg
     t = kernel32.now_ms(m)
     for (hwnd, tid), tm in list(st["timers"].items()):
-        if tm["next"] <= t and hwnd in st["windows"] or (hwnd == 0 and tm["next"] <= t):
+        if tm["next"] <= t and (hwnd == 0 or (hwnd in st["windows"] and _owned(m, hwnd))):
             tm["next"] = t + max(tm["delay"], 1)
             return (hwnd, WM_TIMER, tid, tm["proc"])
     for hwnd, win in st["windows"].items():
-        if win["invalid"] and win["visible"] and win["proc"]:
+        if win["invalid"] and win["visible"] and win["proc"] and win.get("tid") == m.cur.tid:
             if remove:
                 win["invalid"] = False
             return (hwnd, WM_PAINT, 0, 0)
@@ -680,22 +805,181 @@ def message_box(m, a):
     return 1
 
 
-@u("DialogBoxParamA", 5)
-def dialog_box(m, a):
-    m.log(f"   DialogBoxParam(template={a[1] if a[1] < 0x10000 else m.cstr(a[1])!r}, proc=0x{a[3]:08x}): "
-          f"not shown, returns 0")
+DLU_X, DLU_Y = 1.5, 1.625            # dialog units to pixels, for a 10-point face
+
+
+def dlg_item(m, hdlg, cid):
+    win = window(m, hdlg)
+    if not win:
+        return 0
+    for c in win["children"]:
+        cw = window(m, c)
+        if cw and cw["id"] == cid:
+            return c
     return 0
 
 
-u("EndDialog", 2)(lambda m, a: 1)
-u("GetDlgItem", 2)(lambda m, a: 0)
-u("SetDlgItemTextA", 3)(lambda m, a: 1)
-u("GetDlgItemTextA", 4)(lambda m, a: 0)
-u("GetDlgItemInt", 4)(lambda m, a: 0)
-u("SetDlgItemInt", 4)(lambda m, a: 1)
-u("CheckDlgButton", 3)(lambda m, a: 1)
-u("IsDlgButtonChecked", 2)(lambda m, a: 0)
-u("CheckRadioButton", 4)(lambda m, a: 1)
+@u("GetDlgItem", 2)
+def get_dlg_item(m, a):
+    return dlg_item(m, a[0], a[1])
+
+
+@u("SendDlgItemMessageA", 5)
+def send_dlg_item_message(m, a):
+    h = dlg_item(m, a[0], a[1])
+    if not h:
+        return 0
+    r = yield from send(m, h, a[2], a[3], a[4])
+    return r
+
+
+@u("SetDlgItemTextA", 3)
+def set_dlg_item_text(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    if w:
+        w["title"] = m.cstr(a[2]).decode("latin-1")
+    return 1
+
+
+@u("GetDlgItemTextA", 4)
+def get_dlg_item_text(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    b = (w["title"] if w else "").encode("latin-1")[:max(a[3] - 1, 0)]
+    m.put_cstr(a[2], b)
+    return len(b)
+
+
+@u("SetDlgItemInt", 4)
+def set_dlg_item_int(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    if w:
+        w["title"] = str(S32(a[2]) if a[3] else a[2])
+    return 1
+
+
+@u("GetDlgItemInt", 4)
+def get_dlg_item_int(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    try:
+        v = int((w or {"title": "0"})["title"])
+    except ValueError:
+        v = 0
+    if a[2]:
+        m.w32(a[2], 1)
+    return u32(v)
+
+
+@u("CheckDlgButton", 3)
+def check_dlg_button(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    if w:
+        w["checked"] = a[2]
+    return 1
+
+
+@u("IsDlgButtonChecked", 2)
+def is_dlg_button_checked(m, a):
+    w = window(m, dlg_item(m, a[0], a[1]))
+    return w.get("checked", 0) if w else 0
+
+
+@u("CheckRadioButton", 4)
+def check_radio_button(m, a):
+    for cid in range(a[1], a[2] + 1):
+        w = window(m, dlg_item(m, a[0], cid))
+        if w:
+            w["checked"] = 1 if cid == a[3] else 0
+    return 1
+
+
+@u("EndDialog", 2)
+def end_dialog(m, a):
+    w = window(m, a[0])
+    if w:
+        w["ended"], w["result"] = True, a[1]
+    return 1
+
+
+@u("DialogBoxParamA", 5)
+def dialog_box(m, a):
+    """A modal dialog: build the window and its controls from the template, send WM_INITDIALOG, then serve
+    messages until EndDialog. The host (or a script) can press its buttons with `press_dialog_button`."""
+    hinst, tmpl, parent, proc, param = a
+    res = kernel32.find_resource(m, hinst, tmpl, 5)
+    if not res:
+        m.log(f"   DialogBoxParam(template={tmpl}): no such resource")
+        return 0xFFFFFFFF
+    dd = parse_dialog(m.rd(res[0], res[1]))
+    w, h = int(dd["cx"] * DLU_X), int(dd["cy"] * DLU_Y)
+    win = new_window(m, "#32770", parent, dd["style"], dd["exstyle"], (SCREEN_W - w) // 2, (SCREEN_H - h) // 2, w, h,
+                     dd["title"], 0, param)
+    win.update(dlgproc=proc, visible=True, ended=False, result=0, dialog=dd)
+    hdlg = win["hwnd"]
+    first = 0
+    for it in dd["items"]:
+        c = new_window(m, it["cls"], hdlg, it["style"], it["exstyle"], int(it["x"] * DLU_X), int(it["y"] * DLU_Y),
+                       int(it["cx"] * DLU_X), int(it["cy"] * DLU_Y), it["text"], it["id"] & 0xFFFFFFFF, 0)
+        c["id"] = it["id"] & 0xFFFFFFFF
+        c["visible"] = bool(it["style"] & WS_VISIBLE)
+        c["checked"] = 0
+        if not first and it["style"] & 0x10000:                  # WS_TABSTOP
+            first = c["hwnd"]
+    st = _st(m)
+    st["dialogs"].append(hdlg)
+    st["active"] = st["focus"] = hdlg
+    m.log(f"   DialogBoxParam: template {tmpl} '{dd['title']}' with {len(dd['items'])} controls, "
+          f"proc 0x{proc:08x}")
+    if m.state.get("log_dialogs", True):
+        m.log("      controls: " + "; ".join(f"{it['id'] & 0xFFFFFFFF}:{it['cls']}:{it['text'][:24]!r}"
+                                            for it in dd["items"] if it["cls"] in ("BUTTON", "COMBOBOX", "LISTBOX", "EDIT")))
+    yield Cont(proc, [hdlg, WM_INITDIALOG, first, param])
+    while not win["ended"]:
+        hook = m.state.get("on_pump")
+        if hook:
+            hook(m)
+        msg = _next_message(m, True)
+        if msg is not None:
+            yield from send(m, msg[0], msg[1], msg[2], msg[3]) if msg[1] != WM_TIMER or not msg[3] else \
+                _timer_callback(m, msg)
+            continue
+        yield Block(until=_time.time() + 0.003)
+    st["dialogs"].remove(hdlg)
+    r = win["result"]
+    destroy(m, hdlg)
+    return r
+
+
+def _timer_callback(m, msg):
+    yield Cont(msg[3], [msg[0], WM_TIMER, msg[2], kernel32.now_ms(m)])
+    return 0
+
+
+def press_dialog_button(m, cid):
+    """Host input: click a button in the topmost dialog (a WM_COMMAND with BN_CLICKED to its procedure)."""
+    st = _st(m)
+    if not st["dialogs"]:
+        return False
+    h = st["dialogs"][-1]
+    ctl = dlg_item(m, h, cid)
+    st["queue"].append((h, WM_COMMAND, cid & 0xFFFF, ctl))
+    return True
+
+
+def select_dialog_item(m, cid, index):
+    """Host input: pick an entry in a combo or list box of the topmost dialog and notify the procedure."""
+    st = _st(m)
+    if not st["dialogs"]:
+        return False
+    h = st["dialogs"][-1]
+    ctl = dlg_item(m, h, cid)
+    w = window(m, ctl)
+    if not w:
+        return False
+    w["sel"] = index
+    st["queue"].append((h, WM_COMMAND, (1 << 16) | (cid & 0xFFFF), ctl))          # CBN_SELCHANGE = LBN_SELCHANGE = 1
+    return True
+
+
 u("SetScrollRange", 5)(lambda m, a: 1)
 u("SetScrollPos", 4)(lambda m, a: 0)
 u("GetScrollPos", 2)(lambda m, a: 0)
