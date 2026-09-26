@@ -1943,7 +1943,7 @@ void Mem_AllocOrFree_00475c61(void);
 undefined4 FUN_00475c8a(int x,int min_val,char *max_val,undefined4 flags);
 int Magic_CleanupPhase(int x,int y,char *str_3,undefined4 flags);
 undefined4 FUN_00476205(int x,undefined4 min_val,char *max_val,int flags);
-undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int wait_for_pass);
+undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int repeat_while_active);
 undefined4 FUN_0047643e(void);
 int FUN_00476482(int player,int card_slot);
 void FUN_00476510(void);

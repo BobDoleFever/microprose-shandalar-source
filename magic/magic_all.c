@@ -50723,7 +50723,7 @@ undefined4 FUN_00476205(int x,undefined4 min_val,char *max_val,int target_slot)
  * Function: Magic_RunTurnStep @ 0047624f
  * ========================================================================== */
 
-undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int wait_for_pass)
+undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int repeat_while_active)
 
 {
   uint uVar1;
@@ -50750,7 +50750,7 @@ undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int
       DAT_0068a67c = 2;
     }
     g_CurrentStepCode = step_code;
-    if (wait_for_pass == 0) {
+    if (repeat_while_active == 0) {
       DAT_0063ee70 = 0;
     }
     else {
@@ -50762,7 +50762,7 @@ undefined4 Magic_RunTurnStep(int player,undefined4 step_code,char *step_name,int
     iVar6 = Pic_Subsystem_004458b0(player,step_name);
     DAT_0063edc8 = uVar1 & 0x30;
   } while (((DAT_00695f0c & (-(uint)(iVar6 == 0) & 0xfffffffe) + 6) != 0) ||
-          ((wait_for_pass != 0 && (iVar6 != 0))));
+          ((repeat_while_active != 0 && (iVar6 != 0))));
   g_CurrentStepCode = 0xffffffff;
   DAT_006fd3f0 = DAT_006fd3f0 + -1;
   DAT_0063ee70 = uVar1;

@@ -25,6 +25,8 @@ don't need Wine, MinGW, Frida, or the original discs to build and test.
 - `label_digest.py` — prints the strings, API calls and callees of decompiled functions so a name can be
   judged against its body (used for docs/SYMBOL_SAMPLE.md).
 - `oracle_ctl.py` — command-line driver: `shot`, `click X Y`, `move X Y`, `key`.
+- `probe_steps.py` — breakpoint on the turn-step runner plus a watchpoint on the step code.
+- `probe_globals.py` — watchpoints on the card-event context globals.
 - `probe_duel_start.py` — what runs when a duel starts.
 - `probe_drawcard.py` — first oracle experiment (see `docs/SYMBOL_VERIFICATION.md`).
 - `tests/` — unit tests for everything above that doesn't require the real toolchain.

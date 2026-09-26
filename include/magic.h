@@ -2488,7 +2488,7 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int32_t flags);;
 int32_t FUN_00476205(int x,int32_t min_val,char *max_val,int flags);;
 
 /* Function at 0047624f (Size: 495 bytes) */
-int32_t Magic_RunTurnStep(int player,int32_t step_code,char *step_name,int wait_for_pass);;
+int32_t Magic_RunTurnStep(int player,int32_t step_code,char *step_name,int repeat_while_active);;
 
 /* Function at 0047643e (Size: 68 bytes) */
 int32_t FUN_0047643e(void);;

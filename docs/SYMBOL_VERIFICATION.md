@@ -190,14 +190,15 @@ parameters are now `(player, slot, event_code, target_slot)` (they were `x, y, w
 prototypes of the push and pop are `void(void)` (the header had made-up parameters). `DUEL.EXE`'s
 maps also list a `Card_TapForMana` at `0x00473179`; that is a different program and was left alone.
 
-## The step code and the other event-context writers (MAGIC.EXE): static evidence
+## The step code and the other event-context writers (MAGIC.EXE)
 
-Not watched live. What supports each name is in the code and in the pattern of call sites.
+The step runner and `g_CurrentStepCode` are **verified live** (`probe_steps.py`, next section). The other
+names in this section rest on static evidence.
 
 | Address | Was | Now | Evidence |
 |---|---|---|---|
 | `0x006ff4c0` | `g_PlayerManaPool` | `g_CurrentStepCode` | only ever set to `-1` or to a step code; assigned from the argument by `Magic_RunTurnStep` and set back to `-1` afterwards; compared with constants in the range `0xc9`-`0xdc`; `Magic_BroadcastCardEventInStep` returns early when it is below 200 |
-| `0x0047624f` | `FUN_0047624f` | `Magic_RunTurnStep(player, step_code, step_name, wait_for_pass)` | saves the step context, sets `g_CurrentStepCode`, runs the step handler in a loop until nobody responds (`Pic_Subsystem_004458b0`), restores; every call site passes a step name string |
+| `0x0047624f` | `FUN_0047624f` | `Magic_RunTurnStep(player, step_code, step_name, repeat_while_active)` | saves the step context, sets `g_CurrentStepCode`, runs the step handler in a loop until nobody responds (`Pic_Subsystem_004458b0`), restores; every call site passes a step name string |
 | `0x00473e69` | `FUN_00473e69` (the maps say `Rules_ApplyContinuousDamage`) | `Magic_BroadcastCardEvent(player, slot, event_code)` | push context, set the source to `(player, slot)`, the target to `(1 - player, -1)`, clear the result, run `Magic_ScanCards(event_code)`, restore the step code, pop, return the result |
 | `0x004485d6` | `Pic_Subsystem_004485d6` | `Magic_BroadcastCardEventInStep(player, slot, event_code, event_arg)` | the same scan, but only while a step is running (`g_CurrentStepCode >= 200`); no push or pop; stores its fourth argument at `0x006b2fe8` |
 | `0x00473179` | `Magic_DispatchCardEvent` (my earlier name) | `Magic_QueryCardValue(player, slot, event_code, target_slot)` | a `switch` over six codes (`0x32` to `0x36`, `0x3c`) computes a value from the card's data, calls `Magic_ScanCards(event_code)` so other cards can adjust `g_CardEventResult`, and returns it; 90 call sites use the codes `0x32` (40), `0x33` (24), `0x34` (22) and `0x3c` (4). What each code measures is not established |
@@ -208,17 +209,45 @@ offset `0x10` of its master record) inside a pushed context. Its parameters are 
 `(player, slot, event_code, target_player, target_slot)`; the decompiler had called the last two
 `target_slot` and `flags`, but the code stores them in `g_EventTargetPlayer` and `g_EventTargetSlot`.
 
-Step codes, from the call sites that pass a name (the others in the range are compared but not
-named): `0xc9` Begin Upkeep, `0xcb` End Upkeep, `0xce` Draw Phase, `0xcf` Draw a card Phase,
-`0xd9` Choose Attackers, `0xda` Choose Defenders, `0xdc` Pay for attacker.
+Step codes, from the call sites that pass a name: `0xc9` Begin Upkeep, `0xcb` End Upkeep, `0xce` Draw
+Phase, `0xcf` Draw a card Phase, `0xd9` Choose Attackers, `0xda` Choose Defenders, `0xdc` Pay for
+attacker. The live run added `0xcd` End of Turn and `0xd2` Tapping.
+
+The last parameter was first called `wait_for_pass`; the code only shows that when it is non-zero the
+step is repeated while its handler returns non-zero (and a state mask of `0x30` is set), so it is now
+`repeat_while_active`. Live it was 1 for the two draw steps and 0 for the rest.
 
 Still wrong and not renamed: `g_AiSavedPlayerManaPool` (`0x00552938`) is filled with a 0x80-byte
 `memcpy` from `0x006ff4d0`, the 32-entry event queue that `Magic_CombatPhase` (which really just
 queues an event) appends to, so it is a saved copy of the queue and not of anything mana related.
 `DAT_006b2fe8` (the extra event argument) is also unnamed.
 
-Suggested live check: break on `Magic_RunTurnStep` in a duel and read `(player, step_code, step_name)`
-at each turn step; the draw step alone should show `0xcf` and "Draw a card Phase".
+### Live result for `Magic_RunTurnStep` and `g_CurrentStepCode`
+
+A breakpoint on `0x0047624f` and a write watchpoint on `0x006ff4c0` during a real duel, stepping through
+one turn boundary (77 events; raw log in the git-ignored `sources/oracle/probe_steps_result.log`):
+
+| Step code | Name string | Player | Last arg | Called from |
+|---|---|---|---|---|
+| `0xcd` | End of Turn | 1, then 0 | 0 | `0x00476220`, `0x0047623d` (`Magic_CleanupPhase`) |
+| `0xd2` | Tapping | 0, then 1 | 0 | `0x00476220`, `0x0047623d` (`Magic_CleanupPhase`) |
+| `0xc9` | Begin Upkeep | 0 | 0 | `0x00502c75` |
+| `0xcb` | End Upkeep | 0 | 0 | `0x00502cc7` |
+| `0xce` | Draw Phase | 0 | 1 | `0x00502dc4` |
+| `0xcf` | Draw a card Phase | 0 | 1 | `0x0046f5f9`, inside `Magic_ExecuteDrawPhase` (`0x0046f5d1`) |
+
+- All 8 entries had `MAGIC.EXE`'s code bytes at the function, and `g_CurrentStepCode` was `-1` before every
+  one of them (8 of 8).
+- It was written with the step code exactly once per entry and set back to `-1` exactly once per entry
+  (each of the six values above, `0xcd` and `0xd2` twice, and eight `-1` resets), all by `Magic_RunTurnStep`.
+  Every other write in the run (53 of 69) was `-1`, by `Magic_BroadcastCardEvent` (42) or
+  `Magic_CleanupPhase` (11), as its save and restore predicts.
+- The draw step being called from inside `Magic_ExecuteDrawPhase` confirms that function's name from
+  the other side.
+
+Not seen: the combat steps (`0xd9`, `0xda`, `0xdc`), because no attack was made, and any nested step
+(a step code seen non-negative on entry). What the last argument means beyond "repeat while active" is
+still a guess.
 
 ## Names restored (MAGIC.EXE)
 
