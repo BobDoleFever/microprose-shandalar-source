@@ -25,7 +25,7 @@ def _st(m):
     st = m.state.setdefault("u32", {})
     if not st:
         st.update(classes={}, windows={}, next_hwnd=0x10010, queue=[], quit=None, timers={}, focus=0, active=0,
-                  capture=0, cursor=(320, 240), dirty=False, keys={}, last_idle=_time.time(), depth=0,
+                  capture=0, cursor=(320, 240), dirty=False, keys={}, depth=0,
                   menus={}, next_menu=0x9001, dialogs=[])
     return st
 
@@ -719,7 +719,16 @@ def peek_message(m, a):
         return 1
     msg = _next_message(m, bool(a[4] & 1), a[1])
     if msg is None:
+        # A thread that keeps polling an empty queue is spinning: after a few misses, put it to sleep for a
+        # virtual millisecond (the retry then returns "no message" straight away), so idle waits are cheap.
+        t = m.cur
+        t.empty_polls = getattr(t, "empty_polls", 0) + 1
+        if t.empty_polls > 3 and not getattr(t, "polled_sleep", False):
+            t.polled_sleep = True
+            return Block(until=m.vt + 0.001)
+        t.polled_sleep = False
         return 0
+    m.cur.empty_polls = 0
     _write_msg(m, a[0], msg)
     return 1
 
@@ -739,7 +748,7 @@ def get_message(m, a):
     if msg is not None:
         _write_msg(m, a[0], msg)
         return 1
-    return Block(until=_time.time() + 0.003)                     # idle: let other threads run, then look again
+    return Block(until=m.vt + 0.003)                     # idle: let other threads run, then look again
 
 
 @u("SetTimer", 4)
@@ -1000,7 +1009,7 @@ def dialog_box(m, a):
             yield from send(m, msg[0], msg[1], msg[2], msg[3]) if msg[1] != WM_TIMER or not msg[3] else \
                 _timer_callback(m, msg)
             continue
-        yield Block(until=_time.time() + 0.003)
+        yield Block(until=m.vt + 0.003)
     st["dialogs"].remove(hdlg)
     r = win["result"]
     destroy(m, hdlg)
@@ -1019,6 +1028,8 @@ def press_dialog_button(m, cid):
         return False
     h = st["dialogs"][-1]
     ctl = dlg_item(m, h, cid)
+    if not ctl or not window(m, ctl)["visible"]:
+        return False                                              # that button is not in the open dialog (yet)
     st["queue"].append((h, WM_COMMAND, cid & 0xFFFF, ctl))
     return True
 
@@ -1068,18 +1079,56 @@ def main_hwnd(m):
     return 0
 
 
-def inject_mouse(m, kind, x, y):
-    """kind: move | down | up | rdown | rup. Coordinates are client pixels of the main window."""
+def abs_rect(m, win):
+    """A window's rectangle in screen coordinates (children are positioned relative to their parent)."""
     st = _st(m)
-    h = main_hwnd(m)
+    x, y = win["x"], win["y"]
+    p = st["windows"].get(win["parent"]) if win["parent"] else None
+    while p is not None:
+        x, y = x + p["x"], y + p["y"]
+        p = st["windows"].get(p["parent"]) if p["parent"] else None
+    return x, y, x + win["w"], y + win["h"]
+
+
+def window_at(m, x, y):
+    """The topmost visible window under a screen point: later-created windows are above earlier ones, and a
+    child is above its parent. Dialogs are handled separately."""
+    st = _st(m)
+    best = 0
+    for h, w in st["windows"].items():
+        if not w["visible"] or not w["proc"] or h == st.get("desktop_hwnd"):
+            continue
+        anc = w
+        ok = True
+        while anc["parent"] and anc["parent"] in st["windows"]:                 # every ancestor must be visible
+            anc = st["windows"][anc["parent"]]
+            ok = ok and anc["visible"]
+        if not ok:
+            continue
+        x0, y0, x1, y1 = abs_rect(m, w)
+        if x0 <= x < x1 and y0 <= y < y1:
+            best = h                                                          # dict order = creation order
+    return best
+
+
+def inject_mouse(m, kind, x, y):
+    """kind: move | down | up | rdown | rup. (x, y) are screen pixels; the message goes to the window under the
+    pointer (or the capturing window) with client coordinates."""
+    st = _st(m)
+    h = st["capture"] or window_at(m, x, y) or main_hwnd(m)
     if not h:
         return False
+    x0, y0, _, _ = abs_rect(m, st["windows"][h])
     st["cursor"] = (x, y)
     msg = {"move": WM_MOUSEMOVE, "down": WM_LBUTTONDOWN, "up": WM_LBUTTONUP, "rdown": WM_RBUTTONDOWN,
            "rup": WM_RBUTTONUP}[kind]
     keys = 1 if kind in ("down",) else 0
     st["keys"][1] = kind == "down" or (kind == "move" and st["keys"].get(1, False))
-    st["queue"].append((h, msg, keys, (y << 16) | (x & 0xFFFF)))
+    lx, ly = x - x0, y - y0
+    if m.state.get("gdi_debug"):
+        w = st["windows"][h]
+        m.log(f"   [input] {kind} at {x},{y} -> 0x{h:x} {w['cls']!r} {w['title']!r} client {lx},{ly} tid={w.get('tid')}")
+    st["queue"].append((h, msg, keys, ((ly & 0xFFFF) << 16) | (lx & 0xFFFF)))
     return True
 
 

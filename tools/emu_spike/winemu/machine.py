@@ -159,6 +159,8 @@ class Machine:
         self.cur = None
         self.next_tid = 1
         self.slice = 400_000
+        self.vt = 0.0                               # virtual time in seconds: the only clock the guest sees
+        self.ips = 100_000_000                      # instructions per virtual second (a fast late-90s PC)
         self.modules = {}                           # lower-case name -> dict(base, pe, path)
         self.next_stub = 0
         self.exit_code = None
@@ -171,6 +173,9 @@ class Machine:
         self.main = self.load_module(exe_path, is_main=True)
         self.uc.hook_add(UC_HOOK_CODE, self._on_code, begin=STUB_BASE, end=STUB_BASE + STUB_SIZE)
         self.uc.hook_add(UC_HOOK_MEM_UNMAPPED, self._on_unmapped)
+
+    def vnow(self):
+        return self.vt
 
     # ---- memory helpers -------------------------------------------------------------------------
     def rd(self, a, n):
@@ -526,8 +531,8 @@ class Machine:
         rr = 0
         try:
             while not self.stop:
-                now = _time.time()
-                if self.state.get("hard_stop") and now > self.state["hard_stop"]:
+                now = self.vt
+                if self.state.get("hard_stop") and _time.time() > self.state["hard_stop"]:
                     self.log("hard stop: time limit reached")
                     self.report_threads()
                     break
@@ -538,11 +543,18 @@ class Machine:
                 if not runnable:
                     if all(t.state == "done" for t in self.threads):
                         break
-                    _time.sleep(0.002)
+                    # everyone is waiting: jump the virtual clock to the earliest deadline (no real sleeping)
+                    wakes = [t.wait.until for t in self.threads if t.state == "blocked" and t.wait
+                             and t.wait.until is not None]
+                    nxt = self.state.get("next_host_event")
+                    if nxt is not None:
+                        wakes.append(nxt)
+                    self.vt = max(self.vt + 0.0005, min(wakes)) if wakes else self.vt + 0.001
                     continue
                 rr += 1
                 t = runnable[rr % len(runnable)]
                 t.state, t.wait = "ready", None
+                calls0 = self.calls
                 self._switch_to(t)
                 if t.gen:
                     gen, esp, ret, argc, addr = t.gen
@@ -564,6 +576,8 @@ class Machine:
                     self.dump_crash(eip)
                     self.exit_code = -2
                     break
+                # charge virtual time: a full slice if it ran to the limit, little if it blocked, plus calls
+                self.vt += ((self.slice if t.state == "ready" else 3000) + 150 * (self.calls - calls0)) / self.ips
                 if t.state == "ready":
                     t.ctx = uc.context_save()
                 elif t.state == "blocked":

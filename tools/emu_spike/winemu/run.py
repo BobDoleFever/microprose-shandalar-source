@@ -131,7 +131,7 @@ def main(argv=None):
         m.trace_filter = lambda n: bool(rx.search(n))
     crt.init_argv(m, m.exe_guest_path)
     t0 = time.time()
-    tick = {"n": 0, "next": time.time() + args.shot_every}
+    tick = {"n": 0, "next": args.shot_every}
     actions = []
     for part in filter(None, (p.strip() for p in args.script.split(";"))):
         at, cmd = part.split(":", 1)
@@ -145,13 +145,18 @@ def main(argv=None):
             x, y = int(cmd[1]), int(cmd[2])
             user32.inject_mouse(mm, "move", x, y)
             user32.inject_mouse(mm, "down", x, y)
-            pending["clicks"].append((now + 0.3, "up", x, y))
+            hold = float(cmd[3]) if len(cmd) > 3 else 0.3            # click X Y [hold seconds]
+            pending["clicks"].append((now + hold, "up", x, y))
         elif op == "move":
             user32.inject_mouse(mm, "move", int(cmd[1]), int(cmd[2]))
         elif op == "key":
             user32.inject_key(mm, int(cmd[1]), int(cmd[2]) if len(cmd) > 2 else None)
         elif op == "dlg":                                      # dlg ID: press a button in the open dialog
-            print(f"   [script] dlg {cmd[1]} -> {user32.press_dialog_button(mm, int(cmd[1]))}")
+            if user32.press_dialog_button(mm, int(cmd[1])):
+                print(f"   [script] dlg {cmd[1]} pressed at {now:.1f}s")
+            else:                                              # not there yet: try again shortly
+                actions.append((now + 0.25, cmd))
+                actions.sort(key=lambda a: a[0])
         elif op == "dlgsel":                                   # dlgsel ID INDEX
             user32.select_dialog_item(mm, int(cmd[1]), int(cmd[2]))
         elif op == "shot":
@@ -160,21 +165,29 @@ def main(argv=None):
 
     def schedule(mm):
         kernel32.on_schedule(mm)
-        now = time.time()
-        while actions and now - t0 >= actions[0][0]:
+        now = mm.vt                                            # script times are virtual seconds
+        while actions and now >= actions[0][0]:
             run_action(mm, actions.pop(0)[1], now)
         for c in [c for c in pending["clicks"] if c[0] <= now]:
             pending["clicks"].remove(c)
             user32.inject_mouse(mm, c[1], c[2], c[3])
-        if args.shot_every and time.time() >= tick["next"]:
-            tick["next"] = time.time() + args.shot_every
+        # tell the scheduler when the next thing will happen, so an idle machine can jump the virtual clock
+        due = [a[0] for a in actions[:1]] + [c[0] for c in pending["clicks"]]
+        due += [(tm["next"] - 60000) / 1000 for tm in mm.state.get("k32", {}).get("timers", {}).values()]
+        due += [(tm["next"] - 60000) / 1000 for tm in mm.state.get("u32", {}).get("timers", {}).values()]
+        if args.shot_every:
+            due.append(tick["next"])
+        mm.state["next_host_event"] = min(due) if due else None
+        if args.shot_every and now >= tick["next"]:
+            tick["next"] = now + args.shot_every
             tick["n"] += 1
             Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"screen_{tick['n']:03d}.png"))
     m.state["on_schedule"] = schedule
-    m.state["hard_stop"] = t0 + args.seconds + 10
-    m.state["should_stop"] = lambda mm: time.time() - t0 > args.seconds
+    m.state["hard_stop"] = t0 + max(args.seconds * 6, 120)      # real-time safety net
+    m.state["should_stop"] = lambda mm: mm.vt > args.seconds
+    m.state["next_host_event"] = None
     code = m.run()
-    print(f"\nfinished: exit code {code}, {m.calls} import calls, {time.time() - t0:.1f}s")
+    print(f"\nfinished: exit code {code}, {m.calls} import calls, {m.vt:.1f}s virtual, {time.time() - t0:.1f}s real")
     shot = os.path.join(args.shots, "screen.png")
     Image.fromarray(compose(m)).save(shot)
     print(f"screen: {shot}")

@@ -13,7 +13,7 @@ INVALID_HANDLE = 0xFFFFFFFF
 def _st(m):
     st = m.state.setdefault("k32", {})
     if not st:
-        st.update(handles={}, next_handle=0x100, t0=_time.time(), timers={}, resources={})
+        st.update(handles={}, next_handle=0x100, timers={}, resources={})
     return st
 
 
@@ -26,11 +26,8 @@ def new_handle(m, obj):
 
 
 def now_ms(m):
-    """Milliseconds since 'boot'. Frozen for the first two seconds so the game's srand(GetTickCount()) at
-    start-up gets the same seed every run (coin tosses and shuffles then repeat)."""
-    elapsed = _time.time() - _st(m)["t0"]
-    return 60000 if elapsed < 2 else int(elapsed * 1000) + 60000
-
+    """Milliseconds on the virtual clock (instruction-driven, so runs repeat exactly)."""
+    return 60000 + int(m.vt * 1000)
 
 # ---- process and module ------------------------------------------------------------------------------
 k32("GetVersion", 0)(lambda m, a: 0x88AE0A04)   # Windows 98 SE: 4.10, build 2222, top bit set for Win9x
@@ -93,7 +90,7 @@ def wait_for_single_object(m, a):
             return 0
         if a[1] == 0:
             return 0x102                                     # WAIT_TIMEOUT
-        return Block(ready=lambda: th.state == "done", until=None if a[1] == 0xFFFFFFFF else _time.time() + a[1] / 1000)
+        return Block(ready=lambda: th.state == "done", until=None if a[1] == 0xFFFFFFFF else m.vt + a[1] / 1000)
     return 0
 
 
@@ -106,7 +103,7 @@ def device_io_control(m, a):
         if a[1] == 1:
             m.w32(a[4], 0x100)
         elif a[1] == 2:
-            m.w32(a[4], int((_time.time() - _st(m)["t0"]) * 54050))
+            m.w32(a[4], int(m.vt * 54050))
         if a[6]:
             m.w32(a[6], 4)
         return 1
@@ -121,7 +118,7 @@ def sleep(m, a):
         st[key] = False
         return 0
     st[key] = True
-    return Block(until=_time.time() + a[0] / 1000)
+    return Block(until=m.vt + a[0] / 1000)
 
 
 @k32("GetModuleHandleA", 1)
