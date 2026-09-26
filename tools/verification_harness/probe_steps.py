@@ -12,11 +12,12 @@ the live game,
 Attach once a duel is on screen (watchpoints on hot pages can make the guest stop taking clicks
 if they are armed earlier), then click Done to step through turns.
 
-    python3 probe_steps.py [seconds] [max_events]      -> probe_steps.json
+    python3 probe_steps.py [seconds] [max_events] [nowatch]      -> probe_steps.json
 """
 import csv
 import json
 import os
+import signal
 import socket
 import struct
 import sys
@@ -33,6 +34,7 @@ STACK_COUNT = 0x006A3F78          # g_SpellStackCount
 STACK_FUNCS = {0x004751D7: ("Magic_PushSpellStack", 5), 0x004756A1: ("Magic_ResolveTopSpell", 0),
                0x00475BB0: ("Magic_DropTopSpell", 0), 0x00474D1E: ("Magic_ClearSpellStack", 0)}
 BREAKS = {RUN_STEP} | set(STACK_FUNCS)
+NOWATCH = "nowatch" in sys.argv[3:]      # skip the write watchpoint (it can make the duel drop clicks)
 PROGRAM = os.path.join(HERE, "..", "..", "sources", "installed", "Magic", "Program", "MAGIC.EXE")
 
 
@@ -81,12 +83,16 @@ def main():
     gdb = GDBRemote()
     for a in BREAKS:
         gdb.set_breakpoint(a)
-    gdb.set_watchpoint(STEP_CODE)
-    print(f"[{time.strftime('%X')}] armed: breakpoints {[hex(a) for a in sorted(BREAKS)]}, write watchpoint {STEP_CODE:#x}", flush=True)
+    if not NOWATCH:
+        gdb.set_watchpoint(STEP_CODE)
+    print(f"[{time.strftime('%X')}] armed: breakpoints {[hex(a) for a in sorted(BREAKS)]}, write watchpoint {'off' if NOWATCH else hex(STEP_CODE)}", flush=True)
     gdb.cont()
 
-    events, t0 = [], time.time()
-    while time.time() - t0 < budget and len(events) < max_events:
+    events, recent, t0 = [], [], time.time()
+    stopping = []
+    signal.signal(signal.SIGTERM, lambda *a: stopping.append(1))   # stop cleanly: breakpoints out, guest resumed
+    signal.signal(signal.SIGINT, lambda *a: stopping.append(1))
+    while time.time() - t0 < budget and len(events) < max_events and not stopping:
         try:
             stop = gdb.wait_stop(timeout=2)
         except socket.timeout:
@@ -130,9 +136,25 @@ def main():
         else:
             ev = {"t": t, "kind": f"other stop {stop!r}"}
         events.append(ev)
-        print(json.dumps(ev), flush=True)
+        # The spell-chain window polls (resolve / Casting / End of Turn many times a second):
+        # print an event only if its signature was not among the last 40, and save as we go.
+        sig = (ev["kind"], ev.get("player"), ev.get("step_code"), ev.get("called_from"), ev.get("stack_count_before"))
+        if sig not in recent:
+            print(json.dumps(ev), flush=True)
+        recent.append(sig)
+        del recent[:-40]
+        if len(events) % 200 == 0:
+            json.dump(events, open("probe_steps.json", "w"))
         gdb.resume(BREAKS)
 
+    try:                                                  # the guest is running here: stop it, and if it is on
+        gdb.interrupt()                                   # one of our breakpoints, step off it before removing them
+        pc = gdb.read_registers()["eip"]
+        if pc in BREAKS:
+            gdb.clear_breakpoint(pc)
+            gdb.step()
+    except Exception:
+        pass
     for fn in [lambda a=a: gdb.clear_breakpoint(a) for a in BREAKS] + [lambda: gdb.clear_watchpoint(STEP_CODE), gdb.cont]:
         try:
             fn()

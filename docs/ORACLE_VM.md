@@ -119,8 +119,26 @@ Gathering" Start menu folder), delete any `._*` files, and boot with
 
 ## Playing cards through QMP
 
-The duel screen is mouse-driven. Clicking a Mountain in the hand list played it (hand 7 to 6, event pushed on the
-spell stack). Clicking the artifact in the hand list to cast it did nothing three times, even with a longer hold
-and a jiggled pointer; whether it needs the land tapped first is unknown. Hover the row and check the
-highlighted colour before clicking: an offset of a few pixels lands on a neighbouring card, and on the
-Worldmagic prompt a nudge moved the pointer from "Never mind" onto "Pay the gold" (not clicked).
+The duel screen is mouse-driven, and a whole game of it can be played through QMP: land, cast, tap for mana,
+end turn, attack, block. What worked, from a duel that reached combat on both sides:
+
+- **The pointer tip lands about 15 to 20 px above and to the left of where you ask.** `mouse_goto(x, y)` positions
+  the pointer's hot spot in guest pixels, but the sprite drawn in a screenshot is offset from it, and the
+  earlier "clicks that did nothing" were on the wrong row (the row above). Move, take a screenshot, check the
+  tip against the target, nudge with `mouse_move(dx, dy)`, then click. Hover first: the row under the pointer
+  highlights.
+- **Casting.** Click the card in the "Your hand" list (a longer hold, 0.5 s, is safer). The game then shows the
+  cost in a bar; click each land you want to tap for mana in the play area (one click each, the cost readout
+  shrinks). Casting is complete when the bar disappears.
+- **Advancing.** The Done button ends a phase. When clicks are being ignored, the keyboard works: `ret`
+  presses Done, and also dismisses the "opponent casts..." cards.
+- **Attacking.** Two Done presses reach "Combat phase: choose attackers"; click the creature, then `ret`.
+  If the blocker assigns damage, click it to assign.
+- **Save states.** `savevm <tag>` through QMP's `human-monitor-command` (0.7 s, about 100 MB in the overlay)
+  gives a restore point; `loadvm <tag>` in the same way. Take one right after the duel loads.
+- **The duel prompt sometimes freezes** on a new boot (see below); rebooting the throwaway overlay fixed it.
+- **A killed probe leaves the guest parked on its last breakpoint** (the screen looks frozen and the pointer
+  turns into an hourglass). The probes now stop cleanly on SIGTERM: interrupt, step off any breakpoint of
+  their own, remove them, resume. If you kill one hard, reconnect, clear the breakpoints and single-step.
+- On the Worldmagic prompt a nudge moved the pointer from "Never mind" onto "Pay the gold" (not clicked);
+  check before every click.

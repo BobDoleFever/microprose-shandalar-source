@@ -245,9 +245,33 @@ one turn boundary (77 events; raw log in the git-ignored `sources/oracle/probe_s
 - The draw step being called from inside `Magic_ExecuteDrawPhase` confirms that function's name from
   the other side.
 
-Not seen: the combat steps (`0xd9`, `0xda`, `0xdc`), because no attack was made, and any nested step
+Not seen in that run: the combat steps. The combat run below saw them. Still not seen: any nested step
 (a step code seen non-negative on entry). What the last argument means beyond "repeat while active" is
 still a guess.
+
+### Live result for the combat steps
+
+A second duel, played through to combat on both sides (raw logs in the git-ignored
+`sources/oracle/probe_combat3.log` and `probe_sites.log`; the turn loop is `FUN_00501f50`). The opponent
+attacked me with Goblin Balloon Brigade, and I attacked with Brothers of Fire; the opponent blocked with
+Hurr Jackal and they traded.
+
+| Step | Call | Seen |
+|---|---|---|
+| `0xd9` "Choose Attackers" | `Magic_RunTurnStep(0, 0xd9, ..., 0)` from the call at `0x0050481e`, code bytes match | on my own attack, with the probe on the three call sites only |
+| `0xda` "Choose Defenders" | `Magic_RunTurnStep(0, 0xda, ..., 0)` from `0x00504704`, when the opponent attacked (player = the defender, me) | 3 times |
+| `0xdc` "Pay for attacker" | `Magic_RunTurnStep(1, 0xdc, ..., 1)` from `0x00504402` (the attacker's side) | 3 times |
+
+New step codes seen in the same run, all with player 0 and 1 back to back from the spell-chain runner:
+`0xd4` "Card leaving play", `0xd5` "Card(s) to Graveyard", `0xd6` "Graveyard order", `0xd7` "Damage Dealing",
+`0xcc` "End of Combat". So a combat runs `Pay for attacker`, `Choose Defenders`, `Damage Dealing`, then
+`Graveyard order`, `Card(s) to Graveyard` and `End of Combat` when creatures die.
+
+What is not shown: on my own attack the `0xda` call site was not hit (the blockers were assigned all the
+same), so `0xda` there is not confirmed; and the argument meanings beyond the step code are unchanged.
+
+Probing note: a breakpoint on `Magic_RunTurnStep` itself is too heavy once a spell chain is open, because
+the chain calls it dozens of times a second; use the call sites (`probe_combat_sites.py`) for combat.
 
 ## The spell stack (MAGIC.EXE): push and resolve seen live, the rest static
 
@@ -298,11 +322,25 @@ Breakpoints on the four stack functions during a real duel (`probe_steps.py`; ra
   slot number 4 matches the card I had just played (the fifth card in play order is not verified).
 - The step `0xd3` "Casting" is new to the step-code list.
 
-What this does and does not show: one push and one resolve, both associated with playing a land, so the
-event code `0x71` probably means "land played" (not proven). `Magic_DropTopSpell` and `Magic_ClearSpellStack`
-were never entered, so their names, and the AI save and restore, are still static only. The old names
-(`Magic_CombatPhase` and `Magic_EndTurnPhase`) were both wrong in any case: neither ran anything to do
-with combat or the end of a turn here.
+What this does and does not show: one push and one resolve, both associated with playing a land. The old
+names (`Magic_CombatPhase` and `Magic_EndTurnPhase`) were both wrong in any case: neither ran anything to
+do with combat or the end of a turn here.
+
+**Later duel, full turns on both sides** (`probe_steps.py ... nowatch`, log `probe_combat2.log` and
+`probe_combat3.log`):
+
+- `Magic_ClearSpellStack` is entered once at the start of every turn, from `0x005020ba` with the stack
+  empty. Its name is confirmed.
+- `Magic_DropTopSpell` was entered from `0x004717b4` with depth 1 or 2 (the top entry dropped rather than run),
+  several times while the opponent was casting. Its name is confirmed.
+- Push event code `0x71` was pushed for a land, for an artifact (Throne of Bone, slot 1) and for the
+  opponent's plays, always from `0x0047009e`. So it is not land-specific: it is the event for a card being
+  played or cast. Code `0x72` is pushed from three sites (`0x004bb5e9`, `0x004bd2e9`, `0x004712fe`),
+  when a cast is paid (`0x004bb5e9`) and just before a Tapping step (`0x004712fe`); the third is unexplained.
+- A cast pushes twice: the `0x71` entry when the card is announced, then a `0x72` entry on top while it is
+  paid for. The depth 2 resolves in the log are the `0x72` entries.
+
+Still static only: the AI's save and restore of the entries.
 
 ## Names restored (MAGIC.EXE)
 

@@ -158,12 +158,12 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Restore the earlier names a later pass had replaced: 30 restored, 46 left (code supports neither).
 - [x] Name `g_PlayerManaPool` (the current turn-step code) and `DAT_006b2fe4` (the event card's colour
       mask), and the three other functions that write the event context (static evidence).
-- [x] Confirmed live: `Magic_RunTurnStep` and `g_CurrentStepCode` (six steps seen; combat steps not yet).
+- [x] Confirmed live: `Magic_RunTurnStep` and `g_CurrentStepCode` (the turn, cast and combat steps).
 - [x] Rename the spell stack: `Magic_CombatPhase`, `Magic_EndTurnPhase` and `Magic_DiscardToHandSize` were
       really push, resolve and drop; `g_AiSavedPlayerManaPool` was a copy of its entries (static evidence).
-- [~] Spell stack live: push and resolve seen once (playing a land); drop and clear not yet.
-- [ ] Combat steps live (`0xd9`, `0xda`, `0xdc`): needs a creature that survives a turn to attack; casting a
-      spell by clicking a hand card failed three times in one duel, so this is still open.
+- [x] Spell stack live: push, resolve, drop and clear all seen (the AI's save and restore are not).
+- [x] Combat steps live: `0xd9`, `0xda` and `0xdc` seen, plus `0xd4` to `0xd7` and `0xcc`. The defender step
+      was seen when the opponent attacked, not on my own attack.
 - [ ] Find what the codes `0x32`-`0x3c` measure in `Magic_QueryCardValue`, and what
       `Magic_ResolveSpellStack` (a flag predicate) really is.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
