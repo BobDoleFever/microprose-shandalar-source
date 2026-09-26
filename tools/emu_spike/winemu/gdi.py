@@ -31,9 +31,47 @@ def _st(m):
 
 
 class Surface:
+    """A window's client area. Like the 8-bit display the game targets it holds palette *indices*; colours
+    come from the current system palette when the screen is composed, so palette animation changes the
+    picture without any redraw."""
     def __init__(self, w, h):
         self.w, self.h = w, h
-        self.rgb = np.zeros((h, w, 3), np.uint8)
+        self.idx = np.zeros((h, w), np.uint8)
+
+
+def system_lut(m):
+    return np.array(_st(m)["system_palette"] + [(0, 0, 0)] * 256, np.uint8)[:256]
+
+
+def surface_rgb(m, surf, x0=0, y0=0, x1=None, y1=None):
+    return system_lut(m)[surf.idx[y0:y1, x0:x1]]
+
+
+def quantize(m, rgb):
+    """Nearest system-palette index for each pixel of an RGB array (h, w, 3)."""
+    lut = system_lut(m).astype(np.int32)
+    flat = rgb.reshape(-1, 3).astype(np.int32)
+    keys = (flat[:, 0] << 16) | (flat[:, 1] << 8) | flat[:, 2]
+    uniq, inv = np.unique(keys, return_inverse=True)
+    idx = np.empty(len(uniq), np.uint8)
+    for i, k in enumerate(uniq):
+        c = np.array([(k >> 16) & 255, (k >> 8) & 255, k & 255])
+        idx[i] = int(np.argmin(((lut - c) ** 2).sum(1)))
+    return idx[inv].reshape(rgb.shape[:2])
+
+
+def dib_to_system_lut(m, palette):
+    """Map a DIB colour table to system-palette indices: identity where the entries agree (as Windows
+    does for an identity palette), otherwise the nearest colour."""
+    sysp = system_lut(m).astype(np.int32)
+    tab = np.array(list(palette) + [(0, 0, 0)] * (256 - len(palette)), np.int32)[:256]
+    out = np.empty(256, np.uint8)
+    for i in range(256):
+        if (tab[i] == sysp[i]).all():
+            out[i] = i
+        else:
+            out[i] = int(np.argmin(((sysp - tab[i]) ** 2).sum(1)))
+    return out
 
 
 def new_obj(m, obj):
@@ -197,7 +235,7 @@ def get_region(m, dc, x0, y0, x1, y1):
             return b.rgb[y0:y1, x0:x1].copy()
         return read_dib_rgb(m, b, x0, y0, x1, y1)
     from . import user32
-    return user32.window(m, dc.hwnd)["surface"].rgb[y0:y1, x0:x1].copy()
+    return surface_rgb(m, user32.window(m, dc.hwnd)["surface"], x0, y0, x1, y1)
 
 
 def put_region(m, dc, x0, y0, rgb):
@@ -227,8 +265,29 @@ def put_region(m, dc, x0, y0, rgb):
             write_dib_rgb(m, b, x0, y0, rgb)
     else:
         from . import user32
-        user32.window(m, dc.hwnd)["surface"].rgb[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = rgb
+        user32.window(m, dc.hwnd)["surface"].idx[y0:y0 + rgb.shape[0], x0:x0 + rgb.shape[1]] = quantize(m, rgb)
         user32.mark_dirty(m)
+
+
+def put_indices(m, dc, x0, y0, idx):
+    """Write palette indices straight into a window surface (clipped to the DC clip and the surface)."""
+    from . import user32
+    surf = user32.window(m, dc.hwnd)["surface"]
+    h, w = idx.shape
+    if dc.clip:
+        cx0, cy0, cx1, cy1 = dc.clip
+        nx0, ny0, nx1, ny1 = max(x0, cx0), max(y0, cy0), min(x0 + w, cx1), min(y0 + h, cy1)
+        if nx1 <= nx0 or ny1 <= ny0:
+            return
+        idx = idx[ny0 - y0:ny1 - y0, nx0 - x0:nx1 - x0]
+        x0, y0 = nx0, ny0
+    sx0, sy0 = max(0, -x0), max(0, -y0)
+    ex, ey = min(idx.shape[1], surf.w - x0), min(idx.shape[0], surf.h - y0)
+    if ex <= sx0 or ey <= sy0:
+        return
+    idx = idx[sy0:ey, sx0:ex]
+    surf.idx[y0 + sy0:y0 + sy0 + idx.shape[0], x0 + sx0:x0 + sx0 + idx.shape[1]] = idx
+    user32.mark_dirty(m)
 
 
 # ---- stock, create, select, delete ---------------------------------------------------------------------------
@@ -323,12 +382,19 @@ def select_palette(m, a):
 def realize_palette(m, a):
     dc = dc_of(m, a[0])
     if dc and dc.palette:
-        _st(m)["system_palette"] = list(dc.palette)
+        _st(m)["system_palette"] = dc.palette              # shared list: AnimatePalette on it shows at once
         return len(dc.palette)
     return 0
 
 
-g32("AnimatePalette", 4)(lambda m, a: 1)
+@g32("AnimatePalette", 4)
+def animate_palette(m, a):
+    o = obj(m, a[0])
+    if not o or o[0] != "palette":
+        return 0
+    for i in range(a[2]):
+        o[1][(a[1] + i) % len(o[1])] = tuple(m.rd(a[3] + 4 * i, 3))
+    return 1
 g32("SetSystemPaletteUse", 2)(lambda m, a: 1)
 g32("UnrealizeObject", 1)(lambda m, a: 1)
 
@@ -592,6 +658,48 @@ def _s32(v):
     return struct.unpack("<i", struct.pack("<I", v))[0]
 
 
+def blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
+    """Index-preserving copy from an 8-bit DIB section to a window or another 8-bit DIB, with optional
+    nearest-neighbour stretch. Returns False when the combination is not handled (caller falls back to RGB)."""
+    sb = src.bitmap if src.kind == "memory" else None
+    if sb is None or sb.kind != "dib" or sb.bpp != 8 or w == 0 or h == 0:
+        return False
+    db = dst.bitmap if dst.kind == "memory" else None
+    if not (dst.kind == "window" or (db is not None and db.kind == "dib" and db.bpp == 8)):
+        return False
+    ax0, ay0 = sx + src.org[0], sy + src.org[1]
+    ax1, ay1 = ax0 + abs(sw), ay0 + abs(sh)
+    cx0, cy0, cx1, cy1 = max(ax0, 0), max(ay0, 0), min(ax1, sb.w), min(ay1, sb.h)
+    if cx1 <= cx0 or cy1 <= cy0:
+        return True
+    idx = read_dib_indices(m, sb, cx0, cy0, cx1, cy1)
+    if (abs(w), abs(h)) != (abs(sw), abs(sh)):                 # stretch: sample the source nearest-neighbour
+        ys = np.minimum(np.arange(abs(h)) * abs(sh) // abs(h), abs(sh) - 1)
+        xs = np.minimum(np.arange(abs(w)) * abs(sw) // abs(w), abs(sw) - 1)
+        full = np.zeros((abs(sh), abs(sw)), np.uint8)
+        full[cy0 - ay0:cy1 - ay0, cx0 - ax0:cx1 - ax0] = idx
+        idx, ox, oy = full[ys][:, xs], x, y
+    else:
+        ox, oy = x + (cx0 - ax0), y + (cy0 - ay0)
+    if dst.kind == "window":
+        put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], dib_to_system_lut(m, sb.palette)[idx])
+    else:
+        if db.palette != sb.palette:
+            lut = dib_to_dib_lut(sb.palette, db.palette)
+            idx = lut[idx]
+        write_dib_indices(m, db, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(idx))
+    return True
+
+
+def dib_to_dib_lut(src_pal, dst_pal):
+    d = np.array(list(dst_pal) + [(0, 0, 0)] * (256 - len(dst_pal)), np.int32)[:256]
+    t = np.array(list(src_pal) + [(0, 0, 0)] * (256 - len(src_pal)), np.int32)[:256]
+    out = np.empty(256, np.uint8)
+    for i in range(256):
+        out[i] = i if (t[i] == d[i]).all() else int(np.argmin(((d - t[i]) ** 2).sum(1)))
+    return out
+
+
 @g32("BitBlt", 9)
 def bitblt(m, a):
     hdst, x, y, w, h, hsrc, sx, sy, rop = a
@@ -609,11 +717,13 @@ def bitblt(m, a):
         return _pattern_fill(m, dst, x, y, w, h)
     if not src:
         return 0
+    if rop not in (0xCC0020,):
+        _st(m).setdefault("odd_rops", set()).add(rop)
+    if blit_indices(m, dst, x, y, w, h, src, sx, sy, w, h):
+        return 1
     px = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h)
     if px is None:
         return 1
-    if rop not in (0xCC0020,):
-        _st(m).setdefault("odd_rops", set()).add(rop)
     put_region(m, dst, x + dst.org[0], y + dst.org[1], px)
     return 1
 
@@ -625,6 +735,8 @@ def stretchblt(m, a):
     x, y, w, h, sx, sy, sw, sh = map(_s32, (x, y, w, h, sx, sy, sw, sh))
     if not dst or not src:
         return 0
+    if blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
+        return 1
     px = get_region(m, src, sx, sy, sx + abs(sw), sy + abs(sh))
     if px is None or abs(w) == 0 or abs(h) == 0:
         return 1

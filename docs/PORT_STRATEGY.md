@@ -38,14 +38,19 @@ itself. On this Apple Silicon Mac the original code now runs from the entry poin
 - drawing: GDI device contexts, 8-bit DIB sections kept in emulated memory (the game draws into them itself), palette
   changes (`SetDIBColorTable`) and `BitBlt`, onto a host surface saved as PNG.
 
-**Result: the title menu ("Start New Game / Load Saved Game / Resume Game / Exit") renders, with the game's own
-font and icons.** The background art is not drawn yet and there is no input, sound or DUEL.EXE.
+**Result: the whole title screen renders** (castle art, MAGIC logo, "Start New Game / Load Saved Game / Resume
+Game / Exit", with the game's own font), decoded and drawn by the original code. There is no input, sound or
+`DUEL.EXE` yet.
 
 Things worth knowing that the run turned up:
 
 - MSVC's `feof` is a macro that reads `FILE._flag & 0x10` directly, so the emulated `FILE` structure must keep
   that flag: without it the game's read-until-EOF loops never end.
 - `_filelength(_fileno(f))` is used to size a buffer before `fread`, so it must work on `FILE*` descriptors.
+- The display must be modelled as **8-bit palettized**: the game draws into 8-bit DIB sections, blits them
+  with `StretchBlt`, and fades by animating the *system palette* (`AnimatePalette`, `RealizePalette`), not by
+  redrawing. Window surfaces therefore hold palette indices and colours are resolved when the screen is
+  composed; converting through RGB at blit time lost the picture while the palette was faded to black.
 - Files are looked up case-insensitively and writes go to a separate overlay folder, so the installed copy is
   never touched.
 - The import argument counts (needed for stdcall stack clean-up) come from the decompiled call sites of all

@@ -519,6 +519,8 @@ def _open(m, a):
     path, flags = m.cstr(a[0]).decode("latin-1"), a[1]
     write = flags & 3
     hp, exists = host_path(m.game_root, m.overlay_root, m.cwd, path, for_write=bool(write or flags & 0x100))
+    if m.state.get("log_files"):
+        m.log(f"   _open({path!r}, flags=0x{flags:x}) -> {hp if exists else 'not found'}")
     if not exists and not flags & 0x100:
         return 0xFFFFFFFF
     of = {0: os.O_RDONLY, 1: os.O_WRONLY, 2: os.O_RDWR}[write]

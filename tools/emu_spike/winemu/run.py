@@ -36,7 +36,7 @@ def compose(m):
         x0, y0 = max(x, 0), max(y, 0)
         x1, y1 = min(x + s.w, desk.shape[1]), min(y + s.h, desk.shape[0])
         if x1 > x0 and y1 > y0:
-            desk[y0:y1, x0:x1] = s.rgb[y0 - y:y1 - y, x0 - x:x1 - x]
+            desk[y0:y1, x0:x1] = gdi.surface_rgb(m, s, x0 - x, y0 - y, x1 - x, y1 - y)
     return desk
 
 
@@ -49,6 +49,8 @@ def main(argv=None):
     ap.add_argument("--log-files", action="store_true")
     ap.add_argument("--shots", default=os.path.join(ROOT, "sources", "emu_shots"))
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--all-counts", action="store_true", help="list more of the most-called imports")
+    ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
     game_root = os.path.join(ROOT, "sources", "installed", "Magic")
@@ -65,7 +67,15 @@ def main(argv=None):
         m.trace_filter = lambda n: bool(rx.search(n))
     crt.init_argv(m, m.exe_guest_path)
     t0 = time.time()
-    m.state["on_schedule"] = kernel32.on_schedule
+    tick = {"n": 0, "next": time.time() + args.shot_every}
+
+    def schedule(mm):
+        kernel32.on_schedule(mm)
+        if args.shot_every and time.time() >= tick["next"]:
+            tick["next"] = time.time() + args.shot_every
+            tick["n"] += 1
+            Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"screen_{tick['n']:03d}.png"))
+    m.state["on_schedule"] = schedule
     m.state["should_stop"] = lambda mm: time.time() - t0 > args.seconds
     code = m.run()
     print(f"\nfinished: exit code {code}, {m.calls} import calls, {time.time() - t0:.1f}s")
@@ -73,7 +83,7 @@ def main(argv=None):
     Image.fromarray(compose(m)).save(shot)
     print(f"screen: {shot}")
     print("most-called imports:")
-    for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:12]:
+    for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:(60 if args.all_counts else 12)]:
         print(f"  {n:8d}  {dll}!{name}")
     if m.unimplemented:
         top = sorted(m.unimplemented.items(), key=lambda kv: -kv[1])
