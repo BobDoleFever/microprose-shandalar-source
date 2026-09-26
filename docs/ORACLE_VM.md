@@ -66,3 +66,17 @@ Only `MAGIC.EXE` has been checked so far. The other six binaries still need the 
   loader. Choose CD-ROM until Windows Setup itself has finished.
 - **The 1997 patch `mtgbv11a.exe` does not apply.** It patches only `GAME.RFS`, which exists
   neither on the disc nor on the installed disk, and its README is for a different product.
+
+## Scriptable oracle (plain QEMU)
+
+`tools/verification_harness/oracle_launch.sh [name]` boots the same disk with QMP and a gdbstub
+(`127.0.0.1:1234`) from a throwaway overlay, using hardware that mirrors the UTM VM
+(`pc-i440fx-10.0`, Cirrus, SB16, ne2k_isa, hd on ide.0, CD on ide.1) so Windows shows no
+new-hardware dialogs. It expects `sources/oracle/base.raw`: a copy of the raw disk into which a copy
+of the `Shandalar.lnk` Start menu shortcut was placed in `WINDOWS\Start Menu\Programs\StartUp`,
+so the game launches itself at boot. Delete any `._*` files macOS adds when copying onto the FAT
+volume; Windows treats `._Shandalar.lnk` as a broken shortcut.
+
+Gotchas: QMP serves one client at a time; QEMU's gdbstub pauses the guest on attach and
+re-triggers a breakpoint at the current PC on continue, so step over your own breakpoint first
+(`GDBRemote.resume`); all programs load at `0x00400000`, so verify code bytes before trusting a hit.

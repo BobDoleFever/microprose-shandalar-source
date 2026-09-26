@@ -20,6 +20,9 @@ don't need Wine, MinGW, Frida, or the original discs to build and test.
 - `orchestrator.py` — drives a run and produces a trace. Currently only wired up
   against the port binary (`build/shandalar`); the Wine/original-binary side is stubbed
   pending Phase 1/2 (toolchain + discs).
+- `oracle_launch.sh`, `oracle_qemu.py` — boot the Windows 98 oracle under QEMU and drive it (QMP
+  keys/screenshots, gdbstub breakpoints/memory). See `docs/ORACLE_VM.md`.
+- `probe_drawcard.py` — first oracle experiment (see `docs/SYMBOL_VERIFICATION.md`).
 - `tests/` — unit tests for everything above that doesn't require the real toolchain.
 
 ## Running the tests

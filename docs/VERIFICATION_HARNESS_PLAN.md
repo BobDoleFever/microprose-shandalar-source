@@ -136,10 +136,14 @@ At each checkpoint, dump known global state from both sides and compare:
 **Phase 1: oracle**
 - [x] Windows 98SE VM built; original game installed and runs.
 - [x] Installed binaries extracted, hashed, and confirmed to be the decompiled build.
-- [ ] Boot the same disk under plain `qemu-system-i386` with QMP and gdbstub enabled.
+- [x] Boot the same disk under plain `qemu-system-i386` with QMP and gdbstub enabled
+      (`tools/verification_harness/oracle_launch.sh`, clients in `oracle_qemu.py`).
 - [ ] Prototype record/replay determinism.
-- [ ] First verified symbol: break at `Magic_DrawCardPhase` and record when it fires.
-- [ ] Symbol table with a verified/unverified status column.
+- [~] First symbol check: `Magic_DrawCardPhase` never runs at startup or the main menu
+      (see [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)); still need to watch a duel.
+- [ ] Symbol table with a verified/unverified status column (log started in SYMBOL_VERIFICATION.md).
+- [ ] Get into a duel through QMP input (the game is mouse-driven; the guest mouse is PS/2 relative).
+- [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 
 **Phase 2: port**
 - [ ] `--harness-replay` mode in the port; run against the extracted real assets.
