@@ -67,16 +67,32 @@ is called with id 2 from inside the draw function. Renamed to `Duel_PlaySoundByI
 to `int Duel_PlaySoundById(int sound_id)`; the header had `void(void)`). The parameter is named `player` in the
 decompilation (in `DUEL.EXE`'s twin, `Sound_PlayTrackById`) but it is a sound id.
 
-## Duels run inside MAGIC.EXE (strong evidence, not proof)
+## Both programs run the duel engine (verified on the live game)
 
 `MAGIC.EXE` and `DUEL.EXE` contain the same duel engine (identical function sizes: draw 1130
-bytes, sound player 788, preloader 143). `DUEL.EXE`'s twins are at `0x00487ce1` (draw),
-`0x0048d00c` (sound player) and `0x0048d320` (preloader). In two separate runs a campaign duel
-loaded and played through the coin toss and several turns while breakpoints on `DUEL.EXE`'s
-entry point (`0x004dea30`) and on its draw and sound functions never fired. I did not check that
-the entry-point breakpoint fires when `DUEL.EXE` is really started, so this could still be a probe
-blind spot. Either way the repo's claim that `MAGIC.EXE` is the overworld program and `DUEL.EXE`
-is the combat engine is not what campaign play does: the duel code that runs is in `MAGIC.EXE`.
+bytes, sound player 788, preloader 143). Which one runs depends on how the game is started:
+
+- **Campaign duels run inside `MAGIC.EXE`.** In two runs a campaign duel loaded and played through
+  the coin toss and several turns while breakpoints on `DUEL.EXE`'s entry point (`0x004dea30`) and
+  on its draw and sound functions never fired.
+- **Launching `DUEL.EXE` from its own shortcut runs the engine from `DUEL.EXE`.** With breakpoints
+  on its twins (code bytes checked against the file each time), one run showed:
+  1. entry point `0x004dea30` at t=16 s;
+  2. sound preloader twin `0x0048d320` at t=18 s (called from `0x00437e96`);
+  3. after the coin toss and the deal, the draw twin `0x00487ce1` with `arg0 = 0` (my draw step)
+     at t=47 s, called from `0x004a6773`;
+  4. immediately after, the sound player twin `0x0048d00c` with sound id 2, returning to
+     `0x00488116`, which is the instruction after the call at `0x00488111` found by static
+     analysis. The prediction matched exactly.
+
+This closes the earlier caveat that the `DUEL.EXE` entry-point breakpoint might never fire: it does
+when `DUEL.EXE` is really launched, so its silence during campaign duels is real. It also covers
+both branches of the draw function: the opponent's draw (`arg0 = 1`) in `MAGIC.EXE`, mine
+(`arg0 = 0`) in `DUEL.EXE`. The repo's claim that `MAGIC.EXE` is only the overworld and `DUEL.EXE`
+the combat engine is wrong: both contain and run the combat engine.
+
+Raw evidence: `sources/oracle/probe_draw_result.log` (MAGIC.EXE) and
+`sources/oracle/probe_duelexe_result.log` (DUEL.EXE); both git-ignored.
 
 Method notes added:
 
@@ -96,6 +112,17 @@ Method notes added:
 
 Applied across the generated sources, headers, symbol CSVs and generator scripts, so re-running the
 pipeline does not bring the wrong names back. The `OldName` column of the rename maps keeps the
-original `FUN_` names, which is what the Ghidra sync looks up. `DUEL.EXE`'s twin functions
-(`0x00487ce1` draw, `0x0048d00c` sound player, `0x0048d320` preloader) are not renamed: they were
-identified by identical size and structure, not observed running.
+original `FUN_` names, which is what the Ghidra sync looks up.
+
+The same three functions in `DUEL.EXE`, now observed running too (see above):
+
+| Address | Was | Now | Status |
+|---|---|---|---|
+| `0x00487ce1` | `FUN_00487ce1` | `Magic_ExecuteDrawPhase` | verified, live (my draw) |
+| `0x0048d320` | `FUN_0048d320` | `Duel_PreloadSoundEffects` | verified, live |
+| `0x0048d00c` | `Sound_PlayTrackById` | unchanged (name is fine) | verified, live; parameter renamed `player` -> `sound_id` |
+
+The engine functions keep the `Magic_`/`Duel_` names they have in `MAGIC.EXE`, so the same code has the
+same name in both programs. The sound player has two names for the same code
+(`Duel_PlaySoundById` and `Sound_PlayTrackById`); unifying them would touch unrelated uses of the
+latter, so it is left for later.

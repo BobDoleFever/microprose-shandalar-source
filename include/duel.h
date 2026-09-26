@@ -2980,7 +2980,7 @@ LRESULT UI_WndProc_0048794d(HWND hwnd,uint32_t uMsg,HDC wParam,LPARAM lParam);;
 void FUN_00487a10(void);;
 
 /* Function at 00487ce1 (Size: 1130 bytes) */
-int FUN_00487ce1(int max_val);;
+int Magic_ExecuteDrawPhase(int max_val);;
 
 /* Function at 00488150 (Size: 1096 bytes) */
 void Palette_Color_0049ae00(int spell_id,int target_id,int flags);;
@@ -3085,10 +3085,10 @@ void FUN_0048cc29(void);;
 void FUN_0048cfda(int player,int card_slot);;
 
 /* Function at 0048d00c (Size: 788 bytes) */
-int32_t Sound_PlayTrackById(int max_val);;
+int32_t Sound_PlayTrackById(int sound_id);;
 
 /* Function at 0048d320 (Size: 143 bytes) */
-void FUN_0048d320(void);;
+void Duel_PreloadSoundEffects(void);;
 
 /* Function at 0048d3af (Size: 16 bytes) */
 void FUN_0048d3af(void);;

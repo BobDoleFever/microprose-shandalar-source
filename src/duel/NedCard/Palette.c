@@ -1088,7 +1088,7 @@ int32_t Palette_Subsystem_00495958(uint8_t *arg_1)
   if (((DAT_00663dfc & 4) != 0) || ((DAT_00663dfc & 2) != 0)) {
     Sound_Init((int)g_DuelMainHwnd,0,0);
   }
-  FUN_0048d320();
+  Duel_PreloadSoundEffects();
   if (local_40 == 0) {
     uval_4 = 0xfffffffe;
   }

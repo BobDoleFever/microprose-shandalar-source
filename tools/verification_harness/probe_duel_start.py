@@ -11,7 +11,7 @@ With the game sitting on the "Duel a <wizard>" screen and the pointer over the D
 Every program loads at 0x00400000, so a hit only counts if the code bytes at the address are
 the ones from the matching file in sources/installed (`code_matches`).
 
-    python3 probe_duel_start.py <qmp.sock> [seconds] [noclick]
+    python3 probe_duel_start.py <qmp.sock> [seconds] [noclick] [duel]
 
 With `noclick` it only watches (use it once the duel is already under way). The control channel
 is opened only briefly, so other tools (oracle_ctl.py) can use it while the probe waits.
@@ -43,14 +43,21 @@ def code_bytes(exe, va, n=8):
     raise ValueError(hex(va))
 
 
-TARGETS = {
-    0x00474C7F: ("MAGIC.EXE", "Magic_DrawCardPhase (really: duel sound preloader)"),
-    0x0046F5D1: ("MAGIC.EXE", "FUN_0046f5d1 (suspected real draw-a-card; arg0 = player)"),
-    0x0047496B: ("MAGIC.EXE", "sound player, labelled Magic_UpkeepPhase (arg0 = sound id; only id 2 = draw.wav recorded)"),
+MAGIC_TARGETS = {
+    0x00474C7F: ("MAGIC.EXE", "Duel_PreloadSoundEffects (was Magic_DrawCardPhase)"),
+    0x0046F5D1: ("MAGIC.EXE", "Magic_ExecuteDrawPhase (arg0 = player)"),
+    0x0047496B: ("MAGIC.EXE", "Duel_PlaySoundById (arg0 = sound id; only id 2 = draw.wav recorded)"),
 }
-SOUND_PLAYER = 0x0047496B
-# NOTE: DUEL.EXE has twins of these functions (draw 0x00487ce1, sound player 0x0048d00c), but
-# campaign duels run inside MAGIC.EXE: DUEL.EXE's entry point (0x004dea30) never fired.
+# DUEL.EXE has twins of the same engine (identified by size and structure, not yet renamed).
+DUEL_TARGETS = {
+    0x004DEA30: ("DUEL.EXE", "DUEL.EXE entry point"),
+    0x00487CE1: ("DUEL.EXE", "draw twin FUN_00487ce1 (arg0 = player)"),
+    0x0048D320: ("DUEL.EXE", "sound preloader twin FUN_0048d320"),
+    0x0048D00C: ("DUEL.EXE", "sound player twin Sound_PlayTrackById (arg0 = sound id; only id 2 recorded)"),
+}
+# Select the set with the word "duel" on the command line; the default is MAGIC.EXE.
+TARGETS = DUEL_TARGETS if "duel" in sys.argv[3:] else MAGIC_TARGETS
+SOUND_PLAYER = 0x0048D00C if "duel" in sys.argv[3:] else 0x0047496B
 
 
 def main():

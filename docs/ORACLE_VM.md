@@ -90,3 +90,12 @@ moves in steps of 2 (paced at 12 ms per step, since the guest drops events that 
 fast while the game is busy loading), which is absolute to about a pixel. A click needs about a
 0.35 s hold to register. `oracle_ctl.py click X Y` does that and
 clicks. The screen is 640x480 and coordinates are guest pixels.
+
+## Booting a different program at startup
+
+The game launches from a shortcut in the guest's Startup folder. To boot `DUEL.EXE` instead, make a
+second copy of the base disk (`cp -c base.raw base_duel.raw`), mount it, replace `Shandalar.lnk`
+in `WINDOWS\Start Menu\Programs\StartUp` with a copy of `Duel.lnk` (from the "Magic the
+Gathering" Start menu folder), delete any `._*` files, and boot with
+`ORACLE_BASE=base_duel.raw tools/verification_harness/oracle_launch.sh <name>`.
+`probe_duel_start.py ... noclick duel` arms the `DUEL.EXE` breakpoints instead of the `MAGIC.EXE` ones.

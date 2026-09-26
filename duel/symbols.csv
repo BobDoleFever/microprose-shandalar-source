@@ -12010,7 +12010,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00487c8a,"LAB_00487c8a",Label,true,false
 00487c8d,"LAB_00487c8d",Label,true,false
 00487caa,"LAB_00487caa",Label,true,false
-00487ce1,"FUN_00487ce1",Function,true,true
+00487ce1,"Magic_ExecuteDrawPhase",Function,true,true
 00487d20,"LAB_00487d20",Label,true,false
 00487d7f,"LAB_00487d7f",Label,true,false
 00487d84,"LAB_00487d84",Label,true,false
@@ -12465,7 +12465,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048d30a,"LAB_0048d30a",Label,true,false
 0048d311,"LAB_0048d311",Label,true,false
 0048d31b,"LAB_0048d31b",Label,true,false
-0048d320,"FUN_0048d320",Function,true,true
+0048d320,"Duel_PreloadSoundEffects",Function,true,true
 0048d341,"LAB_0048d341",Label,true,false
 0048d344,"LAB_0048d344",Label,true,false
 0048d3aa,"LAB_0048d3aa",Label,true,false

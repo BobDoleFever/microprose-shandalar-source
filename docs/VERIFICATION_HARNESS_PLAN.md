@@ -146,8 +146,8 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Find and verify the real draw function: `FUN_0046f5d1` in `MAGIC.EXE` (also found that
       `Magic_UpkeepPhase` is really the sound player, and that campaign duels run in MAGIC.EXE).
 - [x] Rename the verified symbols in the source, headers, CSV symbol maps and generator scripts.
-- [ ] Check whether DUEL.EXE's entry-point breakpoint fires when DUEL.EXE is really launched,
-      to firm up the "duels run in MAGIC.EXE" conclusion.
+- [x] Launched DUEL.EXE for real: its entry point fires, and its twin draw and sound functions
+      run exactly as predicted. Both programs run the duel engine; campaign duels use MAGIC.EXE.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

@@ -2310,7 +2310,7 @@ LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint y,HWND param_3,uint heigh
 void Mem_AllocOrFree_00487924(int max_val);
 LRESULT UI_WndProc_0048794d(HWND hwnd,uint uMsg,HDC wParam,LPARAM lParam);
 void FUN_00487a10(void);
-int FUN_00487ce1(int max_val);
+int Magic_ExecuteDrawPhase(int max_val);
 void Palette_Color_0049ae00(int spell_id,int target_id,int flags);
 undefined4 FUN_00488598(int player,int card_slot);
 undefined4 FUN_00488662(int max_val,int point,int hBitmap);
@@ -2346,7 +2346,7 @@ void FUN_0048cb7f(void);
 void FUN_0048cc29(void);
 void FUN_0048cfda(int player,int card_slot);
 undefined4 Sound_PlayTrackById(int max_val);
-void FUN_0048d320(void);
+void Duel_PreloadSoundEffects(void);
 void FUN_0048d3af(void);
 undefined4 Mem_AllocOrFree_0048d3bf(void);
 undefined4 FUN_0048d3eb(void);

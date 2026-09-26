@@ -422,13 +422,13 @@ int32_t Sound_PlayTrackById(int player_id)
 
 
 /*
- * Decompiled function: FUN_0048d320
+ * Decompiled function: Duel_PreloadSoundEffects
  * Entry Point: 0048d320
  * Size: 143 bytes
  */
 
 
-void FUN_0048d320(void)
+void Duel_PreloadSoundEffects(void)
 
 {
   uint32_t local_130 [66];

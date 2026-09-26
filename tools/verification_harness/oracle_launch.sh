@@ -3,7 +3,8 @@
 # debugger port (gdbstub). Runs from a throwaway qcow2 overlay so the base disk is never
 # modified. See docs/ORACLE_VM.md.
 #
-#   usage: oracle_launch.sh [overlay-name]     (default: run1)
+#   usage: [ORACLE_BASE=base_duel.raw] oracle_launch.sh [overlay-name]     (default: run1)
+#   ORACLE_BASE picks the base disk in sources/oracle (default base.raw).
 #
 # Hardware mirrors the UTM VM (pc-i440fx-10.0, Cirrus, SB16, ne2k_isa, IDE hd on ide.0 and
 # an empty CD on ide.1) so Windows 98 sees no new devices and shows no hardware dialogs.
@@ -11,10 +12,11 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DIR="$ROOT/sources/oracle"
 NAME="${1:-run1}"
+BASE="${ORACLE_BASE:-base.raw}"
 cd "$DIR"
-[ -f base.raw ] || { echo "missing $DIR/base.raw (see docs/ORACLE_VM.md)" >&2; exit 1; }
+[ -f "$BASE" ] || { echo "missing $DIR/$BASE (see docs/ORACLE_VM.md)" >&2; exit 1; }
 rm -f "$NAME.qcow2" qmp.sock
-qemu-img create -q -f qcow2 -b base.raw -F raw "$NAME.qcow2"
+qemu-img create -q -f qcow2 -b "$BASE" -F raw "$NAME.qcow2"
 exec qemu-system-i386 \
   -name shandalar-oracle \
   -M pc-i440fx-10.0 -m 512 -rtc base=localtime \
