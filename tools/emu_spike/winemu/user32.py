@@ -711,3 +711,43 @@ u("GetMenuItemCount", 1)(lambda m, a: 0)
 u("CheckMenuItem", 3)(lambda m, a: 0)
 u("EnableMenuItem", 3)(lambda m, a: 0)
 u("TrackPopupMenu", 7)(lambda m, a: 0)
+
+
+# ---- host input injection ---------------------------------------------------------------------------------
+WM_MOUSEMOVE, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_RBUTTONDOWN, WM_RBUTTONUP = 0x200, 0x201, 0x202, 0x204, 0x205
+WM_KEYDOWN, WM_KEYUP, WM_CHAR = 0x100, 0x101, 0x102
+
+
+def main_hwnd(m):
+    st = _st(m)
+    for h, w in st["windows"].items():
+        if w["visible"] and not w["style"] & WS_CHILD and w["proc"] and h != st.get("desktop_hwnd"):
+            return h
+    return 0
+
+
+def inject_mouse(m, kind, x, y):
+    """kind: move | down | up | rdown | rup. Coordinates are client pixels of the main window."""
+    st = _st(m)
+    h = main_hwnd(m)
+    if not h:
+        return False
+    st["cursor"] = (x, y)
+    msg = {"move": WM_MOUSEMOVE, "down": WM_LBUTTONDOWN, "up": WM_LBUTTONUP, "rdown": WM_RBUTTONDOWN,
+           "rup": WM_RBUTTONUP}[kind]
+    keys = 1 if kind in ("down",) else 0
+    st["keys"][1] = kind == "down" or (kind == "move" and st["keys"].get(1, False))
+    st["queue"].append((h, msg, keys, (y << 16) | (x & 0xFFFF)))
+    return True
+
+
+def inject_key(m, vk, char=None):
+    st = _st(m)
+    h = main_hwnd(m)
+    if not h:
+        return False
+    st["queue"].append((h, WM_KEYDOWN, vk, 1))
+    if char is not None:
+        st["queue"].append((h, WM_CHAR, char, 1))
+    st["queue"].append((h, WM_KEYUP, vk, 0xC0000001))
+    return True

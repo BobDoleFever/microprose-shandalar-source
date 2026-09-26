@@ -50,6 +50,7 @@ def main(argv=None):
     ap.add_argument("--shots", default=os.path.join(ROOT, "sources", "emu_shots"))
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--all-counts", action="store_true", help="list more of the most-called imports")
+    ap.add_argument("--script", default="", help='timed actions, e.g. "20:click 230 308;25:shot a;30:key 13"')
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
@@ -68,9 +69,36 @@ def main(argv=None):
     crt.init_argv(m, m.exe_guest_path)
     t0 = time.time()
     tick = {"n": 0, "next": time.time() + args.shot_every}
+    actions = []
+    for part in filter(None, (p.strip() for p in args.script.split(";"))):
+        at, cmd = part.split(":", 1)
+        actions.append((float(at), cmd.split()))
+    actions.sort(key=lambda a: a[0])
+    pending = {"clicks": []}                                   # (due_time, kind, x, y) follow-ups of a click
+
+    def run_action(mm, cmd, now):
+        op = cmd[0]
+        if op == "click":                                      # move, press, then release 0.3 s later
+            x, y = int(cmd[1]), int(cmd[2])
+            user32.inject_mouse(mm, "move", x, y)
+            user32.inject_mouse(mm, "down", x, y)
+            pending["clicks"].append((now + 0.3, "up", x, y))
+        elif op == "move":
+            user32.inject_mouse(mm, "move", int(cmd[1]), int(cmd[2]))
+        elif op == "key":
+            user32.inject_key(mm, int(cmd[1]), int(cmd[2]) if len(cmd) > 2 else None)
+        elif op == "shot":
+            Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"{cmd[1]}.png"))
+            print(f"   [script] shot {cmd[1]}")
 
     def schedule(mm):
         kernel32.on_schedule(mm)
+        now = time.time()
+        while actions and now - t0 >= actions[0][0]:
+            run_action(mm, actions.pop(0)[1], now)
+        for c in [c for c in pending["clicks"] if c[0] <= now]:
+            pending["clicks"].remove(c)
+            user32.inject_mouse(mm, c[1], c[2], c[3])
         if args.shot_every and time.time() >= tick["next"]:
             tick["next"] = time.time() + args.shot_every
             tick["n"] += 1

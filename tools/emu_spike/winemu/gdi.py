@@ -91,7 +91,7 @@ def colorref(m, dc, c):
     """(r, g, b) from a COLORREF. Palette-index and palette-relative forms use the DC's palette."""
     flag = (c >> 24) & 0xFF
     if flag == 0x01:                                                   # PALETTEINDEX
-        pal = dc["palette"] if dc and dc.get("palette") else _st(m)["system_palette"]
+        pal = dc.palette if dc is not None and dc.palette else _st(m)["system_palette"]
         e = pal[(c & 0xFFFF) % len(pal)] if pal else (0, 0, 0)
         return e
     return (c & 0xFF, (c >> 8) & 0xFF, (c >> 16) & 0xFF)
@@ -105,6 +105,7 @@ class Bitmap:
         self.bits = 0
         self.topdown = False
         self.palette = [(i, i, i) for i in range(256)]
+        self.idxmap = None                        # DIB_PAL_COLORS: pixel value -> logical (= system) palette index
         self.rgb = None
         if kind == "ddb":
             self.rgb = np.zeros((h, w, 3), np.uint8)
@@ -176,16 +177,28 @@ def read_dib_indices(m, bmp, x0, y0, x1, y1):
     return rows[y0:y1, x0:x1]
 
 
-def parse_bitmapinfo(m, p):
-    """(width, height, topdown, bpp, palette) from a BITMAPINFO at guest address p."""
+def parse_bitmapinfo(m, p, usage=0):
+    """(width, height, topdown, bpp, palette, header size) from a BITMAPINFO at guest address p.
+    With usage == 1 (DIB_PAL_COLORS) the colour table is 16-bit indices into the logical palette, returned
+    as `palette` = ("idx", [ints])."""
     size, w, h, planes, bpp, comp = struct.unpack("<IiiHHI", m.rd(p, 20))
     used = m.r32(p + 32)
     ncol = used or ((1 << bpp) if bpp <= 8 else 0)
+    if usage == 1:
+        words = [m.r16(p + size + 2 * i) for i in range(ncol)]
+        return w, abs(h), h < 0, bpp, ("idx", words), size + 2 * ncol
     pal = []
     for i in range(ncol):
         b, g, r, _ = m.rd(p + size + 4 * i, 4)
         pal.append((r, g, b))
     return w, abs(h), h < 0, bpp, pal, size + 4 * ncol
+
+
+def idx_lut(words):
+    out = np.arange(256, dtype=np.uint8)
+    for i, v in enumerate(words[:256]):
+        out[i] = v & 0xFF
+    return out
 
 
 # ---- device contexts -----------------------------------------------------------------------------------------
@@ -475,15 +488,16 @@ g32("SetBitmapDimensionEx", 4)(lambda m, a: 1)
 
 @g32("CreateDIBSection", 6)
 def create_dib_section(m, a):
-    w, h, topdown, bpp, pal, _ = parse_bitmapinfo(m, a[1])
+    w, h, topdown, bpp, pal, _ = parse_bitmapinfo(m, a[1], a[2])
     b = Bitmap("dib", w, h, bpp)
     b.topdown = topdown
-    if pal:
-        b.palette = pal
-    b.bits = m.alloc(b.stride * h)
-    if a[2] == 1:                                                     # DIB_PAL_COLORS: use the DC's palette
+    if isinstance(pal, tuple):                                        # DIB_PAL_COLORS
+        b.idxmap = idx_lut(pal[1]) if pal[1] else np.arange(256, dtype=np.uint8)
         dc = dc_of(m, a[0])
         b.palette = list(dc.palette) if dc and dc.palette else b.palette
+    elif pal:
+        b.palette = pal
+    b.bits = m.alloc(b.stride * h)
     if a[3]:
         m.w32(a[3], b.bits)
     return new_obj(m, b)
@@ -527,24 +541,66 @@ def set_dibits(m, a):
     return a[3]
 
 
+def _dib_strip_rows(topdown, dib_h, start, lines, sy, cy, ydest):
+    """Which of the supplied scan lines land where. Line k of the buffer is DIB row `start + k`; the source
+    rectangle is rows [sy, sy + cy) counted from the bottom (bottom-up DIB) or the top (top-down DIB).
+    Returns [(k, dest_y)]."""
+    out = []
+    for k in range(lines):
+        r = start + k
+        if sy <= r < sy + cy:
+            out.append((k, ydest + ((r - sy) if topdown else (sy + cy - 1 - r))))
+    return out
+
+
 @g32("SetDIBitsToDevice", 12)
 def set_dibits_to_device(m, a):
     dc = dc_of(m, a[0])
     hdc, x, y, cx, cy, sx, sy, start, lines, bits, bmi, usage = a
-    w, h, topdown, bpp, pal, hdr = parse_bitmapinfo(m, bmi)
+    x, y, cx, cy, sx, sy = map(_s32, (x, y, cx, cy, sx, sy))
+    w, h, topdown, bpp, pal, hdr = parse_bitmapinfo(m, bmi, usage)
     stride = ((w * bpp + 31) // 32) * 4
     raw = np.frombuffer(m.rd(bits, stride * lines), np.uint8).reshape(lines, stride)
-    if bpp == 8:
-        lut = np.array((pal or [(i, i, i) for i in range(256)]) + [(0, 0, 0)] * 256, np.uint8)[:256]
-        rgb = lut[raw[:, :w]]
-    elif bpp == 24:
-        rgb = raw[:, :w * 3].reshape(lines, w, 3)[:, :, ::-1]
-    else:
+    placed = _dib_strip_rows(topdown, h, start, lines, sy, cy, y)
+    if not placed:
         return 0
-    if not topdown:
-        rgb = rgb[::-1]
-    put_region(m, dc, x, y, np.ascontiguousarray(rgb[:cy, sx:sx + cx]))
-    return lines
+    if bpp == 8 and isinstance(pal, tuple):                              # DIB_PAL_COLORS: indices, not colours
+        lut = idx_lut(pal[1]) if pal[1] else np.arange(256, dtype=np.uint8)
+        for k, dy in placed:
+            row = lut[raw[k, sx:sx + cx]]
+            if dc.kind == "window":
+                put_indices(m, dc, x + dc.org[0], dy + dc.org[1], row[None, :])
+            elif dc.bitmap is not None and dc.bitmap.kind == "dib" and dc.bitmap.bpp == 8:
+                write_dib_indices(m, dc.bitmap, x + dc.org[0], dy + dc.org[1], np.ascontiguousarray(row[None, :]))
+            else:
+                t = np.array((dc.palette or [(i, i, i) for i in range(256)]) + [(0, 0, 0)] * 256, np.uint8)[:256]
+                put_region(m, dc, x + dc.org[0], dy + dc.org[1], t[row][None, :])
+        return lines
+    if bpp == 8:
+        pal = pal or [(i, i, i) for i in range(256)]
+        if dc.kind == "window":
+            lut = dib_to_system_lut(m, pal)
+        elif dc.bitmap is not None and dc.bitmap.kind == "dib" and dc.bitmap.bpp == 8 and dc.bitmap.palette != pal:
+            lut = dib_to_dib_lut(pal, dc.bitmap.palette)
+        else:
+            lut = None
+        for k, dy in placed:
+            row = raw[k, sx:sx + cx]
+            if dc.kind == "window":
+                put_indices(m, dc, x + dc.org[0], dy + dc.org[1], lut[row][None, :])
+            elif dc.bitmap is not None and dc.bitmap.kind == "dib" and dc.bitmap.bpp == 8:
+                write_dib_indices(m, dc.bitmap, x + dc.org[0], dy + dc.org[1],
+                                  np.ascontiguousarray((lut[row] if lut is not None else row)[None, :]))
+            else:
+                t = np.array(pal + [(0, 0, 0)] * (256 - len(pal)), np.uint8)[:256]
+                put_region(m, dc, x + dc.org[0], dy + dc.org[1], t[row][None, :])
+        return lines
+    if bpp == 24:
+        for k, dy in placed:
+            rgb = raw[k, sx * 3:(sx + cx) * 3].reshape(1, -1, 3)[:, :, ::-1]
+            put_region(m, dc, x + dc.org[0], dy + dc.org[1], np.ascontiguousarray(rgb))
+        return lines
+    return 0
 
 
 @g32("GetObjectA", 3)
@@ -682,11 +738,13 @@ def blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
     else:
         ox, oy = x + (cx0 - ax0), y + (cy0 - ay0)
     if dst.kind == "window":
-        put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], dib_to_system_lut(m, sb.palette)[idx])
+        lut = sb.idxmap if sb.idxmap is not None else dib_to_system_lut(m, sb.palette)
+        put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], lut[idx])
     else:
-        if db.palette != sb.palette:
-            lut = dib_to_dib_lut(sb.palette, db.palette)
-            idx = lut[idx]
+        if sb.idxmap is not None and db.idxmap is not None:
+            idx = sb.idxmap[idx]
+        elif db.palette != sb.palette and sb.idxmap is None and db.idxmap is None:
+            idx = dib_to_dib_lut(sb.palette, db.palette)[idx]
         write_dib_indices(m, db, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(idx))
     return True
 
@@ -828,9 +886,17 @@ def line_to(m, a):
 @g32("SetPixel", 4)
 def set_pixel(m, a):
     dc = dc_of(m, a[0])
-    put_region(m, dc, _s32(a[1]) + dc.org[0], _s32(a[2]) + dc.org[1],
-               np.array([[colorref(m, dc, a[3])]], np.uint8))
-    return a[3]
+    x, y = _s32(a[1]) + dc.org[0], _s32(a[2]) + dc.org[1]
+    c = a[3]
+    if (c >> 24) & 0xFF == 0x01:                                       # PALETTEINDEX: the index itself
+        if dc.kind == "window":
+            put_indices(m, dc, x, y, np.array([[c & 0xFF]], np.uint8))
+            return c
+        if dc.bitmap is not None and dc.bitmap.kind == "dib" and dc.bitmap.bpp == 8:
+            write_dib_indices(m, dc.bitmap, x, y, np.array([[c & 0xFF]], np.uint8))
+            return c
+    put_region(m, dc, x, y, np.array([[colorref(m, dc, c)]], np.uint8))
+    return c
 
 
 g32("SetPixelV", 4)(lambda m, a: set_pixel(m, a) and 1)
