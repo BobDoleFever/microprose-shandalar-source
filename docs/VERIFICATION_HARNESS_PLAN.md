@@ -38,25 +38,28 @@ and manually play through the game to generate test cases.
 - We are not trying to prove the whole game is correct in one pass. We're building a
   tool that we run repeatedly, subsystem by subsystem, as we work through the codebase.
 
+## Oracle: the Windows 98SE VM (replaces the abandoned Wine plan)
+
+Running the original 32-bit binaries under Wine on this Apple Silicon Mac is a dead end
+(Homebrew's Wine casks are disabled, MacPorts hits a Tahoe universal-build bug, and the
+Rosetta 32-bit workarounds are deprecated). The oracle is instead a real Windows 98SE guest
+under QEMU's software emulation. See [`ORACLE_VM.md`](ORACLE_VM.md) for setup, quirks, and the
+proof that the installed binaries are the same build the decompilation was made from.
+
 ## Architecture — four layers
 
-### Layer 1: Deterministic virtual clock (foundation, blocks everything else)
+### Layer 1: Determinism
 
-Both the real binary (under Wine) and the port read real-time clocks
-(`GetTickCount`, `timeGetTime`, `QueryPerformanceCounter`) for animation and input
-pacing. Two runs will never line up frame-for-frame against wall-clock time. Before any
-comparison is possible, both sides must run off a **logical tick counter** we control.
+Two runs must line up frame-for-frame. Candidates, in order of preference:
 
-- **Port side**: already ours — [`src/platform/win32_compat.c`](../src/platform/win32_compat.c)
-  intercepts these calls; add a "harness mode" that advances the tick counter only when
-  the orchestrator tells it to.
-- **Real binary side**: inject a small shim DLL via `WINEDLLOVERRIDES`, exporting
-  replacements for the same timing entry points, driven by the same external tick
-  source (e.g. a small IPC channel — a local socket or named pipe — the orchestrator
-  writes to).
+1. **QEMU record/replay** (`-icount ... rr=record|replay` over a qcow2 overlay). Determinism
+   at the emulator level, so no guest-side clock shim. Worth prototyping first, but it is
+   unproven for this device set (PIIX IDE, Cirrus VGA, SB16, ne2k, PS/2).
+2. **Logical checkpoints.** If record/replay is unsupported, compare at game-defined points
+   (turn phase changes, card moves) instead of wall-clock ticks.
 
-This cannot be fully built or tested without Wine installed and a real binary to run
-against, but the DLL source and the tick-sync protocol can be written now.
+Port side: [`src/platform/win32_compat.c`](../src/platform/win32_compat.c) already
+intercepts the timing calls; add a harness mode that advances a logical tick only on request.
 
 ### Layer 2: Synthetic deterministic input driver ("the monkey")
 
@@ -68,8 +71,9 @@ A scripted, seeded decision policy, not a human and not a real AI:
 - In-duel decisions: a simple deterministic rule ("first legal action," "attack with
   everything," "cast cheapest castable spell") parameterized by a seed, so we can run
   many varied but fully reproducible sessions.
-- Delivered as a **script file** (see format below) replayed as a sequence of
-  `(logical_tick, message)` pairs into both processes' message queues.
+- Delivered as a **script file** (see format below). For the oracle it is replayed through
+  QEMU's QMP interface (`send-key`, `input-send-event`); for the port, through the win32
+  shim's message queue.
 
 Input script format (JSON, draft):
 
@@ -84,70 +88,66 @@ Input script format (JSON, draft):
 }
 ```
 
-This can be designed and the replay-side code written now, against the port only
-(which we can already drive), even before the real binary is in the loop.
+Caveat found the hard way: the Windows 98 guest uses a PS/2 relative mouse, so absolute
+click coordinates do not map to the guest pointer. Prefer keyboard-driven paths, or send
+relative mouse deltas through QMP and verify pointer position from the screen.
+
 
 ### Layer 3: State snapshot + diff
 
-At each checkpoint tick, dump known global state from both processes and compare:
+At each checkpoint, dump known global state from both sides and compare:
 
-- We already have static addresses and struct layouts recovered from Ghidra
-  (`MasterCardRecord`, `g_ActiveCardsInPlay`, board/hand/life globals, etc. — see
-  `engine_globals_map.csv`, `include/shandalar/cards.h`).
-- Read raw memory at those addresses from both the live Wine process and the port
-  process, hash/serialize into a comparable structured record, and diff.
-- First divergence between two runs = either a bug in our port or a mislabeled/incorrect
-  piece of decompiled logic. Either way, it's now a concrete, localized, reproducible
-  finding instead of a vague suspicion.
+- Static addresses and struct layouts come from Ghidra (`MasterCardRecord`,
+  `g_ActiveCardsInPlay`, board/hand/life globals; see `engine_globals_map.csv`,
+  `include/shandalar/cards.h`). Addresses are valid in the oracle because the binaries are
+  the same build (see `ORACLE_VM.md`).
+- Oracle side: QEMU's gdbstub. A breakpoint at a known code address in the game's address
+  range fires only in the game's process context, so memory reads at `0x004xxxxx`/`0x005xxxxx`
+  are then meaningful.
+- First divergence = a port bug or a mislabeled function. Either way it is now a concrete,
+  reproducible finding.
 
-### Layer 4: Bisection + targeted Frida tracing
+### Layer 4: Bisection + breakpoint tracing
 
-- **Bisection**: when two runs diverge, re-run with checkpoints at finer granularity to
-  binary-search the exact tick where state first differs. This localizes the problem to
-  a small window of execution automatically.
-- **Frida tracing**: once localized, attach Frida to the live process (it's a normal OS
-  process even under Wine; hook by runtime-adjusted address) and log a single function's
-  entry/exit args and memory touches. Used surgically on a handful of suspect functions
-  per session, not broadly.
+- **Bisection**: when two runs diverge, binary-search the first differing checkpoint
+  (`tools/verification_harness/divergence_bisect.py`).
+- **Breakpoint tracing**: gdbstub breakpoints/watchpoints on a suspect function log its
+  entry/exit and memory touches. The first target is `Magic_DrawCardPhase` (`0x00474c7f`):
+  does it fire on a card draw, or at startup while sounds load?
 
 ## Toolchain
 
-| Piece | Tool | Status on this machine |
+| Piece | Tool | Status |
 |---|---|---|
-| Windows cross-compiler | `mingw-w64` (`i686-w64-mingw32-gcc`) | not installed — in `Brewfile` |
-| Run original binaries | `wine-stable` | not installed — in `Brewfile` |
-| Dynamic instrumentation | Frida (`frida-tools`, pip) | not installed |
-| Orchestration | Python 3 | installed (`/opt/homebrew/bin/python3`) |
-
-`brew bundle` (already specified in this repo's `Brewfile`) plus `pip install
-frida-tools` covers everything. None of this needs the discs.
+| Oracle VM (interactive) | UTM 4.7 + Windows 98SE | installed, game runs |
+| Oracle VM (scriptable) | `qemu-system-i386` 11.1 (Homebrew) | installed, not yet driving the disk |
+| Windows cross-compiler | `mingw-w64` (`i686-w64-mingw32-gcc`) | installed |
+| Disk image tools | `qemu-img`, `mdf2iso`, `hdiutil` | used to extract game files |
+| Wine | any | abandoned |
+| Frida | - | not needed (gdbstub replaces it) |
+| Orchestration | Python 3 | installed |
 
 ## Phased roadmap
 
-**Phase 0 — no discs, no toolchain needed (can start immediately)**
-- [ ] This design doc.
-- [ ] Input script JSON schema + a validator.
-- [ ] Deterministic "monkey" policy skeleton (pure logic, unit-testable on its own).
-- [ ] State-diff data model: define the canonical "snapshot" struct we'll compare,
-      cross-referenced against `include/shandalar/*.h` and `engine_globals_map.csv`.
-- [ ] Orchestrator skeleton (drives the port only, since we already control it fully).
-- [ ] Bisection algorithm, unit-tested against synthetic divergent traces.
+**Phase 0 (done): pure-logic scaffolding**, tested in `tools/verification_harness/`
+- [x] Design doc, input script schema + validator, seeded monkey policy, snapshot model,
+      orchestrator skeleton, bisection algorithm.
 
-**Phase 1 — toolchain, no discs needed**
-- [ ] `brew bundle` (mingw-w64, wine-stable), `pip install frida-tools`.
-- [ ] Verify `make pe-toolcheck` passes.
-- [ ] Write and test the Wine clock-override shim DLL against a trivial test EXE (not
-      the real game) to prove the interception mechanism works.
+**Phase 1: oracle**
+- [x] Windows 98SE VM built; original game installed and runs.
+- [x] Installed binaries extracted, hashed, and confirmed to be the decompiled build.
+- [ ] Boot the same disk under plain `qemu-system-i386` with QMP and gdbstub enabled.
+- [ ] Prototype record/replay determinism.
+- [ ] First verified symbol: break at `Magic_DrawCardPhase` and record when it fires.
+- [ ] Symbol table with a verified/unverified status column.
 
-**Phase 2 — discs required**
-- [ ] Get `MAGIC.EXE` (and companions) actually booting under Wine at all.
-- [ ] Wire the clock shim into a real run.
-- [ ] Record the first real port-vs-original diff on a short, scripted sequence
-      (e.g. boot to main menu).
-- [ ] Expand scripted sequences subsystem by subsystem, prioritizing duel/AI logic
-      over UI chrome.
+**Phase 2: port**
+- [ ] `--harness-replay` mode in the port; run against the extracted real assets.
+- [ ] Verify the other six binaries against the decomp the same way as `MAGIC.EXE`.
+- [ ] Decide native-port vs. hybrid (mingw-compiled function replacement inside the VM);
+      first test whether mingw output runs on Windows 98.
+- [ ] First real port-vs-original diff on a short scripted sequence.
 
 ## Current status
 
-Phase 0, item 1 (this document) — in progress. See `tools/verification_harness/` for
-scaffolding of the remaining Phase 0 items.
+Phase 1 is underway. The oracle exists and is fingerprinted; making it scriptable is next.
