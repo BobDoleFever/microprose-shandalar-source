@@ -126,3 +126,31 @@ The engine functions keep the `Magic_`/`Duel_` names they have in `MAGIC.EXE`, s
 same name in both programs. The sound player has two names for the same code
 (`Duel_PlaySoundById` and `Sound_PlayTrackById`); unifying them would touch unrelated uses of the
 latter, so it is left for later.
+
+## Globals renamed (MAGIC.EXE): supported by code, not yet observed live
+
+The card-event dispatcher `FUN_00472c0c(value, min_val, max_val, target_slot, flags)` stores its
+first two arguments in two globals, sets a third to 0, runs `Magic_ScanCards(0x78)` (which calls the
+card handlers) and then tests the third with `< 1`. `Card_TapForMana` does the same with
+`(x, y)`. Handlers use the pair to index the card table with the slot strides `0x5b20` (player) and
+`0x120` (slot) and compare their own `(player, slot)` arguments with them.
+
+| Address | Was | Now | Meaning |
+|---|---|---|---|
+| `0x006b2534` | `g_OverworldPlayerCoordX` | `g_EventSourcePlayer` | player that owns the card the event is about |
+| `0x0070100c` | `g_OverworldMapGrid` | `g_EventSourceSlot` | that card's slot |
+| `0x0068a660` | `g_ActivePalette` | `g_CardEventResult` | flags and counters the handlers accumulate; 0 means nothing objected |
+
+Two related globals are still unnamed (`DAT_007006c8` and `DAT_006b2d5c`: the target player and
+slot). `g_PlayerManaPool` (`0x006ff4c0`) looks like the current event code and is still misnamed. To
+confirm live: break in the dispatcher during a duel and compare these globals with its arguments.
+
+## Names restored (MAGIC.EXE)
+
+30 names that a later pass had replaced with worse ones, each checked against its code: the sound
+driver thunks `0x00423980` to `0x00424165` (each tests a driver-mode flag and calls the next slot
+of the driver function table, in the order of the old names), `CardTypeFromID` and
+`CardIDFromType` (an index and id lookup pair on the master card table) and
+`UI_Register_WINBK_ManaPool_004b9120`. `InitSndTrack` (called with `.wav` paths) and `PlaySnd` (called
+by the verified sound player) were also seen running. 46 other changed names were left as they were;
+see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md).

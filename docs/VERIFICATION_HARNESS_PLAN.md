@@ -20,9 +20,10 @@ Layer 2 is demonstrably unreliable in specific, checkable ways:
   `g_CampaignDifficultyLevel` and `g_OverworldPlayerDirection` from the return values of
   `Pic_Load_menu2_hi_...` / `Pic_Load_menu3_but1_...` — image/UI loader calls, not
   gameplay state.
-- [`docs/SHANDALAR_AI_FAQ.md`](SHANDALAR_AI_FAQ.md) makes specific factual claims about
-  AI behavior (fog-of-war respect, hand-slot flag meanings) in the same confident,
-  unverified voice.
+- The AI FAQ and starting-resources spec that shipped with the repo made specific factual
+  claims (AI fog-of-war, hand-slot flag meanings, starting gold ranges) in the same
+  confident, unverified voice, with links into files that no longer exist. They have been
+  removed; nothing in them was checked against the running game.
 
 Goal precedent: **DevilutionX**. Their port is trustworthy because every recovered
 function was checked against the real `.exe`'s actual behavior before being renamed or
@@ -150,10 +151,11 @@ At each checkpoint, dump known global state from both sides and compare:
       run exactly as predicted. Both programs run the duel engine; campaign duels use MAGIC.EXE.
 - [x] Sample 30 semantic names at random: about 1 in 5 wrong or misleading, about 1 in 3 unsupported
       (see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md)).
-- [ ] Fix the systematic global mislabels (`g_OverworldMapGrid`, `g_OverworldPlayerCoordX`,
-      `g_ActivePalette` are really card slot, player and event-result flag in the card scripts).
-- [ ] Restore the 76 names that a later pass replaced with generic `Pic_Subsystem_<address>` ones,
-      after checking each against its code.
+- [x] Fix the systematic global mislabels: now `g_EventSourceSlot`, `g_EventSourcePlayer` and
+      `g_CardEventResult` (static evidence; confirm live).
+- [x] Restore the earlier names a later pass had replaced: 30 restored, 46 left (code supports neither).
+- [ ] Rename `g_PlayerManaPool` (looks like the current event code) and name the target
+      player and slot globals.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

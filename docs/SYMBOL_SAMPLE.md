@@ -75,19 +75,26 @@ generic engine code are the least.
 
 ## Systematic problems the sample exposed
 
-1. **Global variable names are wrong in the card scripts.** `g_OverworldMapGrid` and
+1. **Global variable names were wrong in the card scripts (now fixed).** `g_OverworldMapGrid` and
    `g_OverworldPlayerCoordX` are used as the *card slot* and *player* index (multiplied by the
    card-slot strides `0x120` and `0x5b20`). They appear in 90 of the 178 `Card*`-named functions, and in 76
    functions with those strides. `g_ActivePalette` is used as an event result or "cancel" flag in
-   61 of them. The card handlers read as nonsense with these names.
+   61 of them. The card handlers read as nonsense with these names. They are now
+   `g_EventSourceSlot`, `g_EventSourcePlayer` and `g_CardEventResult` (see
+   [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)). `g_PlayerManaPool` looks like the current event
+   code (assigned constants such as `0xda` and `-1`, compared with event codes) and is still misnamed.
 2. **Callees inside plausible functions are mislabelled.** `Card_UntapCard` returns a table index,
    `Card_TapForMana` is called with a card slot and a constant and its result tested for a flag
    bit, and `Card_RockHydra_UpdateStatsFromHeads` is called from a Clockwork Beast handler.
-3. **A later renaming pass made some names worse.** In `unified_engine_symbol_map.csv`, 76 of the
-   92 rows that had an earlier real-looking name (`Sound_Init`, `InitSndTrack`, `PlaySnd`,
-   `StopSndTrack`, ...) now carry a generic `Pic_Subsystem_<address>` name. The earlier names are
-   right where I could check: `0x00423b57` (called with `.wav` paths) is a track initialiser and
-   `0x00423bf4` is the play function. The sound routines are labelled as *picture* code.
+3. **A later renaming pass made some names worse.** In `unified_engine_symbol_map.csv`, 92 rows have
+   an earlier non-`FUN_` name, and in 76 of them a later pass replaced it. I first reported all 76
+   as good names lost to generic ones; checking each against its code showed that was too strong.
+   Only **30** were good names replaced by worse ones, and they are restored: 27 sound-driver
+   thunks (`Sound_Init`, `InitSndTrack`, `PlaySnd`, `SetVol`, ... had become `Pic_Subsystem_*`),
+   `CardTypeFromID`, `CardIDFromType` and `UI_Register_WINBK_ManaPool_004b9120`. The other 46 rows
+   swap one address-suffixed placeholder for another; the code supports neither name, or the current
+   one is better (dialog procedures that call `EndDialog` and never `DefWindowProc` are dialog
+   procedures, not window procedures), so they are left alone.
 4. **The `DUEL.EXE` names are not extra evidence.** The executables contain no symbol table and none
    of these names as strings. The `DUEL.EXE` names came from a script that copies names between
    binaries when functions look alike (`scripts/build_duel_symbol_sync.py`).
@@ -98,8 +105,9 @@ generic engine code are the least.
   three is not supported by its code. Never rely on a name in this repo without checking the body.
 - Names from the game's own strings, real Win32 APIs, and the earlier (pre-generic) sound names
   are the trustworthy layer.
-- The highest-value fixes are the three mislabelled globals (they affect over a hundred functions
-  at once) and restoring the 76 overwritten names, each after a quick check against the code.
+- The two highest-value fixes from this sample are done: the three globals are renamed and the 30
+  overwritten names are restored. Still open: `g_PlayerManaPool`, the mislabelled callees, and the
+  ~200 names that are only weakly supported.
 
 ## Method
 

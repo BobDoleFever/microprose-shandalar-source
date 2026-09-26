@@ -25,7 +25,7 @@ class CardSlotSnapshot:
 
     Source: engine_globals_map.csv (g_CardSlot_CardId, g_CardSlot_Flags) and
     include/shandalar/cards.h (MasterCardRecord, 0x34 bytes). Flag bit meanings
-    (0x01 = in hand, 0x02 = in play, ...) come from docs/SHANDALAR_AI_FAQ.md and
+    (0x01 = in hand, 0x02 = in play, ...) were guessed by the original rename pass and
     are UNVERIFIED -- treat them as a hypothesis to confirm via the harness, not
     as ground truth.
     """
