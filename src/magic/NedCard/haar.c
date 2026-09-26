@@ -4744,7 +4744,7 @@ int32_t FUN_004f90d7(int player_id,int card_slot,int event_type)
           if (((val_1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 2) != 0
-              )) && (uval_3 = Magic_DispatchCardEvent(slot_idx, match_count, 0x34, 0xffffffff), (uval_3 & 0x20) == 0)) {
+              )) && (uval_3 = Magic_QueryCardValue(slot_idx, match_count, 0x34, 0xffffffff), (uval_3 & 0x20) == 0)) {
             Card_ApplyCombatDamage(slot_idx, match_count, *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120),
                          player,card_slot);
           }
@@ -4799,7 +4799,7 @@ int32_t FUN_004f92f3(int player_id,int card_slot,int event_type)
           if (((val_1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 2) != 0
-              )) && (uval_3 = Magic_DispatchCardEvent(slot_idx, match_count, 0x34, 0xffffffff), (uval_3 & 0x20) != 0)) {
+              )) && (uval_3 = Magic_QueryCardValue(slot_idx, match_count, 0x34, 0xffffffff), (uval_3 & 0x20) != 0)) {
             Card_ApplyCombatDamage(slot_idx, match_count, *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20),
                          player,card_slot);
           }
@@ -5340,7 +5340,7 @@ int32_t Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
                                target_id * 0x120 + spell_id * 0x5b20 + match_count * 8),
                        *(int *)(&g_CardSlot_AttachedAura +
                                target_id * 0x120 + spell_id * 0x5b20 + match_count * 8));
-          uval_3 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget +
+          uval_3 = Magic_QueryCardValue(*(int *)(&g_CardSlot_CombatTarget +
                                        target_id * 0x120 + spell_id * 0x5b20 + match_count * 8),
                                *(int *)(&g_CardSlot_AttachedAura +
                                        target_id * 0x120 + spell_id * 0x5b20 + match_count * 8),0x34,
@@ -7461,14 +7461,14 @@ int32_t Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
           }
         }
         else {
-          val_3 = Magic_DispatchCardEvent(val_1,y,0x33,0xffffffff);
+          val_3 = Magic_QueryCardValue(val_1,y,0x33,0xffffffff);
           if (*(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) <
               val_3) {
             slot_idx = *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20
                               );
           }
           else {
-            slot_idx = Magic_DispatchCardEvent(val_1,y,0x33,0xffffffff);
+            slot_idx = Magic_QueryCardValue(val_1,y,0x33,0xffffffff);
           }
         }
         if (slot_idx < 0) {
@@ -7685,7 +7685,7 @@ int32_t FUN_004ff36b(int player_id,int card_slot,int event_type)
      (((&g_MasterCardFlagsTable)[arg_3 * 0x34] & 0x10) != 0)) {
     Magic_TriggerCardEvent(player,card_slot,0x6d,1 - player,0xffffffff);
     if (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) != 0) {
-      Rules_ApplyContinuousDamage(player,card_slot,0x81);
+      Magic_BroadcastCardEvent(player,card_slot,0x81);
     }
   }
   g_AiManaPoolReserve = 0;

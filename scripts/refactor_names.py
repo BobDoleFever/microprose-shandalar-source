@@ -73,7 +73,7 @@ DAT_RENAMES = {
     "DAT_006ff558": "g_ScWillyScore",
     "DAT_006ff55c": "g_AiDecisionScore",
     "DAT_006ff680": "g_SpellStackDepth",
-    "DAT_006ff4c0": "g_PlayerManaPool",
+    "DAT_006ff4c0": "g_CurrentStepCode",
     "DAT_0067f440": "g_MasterCardCount",
     "DAT_006ff2d4": "g_PendingAttackersTargetSlot",
     "DAT_006ff2e0": "g_PendingSpellTargetSlot",
@@ -295,7 +295,7 @@ FUNCTION_RENAMES = {
 
     # Rules Engine & Phase Helpers (Magic.c)
     "FUN_004728c3": "Rules_ValidateCardTargetSlot",
-    "FUN_00473e69": "Rules_ApplyContinuousDamage",
+    "FUN_00473e69": "Magic_BroadcastCardEvent",
     "FUN_00472fae": "Rules_ProcessCombatDamageStep",
     "FUN_00473cc5": "Rules_CalculateManaCostReduction",
     "FUN_00473ce8": "Rules_CalculateColorCost",

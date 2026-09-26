@@ -42,7 +42,7 @@ def main():
         "006ff558": "g_ScWillyScore",
         "006ff55c": "g_AiDecisionScore",
         "006ff680": "g_SpellStackDepth",
-        "006ff4c0": "g_PlayerManaPool",
+        "006ff4c0": "g_CurrentStepCode",
 
         # Master Card Catalog & Rules Table
         "0067f440": "g_MasterCardCount",

@@ -78,7 +78,7 @@ void Magic_ScanCards(int color_mask)
           *(uint *)(&g_CardSlot_Flags + local_8 * 0x5b20 + arg2 * 0x120) =
                *(uint *)(&g_CardSlot_Flags + local_8 * 0x5b20 + arg2 * 0x120) | 0x10;
           DAT_006ff2d4 = 0xffffffff;
-          FUN_00473e69(local_8,arg2,0x81);
+          Magic_BroadcastCardEvent(local_8,arg2,0x81);
         }
       }
     }
@@ -185,7 +185,7 @@ bool Magic_ResolveSpellStack(int x,int arg2)
  * Magic_PushEventContext
  * Purpose: Save the current card-event context onto a stack (32 frames, depth in
  *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
- *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
  * Verified against the running game; the original label "pay mana cost" was wrong.
  *   See docs/SYMBOL_VERIFICATION.md.
  */
@@ -203,7 +203,7 @@ void Magic_PushEventContext(void)
     *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_EventSourcePlayer;
     *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_EventSourceSlot;
     *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = g_EventCardId;
-    *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = DAT_006b2fe4;
+    *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = g_EventCardColorMask;
     *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = g_EventTargetPlayer;
     *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = g_EventTargetSlot;
     *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_CardEventResult;
@@ -237,7 +237,7 @@ void Magic_PopEventContext(void)
   g_EventSourcePlayer = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
   g_EventSourceSlot = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
   g_EventCardId = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
-  DAT_006b2fe4 = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
+  g_EventCardColorMask = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
   g_EventTargetPlayer = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
   g_EventTargetSlot = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
   g_CardEventResult = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
@@ -307,8 +307,8 @@ void Magic_UntapTurnPhase(void)
         iVar1 = *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_c * 0x5b20);
         color_mask = (&DAT_0051aebe)[iVar1 * 0x34];
         if (((&g_MasterCardColorTable)[iVar1 * 0x34] & 2) != 0) {
-          iVar2 = Magic_DispatchCardEvent(local_c, local_10, 0x32, 0xffffffff);
-          iVar3 = Magic_DispatchCardEvent(local_c,local_10,0x33,0xffffffff);
+          iVar2 = Magic_QueryCardValue(local_c, local_10, 0x32, 0xffffffff);
+          iVar3 = Magic_QueryCardValue(local_c,local_10,0x33,0xffffffff);
           iVar4 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) =
                *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) + iVar2;
@@ -724,11 +724,11 @@ int Magic_CombatPhase(int color_mask,int arg_2,int arg_3,int arg_4,int arg_5)
            (int)(char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + color_mask * 0x5b20];
       *(int *)(&DAT_006ff394 + DAT_006a3f78 * 8) =
            *(int *)(&g_CardSlot_OriginalCardId + arg_2 * 0x120 + color_mask * 0x5b20);
-      if (g_PlayerManaPool == -1) {
+      if (g_CurrentStepCode == -1) {
         *(int *)(&DAT_00696880 + DAT_006a3f78 * 4) = g_ScWillyScore;
       }
       else {
-        *(int *)(&DAT_00696880 + DAT_006a3f78 * 4) = g_PlayerManaPool;
+        *(int *)(&DAT_00696880 + DAT_006a3f78 * 4) = g_CurrentStepCode;
       }
       if (g_IsAiThinking != 1) {
         *(int *)(&DAT_00695d70 + DAT_006a3f78 * 4) = arg_5;
@@ -802,7 +802,7 @@ int Magic_EndTurnPhase(void)
     }
     if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + color_mask * 0x5b20) != -1) {
       if ((char)((uint)*(int *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x10) == '~') {
-        Pic_Subsystem_004485d6
+        Magic_BroadcastCardEventInStep
                   (color_mask,arg_2,*(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x10 & 0xff,
                    *(int *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x18);
       }
@@ -987,8 +987,8 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int arg_4)
   uVar3 = DAT_006a4920;
   uVar2 = DAT_00695ec4;
   uVar1 = DAT_006808b0;
-  local_c = g_PlayerManaPool;
-  g_PlayerManaPool = 0xffffffff;
+  local_c = g_CurrentStepCode;
+  g_CurrentStepCode = 0xffffffff;
   DAT_006ff684 = DAT_006ff684 + 1;
   if (DAT_006ff684 == 1) {
     DAT_006b2d24 = 0;
@@ -1025,7 +1025,7 @@ LAB_0047615d:
     DAT_006808b0 = uVar1;
     DAT_00525850 = local_8;
     DAT_006a4920 = uVar3;
-    g_PlayerManaPool = local_c;
+    g_CurrentStepCode = local_c;
     DAT_00695ec4 = uVar2;
     if (local_94 != 0) {
       DAT_00633434 = 0;
@@ -1108,21 +1108,21 @@ LAB_0047615d:
 int FUN_00476205(int x,int arg_2,char *arg_3,int arg_4)
 
 {
-  FUN_0047624f(x,arg_2,arg_3,arg_4);
-  FUN_0047624f(1 - x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(1 - x,arg_2,arg_3,arg_4);
   return 1;
 }
 
 
 
 /*
- * Decompiled function: FUN_0047624f
+ * Decompiled function: Magic_RunTurnStep
  * Entry Point: 0047624f
  * Size: 495 bytes
  */
 
 
-int FUN_0047624f(int x,int arg_2,char *str_3,int height)
+int Magic_RunTurnStep(int x,int arg_2,char *str_3,int height)
 
 {
   uint uVar1;
@@ -1148,7 +1148,7 @@ int FUN_0047624f(int x,int arg_2,char *str_3,int height)
     else {
       DAT_0068a67c = 2;
     }
-    g_PlayerManaPool = arg_2;
+    g_CurrentStepCode = arg_2;
     if (height == 0) {
       DAT_0063ee70 = 0;
     }
@@ -1162,7 +1162,7 @@ int FUN_0047624f(int x,int arg_2,char *str_3,int height)
     DAT_0063edc8 = uVar1 & 0x30;
   } while (((DAT_00695f0c & (-(uint)(iVar6 == 0) & 0xfffffffe) + 6) != 0) ||
           ((height != 0 && (iVar6 != 0))));
-  g_PlayerManaPool = 0xffffffff;
+  g_CurrentStepCode = 0xffffffff;
   DAT_006fd3f0 = DAT_006fd3f0 + -1;
   DAT_0063ee70 = uVar1;
   DAT_0068a67c = uVar2;
@@ -1465,8 +1465,8 @@ void FUN_00476b0e(void)
                  (&DAT_006a603c)[local_c + local_8 * 0x5b20 + local_10 * 0x120];
           }
           *(int *)(&g_CardSlot_SpecialState + local_10 * 0x120 + local_8 * 0x5b20) = 0;
-          FUN_00473e69(local_8,local_10,0x85);
-          FUN_00473e69(local_8,local_10,0x84);
+          Magic_BroadcastCardEvent(local_8,local_10,0x85);
+          Magic_BroadcastCardEvent(local_8,local_10,0x84);
         }
       }
     }

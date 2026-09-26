@@ -4744,7 +4744,7 @@ undefined4 FUN_004f90d7(int hDIBSection,int card_slot,int arg_3)
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
-              )) && (uVar3 = Magic_DispatchCardEvent(local_8, local_c, 0x34, 0xffffffff), (uVar3 & 0x20) == 0)) {
+              )) && (uVar3 = Magic_QueryCardValue(local_8, local_c, 0x34, 0xffffffff), (uVar3 & 0x20) == 0)) {
             Card_ApplyCombatDamage(local_8, local_c, *(int *)(&g_CardSlot_ConvertedManaCost + hDIBSection * 0x5b20 + card_slot * 0x120),
                          hDIBSection,card_slot);
           }
@@ -4799,7 +4799,7 @@ undefined4 FUN_004f92f3(int hDIBSection,int card_slot,int arg_3)
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
-              )) && (uVar3 = Magic_DispatchCardEvent(local_8, local_c, 0x34, 0xffffffff), (uVar3 & 0x20) != 0)) {
+              )) && (uVar3 = Magic_QueryCardValue(local_8, local_c, 0x34, 0xffffffff), (uVar3 & 0x20) != 0)) {
             Card_ApplyCombatDamage(local_8, local_c, *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + hDIBSection * 0x5b20),
                          hDIBSection,card_slot);
           }
@@ -5340,7 +5340,7 @@ undefined4 Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
                                target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
                        *(int *)(&g_CardSlot_AttachedAura +
                                target_id * 0x120 + spell_id * 0x5b20 + local_c * 8));
-          uVar3 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget +
+          uVar3 = Magic_QueryCardValue(*(int *)(&g_CardSlot_CombatTarget +
                                        target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
                                *(int *)(&g_CardSlot_AttachedAura +
                                        target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),0x34,
@@ -7461,14 +7461,14 @@ undefined4 Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
           }
         }
         else {
-          iVar3 = Magic_DispatchCardEvent(iVar1,y,0x33,0xffffffff);
+          iVar3 = Magic_QueryCardValue(iVar1,y,0x33,0xffffffff);
           if (*(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) <
               iVar3) {
             local_8 = *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20
                               );
           }
           else {
-            local_8 = Magic_DispatchCardEvent(iVar1,y,0x33,0xffffffff);
+            local_8 = Magic_QueryCardValue(iVar1,y,0x33,0xffffffff);
           }
         }
         if (local_8 < 0) {
@@ -7685,7 +7685,7 @@ undefined4 FUN_004ff36b(int hDIBSection,int card_slot,int arg_3)
      (((&DAT_0051aed1)[arg_3 * 0x34] & 0x10) != 0)) {
     Magic_TriggerCardEvent(hDIBSection,card_slot,0x6d,1 - hDIBSection,0xffffffff);
     if (((&g_CardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x10) != 0) {
-      FUN_00473e69(hDIBSection,card_slot,0x81);
+      Magic_BroadcastCardEvent(hDIBSection,card_slot,0x81);
     }
   }
   DAT_006ff4ac = 0;

@@ -58,13 +58,17 @@ void Magic_ScanCards(int phase_id);
 
 /*
  * Magic_TriggerCardEvent
- * Purpose: Execute a card script function with the specified event code.
- * Parameter player_id: Index of the player (0 or 1).
- * Parameter card_slot: Index of the card slot (0 to 79).
- * Parameter event_code: The event identifier to pass to the card script.
- * Returns: Result code from the card script callback.
+ * Purpose: Run one card's own script handler (the function pointer at offset 0x10 of its
+ *   master card record) for an event, with the card-event context set up around it.
+ * Parameter player: Index of the player that owns the card (0 or 1).
+ * Parameter slot: Index of the card slot.
+ * Parameter event_code: The event identifier passed to the card script.
+ * Parameter target_player, target_slot: The event's target, stored in g_EventTargetPlayer and
+ *   g_EventTargetSlot.
+ * Returns: Result code from the card script callback (99 means it asked to stop).
+ * Verified in part on the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-int Magic_TriggerCardEvent(int player_id, int card_slot, int event_code, uint32_t extra_arg1, uint32_t extra_arg2);
+int Magic_TriggerCardEvent(int player, int slot, int event_code, int target_player, int target_slot);
 
 /*
  * Magic_ResolveSpellStack
@@ -81,7 +85,7 @@ void Magic_ResolveSpellStack(void);
  * Magic_PushEventContext
  * Purpose: Save the current card-event context onto a stack (32 frames, depth in
  *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
- *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
  * Verified against the running game; the original label "pay mana cost" was wrong.
  *   See docs/SYMBOL_VERIFICATION.md.
  */

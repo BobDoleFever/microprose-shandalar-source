@@ -2354,7 +2354,7 @@ undefined4 Prompts_Load_00416d36(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        iVar3 = Magic_DispatchCardEvent(iVar2, color_mask, 0x32, 0xffffffff);
+        iVar3 = Magic_QueryCardValue(iVar2, color_mask, 0x32, 0xffffffff);
         (&g_PlayerCreatureCount)[iVar2] = (&g_PlayerCreatureCount)[iVar2] + iVar3;
         Pic_Subsystem_0044867e(iVar2,color_mask,4);
       }

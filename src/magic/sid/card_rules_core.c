@@ -37,7 +37,7 @@ extern int g_MasterCardColorTable;
 extern int g_CardSlot_Power;
 extern int DAT_006a5f69;
 extern int DAT_006a604f;
-extern int g_PlayerManaPool;
+extern int g_CurrentStepCode;
 extern int g_ActiveCardsInPlay;
 bool Card_IsTapped();
 extern int DAT_006a5f6f;
@@ -167,7 +167,7 @@ extern int DAT_006826dd;
 extern int DAT_00682714;
 extern int DAT_0068f2e0;
 extern int DAT_0068ed10;
-extern int DAT_006b2fe4;
+extern int g_EventCardColorMask;
 extern int DAT_006b157c;
 extern int DAT_006fedc0;
 extern int DAT_00527e88;
@@ -277,13 +277,13 @@ int FUN_00486c12();
 int FUN_00478aa4();
 
 /*
- * Decompiled function: Magic_DispatchCardEvent
+ * Decompiled function: Magic_QueryCardValue
  * Entry Point: 00473179
  * Size: 2823 bytes
  */
 
 
-uint Magic_DispatchCardEvent(int player,int slot,int event_code,undefined4 flags)
+uint Magic_QueryCardValue(int player,int slot,int event_code,undefined4 flags)
 
 {
   uint uVar1;
@@ -305,7 +305,7 @@ uint Magic_DispatchCardEvent(int player,int slot,int event_code,undefined4 flags
   g_EventSourcePlayer = player;
   g_EventSourceSlot = slot;
   g_EventCardId = *(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
-  DAT_006b2fe4 = (int)(char)(&DAT_0051aebe)[g_EventCardId * 0x34];
+  g_EventCardColorMask = (int)(char)(&DAT_0051aebe)[g_EventCardId * 0x34];
   g_EventTargetSlot = flags;
   switch(event_code) {
   case 0x32:
@@ -414,7 +414,7 @@ LAB_004737a0:
      ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 ||
          ((int)uVar1 <= (int)*(short *)(&g_CardSlot_Power + slot * 0x120 + player * 0x5b20))) &&
-        (g_PlayerManaPool == -1)) && ((g_PlayerHandCardCount & 0x204) == 0)))))) {
+        (g_CurrentStepCode == -1)) && ((g_PlayerHandCardCount & 0x204) == 0)))))) {
     Pic_Subsystem_0044867e(player,slot,2);
     Pic_Subsystem_004488a0();
   }

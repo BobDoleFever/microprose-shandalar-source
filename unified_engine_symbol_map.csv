@@ -389,7 +389,7 @@ Address,OldName,NewName
 004475a4,FUN_004475a4,Rules_ProcessDamagePrevention
 00447a1a,FUN_00447a1a,Pic_Subsystem_00447a1a
 00447b57,FUN_00447b57,Pic_Subsystem_00447b57
-004485d6,FUN_004485d6,Pic_Subsystem_004485d6
+004485d6,FUN_004485d6,Magic_BroadcastCardEventInStep
 0044867e,FUN_0044867e,Pic_Subsystem_0044867e
 004488a0,FUN_004488a0,Rules_SendCardsToGraveyard
 0044895f,FUN_0044895f,Rules_CardLeavingPlay
@@ -691,12 +691,12 @@ Address,OldName,NewName
 00472b60,FUN_00472b60,GDI_RealizePaletteTree
 00472fae,FUN_00472fae,Rules_ProcessCombatDamageStep
 00473060,FUN_00473060,Rules_TriggerEndOfTurnPhase
-00473179,FUN_00473179,Magic_DispatchCardEvent
+00473179,FUN_00473179,Magic_QueryCardValue
 004738a0,FUN_004738a0,Rules_ResolveSpellEffect
 00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
 00473ce8,FUN_00473ce8,Rules_CalculateColorCost
 00473d09,FUN_00473d09,Rules_GetCardConvertedManaCost
-00473e69,FUN_00473e69,Rules_ApplyContinuousDamage
+00473e69,FUN_00473e69,Magic_BroadcastCardEvent
 00473f06,FUN_00473f06,Magic_ScanCards
 00474266,FUN_00474266,Magic_TriggerCardEvent
 00474389,FUN_00474389,Magic_ResolveSpellStack

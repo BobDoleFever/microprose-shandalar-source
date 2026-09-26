@@ -8955,7 +8955,7 @@ undefined4 Palette_Subsystem_004a8111(int player,int card_slot,int arg_3)
       }
       break;
     case 0x12:
-      iVar3 = Magic_DispatchCardEvent(iVar4, iVar5, 0x32, 0xffffffff);
+      iVar3 = Magic_QueryCardValue(iVar4, iVar5, 0x32, 0xffffffff);
       (&g_PlayerCreatureCount)[iVar4] = (&g_PlayerCreatureCount)[iVar4] + iVar3;
       Pic_Subsystem_0044867e(iVar4,iVar5,4);
       break;
@@ -9148,7 +9148,7 @@ undefined4 Palette_Subsystem_004a9137(int player,int card_slot,undefined4 arg_3)
              [*(int *)(&g_CardSlot_CardId + iVar3 * 0x5b20 + iVar4 * 0x120) * 0x34] & 1) != 0) {
           DAT_006ff2d4 = 0xffffffff;
         }
-        FUN_00473e69(iVar3,iVar4,0x81);
+        Magic_BroadcastCardEvent(iVar3,iVar4,0x81);
       }
     }
     else {

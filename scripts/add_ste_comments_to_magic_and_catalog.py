@@ -37,7 +37,7 @@ def process_magic_c():
  * Magic_PushEventContext
  * Purpose: Save the current card-event context onto a stack (32 frames, depth in
  *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
- *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
  * Verified against the running game; the original label "pay mana cost" was wrong.
  *   See docs/SYMBOL_VERIFICATION.md.
  */""",

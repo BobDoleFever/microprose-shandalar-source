@@ -8955,7 +8955,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       }
       break;
     case 0x12:
-      val_3 = Magic_DispatchCardEvent(val_4, val_5, 0x32, 0xffffffff);
+      val_3 = Magic_QueryCardValue(val_4, val_5, 0x32, 0xffffffff);
       (&g_PlayerCreatureCount)[val_4] = (&g_PlayerCreatureCount)[val_4] + val_3;
       Pic_Subsystem_0044867e(val_4,val_5,4);
       break;
@@ -9148,7 +9148,7 @@ int32_t Palette_Subsystem_004a9137(int player_id,int card_slot,int32_t arg_3)
              [*(int *)(&g_CardSlot_CardId + val_3 * 0x5b20 + val_4 * 0x120) * 0x34] & 1) != 0) {
           g_PendingAttackersTargetSlot = 0xffffffff;
         }
-        Rules_ApplyContinuousDamage(val_3,val_4,0x81);
+        Magic_BroadcastCardEvent(val_3,val_4,0x81);
       }
     }
     else {

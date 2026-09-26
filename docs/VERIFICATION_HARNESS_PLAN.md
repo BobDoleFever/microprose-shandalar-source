@@ -156,7 +156,11 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Rename the event-context push and pop and the dispatcher (were `Magic_PayManaCost`,
       `Magic_TapCardForMana`, `Card_TapForMana`), and name three more context globals.
 - [x] Restore the earlier names a later pass had replaced: 30 restored, 46 left (code supports neither).
-- [ ] Rename `g_PlayerManaPool` (looks like the current event code) and work out `DAT_006b2fe4`.
+- [x] Name `g_PlayerManaPool` (the current turn-step code) and `DAT_006b2fe4` (the event card's colour
+      mask), and the three other functions that write the event context (static evidence).
+- [ ] Confirm live: break on `Magic_RunTurnStep` in a duel and read the step codes and names.
+- [ ] Fix the remaining wrong names nearby: `Magic_CombatPhase` (it queues an event),
+      `g_AiSavedPlayerManaPool` (a copy of the event queue) and what the codes `0x32`-`0x3c` mean.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

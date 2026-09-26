@@ -6549,7 +6549,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00448595,"LAB_00448595",Label,true,false
 004485bf,"LAB_004485bf",Label,true,false
 004485d1,"LAB_004485d1",Label,true,false
-004485d6,"Pic_Subsystem_004485d6",Function,true,true
+004485d6,"Magic_BroadcastCardEventInStep",Function,true,true
 00448619,"LAB_00448619",Label,true,false
 00448620,"LAB_00448620",Label,true,false
 00448637,"LAB_00448637",Label,true,false
@@ -10184,7 +10184,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0047316a,"LAB_0047316a",Label,true,false
 0047316f,"LAB_0047316f",Label,true,false
 00473174,"LAB_00473174",Label,true,false
-00473179,"Magic_DispatchCardEvent",Function,true,true
+00473179,"Magic_QueryCardValue",Function,true,true
 004731a2,"LAB_004731a2",Label,true,false
 00473203,"caseD_32",Label,false,false
 0047324b,"LAB_0047324b",Label,true,false
@@ -10259,7 +10259,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00473e57,"LAB_00473e57",Label,true,false
 00473e5c,"LAB_00473e5c",Label,true,false
 00473e64,"LAB_00473e64",Label,true,false
-00473e69,"FUN_00473e69",Function,true,true
+00473e69,"Magic_BroadcastCardEvent",Function,true,true
 00473ece,"LAB_00473ece",Label,true,false
 00473f01,"LAB_00473f01",Label,true,false
 00473f06,"Magic_ScanCards",Function,true,true
@@ -10438,7 +10438,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00476200,"LAB_00476200",Label,true,false
 00476205,"FUN_00476205",Function,true,true
 0047624a,"LAB_0047624a",Label,true,false
-0047624f,"FUN_0047624f",Function,true,true
+0047624f,"Magic_RunTurnStep",Function,true,true
 0047628e,"LAB_0047628e",Label,true,false
 004762a1,"LAB_004762a1",Label,true,false
 004762ba,"LAB_004762ba",Label,true,false
@@ -30960,7 +30960,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006b2fbc,"DAT_006b2fbc",Label,true,false
 006b2fc0,"DAT_006b2fc0",Label,true,false
 006b2fe0,"DAT_006b2fe0",Label,true,false
-006b2fe4,"DAT_006b2fe4",Label,true,false
+006b2fe4,"g_EventCardColorMask",Label,true,false
 006b2fe8,"DAT_006b2fe8",Label,true,false
 006b2ff0,"DAT_006b2ff0",Label,true,false
 006b2ff4,"DAT_006b2ff4",Label,true,false
@@ -31110,7 +31110,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006ff4ac,"DAT_006ff4ac",Label,true,false
 006ff4b0,"DAT_006ff4b0",Label,true,false
 006ff4b8,"DAT_006ff4b8",Label,true,false
-006ff4c0,"g_PlayerManaPool",Label,true,false
+006ff4c0,"g_CurrentStepCode",Label,true,false
 006ff4cc,"DAT_006ff4cc",Label,true,false
 006ff4d0,"DAT_006ff4d0",Label,true,false
 006ff550,"DAT_006ff550",Label,true,false

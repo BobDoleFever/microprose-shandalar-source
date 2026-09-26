@@ -67,7 +67,7 @@ int32_t g_PlayerLife[2] = {20, 20};
 int32_t g_ActiveTurn = 1;
 int32_t g_ActivePlayerId = 0;
 int32_t g_CurrentTurnPhaseId = 3; /* 0: Untap, 1: Upkeep, 2: Draw, 3: Main 1, 4: Combat, 5: Main 2, 6: End, 7: Cleanup */
-int32_t g_PlayerManaPool[2][6] = {{0}}; /* W, U, B, R, G, C */
+int32_t g_CurrentStepCode[2][6] = {{0}}; /* W, U, B, R, G, C */
 
 /* Card Record Structure */
 typedef struct CardEntry {
@@ -716,8 +716,8 @@ static void RenderDuelArena(ScreenSurface *surf)
 
     char plyr_str[128];
     snprintf(plyr_str, sizeof(plyr_str), "PLAYER (LIFE: %d) | MANA: W:%d U:%d B:%d R:%d G:%d | LIBRARY: 53",
-             g_PlayerLife[0], g_PlayerManaPool[0][0], g_PlayerManaPool[0][1], g_PlayerManaPool[0][2],
-             g_PlayerManaPool[0][3], g_PlayerManaPool[0][4]);
+             g_PlayerLife[0], g_CurrentStepCode[0][0], g_CurrentStepCode[0][1], g_CurrentStepCode[0][2],
+             g_CurrentStepCode[0][3], g_CurrentStepCode[0][4]);
     DrawString(surf, 30, 226, plyr_str, 1);
 
     /* Player Creatures in Play */

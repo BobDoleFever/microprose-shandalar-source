@@ -369,8 +369,8 @@ int CardTarget_HasValidCreatureTarget(int player)
       if ((((match_count != -1) && (((&g_CardSlot_Flags)[card_idx * 0x120 + player * 0x5b20] & 2) != 0))
           && (((&g_MasterCardColorTable)[match_count * 0x34] & 2) != 0)) &&
          ((&g_CardSlot_CardTypeIndex)[card_idx * 0x120 + player * 0x5b20] != '\x03')) {
-        status = Magic_DispatchCardEvent(player, card_idx, 0x32, 0xffffffff);
-        val_result = Magic_DispatchCardEvent(player,card_idx,0x33,0xffffffff);
+        status = Magic_QueryCardValue(player, card_idx, 0x32, 0xffffffff);
+        val_result = Magic_QueryCardValue(player,card_idx,0x33,0xffffffff);
         slot_idx = (status + 2) * (val_result + 2);
         if (slot_idx < player_idx) {
           loop_idx = card_idx;

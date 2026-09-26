@@ -1540,7 +1540,7 @@ void Pic_Subsystem_00447a1a(void);;
 int Pic_Subsystem_00447b57(int player,int card_slot);;
 
 /* Function at 004485d6 (Size: 168 bytes) */
-int32_t Pic_Subsystem_004485d6(int x,int y,int width,int32_t flags);;
+int32_t Magic_BroadcastCardEventInStep(int player,int slot,int event_code,int32_t event_arg);;
 
 /* Function at 0044867e (Size: 546 bytes) */
 void Pic_Subsystem_0044867e(int value,int min_val,int max_val);;
@@ -2410,7 +2410,7 @@ void FUN_00472f0c(int32_t player,int card_slot);;
 void Rules_ProcessCombatDamageStep(void);;
 
 /* Function at 00473179 (Size: 2823 bytes) */
-uint32_t Magic_DispatchCardEvent(int player,int slot,int event_code,int32_t target_slot);;
+uint32_t Magic_QueryCardValue(int player,int slot,int event_code,int32_t target_slot);;
 
 /* Function at 00473cc5 (Size: 121 bytes) */
 int32_t Rules_CalculateManaCostReduction(uint8_t value);;
@@ -2422,13 +2422,13 @@ uint8_t * Mem_AllocOrFree_00473d7e(int value);;
 int FUN_00473d98(int value);;
 
 /* Function at 00473e69 (Size: 157 bytes) */
-int32_t Rules_ApplyContinuousDamage(int value,int32_t min_val,int max_val);;
+int32_t Magic_BroadcastCardEvent(int player,int32_t slot,int event_code);;
 
 /* Function at 00473f06 (Size: 864 bytes) */
 void Magic_ScanCards(int value);;
 
 /* Function at 00474266 (Size: 291 bytes) */
-int Magic_TriggerCardEvent(int value,int min_val,int max_val,int32_t flags,int32_t flags);;
+int Magic_TriggerCardEvent(int player,int slot,int event_code,int32_t target_player,int32_t target_slot);;
 
 /* Function at 00474389 (Size: 159 bytes) */
 bool Magic_ResolveSpellStack(int player,int card_slot);;
@@ -2488,7 +2488,7 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int32_t flags);;
 int32_t FUN_00476205(int x,int32_t min_val,char *max_val,int flags);;
 
 /* Function at 0047624f (Size: 495 bytes) */
-int32_t FUN_0047624f(int x,int32_t min_val,char *str_3,int height);;
+int32_t Magic_RunTurnStep(int player,int32_t step_code,char *step_name,int wait_for_pass);;
 
 /* Function at 0047643e (Size: 68 bytes) */
 int32_t FUN_0047643e(void);;

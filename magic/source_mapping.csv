@@ -508,7 +508,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 004475a4,Pic_Subsystem_004475a4,sidlib/Kimpic.c,sidlib
 00447a1a,Pic_Subsystem_00447a1a,sidlib/Kimpic.c,sidlib
 00447b57,Pic_Subsystem_00447b57,sidlib/Kimpic.c,sidlib
-004485d6,Pic_Subsystem_004485d6,sidlib/Kimpic.c,sidlib
+004485d6,Magic_BroadcastCardEventInStep,sidlib/Kimpic.c,sidlib
 0044867e,Pic_Subsystem_0044867e,sidlib/Kimpic.c,sidlib
 004488a0,Pic_Subsystem_004488a0,sidlib/Kimpic.c,sidlib
 0044895f,Pic_Subsystem_0044895f,sidlib/Kimpic.c,sidlib
@@ -797,11 +797,11 @@ Address,FunctionName,SourceFile,ModuleGroup
 00472e08,FUN_00472e08,unattributed/magic_core.c,unattributed
 00472f0c,FUN_00472f0c,unattributed/magic_core.c,unattributed
 00472fae,FUN_00472fae,unattributed/magic_core.c,unattributed
-00473179,Magic_DispatchCardEvent,unattributed/magic_core.c,unattributed
+00473179,Magic_QueryCardValue,unattributed/magic_core.c,unattributed
 00473cc5,FUN_00473cc5,unattributed/magic_core.c,unattributed
 00473d7e,Mem_AllocOrFree_00473d7e,unattributed/magic_core.c,unattributed
 00473d98,FUN_00473d98,unattributed/magic_core.c,unattributed
-00473e69,FUN_00473e69,unattributed/magic_core.c,unattributed
+00473e69,Magic_BroadcastCardEvent,unattributed/magic_core.c,unattributed
 00473f06,Magic_ScanCards,sid/Magic.c,sid
 00474266,Magic_TriggerCardEvent,sid/Magic.c,sid
 00474389,Magic_ResolveSpellStack,sid/Magic.c,sid
@@ -823,7 +823,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 00475c8a,FUN_00475c8a,sid/Magic.c,sid
 00475d64,Magic_CleanupPhase,sid/Magic.c,sid
 00476205,FUN_00476205,sid/Magic.c,sid
-0047624f,FUN_0047624f,sid/Magic.c,sid
+0047624f,Magic_RunTurnStep,sid/Magic.c,sid
 0047643e,FUN_0047643e,sid/Magic.c,sid
 00476482,FUN_00476482,sid/Magic.c,sid
 00476510,FUN_00476510,sid/Magic.c,sid

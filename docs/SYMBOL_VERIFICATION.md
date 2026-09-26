@@ -165,9 +165,8 @@ watched live):
 | `0x007006c8` | `DAT_007006c8` | `g_EventTargetPlayer` | defaults to `1 - player` (the opponent) in two places; the 3 handlers that test it compare it with their player argument |
 | `0x006b2d5c` | `DAT_006b2d5c` | `g_EventTargetSlot` | defaults to `-1` (none) in three places; set from the dispatcher's `target_slot`; the same 3 handlers compare it with their slot argument, never crossed |
 
-`DAT_006b2fe4` (the seventh member: a byte at offset 2 of the 0x34-byte master card record for the
-event card) is left unnamed until its meaning is known. `g_PlayerManaPool` (`0x006ff4c0`) looks like
-the current event code and is still misnamed. These `DAT_` names are address-based and other
+`DAT_006b2fe4` (the seventh member) and `g_PlayerManaPool` are handled in the next section; they are
+now `g_EventCardColorMask` and `g_CurrentStepCode`. These `DAT_` names are address-based and other
 programs have different variables at the same addresses, so the renames were confined to
 `magic/` and `src/magic/`.
 
@@ -180,16 +179,46 @@ The event context is a **stack** of 7-value frames (0x28 bytes each, 32 deep, de
 |---|---|---|---|
 | `0x00474428` | `Magic_PayManaCost` -> `Magic_PushEventContext` | **push** the event context | copies the 7 globals into the next frame and increments the depth (guarded at 32) |
 | `0x004744de` | `Magic_TapCardForMana` -> `Magic_PopEventContext` | **pop** the event context | decrements the depth and restores the 7 globals from that frame |
-| `0x00473179` | `Card_TapForMana` -> `Magic_DispatchCardEvent` | the event **dispatcher** | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
+| `0x00473179` | `Card_TapForMana` -> `Magic_QueryCardValue` | computes a card's modified value (see the next section; an earlier revision of this table called it the dispatcher) | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
 
 The dispatcher calls the push first (when the depth counter `DAT_0063ee18` is non-zero), sets the
 globals from its arguments and runs the handlers. The pop ran 98 times and always restored
 `g_CardEventResult` to 0, and restored `(player, slot)` to `(0, 0)` 68 times and `(1, 3)` 30 times:
 outer event contexts being put back, as a stack predicts. None of these functions deals with mana.
-Renamed everywhere (sources, headers, all four symbol maps, generator scripts); the dispatcher's
+Renamed everywhere (sources, headers, all four symbol maps, generator scripts); the query's
 parameters are now `(player, slot, event_code, target_slot)` (they were `x, y, width`), and the
 prototypes of the push and pop are `void(void)` (the header had made-up parameters). `DUEL.EXE`'s
 maps also list a `Card_TapForMana` at `0x00473179`; that is a different program and was left alone.
+
+## The step code and the other event-context writers (MAGIC.EXE): static evidence
+
+Not watched live. What supports each name is in the code and in the pattern of call sites.
+
+| Address | Was | Now | Evidence |
+|---|---|---|---|
+| `0x006ff4c0` | `g_PlayerManaPool` | `g_CurrentStepCode` | only ever set to `-1` or to a step code; assigned from the argument by `Magic_RunTurnStep` and set back to `-1` afterwards; compared with constants in the range `0xc9`-`0xdc`; `Magic_BroadcastCardEventInStep` returns early when it is below 200 |
+| `0x0047624f` | `FUN_0047624f` | `Magic_RunTurnStep(player, step_code, step_name, wait_for_pass)` | saves the step context, sets `g_CurrentStepCode`, runs the step handler in a loop until nobody responds (`Pic_Subsystem_004458b0`), restores; every call site passes a step name string |
+| `0x00473e69` | `FUN_00473e69` (the maps say `Rules_ApplyContinuousDamage`) | `Magic_BroadcastCardEvent(player, slot, event_code)` | push context, set the source to `(player, slot)`, the target to `(1 - player, -1)`, clear the result, run `Magic_ScanCards(event_code)`, restore the step code, pop, return the result |
+| `0x004485d6` | `Pic_Subsystem_004485d6` | `Magic_BroadcastCardEventInStep(player, slot, event_code, event_arg)` | the same scan, but only while a step is running (`g_CurrentStepCode >= 200`); no push or pop; stores its fourth argument at `0x006b2fe8` |
+| `0x00473179` | `Magic_DispatchCardEvent` (my earlier name) | `Magic_QueryCardValue(player, slot, event_code, target_slot)` | a `switch` over six codes (`0x32` to `0x36`, `0x3c`) computes a value from the card's data, calls `Magic_ScanCards(event_code)` so other cards can adjust `g_CardEventResult`, and returns it; 90 call sites use the codes `0x32` (40), `0x33` (24), `0x34` (22) and `0x3c` (4). What each code measures is not established |
+| `0x006b2fe4` | `DAT_006b2fe4` | `g_EventCardColorMask` | a byte copied from offset 6 of the event card's master record. Over the 447 records the values are 1, 2, 4, 8, 16, 32 (63 to 112 cards each) plus a handful of odd ones, and the first five records hold 2, 4, 8, 16 and 32 in order: a colour mask (1 = colourless). Nothing compares it; it is only saved, restored and read from a save file |
+
+`Magic_TriggerCardEvent` keeps its name. It runs the card's own handler (the function pointer at
+offset `0x10` of its master record) inside a pushed context. Its parameters are now
+`(player, slot, event_code, target_player, target_slot)`; the decompiler had called the last two
+`target_slot` and `flags`, but the code stores them in `g_EventTargetPlayer` and `g_EventTargetSlot`.
+
+Step codes, from the call sites that pass a name (the others in the range are compared but not
+named): `0xc9` Begin Upkeep, `0xcb` End Upkeep, `0xce` Draw Phase, `0xcf` Draw a card Phase,
+`0xd9` Choose Attackers, `0xda` Choose Defenders, `0xdc` Pay for attacker.
+
+Still wrong and not renamed: `g_AiSavedPlayerManaPool` (`0x00552938`) is filled with a 0x80-byte
+`memcpy` from `0x006ff4d0`, the 32-entry event queue that `Magic_CombatPhase` (which really just
+queues an event) appends to, so it is a saved copy of the queue and not of anything mana related.
+`DAT_006b2fe8` (the extra event argument) is also unnamed.
+
+Suggested live check: break on `Magic_RunTurnStep` in a duel and read `(player, step_code, step_name)`
+at each turn step; the draw step alone should show `0xcf` and "Draw a card Phase".
 
 ## Names restored (MAGIC.EXE)
 
