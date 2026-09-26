@@ -148,6 +148,12 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Rename the verified symbols in the source, headers, CSV symbol maps and generator scripts.
 - [x] Launched DUEL.EXE for real: its entry point fires, and its twin draw and sound functions
       run exactly as predicted. Both programs run the duel engine; campaign duels use MAGIC.EXE.
+- [x] Sample 30 semantic names at random: about 1 in 5 wrong or misleading, about 1 in 3 unsupported
+      (see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md)).
+- [ ] Fix the systematic global mislabels (`g_OverworldMapGrid`, `g_OverworldPlayerCoordX`,
+      `g_ActivePalette` are really card slot, player and event-result flag in the card scripts).
+- [ ] Restore the 76 names that a later pass replaced with generic `Pic_Subsystem_<address>` ones,
+      after checking each against its code.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 
