@@ -235,6 +235,8 @@ def create_file(m, a):
     if path.startswith("\\\\"):
         return INVALID_HANDLE
     hp, exists = host_path(m.game_root, m.overlay_root, m.cwd, path, for_write=write or disp in (1, 2, 4))
+    if m.state.get("log_files"):
+        m.log(f"   CreateFileA({path!r}, access=0x{access:x}, disp={disp}) -> {hp if exists else 'not found'}")
     if not exists and disp in (3, 5):                 # OPEN_EXISTING / TRUNCATE_EXISTING
         m.state["lasterror"] = 2
         return INVALID_HANDLE

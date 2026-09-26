@@ -388,8 +388,29 @@ def create_solid_brush(m, a):
 
 @g32("CreateBrushIndirect", 1)
 def create_brush_indirect(m, a):
-    style, color = m.r32(a[0]), m.r32(a[0] + 4)
+    style, color, hatch = m.r32(a[0]), m.r32(a[0] + 4), m.r32(a[0] + 8)
+    if style == 3:                                                     # BS_PATTERN: `hatch` is a bitmap handle
+        return new_obj(m, ("brush", None, hatch))
     return new_obj(m, ("brush", None if style == 1 else colorref(m, None, color)))
+
+
+g32("CreatePatternBrush", 1)(lambda m, a: new_obj(m, ("brush", None, a[0])))
+
+
+def brush_pixels(m, brush, w, h, origin=(0, 0)):
+    """RGB array (h, w, 3) filled with a brush: solid colour, or a bitmap tiled from `origin`."""
+    if len(brush) > 2 and brush[2]:
+        bmp = obj(m, brush[2])
+        if isinstance(bmp, Bitmap) and bmp.w and bmp.h:
+            dc = DC("memory")
+            dc.bitmap = bmp
+            tile = get_region(m, dc, 0, 0, bmp.w, bmp.h)
+            if tile is not None:
+                ys = (np.arange(h) + origin[1]) % tile.shape[0]
+                xs = (np.arange(w) + origin[0]) % tile.shape[1]
+                return tile[ys][:, xs]
+    color = brush[1] if brush[1] is not None else (0, 0, 0)
+    return np.full((h, w, 3), color, np.uint8)
 
 
 g32("CreateHatchBrush", 2)(lambda m, a: new_obj(m, ("brush", colorref(m, None, a[1]))))
@@ -799,6 +820,23 @@ def blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
         idx, ox, oy = full[ys][:, xs], x, y
     else:
         ox, oy = x + (cx0 - ax0), y + (cy0 - ay0)
+    db = dst.bitmap if dst.kind == "memory" else None
+    if db is not None and db.kind == "dib" and db.bpp in (24, 32):
+        # indices into a direct-colour bitmap: colours come from the source DC's logical palette (else the
+        # system palette), as Windows resolves them when it copies to a device-independent bitmap
+        sb = src.bitmap if src.kind == "memory" else None
+        if sb is not None and sb.kind == "dib" and sb.bpp == 8 and sb.idxmap is not None:
+            # a DIB_PAL_COLORS section: its colour table is a snapshot of the palette when it was created;
+            # the pixel's value goes through the index map to a logical entry of that snapshot
+            table = sb.palette
+            lut = np.array(list(table) + [(0, 0, 0)] * (256 - len(table)), np.uint8)[:256]
+            rgb = lut[idx]                                  # idx is already the logical palette index
+        else:
+            pal = src.palette if src.palette else _st(m)["system_palette"]
+            lut = np.array(list(pal) + [(0, 0, 0)] * (256 - len(pal)), np.uint8)[:256]
+            rgb = lut[idx]
+        write_dib_rgb(m, db, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(rgb))
+        return True
     put_indices(m, dst, ox + dst.org[0], oy + dst.org[1], np.ascontiguousarray(idx))
     return True
 

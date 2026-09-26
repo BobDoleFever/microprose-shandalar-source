@@ -4,7 +4,7 @@ import time as _time
 
 from .crt import va
 from .cformat import format_c
-from .gdi import (Surface, SCREEN_W, SCREEN_H, Bitmap, DC, dc_of, fill_rect, get_stock, new_dc, new_obj, obj,
+from .gdi import (brush_pixels, put_region, Surface, SCREEN_W, SCREEN_H, Bitmap, DC, dc_of, fill_rect, get_stock, new_dc, new_obj, obj,
                   colorref, text_size, draw_text, _st as gdi_st)
 from .machine import Block, Cont, api, u32
 from . import kernel32
@@ -102,8 +102,43 @@ BM_GETCHECK, BM_SETCHECK, BM_CLICK = 0xF0, 0xF1, 0xF5
 WM_SETTEXT, WM_GETTEXT, WM_GETTEXTLENGTH, WM_ENABLE = 0xC, 0xD, 0xE, 0xA
 
 
+SYSTEM_COLORS = {1: (192, 192, 192), 2: (0, 0, 128), 3: (0, 128, 128), 4: (192, 192, 192), 5: (255, 255, 255),
+                 6: (0, 0, 0), 7: (0, 0, 0), 8: (0, 0, 0), 9: (255, 255, 255), 10: (192, 192, 192),
+                 11: (192, 192, 192), 12: (128, 128, 128), 13: (0, 0, 128), 14: (255, 255, 255),
+                 15: (192, 192, 192)}
+
+
+def erase_background(m, win):
+    """Fill a window's client area with its class background brush (a solid, system colour or pattern)."""
+    c = _st(m)["classes"].get(str(win["cls"]).lower())
+    if m.state.get("gdi_debug"):
+        m.log(f"   [erase] {win['cls']} 0x{win['hwnd']:x} bg={c['bg'] if c else None} brush={obj(m, c['bg']) if c else None}")
+    if not c or not c["bg"]:
+        return False
+    bg = c["bg"]
+    br = obj(m, bg)
+    if isinstance(br, tuple) and br[0] == "brush":
+        brush = br
+    elif bg <= 32:                                               # COLOR_xxx + 1
+        brush = ("brush", SYSTEM_COLORS.get(bg - 1, (255, 255, 255)))
+    else:
+        return False
+    cw, ch = client_size(win)
+    if cw <= 0 or ch <= 0:
+        return False
+    _, d = new_dc(m, "window", win["hwnd"])
+    put_region(m, d, 0, 0, brush_pixels(m, brush, cw, ch))
+    return True
+
+
 def default_proc(m, win, msg, wp, lp):
-    if msg == WM_NCCREATE or msg == WM_ERASEBKGND:
+    if msg == WM_ERASEBKGND:
+        return 1 if erase_background(m, win) else 0
+    if msg == WM_PAINT:                                          # DefWindowProc paints the background and validates
+        erase_background(m, win)
+        win["invalid"] = False
+        return 0
+    if msg == WM_NCCREATE:
         return 1
     if msg == WM_NCHITTEST:
         return 1
@@ -218,17 +253,35 @@ def control_message(m, win, cls, msg, wp, lp):
     return 0
 
 
+def default_window_proc(m, hwnd, msg, wp, lp):
+    """Generator: DefWindowProc. WM_PAINT begins a paint, which sends WM_ERASEBKGND to the window's own
+    procedure (games draw their backgrounds there); a zero result falls back to the class brush."""
+    win = window(m, hwnd)
+    if not win:
+        return 0
+    if msg == WM_PAINT:
+        win["invalid"] = False
+        if win.get("erase", True):
+            win["erase"] = False
+            h, _ = new_dc(m, "window", hwnd)
+            r = yield from send(m, hwnd, WM_ERASEBKGND, h, 0)
+            if not r:
+                erase_background(m, win)
+        return 0
+    return default_proc(m, win, msg, wp, lp)
+
+
 @u("DefWindowProcA", 4)
 def def_window_proc(m, a):
-    win = window(m, a[0])
-    return default_proc(m, win, a[1], a[2], a[3]) if win else 0
+    r = yield from default_window_proc(m, a[0], a[1], a[2], a[3])
+    return r
 
 
 @u("CallWindowProcA", 5)
 def call_window_proc(m, a):
     if a[0] in m.stubs:
-        win = window(m, a[1])
-        return default_proc(m, win, a[2], a[3], a[4]) if win else 0
+        r = yield from default_window_proc(m, a[1], a[2], a[3], a[4])
+        return r
     return Cont(a[0], [a[1], a[2], a[3], a[4]])
 
 
@@ -328,6 +381,8 @@ def invalidate_rect(m, a):
     win = window(m, a[0])
     if win:
         win["invalid"] = True
+        if a[2]:
+            win["erase"] = True
         _st(m)["dirty"] = True
     return 1
 
@@ -735,6 +790,9 @@ def begin_paint(m, a):
     m.wr(a[1], struct.pack("<IIiiiiII", h, 1, 0, 0, cw, ch, 0, 0) + b"\0" * 32)
     if win:
         win["invalid"] = False
+        if win.get("erase", True):                               # the update region was marked for erasing
+            win["erase"] = False
+            yield from send(m, a[0], WM_ERASEBKGND, h, 0)
     return h
 
 

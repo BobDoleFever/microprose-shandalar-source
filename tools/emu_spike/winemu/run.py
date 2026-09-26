@@ -111,6 +111,8 @@ def main(argv=None):
     ap.add_argument("--all-counts", action="store_true", help="list more of the most-called imports")
     ap.add_argument("--script", default="", help='timed actions, e.g. "20:click 230 308;25:shot a;30:key 13"')
     ap.add_argument("--dump-windows", action="store_true")
+    ap.add_argument("--dump-palette", action="store_true")
+    ap.add_argument("--dump-bitmaps", action="store_true", help="save the game's large off-screen bitmaps as PNG")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
@@ -179,6 +181,26 @@ def main(argv=None):
     print("most-called imports:")
     for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:(60 if args.all_counts else 12)]:
         print(f"  {n:8d}  {dll}!{name}")
+    if args.dump_palette:
+        pal = m.state.get("gdi", {}).get("system_palette", [])
+        uniq = len(set(map(tuple, pal)))
+        print(f"system palette: {len(pal)} entries, {uniq} distinct; first 8 {pal[:8]}; 100..104 {pal[100:104]}")
+        for h, o in m.state.get("gdi", {}).get("objs", {}).items():
+            if isinstance(o, tuple) and o[0] == "palette":
+                print(f"  palette obj 0x{h:x}: {len(o[1])} entries, {len(set(map(tuple, o[1])))} distinct, shared_with_system={o[1] is pal}")
+    if args.dump_bitmaps:
+        st = m.state.get("gdi", {})
+        n = 0
+        for h, o in sorted(st.get("objs", {}).items()):
+            if isinstance(o, gdi.Bitmap) and o.w * o.h >= 4000:
+                if o.kind == "dib":
+                    px = gdi.read_dib_rgb(m, o, 0, 0, o.w, o.h)
+                else:
+                    px = gdi.system_lut(m)[o.idx]
+                if px.size and px.any():
+                    Image.fromarray(px).save(os.path.join(args.shots, f"bmp_{h:x}_{o.kind}{o.bpp}_{o.w}x{o.h}.png"))
+                    n += 1
+        print(f"dumped {n} non-empty bitmaps to {args.shots}")
     if args.dump_windows:
         print("windows (hwnd class title visible x,y w x h parent style):")
         for h, w in m.state.get("u32", {}).get("windows", {}).items():
