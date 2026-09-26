@@ -25,7 +25,12 @@ int main(int argc, char *argv[])
     printf(" Launching Game From Original WinMain Entry Point\n");
     printf("=========================================================\n");
 
-    const char *program_dir = "/Users/ben/Downloads/shand-extract/program";
+    /* Directory holding the original game files (ICONS.SPR, *.PIC, ...). Override with
+     * --dir or the SHANDALAR_PROGRAM_DIR environment variable. */
+    const char *program_dir = getenv("SHANDALAR_PROGRAM_DIR");
+    if (program_dir == NULL || program_dir[0] == '\0') {
+        program_dir = "sources/installed/Magic/Program";
+    }
     char cmd_line[512] = "/MTGshell /6"; /* 640x480 resolution mode */
 
     for (int i = 1; i < argc; i++) {
