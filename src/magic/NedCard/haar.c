@@ -3603,7 +3603,7 @@ int32_t FUN_004f6e90(int player_id,int card_slot,int event_type)
       }
       if ((slot_idx != -1) && (*(int *)(&g_PlayerGraveyardList + slot_idx * 4 + player_idx * 2000) != -1)) {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x23);
+          Duel_PlaySoundById(0x23);
         }
         val_3 = Deck_AddCardToDeck
                           (player,*(int *)(&g_PlayerGraveyardList + slot_idx * 4 + player_idx * 2000));

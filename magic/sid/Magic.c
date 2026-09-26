@@ -366,14 +366,17 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 
 /*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00 to 0x2f). Ids below 0x14 index the table of
+ *   20 sound names (artifact, buried, draw, enchant, ... untap); higher ids use further tables.
  * Procedure:
- * 1. Fire UPKEEP_EVENT triggers on all permanents in play.
- * 2. Process required upkeep payments.
+ * 1. If the id is not loaded yet, evict a least-recently-used track and load its .wav.
+ * 2. Start playback of the track.
+ * Verified on the live game (called with id 2, draw.wav, from the draw function). The original
+ * label "Upkeep phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_UpkeepPhase
+ * Decompiled function: Duel_PlaySoundById
  * Entry Point: 0047496b
  * Size: 788 bytes
  */
@@ -381,7 +384,7 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 /* WARNING: Type propagation algorithm not settling */
 
-int Magic_UpkeepPhase(int color_mask)
+int Duel_PlaySoundById(int sound_id)
 
 {
   int uVar1;
@@ -397,18 +400,18 @@ int Magic_UpkeepPhase(int color_mask)
   local_28[4] = 0;
   local_28[5] = 0;
   local_28[6] = 0;
-  local_28[7] = color_mask;
+  local_28[7] = sound_id;
   local_8 = 0;
   if (g_IsAiThinking == 1) {
     uVar1 = 0;
   }
   else {
-    local_28[0] = color_mask;
-    if (color_mask < 0x14) {
-      Pic_Subsystem_00423bf4(color_mask,0);
+    local_28[0] = sound_id;
+    if (sound_id < 0x14) {
+      Pic_Subsystem_00423bf4(sound_id,0);
     }
-    else if (color_mask < 0x1d) {
-      iVar2 = Pic_Subsystem_00424123(color_mask,local_28);
+    else if (sound_id < 0x1d) {
+      iVar2 = Pic_Subsystem_00424123(sound_id,local_28);
       if (iVar2 == 0) {
         local_2c = Pic_Subsystem_00424165(local_28,0x14,0x16);
         if (local_2c == 0) {
@@ -419,13 +422,13 @@ int Magic_UpkeepPhase(int color_mask)
         }
         strcpy(local_134,&DAT_00696910);
         strcat(local_134,&DAT_00525d1c);
-        strcat(local_134,(&PTR_s_artifact_wav_00525788)[color_mask]);
+        strcat(local_134,(&PTR_s_artifact_wav_00525788)[sound_id]);
         Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
       }
       Pic_Subsystem_00423bf4(local_28[0],0);
     }
-    else if (color_mask < 0x22) {
-      iVar2 = Pic_Subsystem_00424123(color_mask,local_28);
+    else if (sound_id < 0x22) {
+      iVar2 = Pic_Subsystem_00424123(sound_id,local_28);
       if (iVar2 == 0) {
         local_2c = Pic_Subsystem_00424165(local_28,0x1d,0x1d);
         if (local_2c == 0) {
@@ -436,19 +439,19 @@ int Magic_UpkeepPhase(int color_mask)
         }
         strcpy(local_134,&DAT_00696910);
         strcat(local_134,&DAT_00525d20);
-        strcat(local_134,(&PTR_s_buried_wav_0052578c)[color_mask]);
+        strcat(local_134,(&PTR_s_buried_wav_0052578c)[sound_id]);
         Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
       }
       Pic_Subsystem_00423bf4(local_28[0],0);
     }
     else {
-      if (0x2f < color_mask) {
+      if (0x2f < sound_id) {
         return 0;
       }
       local_28[1] = 400;
-      iVar2 = Pic_Subsystem_00424123(color_mask,local_28);
+      iVar2 = Pic_Subsystem_00424123(sound_id,local_28);
       if (iVar2 == 0) {
-        if (color_mask == 0x2b) {
+        if (sound_id == 0x2b) {
           local_28[6] = 0xffffffff;
         }
         else {
@@ -456,12 +459,12 @@ int Magic_UpkeepPhase(int color_mask)
         }
         strcpy(local_134,&DAT_00696910);
         strcat(local_134,&DAT_00525d24);
-        strcat(local_134,(&PTR_s_draw_wav_00525790)[color_mask]);
+        strcat(local_134,(&PTR_s_draw_wav_00525790)[sound_id]);
         Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
         Pic_Subsystem_00423bf4(local_28[0],local_28 + 1);
       }
       else {
-        if (color_mask == 0x2b) {
+        if (sound_id == 0x2b) {
           local_28[6] = 0xffffffff;
         }
         else {
@@ -478,21 +481,25 @@ int Magic_UpkeepPhase(int color_mask)
 
 
 /*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects (artifact, buried, draw, enchant, endphase,
+ *   endturn, instant, interupt, five mana colours plus grey, lifeloss, sacrfice, sorcery,
+ *   summon, tap, untap).
  * Procedure:
- * 1. Verify that the active player library is not empty.
- * 2. Move the top card from the library to the player hand.
- * 3. Increment the hand card counter.
+ * 1. Stop any sound track that is playing.
+ * 2. For each of the 20 names, build the path from the duel sounds directory and register
+ *    the .wav.
+ * Verified on the live game: runs once when a duel starts. The original label "draw card
+ * phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_DrawCardPhase
+ * Decompiled function: Duel_PreloadSoundEffects
  * Entry Point: 00474c7f
  * Size: 143 bytes
  */
 
 
-void Magic_DrawCardPhase(void)
+void Duel_PreloadSoundEffects(void)
 
 {
   char local_130 [264];

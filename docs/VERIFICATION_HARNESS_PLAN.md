@@ -145,7 +145,7 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Absolute mouse control through QMP (`mouse_goto`, `oracle_ctl.py`); reached a duel.
 - [x] Find and verify the real draw function: `FUN_0046f5d1` in `MAGIC.EXE` (also found that
       `Magic_UpkeepPhase` is really the sound player, and that campaign duels run in MAGIC.EXE).
-- [ ] Rename the verified symbols in the source and the CSV symbol maps.
+- [x] Rename the verified symbols in the source, headers, CSV symbol maps and generator scripts.
 - [ ] Check whether DUEL.EXE's entry-point breakpoint fires when DUEL.EXE is really launched,
       to firm up the "duels run in MAGIC.EXE" conclusion.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.

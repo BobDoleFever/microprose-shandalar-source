@@ -366,14 +366,17 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 
 /*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00 to 0x2f). Ids below 0x14 index the table of
+ *   20 sound names (artifact, buried, draw, enchant, ... untap); higher ids use further tables.
  * Procedure:
- * 1. Fire UPKEEP_EVENT triggers on all permanents in play.
- * 2. Process required upkeep payments.
+ * 1. If the id is not loaded yet, evict a least-recently-used track and load its .wav.
+ * 2. Start playback of the track.
+ * Verified on the live game (called with id 2, draw.wav, from the draw function). The original
+ * label "Upkeep phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_UpkeepPhase
+ * Decompiled function: Duel_PlaySoundById
  * Entry Point: 0047496b
  * Size: 788 bytes
  */
@@ -381,7 +384,7 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 /* WARNING: Type propagation algorithm not settling */
 
-int Magic_UpkeepPhase(int player_id)
+int Duel_PlaySoundById(int sound_id)
 
 {
   int uval_1;
@@ -478,21 +481,25 @@ int Magic_UpkeepPhase(int player_id)
 
 
 /*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects (artifact, buried, draw, enchant, endphase,
+ *   endturn, instant, interupt, five mana colours plus grey, lifeloss, sacrfice, sorcery,
+ *   summon, tap, untap).
  * Procedure:
- * 1. Verify that the active player library is not empty.
- * 2. Move the top card from the library to the player hand.
- * 3. Increment the hand card counter.
+ * 1. Stop any sound track that is playing.
+ * 2. For each of the 20 names, build the path from the duel sounds directory and register
+ *    the .wav.
+ * Verified on the live game: runs once when a duel starts. The original label "draw card
+ * phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_DrawCardPhase
+ * Decompiled function: Duel_PreloadSoundEffects
  * Entry Point: 00474c7f
  * Size: 143 bytes
  */
 
 
-void Magic_DrawCardPhase(void)
+void Duel_PreloadSoundEffects(void)
 
 {
   char local_130 [264];

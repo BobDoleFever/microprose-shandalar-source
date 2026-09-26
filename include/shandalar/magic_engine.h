@@ -100,18 +100,18 @@ void Magic_TapCardForMana(int player_id, int card_slot);
 void Magic_UntapTurnPhase(void);
 
 /*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
- * Checks for upkeep triggers and prompts the player for upkeep costs.
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00-0x2f); loads the .wav on first use.
+ * Verified against the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_UpkeepPhase(void);
+int Duel_PlaySoundById(int sound_id);
 
 /*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
- * Moves the top card of the active player library into their hand.
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects. Runs once when a duel starts.
+ * Verified against the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_DrawCardPhase(void);
+void Duel_PreloadSoundEffects(void);
 
 /*
  * Magic_MainTurnPhase

@@ -3129,7 +3129,7 @@ int32_t Prompts_Load_00418785(int spell_id,int target_id,int flags)
         flag_1 = Card_SetTapState(spell_id, target_id, match_count);
         (&g_CardSlot_MinusOneCounters)[player_idx * 0x5b20 + card_idx * 0x120] = (char)(1 << (flag_1 & 0x1f));
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x1d);
+          Duel_PlaySoundById(0x1d);
         }
       }
       (&g_CardSlot_TurnPlayed)[spell_id * 0x5b20 + target_id * 0x120] = 0;
@@ -3315,7 +3315,7 @@ int32_t Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
       local_d8 = *(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120);
       local_d4 = *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120);
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x1e);
+        Duel_PlaySoundById(0x1e);
       }
       *(uint32_t *)(&g_CardSlot_Abilities1 + local_d8 * 0x5b20 + local_d4 * 0x120) =
            *(uint32_t *)(&g_CardSlot_Abilities1 + local_d8 * 0x5b20 + local_d4 * 0x120) | 2;
@@ -3508,7 +3508,7 @@ int32_t Prompts_Load_004195a4(int spell_id,int target_id,int flags)
       local_d8 = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
       local_d4 = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x1e);
+        Duel_PlaySoundById(0x1e);
       }
       *(uint32_t *)(&g_CardSlot_Abilities1 + local_d8 * 0x5b20 + local_d4 * 0x120) =
            *(uint32_t *)(&g_CardSlot_Abilities1 + local_d8 * 0x5b20 + local_d4 * 0x120) | 4;
@@ -4626,7 +4626,7 @@ void Prompts_Load_0046fa40(int spell_id,int target_id,int flags)
         Ai_Subsystem_004cc3f8(spell_id,color_idx,0xb,1);
       }
     }
-    Magic_UpkeepPhase(0x18);
+    Duel_PlaySoundById(0x18);
     (&g_ActivePlayerSpellPriority)[spell_id] = (&g_ActivePlayerSpellPriority)[spell_id] + -1;
   }
   return;

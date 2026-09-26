@@ -2446,10 +2446,10 @@ void Magic_UntapTurnPhase(void);;
 void Magic_CheckTurnTriggers(int player,int card_slot);;
 
 /* Function at 0047496b (Size: 788 bytes) */
-int32_t Magic_UpkeepPhase(int value);;
+int32_t Duel_PlaySoundById(int value);;
 
 /* Function at 00474c7f (Size: 143 bytes) */
-void Magic_DrawCardPhase(void);;
+void Duel_PreloadSoundEffects(void);;
 
 /* Function at 00474d0e (Size: 16 bytes) */
 void FUN_00474d0e(void);;

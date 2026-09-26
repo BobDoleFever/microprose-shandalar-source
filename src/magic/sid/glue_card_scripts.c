@@ -44,7 +44,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
     }
     if ((event_code == 0x7e) || (event_code == 199)) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x29);
+        Duel_PlaySoundById(0x29);
       }
       val_result = Util_GetRandomNumber(5);
       slot_idx = (uint8_t)(val_result + 1);
@@ -77,7 +77,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
       }
       else {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x29);
+          Duel_PlaySoundById(0x29);
         }
         val_result = Util_GetRandomNumber(5);
         slot_idx = (uint8_t)(val_result + 1);
@@ -262,7 +262,7 @@ int Card_RainbowKnights_ActivatedAbility(int player,int card_index,int event_cod
         [*(int *)(&g_CardSlot_TapState + card_index * 0x120 + player * 0x5b20) * 0x5b20 +
          *(int *)(&g_CardSlot_SicknessState + card_index * 0x120 + player * 0x5b20) * 0x120] = 0;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x2e);
+          Duel_PlaySoundById(0x2e);
         }
         if ((uval_5 != 0) &&
            (((&DAT_006a5f56)
@@ -315,7 +315,7 @@ int Card_RainbowKnights_ActivatedAbility(int player,int card_index,int event_cod
           *(int *)(&g_CardSlot_TargetSlot + val_result * 0x120 + player * 0x5b20) = 2;
         }
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x2e);
+          Duel_PlaySoundById(0x2e);
         }
       }
     }
@@ -381,7 +381,7 @@ bool Card_Sinbad_Draw(int player,int card_index,int event_code)
         *(int *)(&g_CardSlot_CardId + extra_flags * 0x120 + player * 0x5b20) = 0xffffffff;
         (&g_ActivePlayerSpellPriority)[player] = (&g_ActivePlayerSpellPriority)[player] + -1;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x18);
+          Duel_PlaySoundById(0x18);
         }
       }
     }
@@ -512,7 +512,7 @@ void Card_BronzeTablets_AnteSwap(int player,int card_index,int event_code)
                       *(int *)(&g_CardSlot_TapState + card_index * 0x120 + player * 0x5b20) * 0x5b20) ^
              0x1000;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0xf);
+          Duel_PlaySoundById(0xf);
         }
         Pic_Subsystem_0044867e(g_DialogPromptHwnd,g_DuelArenaHwnd,3);
         if (player == g_CurrentTurnPhase) {
@@ -3682,7 +3682,7 @@ void Card_HypnoticSpecter_RandomDiscard(int player,int card_index,int event_code
       }
       if (slot_idx != 0) {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x19);
+          Duel_PlaySoundById(0x19);
         }
         if (g_IsAiThinking != 1) {
           Ai_Subsystem_004cc56d
@@ -6060,7 +6060,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
   else {
     for (aiStack_20[5] = 0; aiStack_20[5] < 2; aiStack_20[5] = aiStack_20[5] + 1) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0xf);
+        Duel_PlaySoundById(0xf);
       }
       Pic_Subsystem_0044867e(aiStack_20[aiStack_20[5] * 2],aiStack_20[aiStack_20[5] * 2 + 1],3);
     }

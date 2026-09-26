@@ -34,9 +34,9 @@ def analyze():
         elif addr == "00474712":
             sname = "Magic_UntapTurnPhase"
         elif addr == "00474890":
-            sname = "Magic_UpkeepPhase"
+            sname = "Duel_PlaySoundById"
         elif addr == "004749f0":
-            sname = "Magic_DrawCardPhase"
+            sname = "Duel_PreloadSoundEffects"
         elif addr == "00474b50":
             sname = "Magic_MainTurnPhase"
         elif addr == "00474cf0":

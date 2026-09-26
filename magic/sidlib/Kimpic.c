@@ -3109,7 +3109,7 @@ undefined4 Pic_Subsystem_00429237(int spell_id,int target_id,int flags)
       if ((flags == 0x72) &&
          (*(int *)(&g_CardSlot_ConvertedManaCost + spell_id * 0x5b20 + target_id * 0x120) != 0)) {
         for (local_f8 = 0; local_f8 < 2; local_f8 = local_f8 + 1) {
-          FUN_0046f5d1(g_DefendingPlayer);
+          Magic_ExecuteDrawPhase(g_DefendingPlayer);
         }
         for (local_f8 = 0; local_f8 < 2; local_f8 = local_f8 + 1) {
           local_10c = 0;
@@ -5282,7 +5282,7 @@ undefined4 Pic_Subsystem_0042ec65(int arg1,int arg2)
                *(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x120 +
                (char)(&g_CardSlot_Toughness)[arg2 * 0x120 + arg1 * 0x5b20] * 0x5b20) + 0x100;
   if (g_IsAiThinking != 1) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   *(short *)(&DAT_006a5f4a +
             *(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x120 +
@@ -10650,7 +10650,7 @@ undefined4 Pic_Subsystem_0043af93(int player,int card_slot,int arg_3)
       Ai_Subsystem_004be192(player,card_slot,1,1);
     }
     if (arg_3 == 0x72) {
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
       (&g_PlayerCreatureCount)[player] = (&g_PlayerCreatureCount)[player] + -2;
     }
     uVar1 = 0;
@@ -11695,7 +11695,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
                      0x120 + (char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] *
                              0x5b20) + 0x10000;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x1b);
+          Duel_PlaySoundById(0x1b);
         }
       }
       if (flags == 199) {
@@ -12347,7 +12347,7 @@ undefined4 Pic_Subsystem_0043e0f6(int player,int card_slot,int arg_3)
           Pic_Subsystem_0042ce63(g_CurrentTurnPhase,local_298,g_ActivePlayerPriority,local_2a0);
         }
         if (g_ActivePlayer != 1) {
-          Magic_UpkeepPhase(0x2a);
+          Duel_PlaySoundById(0x2a);
         }
       }
       if (arg_3 == 0x22) {
@@ -12399,7 +12399,7 @@ undefined4 Pic_Subsystem_0043e79c(int player,int card_slot,int arg_3)
     }
     if (arg_3 == 0x72) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x26);
+        Duel_PlaySoundById(0x26);
       }
       iVar6 = Pic_Subsystem_0045268f(900);
       iVar6 = Pic_Subsystem_00451291(player,iVar6);
@@ -14180,7 +14180,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *arg_3,int *height)
       case 0x26a:
         if (DAT_0068a718 != 0) {
           local_2ec = (uint)(((uint)arg_3 & 0xffff) != 0x269);
-          FUN_0046f5d1(local_2ec);
+          Magic_ExecuteDrawPhase(local_2ec);
           Ai_EvalAttackCandidate_004b4a3f(0,0xff);
         }
         break;
@@ -15644,7 +15644,7 @@ uint Pic_Subsystem_004458b0(int arg1,char *str_2)
               iVar4 = FUN_0047103b(local_14,local_84);
               if (((iVar4 != 0) && (FUN_00471971(local_14,local_84), g_ActivePlayer != 1)) &&
                  (g_IsAiThinking != 1)) {
-                Magic_UpkeepPhase(0x1c);
+                Duel_PlaySoundById(0x1c);
               }
               g_ActivePlayer = 0;
             }
@@ -16089,7 +16089,7 @@ void Pic_Subsystem_00447a1a(void)
         iVar2 = Card_TapForMana(local_8,local_c,0x33,0xffffffff);
         if (iVar2 <= sVar1) {
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0x19);
+            Duel_PlaySoundById(0x19);
           }
           Pic_Subsystem_0044867e(local_8,local_c,2);
         }
@@ -16466,11 +16466,11 @@ undefined4 Pic_Subsystem_0044895f(int arg1,int arg2)
               if (((&g_MasterCardColorTable)
                    [*(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x38) ==
                   0) {
-                Magic_UpkeepPhase(1);
+                Duel_PlaySoundById(1);
               }
             }
             else {
-              Magic_UpkeepPhase(0x19);
+              Duel_PlaySoundById(0x19);
             }
           }
           Pic_Subsystem_0044913a(arg1,arg2);
@@ -16637,7 +16637,7 @@ void Pic_Subsystem_0044929c(int arg1,int arg2)
   int local_8;
   
   if ((g_IsAiThinking != 1) && (((&g_MasterCardColorTable)[arg2 * 0x34] & 2) != 0)) {
-    Magic_UpkeepPhase(0x17);
+    Duel_PlaySoundById(0x17);
   }
   local_8 = 0;
   while( true ) {
@@ -20819,7 +20819,7 @@ void Pic_Subsystem_00452276(int player)
   int local_8;
   
   if (g_IsAiThinking != 1) {
-    Magic_UpkeepPhase(0x21);
+    Duel_PlaySoundById(0x21);
     Ai_Subsystem_004b58d9(player);
   }
   local_8 = 500;

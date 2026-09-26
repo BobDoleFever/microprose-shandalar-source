@@ -35,8 +35,8 @@ Address,OldName,NewName
 004744de,FUN_004744de,Magic_TapCardForMana
 00474588,FUN_00474588,Magic_UntapTurnPhase
 00474939,FUN_00474939,Magic_CheckTurnTriggers
-0047496b,FUN_0047496b,Magic_UpkeepPhase
-00474c7f,FUN_00474c7f,Magic_DrawCardPhase
+0047496b,FUN_0047496b,Duel_PlaySoundById
+00474c7f,FUN_00474c7f,Duel_PreloadSoundEffects
 00474d7d,FUN_00474d7d,Magic_MainTurnPhase
 004751d7,FUN_004751d7,Magic_CombatPhase
 004756a1,FUN_004756a1,Magic_EndTurnPhase

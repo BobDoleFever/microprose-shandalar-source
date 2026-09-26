@@ -4651,7 +4651,7 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
          *(uint32_t *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x10;
     if (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == -1) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0xe);
+        Duel_PlaySoundById(0xe);
       }
       if (*(int *)(&g_MasterCardTypeTable +
                   *(int *)(&g_CardSlot_CardId +
@@ -4711,7 +4711,7 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
                (short)*(int32_t *)
                        (&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20),
          g_IsAiThinking != 1)) {
-        Magic_UpkeepPhase(0x16);
+        Duel_PlaySoundById(0x16);
         Ai_Subsystem_004cc3f8
                   ((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                    *(int32_t *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),6,2)
@@ -6969,7 +6969,7 @@ int32_t FUN_0041d411(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x71) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x2c);
+        Duel_PlaySoundById(0x2c);
         Sleep(0xdac);
       }
       while ((&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] != '\0') {
@@ -7041,7 +7041,7 @@ int32_t FUN_0041d411(int player_id,int card_slot,int event_type)
                                              [card_slot * 0x120 + player * 0x5b20] * 8) * 0x5b20) +
                0x1000000;
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0x2b);
+            Duel_PlaySoundById(0x2b);
           }
         }
       }
@@ -10887,7 +10887,7 @@ int Magic_ExecuteDrawPhase(int player_id)
     (&g_ActivePlayerSpellPriority)[player] = (&g_ActivePlayerSpellPriority)[player] + 1;
     _DAT_006b3038 = _DAT_006b3038 + 1;
     if ((g_IsAiThinking != 1) && (match_count != -1)) {
-      Magic_UpkeepPhase(2);
+      Duel_PlaySoundById(2);
     }
     if (match_count != -1) {
       *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x120 + player * 0x5b20) =
@@ -11237,22 +11237,22 @@ int32_t Magic_ResolveCastSpell(int x,int y)
            (&g_PlayerPoisonCounters)[x] | (uint32_t)(uint8_t)(&g_MasterCardColorTable)[val_1 * 0x34];
       if (g_IsAiThinking != 1) {
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 2) != 0) {
-          Magic_UpkeepPhase(0x11);
+          Duel_PlaySoundById(0x11);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x40) != 0) {
-          Magic_UpkeepPhase(0);
+          Duel_PlaySoundById(0);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 4) != 0) {
-          Magic_UpkeepPhase(3);
+          Duel_PlaySoundById(3);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x10) != 0) {
-          Magic_UpkeepPhase(6);
+          Duel_PlaySoundById(6);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x20) != 0) {
-          Magic_UpkeepPhase(7);
+          Duel_PlaySoundById(7);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 8) != 0) {
-          Magic_UpkeepPhase(0x10);
+          Duel_PlaySoundById(0x10);
         }
       }
       Magic_EndTurnPhase();
@@ -11463,10 +11463,10 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
         if (g_IsAiThinking != 1) {
           if ((((&g_MasterCardFlagsTable)[*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) * 0x34]
                & 0x10) == 0) || (g_PendingAttackersTargetSlot == -1)) {
-            Magic_UpkeepPhase(0x1c);
+            Duel_PlaySoundById(0x1c);
           }
           else {
-            Magic_UpkeepPhase(0x12);
+            Duel_PlaySoundById(0x12);
           }
         }
         if (g_IsAiThinking != 1) {
@@ -17264,7 +17264,7 @@ LAB_005061ff:
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     if (0 < *(int *)(&DAT_0063eeac + slot_idx * 0x20)) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x20);
+        Duel_PlaySoundById(0x20);
         Ai_Subsystem_004b784d(slot_idx,*(int32_t *)(&DAT_0063eeac + slot_idx * 0x20));
       }
       (&g_PlayerCreatureCount)[slot_idx] =

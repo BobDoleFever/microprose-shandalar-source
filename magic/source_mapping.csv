@@ -774,7 +774,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 0046f172,FUN_0046f172,unattributed/magic_core.c,unattributed
 0046f21e,FUN_0046f21e,unattributed/magic_core.c,unattributed
 0046f300,FUN_0046f300,unattributed/magic_core.c,unattributed
-0046f5d1,FUN_0046f5d1,unattributed/magic_core.c,unattributed
+0046f5d1,Magic_ExecuteDrawPhase,unattributed/magic_core.c,unattributed
 0046fa40,Prompts_Load_0046fa40,unattributed/magic_core.c,unattributed
 0046fe86,FUN_0046fe86,unattributed/magic_core.c,unattributed
 0046ff50,FUN_0046ff50,unattributed/magic_core.c,unattributed
@@ -809,8 +809,8 @@ Address,FunctionName,SourceFile,ModuleGroup
 004744de,Magic_TapCardForMana,sid/Magic.c,sid
 00474588,Magic_UntapTurnPhase,sid/Magic.c,sid
 00474939,Magic_CheckTurnTriggers,sid/Magic.c,sid
-0047496b,Magic_UpkeepPhase,sid/Magic.c,sid
-00474c7f,Magic_DrawCardPhase,sid/Magic.c,sid
+0047496b,Duel_PlaySoundById,sid/Magic.c,sid
+00474c7f,Duel_PreloadSoundEffects,sid/Magic.c,sid
 00474d0e,FUN_00474d0e,sid/Magic.c,sid
 00474d1e,Mem_AllocOrFree_00474d1e,sid/Magic.c,sid
 00474d4a,FUN_00474d4a,sid/Magic.c,sid

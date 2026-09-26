@@ -21,8 +21,8 @@ Oracle evidence (`probe_drawcard.py`, `probe_duel_start.py`, all on the live gam
    GREEN, RED, WHITE, lifeloss, sacrfice, sorcery, summon, tap, untap. One of them is `draw.wav`,
    which probably explains the mislabel.
 
-Verdict: it is a duel sound-effects preloader run once when a duel starts. A better name is
-something like `Duel_PreloadSoundEffects`. It has not been renamed in the source yet.
+Verdict: it is a duel sound-effects preloader run once when a duel starts. Renamed to
+`Duel_PreloadSoundEffects` (and its invented doc comment corrected) everywhere in the repo.
 
 Method notes (they cost real time):
 
@@ -53,14 +53,18 @@ Dynamic, during a duel (opponent's draw step):
 Also seen on screen, outside the probe: my hand went 7 -> 8 on my own draw step, and the game then
 forced a discard back to 7 in the discard phase.
 
-Suggested name: `Duel_DrawCard(player)`. Not renamed in the source yet. Only the opponent's draw
-was caught by the debugger; the player-0 branch is verified by reading the code only.
+Name: `Magic_ExecuteDrawPhase(player)`. The rename maps already proposed this name, and the
+`src/` tree and `include/magic.h` already used it; the raw `magic/` files still called the function
+`FUN_0046f5d1`, which is now renamed to match. The oracle supports the name, since the function is
+the per-player draw step. Only the opponent's draw was caught by the debugger; the player-0 branch
+is verified by reading the code only.
 
 ## Magic_UpkeepPhase (MAGIC.EXE 0x0047496b): WRONG LABEL, it is the sound player
 
 788 bytes. Takes a sound id (0..0x2f), looks it up in the 20-name table at `0x00525788` (ids
 0x14+ use further tables), loads the `.wav` on demand and plays it. Verified on the live game: it
-is called with id 2 from inside the draw function. The parameter is named `player` in the
+is called with id 2 from inside the draw function. Renamed to `Duel_PlaySoundById` (prototype fixed
+to `int Duel_PlaySoundById(int sound_id)`; the header had `void(void)`). The parameter is named `player` in the
 decompilation (in `DUEL.EXE`'s twin, `Sound_PlayTrackById`) but it is a sound id.
 
 ## Duels run inside MAGIC.EXE (strong evidence, not proof)
@@ -81,3 +85,17 @@ Method notes added:
   resume. Both are handled in `GDBRemote`.
 - Mouse: the guest drops events that arrive too fast while the game is loading, so movement is
   paced (12 ms per 2-count step), and a click needs a hold of about 0.35 s to register.
+
+## Renames applied (MAGIC.EXE)
+
+| Address | Was | Now | Status |
+|---|---|---|---|
+| `0x0047496b` | `Magic_UpkeepPhase` | `Duel_PlaySoundById` | verified, live |
+| `0x00474c7f` | `Magic_DrawCardPhase` | `Duel_PreloadSoundEffects` | verified, live |
+| `0x0046f5d1` | `FUN_0046f5d1` | `Magic_ExecuteDrawPhase` | verified, live (opponent's draw) |
+
+Applied across the generated sources, headers, symbol CSVs and generator scripts, so re-running the
+pipeline does not bring the wrong names back. The `OldName` column of the rename maps keeps the
+original `FUN_` names, which is what the Ghidra sync looks up. `DUEL.EXE`'s twin functions
+(`0x00487ce1` draw, `0x0048d00c` sound player, `0x0048d320` preloader) are not renamed: they were
+identified by identical size and structure, not observed running.

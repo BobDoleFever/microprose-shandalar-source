@@ -5282,7 +5282,7 @@ int32_t Pic_Subsystem_0042ec65(int arg1,int arg2)
                *(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x120 +
                (char)(&g_CardSlot_Toughness)[arg2 * 0x120 + arg1 * 0x5b20] * 0x5b20) + 0x100;
   if (g_IsAiThinking != 1) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   *(short *)(&g_CardSlot_ToughnessCounters +
             *(int *)(&g_CardSlot_OriginalCardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x120 +
@@ -11695,7 +11695,7 @@ int32_t CardScript_UnstableMutation(int spell_id,int target_id,int flags)
                      0x120 + (char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] *
                              0x5b20) + 0x10000;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x1b);
+          Duel_PlaySoundById(0x1b);
         }
       }
       if (flags == 199) {
@@ -12347,7 +12347,7 @@ int32_t Pic_Subsystem_0043e0f6(int player_id,int card_slot,int event_type)
           Pic_Subsystem_0042ce63(g_CurrentTurnPhase,local_298,g_ActivePlayerPriority,local_2a0);
         }
         if (g_ActivePlayer != 1) {
-          Magic_UpkeepPhase(0x2a);
+          Duel_PlaySoundById(0x2a);
         }
       }
       if (arg_3 == 0x22) {
@@ -12399,7 +12399,7 @@ int32_t Pic_Subsystem_0043e79c(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x72) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x26);
+        Duel_PlaySoundById(0x26);
       }
       val_6 = Pic_Subsystem_0045268f(900);
       val_6 = Deck_AddCardToDeck(player,val_6);
@@ -15644,7 +15644,7 @@ uint32_t UI_PromptFastEffectsDialog(int arg1,char *mode_str)
               val_4 = Magic_ExecuteUpkeepPhase(player_idx,local_84);
               if (((val_4 != 0) && (Magic_ExecuteTapCardAction(player_idx,local_84), g_ActivePlayer != 1)) &&
                  (g_IsAiThinking != 1)) {
-                Magic_UpkeepPhase(0x1c);
+                Duel_PlaySoundById(0x1c);
               }
               g_ActivePlayer = 0;
             }
@@ -16089,7 +16089,7 @@ void Pic_Subsystem_00447a1a(void)
         val_2 = Card_TapForMana(slot_idx,match_count,0x33,0xffffffff);
         if (val_2 <= len_1) {
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0x19);
+            Duel_PlaySoundById(0x19);
           }
           Pic_Subsystem_0044867e(slot_idx,match_count,2);
         }
@@ -16466,11 +16466,11 @@ int32_t Rules_CardLeavingPlay(int arg1,int arg2)
               if (((&g_MasterCardColorTable)
                    [*(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x38) ==
                   0) {
-                Magic_UpkeepPhase(1);
+                Duel_PlaySoundById(1);
               }
             }
             else {
-              Magic_UpkeepPhase(0x19);
+              Duel_PlaySoundById(0x19);
             }
           }
           Pic_Subsystem_0044913a(arg1,arg2);
@@ -16637,7 +16637,7 @@ void Pic_Subsystem_0044929c(int arg1,int arg2)
   int slot_idx;
   
   if ((g_IsAiThinking != 1) && (((&g_MasterCardColorTable)[arg2 * 0x34] & 2) != 0)) {
-    Magic_UpkeepPhase(0x17);
+    Duel_PlaySoundById(0x17);
   }
   slot_idx = 0;
   while( true ) {
@@ -20819,7 +20819,7 @@ void Pic_Subsystem_00452276(int player_id)
   int slot_idx;
   
   if (g_IsAiThinking != 1) {
-    Magic_UpkeepPhase(0x21);
+    Duel_PlaySoundById(0x21);
     Ai_Subsystem_004b58d9(player);
   }
   slot_idx = 500;

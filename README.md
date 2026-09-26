@@ -286,20 +286,20 @@ Example from [`src/magic/sid/Magic.c`](src/magic/sid/Magic.c):
 
 ```c
 /*
- * FUNCTION: Magic_DrawCardPhase
+ * FUNCTION: Duel_PreloadSoundEffects
  *
  * DESCRIPTION:
- *   Executes the draw step for the active player.
+ *   Preloads the 20 duel sound effects. Runs once when a duel starts.
  *
  * PROCEDURAL STEPS:
- *   1. Check if the active player deck is empty.
- *   2. If the deck is empty, trigger game loss condition for player.
- *   3. Decrement the card count in the player library.
- *   4. Move the top card from library into player hand.
- *   5. Increment the card count in the player hand.
- *   6. Update display surfaces to show the new card.
+ *   1. Stop any sound track that is playing.
+ *   2. For each of the 20 names in the sound table (artifact, buried, draw, ...),
+ *      build the path from the duel sounds directory and register the .wav.
+ *
+ * VERIFIED: caught in the running 1997 game (see docs/SYMBOL_VERIFICATION.md).
+ * This function was originally mislabelled as the draw step.
  */
-void Magic_DrawCardPhase(void)
+void Duel_PreloadSoundEffects(void)
 {
     /* ... */
 }

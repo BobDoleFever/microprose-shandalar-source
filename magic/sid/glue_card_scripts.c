@@ -44,7 +44,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
     }
     if ((event_code == 0x7e) || (event_code == 199)) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x29);
+        Duel_PlaySoundById(0x29);
       }
       val_result = Math_RandomRange(5);
       local_8 = (byte)(val_result + 1);
@@ -77,7 +77,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
       }
       else {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x29);
+          Duel_PlaySoundById(0x29);
         }
         val_result = Math_RandomRange(5);
         local_8 = (byte)(val_result + 1);
@@ -262,7 +262,7 @@ int Card_RainbowKnights_ActivatedAbility(int player,int card_index,int event_cod
         [*(int *)(&g_CardSlot_TapState + card_index * 0x120 + player * 0x5b20) * 0x5b20 +
          *(int *)(&g_CardSlot_SicknessState + card_index * 0x120 + player * 0x5b20) * 0x120] = 0;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x2e);
+          Duel_PlaySoundById(0x2e);
         }
         if ((uVar5 != 0) &&
            (((&DAT_006a5f56)
@@ -315,7 +315,7 @@ int Card_RainbowKnights_ActivatedAbility(int player,int card_index,int event_cod
           *(int *)(&g_CardSlot_TargetSlot + val_result * 0x120 + player * 0x5b20) = 2;
         }
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x2e);
+          Duel_PlaySoundById(0x2e);
         }
       }
     }
@@ -373,7 +373,7 @@ bool Card_Sinbad_Draw(int player,int card_index,int event_code)
            *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) | 0x10;
     }
     if (event_code == 0x72) {
-      extra_flags = FUN_0046f5d1(player);
+      extra_flags = Magic_ExecuteDrawPhase(player);
       Ai_Subsystem_004cc56d(player,player,card_index,player,extra_flags,s_Sinbad_draws____0052e914,0);
       if (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + extra_flags * 0x120 + player * 0x5b20) * 0x34] & 1) == 0) {
@@ -381,7 +381,7 @@ bool Card_Sinbad_Draw(int player,int card_index,int event_code)
         *(int *)(&g_CardSlot_CardId + extra_flags * 0x120 + player * 0x5b20) = 0xffffffff;
         (&DAT_006b3008)[player] = (&DAT_006b3008)[player] + -1;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x18);
+          Duel_PlaySoundById(0x18);
         }
       }
     }
@@ -512,7 +512,7 @@ void Card_BronzeTablets_AnteSwap(int player,int card_index,int event_code)
                       *(int *)(&g_CardSlot_TapState + card_index * 0x120 + player * 0x5b20) * 0x5b20) ^
              0x1000;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0xf);
+          Duel_PlaySoundById(0xf);
         }
         Pic_Subsystem_0044867e(g_DialogPromptHwnd,g_DuelArenaHwnd,3);
         if (player == g_CurrentTurnPhase) {
@@ -3682,7 +3682,7 @@ void Card_HypnoticSpecter_RandomDiscard(int player,int card_index,int event_code
       }
       if (local_8 != 0) {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x19);
+          Duel_PlaySoundById(0x19);
         }
         if (g_IsAiThinking != 1) {
           Ai_Subsystem_004cc56d
@@ -5563,7 +5563,7 @@ int Card_AlabasterPotion_HealOrPrevent(int player,int card_index,int event_code)
       }
     }
     if (event_code == 0x7e) {
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
     }
   }
   return 0;
@@ -6060,7 +6060,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
   else {
     for (aiStack_20[5] = 0; aiStack_20[5] < 2; aiStack_20[5] = aiStack_20[5] + 1) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0xf);
+        Duel_PlaySoundById(0xf);
       }
       Pic_Subsystem_0044867e(aiStack_20[aiStack_20[5] * 2],aiStack_20[aiStack_20[5] * 2 + 1],3);
     }
@@ -8912,7 +8912,7 @@ void Card_HurkylsRecall_ReturnAllArtifacts(int player,int card_index,int event_c
       g_ActivePlayer = 1;
     }
     else {
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
     }
     *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) =
          *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) | 0x10;

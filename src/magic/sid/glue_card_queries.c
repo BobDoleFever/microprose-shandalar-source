@@ -103,7 +103,7 @@ void Card_IncrementCounter(int player,int card_index)
            *(int *)(&DAT_006a5f7c + card_index * 0x120 + player * 0x5b20) + 1U & 0xff |
            *(uint32_t *)(&DAT_006a5f7c + card_index * 0x120 + player * 0x5b20) & 0xffffff00, g_IsAiThinking != 1
      )) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   return;
 }
@@ -150,7 +150,7 @@ void Card_AddCounters(int player,int card_index,int event_code)
            *(int *)(&DAT_006a5f7c + player * 0x5b20 + card_index * 0x120) + event_code & 0xffU |
            *(uint32_t *)(&DAT_006a5f7c + player * 0x5b20 + card_index * 0x120) & 0xffffff00,
      g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   return;
 }
@@ -380,7 +380,7 @@ int CardTarget_HasValidCreatureTarget(int player)
     }
   }
   if ((loop_idx != -1) && (g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(0xf);
+    Duel_PlaySoundById(0xf);
   }
   return loop_idx;
 }
@@ -518,7 +518,7 @@ int CardTarget_HasValidPermanentTarget(int player)
   }
   else {
     if (g_IsAiThinking != 1) {
-      Magic_UpkeepPhase(0xf);
+      Duel_PlaySoundById(0xf);
     }
     Pic_Subsystem_0044867e(match_count,slot_idx,3);
     u_temp = 1;
@@ -659,7 +659,7 @@ int CardTarget_HasValidPlayerOrCreatureTarget(int player)
   }
   else {
     if (g_IsAiThinking != 1) {
-      Magic_UpkeepPhase(0xf);
+      Duel_PlaySoundById(0xf);
     }
     Pic_Subsystem_0044867e(match_count,slot_idx,3);
     u_temp = 1;

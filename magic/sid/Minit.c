@@ -101,7 +101,7 @@ undefined4 Minit_Subsystem_004528c0(int x,int y,int width,int height)
   undefined4 uVar1;
   
   if ((width == 0x71) && (g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(height + 8);
+    Duel_PlaySoundById(height + 8);
   }
   if (width == 0x73) {
     if ((((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) == 0) &&
@@ -473,7 +473,7 @@ undefined4 Minit_Subsystem_00453025(int player,int card_slot,int arg_3)
   else {
     if (arg_3 == 0x71) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x25);
+        Duel_PlaySoundById(0x25);
       }
       if (player == g_CurrentTurnPhase) {
         cVar1 = Math_RandomRange(5);
@@ -494,7 +494,7 @@ undefined4 Minit_Subsystem_00453025(int player,int card_slot,int arg_3)
     else {
       if (arg_3 == 0x72) {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x25);
+          Duel_PlaySoundById(0x25);
         }
         if (player == g_CurrentTurnPhase) {
           cVar1 = Math_RandomRange(5);
@@ -917,7 +917,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
         *(uint *)(&g_CardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) =
              *(uint *)(&g_CardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) | 0x10;
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0xf);
+          Duel_PlaySoundById(0xf);
         }
         Pic_Subsystem_0044867e(spell_id,target_id,3);
         FUN_0040d82b(spell_id,0,1);
@@ -1048,8 +1048,8 @@ undefined4 Minit_Subsystem_004545c7(int player,int card_slot,int arg_3)
   }
   else {
     if (arg_3 == 0x6d) {
-      FUN_0046f5d1(player);
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
+      Magic_ExecuteDrawPhase(player);
       for (local_8 = 0; local_8 < 3; local_8 = local_8 + 1) {
         if (0 < (int)(&DAT_006b3008)[player]) {
           Prompts_Load_0046fa40(player,0,0);
@@ -1137,7 +1137,7 @@ undefined4 Card_Setup_00454702(int player,int card_slot,int arg_3)
        (&g_CardSlot_ConvertedManaCost +
        *(int *)(&g_CardSlot_TapState + card_slot * 0x120 + player * 0x5b20) * 0x5b20 +
        *(int *)(&g_CardSlot_SicknessState + card_slot * 0x120 + player * 0x5b20) * 0x120) = 0;
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
     }
     if (arg_3 == 0x7f) {
       uVar2 = Minit_Subsystem_004528c0(player,card_slot,0x7f,0);
@@ -1754,7 +1754,7 @@ undefined4 Minit_Subsystem_00456218(int player,int card_slot,int arg_3)
   undefined4 uVar1;
   
   if ((arg_3 == 0x71) && (g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(8);
+    Duel_PlaySoundById(8);
   }
   if (arg_3 == 0x73) {
     if ((((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0) &&
@@ -2255,7 +2255,7 @@ undefined4 Mana_Init_00456f29(int spell_id,int target_id,int flags)
           FUN_0040d875(spell_id,card_slot,3);
           DAT_006ff2d4 = card_slot;
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0xf);
+            Duel_PlaySoundById(0xf);
           }
           *(uint *)(&g_CardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) =
                *(uint *)(&g_CardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) | 0x10;
@@ -2779,7 +2779,7 @@ undefined4 Minit_Subsystem_00458596(int player,int card_slot,int arg_3)
       Ai_CalcManaRequirement_004ba890(player,0,2);
     }
     if (arg_3 == 0x72) {
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
       Prompts_Load_0046fa40(player,0,0);
       *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) =
            *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) | 0x10;
@@ -3864,7 +3864,7 @@ undefined4 Minit_Subsystem_0045b156(int spell_id,int target_id,int flags)
           }
         }
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x18);
+          Duel_PlaySoundById(0x18);
         }
         if ((g_ScWillyScore == 0x1f) && (g_DefendingPlayer == g_CurrentTurnPhase)) {
           g_SpellStackDepth = g_SpellStackDepth + 0x18;
@@ -6037,7 +6037,7 @@ undefined4 Minit_Subsystem_004604e2(int player,int card_slot,int arg_3)
     if ((iVar1 != 0) && (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0)) {
       Ai_CalcManaRequirement_004ba890(player,0,3);
       if (g_ActivePlayer != 1) {
-        FUN_0046f5d1(player);
+        Magic_ExecuteDrawPhase(player);
       }
     }
   }
@@ -6220,7 +6220,7 @@ undefined4 Minit_Subsystem_00460a22(int player,int card_slot,int arg_3)
            *(uint *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x10;
     }
     if (arg_3 == 0x72) {
-      FUN_0046f5d1(player);
+      Magic_ExecuteDrawPhase(player);
     }
     uVar2 = 0;
   }
@@ -9045,7 +9045,7 @@ undefined4 Minit_Subsystem_0046758c(void)
         Pic_Subsystem_0042ac1f(1 - arg1,local_c);
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x28);
+        Duel_PlaySoundById(0x28);
       }
     }
   }

@@ -519,7 +519,7 @@ int32_t Palette_Subsystem_00495958(char *filepath)
   if (((DAT_006fe410 & 4) != 0) || ((DAT_006fe410 & 2) != 0)) {
     Pic_Subsystem_00423980((int)g_MainAppHwnd,0,0);
   }
-  Magic_DrawCardPhase();
+  Duel_PreloadSoundEffects();
   if (local_40 == 0) {
     uval_4 = 0xfffffffe;
   }
@@ -8387,7 +8387,7 @@ int32_t Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       }
       else {
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x22);
+          Duel_PlaySoundById(0x22);
         }
         Pic_Subsystem_0044867e
                   (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
@@ -8535,7 +8535,7 @@ int32_t Palette_Subsystem_004a7814(int player_id,int card_slot,int event_type)
     if ((arg_3 == 0x72) &&
        (0 < *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120))) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x27);
+        Duel_PlaySoundById(0x27);
       }
       Palette_Subsystem_004a7a25
                 (g_DialogPromptHwnd,g_DuelArenaHwnd,
@@ -8807,7 +8807,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       strcpy(&g_OverworldWorldState,s_casts_Berserk__0052c698 + arg_3 * 0x32);
       Ai_Subsystem_004cc56d(player,player,card_slot,val_4,val_5,&g_OverworldWorldState,0);
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x24);
+        Duel_PlaySoundById(0x24);
       }
     }
     switch(arg_3) {
@@ -8827,7 +8827,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
                   (player,player,card_slot,val_4,val_5,s_activates_Tawnos_s_Wand_effect__0052cb7c,0);
         match_count = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_00696734,val_4,val_5);
         if (g_IsAiThinking != 1) {
-          Magic_UpkeepPhase(0x24);
+          Duel_PlaySoundById(0x24);
         }
       }
       else {
@@ -8909,7 +8909,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
              *(uint32_t *)(&g_CardSlot_Flags + val_4 * 0x5b20 + val_5 * 0x120) & 0xffffffef;
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x24);
+        Duel_PlaySoundById(0x24);
       }
       break;
     case 0xe:
@@ -8961,7 +8961,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       break;
     case 0x13:
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x2c);
+        Duel_PlaySoundById(0x2c);
         Sleep(0xdac);
       }
       *(short *)(&g_CardSlot_ToughnessCounters + val_4 * 0x5b20 + val_5 * 0x120) =
@@ -8969,7 +8969,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       *(int *)(&DAT_006a5f7c + val_4 * 0x5b20 + val_5 * 0x120) =
            *(int *)(&DAT_006a5f7c + val_4 * 0x5b20 + val_5 * 0x120) + 0x1000000;
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x2b);
+        Duel_PlaySoundById(0x2b);
       }
       break;
     default:
@@ -9050,7 +9050,7 @@ int32_t Palette_Subsystem_004a8d46(int player_id,int card_slot,int event_type)
         }
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x2d);
+        Duel_PlaySoundById(0x2d);
       }
       (&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] = 0;
       Pic_Subsystem_0044867e(player,card_slot,1);
@@ -9228,7 +9228,7 @@ int32_t Palette_Subsystem_004a9137(int player_id,int card_slot,int32_t arg_3)
         }
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x18);
+        Duel_PlaySoundById(0x18);
       }
     }
     break;
@@ -9264,7 +9264,7 @@ int32_t Palette_Subsystem_004a9137(int player_id,int card_slot,int32_t arg_3)
       *(int32_t *)(&g_CardSlot_CardId + val_4 * 0x120 + val_3 * 0x5b20) = 0xffffffff;
       (&g_ActivePlayerSpellPriority)[val_3] = (&g_ActivePlayerSpellPriority)[val_3] + -1;
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x18);
+        Duel_PlaySoundById(0x18);
       }
     }
     break;

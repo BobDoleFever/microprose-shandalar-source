@@ -9890,7 +9890,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0046f57a,"LAB_0046f57a",Label,true,false
 0046f57d,"LAB_0046f57d",Label,true,false
 0046f59a,"LAB_0046f59a",Label,true,false
-0046f5d1,"FUN_0046f5d1",Function,true,true
+0046f5d1,"Magic_ExecuteDrawPhase",Function,true,true
 0046f610,"LAB_0046f610",Label,true,false
 0046f66f,"LAB_0046f66f",Label,true,false
 0046f674,"LAB_0046f674",Label,true,false
@@ -10325,7 +10325,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00474934,"LAB_00474934",Label,true,false
 00474939,"Magic_CheckTurnTriggers",Function,true,true
 0047495c,"LAB_0047495c",Label,true,false
-0047496b,"Magic_UpkeepPhase",Function,true,true
+0047496b,"Duel_PlaySoundById",Function,true,true
 004749c2,"LAB_004749c2",Label,true,false
 004749e5,"LAB_004749e5",Label,true,false
 00474a35,"LAB_00474a35",Label,true,false
@@ -10345,7 +10345,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00474c69,"LAB_00474c69",Label,true,false
 00474c70,"LAB_00474c70",Label,true,false
 00474c7a,"LAB_00474c7a",Label,true,false
-00474c7f,"Magic_DrawCardPhase",Function,true,true
+00474c7f,"Duel_PreloadSoundEffects",Function,true,true
 00474ca0,"LAB_00474ca0",Label,true,false
 00474ca3,"LAB_00474ca3",Label,true,false
 00474d09,"LAB_00474d09",Label,true,false

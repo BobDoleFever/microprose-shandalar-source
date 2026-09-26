@@ -7709,7 +7709,7 @@ LAB_004b80bf:
       KillTimer(hwnd,(UINT_PTR)wParam);
       if (wParam == (HDC)0x1) {
         SendMessageA(g_AiHeuristicWeight_Trample,0x806,0,0);
-        Magic_UpkeepPhase(0x2f);
+        Duel_PlaySoundById(0x2f);
         SetFocus(hwnd);
       }
       else {
@@ -9250,7 +9250,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                   FUN_00473e69(x,local_30,0x81);
                 }
                 if (g_IsAiThinking != 1) {
-                  Magic_UpkeepPhase(0x12);
+                  Duel_PlaySoundById(0x12);
                 }
                 Magic_EndTurnPhase();
                 Ai_Turn_ExecuteMainPhase(0,0xff);
@@ -9985,7 +9985,7 @@ int Ai_Subsystem_004bd23f(int x, int arg2)
         FUN_00473e69(x,arg2,0x81);
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x12);
+        Duel_PlaySoundById(0x12);
       }
       Magic_EndTurnPhase();
       local_8 = 1;
@@ -10341,7 +10341,7 @@ LAB_004bd70a:
         FUN_00473e69(x,local_20,0x81);
       }
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x12);
+        Duel_PlaySoundById(0x12);
       }
       Magic_EndTurnPhase();
     }
@@ -10402,7 +10402,7 @@ LAB_004bd70a:
             FUN_00473e69(x,local_34,0x81);
           }
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0x12);
+            Duel_PlaySoundById(0x12);
           }
           Magic_EndTurnPhase();
           Ai_Turn_ExecuteMainPhase(0,0xff);
@@ -10435,7 +10435,7 @@ LAB_004bd70a:
       FUN_00473e69(x,local_34,0x81);
     }
     if (g_IsAiThinking != 1) {
-      Magic_UpkeepPhase(0x12);
+      Duel_PlaySoundById(0x12);
     }
     Magic_EndTurnPhase();
     Ai_Turn_ExecuteMainPhase(0,0xff);
@@ -14499,7 +14499,7 @@ void Ai_EvalAttackCandidate_General(uint player)
       if (((&g_CardSlot_ColorMask)[local_60 * 0x120 + spell_id * 0x5b20] == -1) ||
          ((char)(&g_CardSlot_ColorMask)[local_60 * 0x120 + spell_id * 0x5b20] == local_60)) {
         if ((local_bc == 0) && (g_IsAiThinking != 1)) {
-          Magic_UpkeepPhase(0x14);
+          Duel_PlaySoundById(0x14);
           local_bc = 1;
         }
         local_54 = 0;
