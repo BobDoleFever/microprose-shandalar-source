@@ -80,3 +80,11 @@ volume; Windows treats `._Shandalar.lnk` as a broken shortcut.
 Gotchas: QMP serves one client at a time; QEMU's gdbstub pauses the guest on attach and
 re-triggers a breakpoint at the current PC on continue, so step over your own breakpoint first
 (`GDBRemote.resume`); all programs load at `0x00400000`, so verify code bytes before trusting a hit.
+
+## Mouse control
+
+The guest uses a PS/2 relative mouse. Measured on this guest: QMP relative moves in steps of 2
+counts move the pointer exactly 1 pixel per count, while larger steps are doubled by pointer
+acceleration. `QMP.mouse_goto(x, y)` therefore homes into the top-left corner (clamps at 0,0) and
+moves in steps of 2, which is absolute to about a pixel. `oracle_ctl.py click X Y` does that and
+clicks. The screen is 640x480 and coordinates are guest pixels.

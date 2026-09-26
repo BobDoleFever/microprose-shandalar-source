@@ -139,10 +139,11 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Boot the same disk under plain `qemu-system-i386` with QMP and gdbstub enabled
       (`tools/verification_harness/oracle_launch.sh`, clients in `oracle_qemu.py`).
 - [ ] Prototype record/replay determinism.
-- [~] First symbol check: `Magic_DrawCardPhase` never runs at startup or the main menu
-      (see [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)); still need to watch a duel.
+- [x] First symbol check: `Magic_DrawCardPhase` is wrong; it preloads duel sound effects at
+      duel start (see [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)).
 - [ ] Symbol table with a verified/unverified status column (log started in SYMBOL_VERIFICATION.md).
-- [ ] Get into a duel through QMP input (the game is mouse-driven; the guest mouse is PS/2 relative).
+- [x] Absolute mouse control through QMP (`mouse_goto`, `oracle_ctl.py`); reached a duel.
+- [ ] Find where `DUEL.EXE` actually draws a card, and verify that instead.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 
 **Phase 2: port**

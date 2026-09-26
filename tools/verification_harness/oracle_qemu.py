@@ -61,6 +61,43 @@ class QMP:
         keys = [{"type": "qcode", "data": q} for q in qcodes]
         self.cmd("send-key", keys=keys, **{"hold-time": hold_ms})
 
+    def mouse_move_rel(self, dx, dy):
+        events = []
+        if dx:
+            events.append({"type": "rel", "data": {"axis": "x", "value": int(dx)}})
+        if dy:
+            events.append({"type": "rel", "data": {"axis": "y", "value": int(dy)}})
+        if events:
+            self.cmd("input-send-event", events=events)
+
+    def mouse_move(self, dx, dy, step=4, delay=0.004):
+        """Relative move in small steps. The guest's PS/2 mouse driver applies pointer
+        acceleration to large deltas, so keep steps small to make motion predictable."""
+        while dx or dy:
+            sx = max(-step, min(step, dx))
+            sy = max(-step, min(step, dy))
+            self.mouse_move_rel(sx, sy)
+            dx -= sx
+            dy -= sy
+            time.sleep(delay)
+
+    def mouse_goto(self, x, y):
+        """Move the guest pointer to (x, y) in guest screen pixels. Measured on the Windows 98
+        guest: steps of 2 counts map 1 count -> 1 pixel exactly, while steps >= 4 are doubled by
+        pointer acceleration. Homing into the top-left corner first makes this absolute (+-1 px)."""
+        self.mouse_move(-1400, -1400, step=8, delay=0.001)   # clamps at the corner
+        time.sleep(0.3)
+        self.mouse_move(int(x), int(y), step=2)
+        time.sleep(0.2)
+
+    def mouse_button(self, down, button="left"):
+        self.cmd("input-send-event", events=[{"type": "btn", "data": {"button": button, "down": down}}])
+
+    def click(self, button="left", hold_s=0.1):
+        self.mouse_button(True, button)
+        time.sleep(hold_s)
+        self.mouse_button(False, button)
+
     def screendump(self, path, fmt="png"):
         self.cmd("screendump", filename=path, format=fmt)
 
@@ -168,6 +205,65 @@ class GDBRemote:
 
     def close(self):
         self.sock.close()
+
+
+def read_ppm(path):
+    """Parse a binary P6 PPM (QEMU screendump format=ppm). Returns (width, height, rgb_bytes)."""
+    with open(path, "rb") as f:
+        data = f.read()
+    fields, pos = [], 0
+    while len(fields) < 4:
+        while data[pos:pos + 1].isspace():
+            pos += 1
+        if data[pos:pos + 1] == b"#":
+            pos = data.index(b"\n", pos)
+            continue
+        end = pos
+        while not data[end:end + 1].isspace():
+            end += 1
+        fields.append(data[pos:end])
+        pos = end
+    magic, w, h, _maxval = fields
+    assert magic == b"P6", magic
+    return int(w), int(h), data[pos + 1:]
+
+
+def changed_pixels(a, b):
+    """(x, y) of every pixel that differs between two same-size images from read_ppm."""
+    (w, h, da), (w2, h2, db) = a, b
+    assert (w, h) == (w2, h2)
+    out = []
+    for i in range(0, w * h * 3, 3):
+        if da[i:i + 3] != db[i:i + 3]:
+            p = i // 3
+            out.append((p % w, p // w))
+    return out
+
+
+def clusters(points, gap=12):
+    """Group points into clusters (single linkage on a coarse grid). Returns bounding boxes
+    (x0, y0, x1, y1), largest first."""
+    cells = {}
+    for x, y in points:
+        cells.setdefault((x // gap, y // gap), []).append((x, y))
+    seen, boxes = set(), []
+    for start in cells:
+        if start in seen:
+            continue
+        stack, members = [start], []
+        seen.add(start)
+        while stack:
+            cx, cy = stack.pop()
+            members.extend(cells[(cx, cy)])
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    n = (cx + dx, cy + dy)
+                    if n in cells and n not in seen:
+                        seen.add(n)
+                        stack.append(n)
+        xs, ys = [m[0] for m in members], [m[1] for m in members]
+        boxes.append((min(xs), min(ys), max(xs), max(ys)))
+    return sorted(boxes, key=lambda b: -((b[2] - b[0] + 1) * (b[3] - b[1] + 1)))
 
 
 if __name__ == "__main__":

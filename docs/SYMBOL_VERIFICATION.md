@@ -4,26 +4,32 @@ Each entry records what the live oracle (see [ORACLE_VM.md](ORACLE_VM.md)) showe
 or comment produced by the bulk rename pass. A name is only trustworthy once it appears here as
 **verified**. Everything else is a hypothesis.
 
-## Magic_DrawCardPhase (MAGIC.EXE 0x00474c7f): unverified, evidence against
+## Magic_DrawCardPhase (MAGIC.EXE 0x00474c7f): WRONG LABEL, it preloads duel sound effects
 
 Claim in the repo: `src/magic/sid/Magic.c` says it executes the draw step.
-Decompiled body: loops 0x14 times building `g_DuelSoundsDirectory + <name>.wav` and calling
-`Pic_Subsystem_00423b57(path, i, 0)`, i.e. it looks like a sound preloader.
 
-Oracle result (`tools/verification_harness/probe_drawcard.py`, 300 s from cold boot to the game's
-main menu, breakpoints on the function and on the callee):
+Oracle evidence (`probe_drawcard.py`, `probe_duel_start.py`, all on the live game):
 
-- The function never ran (startup and main menu).
-- The callee ran 15 times, always from `0x004ec64b` (outside the function), passing walking
-  sounds: `kwalkl`, `kwalkr`, `bwalkl`, `bwalkr`, `gwalkl`, `gwalkr` (all under `C:sound\`).
+1. From cold boot to the main menu the function never ran.
+2. Clicking "Duel a Sorcerer" runs it during the duel-loading splash (a card back on a black
+   screen). Once its page was resident, the code at `0x00474c7f` matched the `MAGIC.EXE` file
+   byte for byte (`55 8b ec 81 ec 2c 01 00`), so this is `MAGIC.EXE` and not `DUEL.EXE`.
+   It was called from `0x00495bbc`, inside `Palette_Subsystem_00495958` (0x495958 to 0x495cde;
+   that name is also an unverified auto-label).
+3. The 20 names it loads (table at `0x00525788`, read from the binary) are duel sound effects:
+   artifact, buried, draw, enchant, endphase, endturn, instant, interupt, GREY, BLACK, BLUE,
+   GREEN, RED, WHITE, lifeloss, sacrfice, sorcery, summon, tap, untap. One of them is `draw.wav`,
+   which probably explains the mislabel.
 
-What this does and does not show:
+Verdict: it is a duel sound-effects preloader run once when a duel starts. A better name is
+something like `Duel_PreloadSoundEffects`. It has not been renamed in the source yet.
 
-- It does not prove the label wrong: a real draw step would also be silent until a duel starts.
-- The decomp's own README lists duels as the job of `DUEL.EXE`, a separate process. A draw phase
-  in `MAGIC.EXE` (the overworld program) is therefore doubtful on its face.
-- Caution for all future probes: every program loads at `0x00400000`, so a breakpoint address means
-  different code in `DUEL.EXE`. Check the code bytes at the address before trusting a hit.
+Method notes (they cost real time):
 
-Next: start a duel and see whether the function ever runs (it should if the label is right), then
-locate the real draw logic, most likely in `DUEL.EXE`.
+- **Code pages are demand-loaded.** The first time a function runs, a breakpoint on it can fire
+  before its page is in memory, and reading the code bytes fails with `E14`. Step over the
+  breakpoint (this takes the page fault), re-arm, continue: the retried instruction hits again
+  with readable code. `GDBRemote.resume` already does the step-over.
+- **Every program loads at `0x00400000`**, so an address alone does not identify the program.
+  Compare code bytes with the file in `sources/installed/Magic/Program` before trusting a hit.
+- Where the real draw logic lives is still unknown; `DUEL.EXE` is the likely place.

@@ -22,6 +22,8 @@ don't need Wine, MinGW, Frida, or the original discs to build and test.
   pending Phase 1/2 (toolchain + discs).
 - `oracle_launch.sh`, `oracle_qemu.py` — boot the Windows 98 oracle under QEMU and drive it (QMP
   keys/screenshots, gdbstub breakpoints/memory). See `docs/ORACLE_VM.md`.
+- `oracle_ctl.py` — command-line driver: `shot`, `click X Y`, `move X Y`, `key`.
+- `probe_duel_start.py` — what runs when a duel starts.
 - `probe_drawcard.py` — first oracle experiment (see `docs/SYMBOL_VERIFICATION.md`).
 - `tests/` — unit tests for everything above that doesn't require the real toolchain.
 
