@@ -11,7 +11,10 @@ With the game sitting on the "Duel a <wizard>" screen and the pointer over the D
 Every program loads at 0x00400000, so a hit only counts if the code bytes at the address are
 the ones from the matching file in sources/installed (`code_matches`).
 
-    python3 probe_duel_start.py <qmp.sock> [seconds]
+    python3 probe_duel_start.py <qmp.sock> [seconds] [noclick]
+
+With `noclick` it only watches (use it once the duel is already under way). The control channel
+is opened only briefly, so other tools (oracle_ctl.py) can use it while the probe waits.
 """
 import json
 import os
@@ -41,20 +44,27 @@ def code_bytes(exe, va, n=8):
 
 
 TARGETS = {
-    0x00474C7F: ("MAGIC.EXE", "Magic_DrawCardPhase"),
-    0x004DEA30: ("DUEL.EXE", "DUEL.EXE entry point"),
+    0x00474C7F: ("MAGIC.EXE", "Magic_DrawCardPhase (really: duel sound preloader)"),
+    0x0046F5D1: ("MAGIC.EXE", "FUN_0046f5d1 (suspected real draw-a-card; arg0 = player)"),
+    0x0047496B: ("MAGIC.EXE", "sound player, labelled Magic_UpkeepPhase (arg0 = sound id; only id 2 = draw.wav recorded)"),
 }
+SOUND_PLAYER = 0x0047496B
+# NOTE: DUEL.EXE has twins of these functions (draw 0x00487ce1, sound player 0x0048d00c), but
+# campaign duels run inside MAGIC.EXE: DUEL.EXE's entry point (0x004dea30) never fired.
 
 
 def main():
     budget = float(sys.argv[2]) if len(sys.argv) > 2 else 120
-    qmp = QMP(sys.argv[1])
+    click = "noclick" not in sys.argv[3:]
     gdb = GDBRemote()
     expected = {va: code_bytes(exe, va) for va, (exe, _) in TARGETS.items()}
     for va in TARGETS:
         gdb.set_breakpoint(va)
     gdb.cont()
-    qmp.click()                     # pointer is already over "Duel a ..."
+    if click:
+        qmp = QMP(sys.argv[1])
+        qmp.click()                 # pointer is already over the button to press
+        qmp.close()
     t0 = time.time()
     events = []
     while time.time() - t0 < budget:
@@ -71,15 +81,22 @@ def main():
             except IOError:                # page not resident yet (demand paging); the retry
                 matches = None             # after resume() will hit again with readable code
             ev = {"t": round(time.time() - t0, 1), "label": label, "eip": f"0x{va:08x}",
-                  "code_matches": matches, "matches_exe": exe}
+                  "code_matches": matches, "matches_exe": exe,
+                  "ret": f"0x{int.from_bytes(gdb.read_memory(regs['esp'], 4), 'little'):08x}",
+                  "arg0": int.from_bytes(gdb.read_memory(regs["esp"] + 4, 4), "little")}
+            if va == SOUND_PLAYER and ev["arg0"] != 2:
+                gdb.resume(set(TARGETS))     # ignore every sound except draw.wav (id 2)
+                continue
             events.append(ev)
             print(json.dumps(ev), flush=True)
         gdb.resume(set(TARGETS))
-        if len(events) >= 20:
+        if len(events) >= 60:
             break
     with open("probe_duel_start.json", "w") as f:
         json.dump(events, f, indent=2)
+    qmp = QMP(sys.argv[1])
     qmp.screendump(os.path.abspath("probe_duel_start.png"))
+    qmp.close()
     print("done:", len(events), "events", flush=True)
 
 

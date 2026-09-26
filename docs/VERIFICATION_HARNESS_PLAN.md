@@ -143,7 +143,12 @@ At each checkpoint, dump known global state from both sides and compare:
       duel start (see [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)).
 - [ ] Symbol table with a verified/unverified status column (log started in SYMBOL_VERIFICATION.md).
 - [x] Absolute mouse control through QMP (`mouse_goto`, `oracle_ctl.py`); reached a duel.
-- [ ] Find where `DUEL.EXE` actually draws a card, and verify that instead.
+- [x] Find and verify the real draw function: `FUN_0046f5d1` in `MAGIC.EXE` (also found that
+      `Magic_UpkeepPhase` is really the sound player, and that campaign duels run in MAGIC.EXE).
+- [ ] Rename the verified symbols in the source and the CSV symbol maps.
+- [ ] Check whether DUEL.EXE's entry-point breakpoint fires when DUEL.EXE is really launched,
+      to firm up the "duels run in MAGIC.EXE" conclusion.
+- [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 
 **Phase 2: port**

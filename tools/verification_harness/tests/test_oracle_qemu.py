@@ -39,7 +39,7 @@ def make_client(replies):
     t = threading.Thread(target=fake_stub, args=(b, replies, seen), daemon=True)
     t.start()
     client = GDBRemote.__new__(GDBRemote)
-    client.sock, client.buf = a, b""
+    client.sock, client.buf, client.pending_stops = a, b"", []
     return client, seen, a, b
 
 
@@ -84,6 +84,28 @@ class TestGDBRemote(unittest.TestCase):
         deadline.wait(0.3)
         self.assertEqual(seen[:4], [b"g", b"z0,423b57,1", b"s", b"Z0,423b57,1"])
         self.assertEqual(seen[4], b"c")
+        a.close(); b.close()
+
+    def test_stop_notice_before_reply_is_not_an_error(self):
+        a, b = socket.socketpair()
+        client = GDBRemote.__new__(GDBRemote)
+        client.sock, client.buf, client.pending_stops = a, b"", []
+
+        def stub():
+            b.recv(4096)                               # the Z0 request
+            b.sendall(b"+")
+            for reply in (b"T02thread:01;", b"OK"):    # notice first, then the real reply
+                b.sendall(b"$" + reply + b"#" + _checksum(reply))
+        threading.Thread(target=stub, daemon=True).start()
+        client.set_breakpoint(0x474C7F)                # must not raise
+        self.assertEqual(client.wait_stop(timeout=1), b"T02thread:01;")
+        a.close(); b.close()
+
+    def test_continue_discards_stale_stop_notice(self):
+        client, seen, a, b = make_client({})
+        client.pending_stops.append(b"T02thread:01;")
+        client.cont()
+        self.assertEqual(client.pending_stops, [])   # wait_stop must block for the NEXT stop
         a.close(); b.close()
 
     def test_resume_does_not_step_when_not_on_breakpoint(self):

@@ -86,5 +86,7 @@ re-triggers a breakpoint at the current PC on continue, so step over your own br
 The guest uses a PS/2 relative mouse. Measured on this guest: QMP relative moves in steps of 2
 counts move the pointer exactly 1 pixel per count, while larger steps are doubled by pointer
 acceleration. `QMP.mouse_goto(x, y)` therefore homes into the top-left corner (clamps at 0,0) and
-moves in steps of 2, which is absolute to about a pixel. `oracle_ctl.py click X Y` does that and
+moves in steps of 2 (paced at 12 ms per step, since the guest drops events that arrive too
+fast while the game is busy loading), which is absolute to about a pixel. A click needs about a
+0.35 s hold to register. `oracle_ctl.py click X Y` does that and
 clicks. The screen is 640x480 and coordinates are guest pixels.

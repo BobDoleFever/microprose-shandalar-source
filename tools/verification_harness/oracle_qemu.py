@@ -53,6 +53,9 @@ class QMP:
                 raise RuntimeError(f"QMP {execute}: {obj['error']}")
             return obj.get("return")
 
+    def close(self):
+        self.sock.close()
+
     def status(self):
         return self.cmd("query-status")["status"]
 
@@ -85,15 +88,17 @@ class QMP:
         """Move the guest pointer to (x, y) in guest screen pixels. Measured on the Windows 98
         guest: steps of 2 counts map 1 count -> 1 pixel exactly, while steps >= 4 are doubled by
         pointer acceleration. Homing into the top-left corner first makes this absolute (+-1 px)."""
-        self.mouse_move(-1400, -1400, step=8, delay=0.001)   # clamps at the corner
-        time.sleep(0.3)
-        self.mouse_move(int(x), int(y), step=2)
-        time.sleep(0.2)
+        self.mouse_move(-1400, -1400, step=8, delay=0.004)   # clamps at the corner
+        time.sleep(0.5)
+        # The guest drops mouse events that arrive faster than it services them (seen while the
+        # game was busy loading), so pace the moves and give it time to settle.
+        self.mouse_move(int(x), int(y), step=2, delay=0.012)
+        time.sleep(0.4)
 
     def mouse_button(self, down, button="left"):
         self.cmd("input-send-event", events=[{"type": "btn", "data": {"button": button, "down": down}}])
 
-    def click(self, button="left", hold_s=0.1):
+    def click(self, button="left", hold_s=0.35):
         self.mouse_button(True, button)
         time.sleep(hold_s)
         self.mouse_button(False, button)
@@ -110,6 +115,7 @@ class GDBRemote:
     def __init__(self, host="127.0.0.1", port=1234, timeout=30):
         self.sock = socket.create_connection((host, port), timeout=timeout)
         self.buf = b""
+        self.pending_stops = []   # stop notices that arrived while we expected a command reply
 
     def _send_packet(self, payload: bytes):
         self.sock.sendall(b"$" + payload + b"#" + _checksum(payload))
@@ -141,7 +147,13 @@ class GDBRemote:
 
     def request(self, payload: str) -> bytes:
         self._send_packet(payload.encode())
-        return self._recv_packet()
+        reply = self._recv_packet()
+        # When attaching to a running guest QEMU can interleave a stop notice ("T02...") before
+        # the reply to our first command. Keep it for wait_stop() and read the real reply.
+        while reply[:1] in (b"T", b"S") and payload[:1] not in ("?", "s", "c", "v"):
+            self.pending_stops.append(reply)
+            reply = self._recv_packet()
+        return reply
 
     def read_registers(self):
         raw = bytes.fromhex(self.request("g").decode())
@@ -174,9 +186,11 @@ class GDBRemote:
 
     def cont(self):
         """Resume the guest. Use wait_stop() to block until it stops again."""
+        self.pending_stops.clear()   # stale notices (e.g. from attaching) no longer apply
         self._send_packet(b"c")
 
     def step(self):
+        self.pending_stops.clear()   # a queued notice describes the stop we are leaving
         self._send_packet(b"s")
         return self.wait_stop()
 
@@ -192,6 +206,8 @@ class GDBRemote:
         self.cont()
 
     def wait_stop(self, timeout=None):
+        if self.pending_stops:
+            return self.pending_stops.pop(0)
         old = self.sock.gettimeout()
         self.sock.settimeout(timeout)
         try:
