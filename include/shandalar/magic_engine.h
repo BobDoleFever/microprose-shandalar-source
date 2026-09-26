@@ -78,19 +78,23 @@ int Magic_TriggerCardEvent(int player_id, int card_slot, int event_code, uint32_
 void Magic_ResolveSpellStack(void);
 
 /*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */
-int Magic_PayManaCost(int player_id, int color_mask, int total_cost);
+void Magic_PushEventContext(void);
 
 /*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Parameter player_id: Index of the player (0 or 1).
- * Parameter card_slot: Index of the card slot (0 to 79).
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_TapCardForMana(int player_id, int card_slot);
+void Magic_PopEventContext(void);
 
 /*
  * Magic_UntapTurnPhase

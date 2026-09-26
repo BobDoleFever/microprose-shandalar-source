@@ -122,13 +122,13 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
     iVar2 = 0;
   }
   else {
-    Magic_PayManaCost();
+    Magic_PushEventContext();
     uVar1 = DAT_006a4920;
     g_CardEventResult = 0;
     g_EventSourcePlayer = color_mask;
     g_EventSourceSlot = arg_2;
-    DAT_007006c8 = arg_4;
-    DAT_006b2d5c = arg_5;
+    g_EventTargetPlayer = arg_4;
+    g_EventTargetSlot = arg_5;
     iVar2 = (**(code **)(&DAT_0051aec8 +
                         *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + color_mask * 0x5b20) * 0x34))
                       (color_mask,arg_2,arg_3);
@@ -136,11 +136,11 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
         ((arg_3 == 0x74 || (arg_3 == 0x73)))) &&
        (iVar3 = Magic_ResolveSpellStack(color_mask,arg_2), iVar3 == 0)) {
       DAT_006a4920 = uVar1;
-      Magic_TapCardForMana();
+      Magic_PopEventContext();
       return 0;
     }
     DAT_006b2e38 = g_CardEventResult;
-    Magic_TapCardForMana();
+    Magic_PopEventContext();
   }
   return iVar2;
 }
@@ -182,27 +182,30 @@ bool Magic_ResolveSpellStack(int x,int arg2)
 
 
 /*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_PayManaCost
+ * Decompiled function: Magic_PushEventContext
  * Entry Point: 00474428
  * Size: 182 bytes
  */
 
 
-void Magic_PayManaCost(void)
+void Magic_PushEventContext(void)
 
 {
   if (DAT_0052577c < 0x20) {
     *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_EventSourcePlayer;
     *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_EventSourceSlot;
-    *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = DAT_006a4f70;
+    *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = g_EventCardId;
     *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = DAT_006b2fe4;
-    *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = DAT_007006c8;
-    *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = DAT_006b2d5c;
+    *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = g_EventTargetPlayer;
+    *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = g_EventTargetSlot;
     *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_CardEventResult;
     DAT_0052577c = DAT_0052577c + 1;
   }
@@ -212,21 +215,20 @@ void Magic_PayManaCost(void)
 
 
 /*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Procedure:
- * 1. Verify that the card is untapped.
- * 2. Set the STATUS_TAPPED flag on the card slot.
- * 3. Add mana of the card color to the player mana pool.
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_TapCardForMana
+ * Decompiled function: Magic_PopEventContext
  * Entry Point: 004744de
  * Size: 170 bytes
  */
 
 
-void Magic_TapCardForMana(void)
+void Magic_PopEventContext(void)
 
 {
   if (0 < DAT_0052577c) {
@@ -234,10 +236,10 @@ void Magic_TapCardForMana(void)
   }
   g_EventSourcePlayer = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
   g_EventSourceSlot = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
-  DAT_006a4f70 = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
+  g_EventCardId = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
   DAT_006b2fe4 = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
-  DAT_007006c8 = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
-  DAT_006b2d5c = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
+  g_EventTargetPlayer = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
+  g_EventTargetSlot = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
   g_CardEventResult = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
   return;
 }
@@ -305,8 +307,8 @@ void Magic_UntapTurnPhase(void)
         iVar1 = *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_c * 0x5b20);
         color_mask = (&DAT_0051aebe)[iVar1 * 0x34];
         if (((&g_MasterCardColorTable)[iVar1 * 0x34] & 2) != 0) {
-          iVar2 = Card_TapForMana(local_c, local_10, 0x32, 0xffffffff);
-          iVar3 = Card_TapForMana(local_c,local_10,0x33,0xffffffff);
+          iVar2 = Magic_DispatchCardEvent(local_c, local_10, 0x32, 0xffffffff);
+          iVar3 = Magic_DispatchCardEvent(local_c,local_10,0x33,0xffffffff);
           iVar4 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) =
                *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) + iVar2;

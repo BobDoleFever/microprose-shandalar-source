@@ -236,6 +236,7 @@ Address,NewName
 006a4a08,g_PlayerHandCardCount
 006a4a50,g_FacesDirectory
 006a4b5c,g_CurrentCardColorTarget
+006a4f70,g_EventCardId
 006a5750,g_CardDisplayOrder_Slot
 006a5f20,g_ActiveBattlefieldFlag
 006a5f30,g_ActiveCardsInPlay
@@ -272,6 +273,7 @@ Address,NewName
 006b2d3c,g_SelectedTargetPlayer
 006b2d40,g_AiSelectedTargetCard
 006b2d58,g_AiSelectedTargetPlayer
+006b2d5c,g_EventTargetSlot
 006b2d60,g_AiSelectedCardTargetSlot
 006b2d68,g_OverworldPlayerCoordY
 006b2e28,g_AiCandidateActionCount
@@ -301,6 +303,7 @@ Address,NewName
 006ff570,g_DuelDatFilePath
 006ff680,g_SpellStackDepth
 006ff710,g_PlayerGraveyardList
+007006c8,g_EventTargetPlayer
 007006e0,g_CardDisplayOrder_Player
 00700eb0,g_DialogPromptHwnd
 0070100c,g_EventSourceSlot

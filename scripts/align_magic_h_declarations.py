@@ -8,8 +8,8 @@ def align():
     # Align prototypes in magic.h with magic_engine.h
     replacements = {
         r'bool\s+Magic_ResolveSpellStack\([^)]*\);;?': 'void Magic_ResolveSpellStack(void);',
-        r'void\s+Magic_PayManaCost\([^)]*\);;?': 'int Magic_PayManaCost(int player_id, int color_mask, int total_cost);',
-        r'void\s+Magic_TapCardForMana\([^)]*\);;?': 'void Magic_TapCardForMana(int player_id, int card_slot);',
+        r'void\s+Magic_PushEventContext\([^)]*\);;?': 'void Magic_PushEventContext(void);',
+        r'void\s+Magic_PopEventContext\([^)]*\);;?': 'void Magic_PopEventContext(void);',
         r'undefined4\s+Duel_PlaySoundById\([^)]*\);;?': 'int Duel_PlaySoundById(int sound_id);',
         r'undefined4\s+Magic_MainTurnPhase\([^)]*\);;?': 'void Magic_MainTurnPhase(void);',
         r'undefined4\s+Magic_CombatPhase\([^)]*\);;?': 'void Magic_CombatPhase(void);',

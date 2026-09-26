@@ -4658,8 +4658,8 @@ LAB_0042d745:
     g_ActivePlayer = 1;
   }
   else {
-    iVar2 = Card_TapForMana(player, card_slot, 0x32, 0xffffffff);
-    iVar3 = Card_TapForMana(_DAT_0063ee20,local_c,0x32,0xffffffff);
+    iVar2 = Magic_DispatchCardEvent(player, card_slot, 0x32, 0xffffffff);
+    iVar3 = Magic_DispatchCardEvent(_DAT_0063ee20,local_c,0x32,0xffffffff);
     if (iVar2 < iVar3) goto LAB_0042d745;
     *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) = local_c;
     (&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] = DAT_0063ee20;
@@ -4686,8 +4686,8 @@ LAB_0042d76f:
     if (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0) {
       bVar1 = false;
     }
-    iVar2 = Card_TapForMana(player, card_slot, 0x32, 0xffffffff);
-    iVar3 = Card_TapForMana((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+    iVar2 = Magic_DispatchCardEvent(player, card_slot, 0x32, 0xffffffff);
+    iVar3 = Magic_DispatchCardEvent((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x32,
                          0xffffffff);
     if (iVar2 < iVar3) {
@@ -5027,11 +5027,11 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
         *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120) = local_8;
         (&g_CardSlot_TurnPlayed)[spell_id * 0x5b20 + target_id * 0x120] = 1;
         if (local_c == spell_id) {
-          iVar5 = Card_TapForMana(local_c,local_8,0x32,0xffffffff);
+          iVar5 = Magic_DispatchCardEvent(local_c,local_8,0x32,0xffffffff);
           g_SpellStackDepth = g_SpellStackDepth - (iVar5 * 0xc) / 2;
         }
         else {
-          iVar5 = Card_TapForMana(local_c,local_8,0x32,0xffffffff);
+          iVar5 = Magic_DispatchCardEvent(local_c,local_8,0x32,0xffffffff);
           g_SpellStackDepth = g_SpellStackDepth + (iVar5 * 0xc) / 2;
         }
       }
@@ -7855,7 +7855,7 @@ undefined4 Pic_Subsystem_0043452e(int x,int card_slot,int arg_3,int arg_4)
   uint local_c;
   uint local_8;
   
-  arg_5 = Card_TapForMana(arg_3,arg_4,0x34,0xffffffff);
+  arg_5 = Magic_DispatchCardEvent(arg_3,arg_4,0x34,0xffffffff);
   Ai_FilterValidBlockers(&local_8,&local_c);
   if (x == 1) {
     local_10 = local_8;
@@ -7922,7 +7922,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
       iVar2 = Glue_Subsystem_004e69ac(spell_id,2,target_id);
       g_ActivePlayer = (uint)(iVar2 == 0);
       if (g_ActivePlayer != 1) {
-        iVar2 = Card_TapForMana(*(int *)(&g_CardSlot_CombatTarget +
+        iVar2 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget +
                                      target_id * 0x120 + spell_id * 0x5b20),
                              *(int *)(&g_CardSlot_AttachedAura +
                                      target_id * 0x120 + spell_id * 0x5b20),0x32,0xffffffff);
@@ -8111,7 +8111,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
       *(uint *)(&g_CardSlot_Flags + iVar2 * 0x120 + spell_id * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + iVar2 * 0x120 + spell_id * 0x5b20) | 2;
       *(undefined4 *)(&DAT_006a5f74 + iVar2 * 0x120 + spell_id * 0x5b20) = 0x32;
-      uVar1 = Card_TapForMana(g_EventSourcePlayer,g_EventSourceSlot,0x33,0xffffffff);
+      uVar1 = Magic_DispatchCardEvent(g_EventSourcePlayer,g_EventSourceSlot,0x33,0xffffffff);
       *(undefined4 *)(&g_CardSlot_ConvertedManaCost + iVar2 * 0x120 + spell_id * 0x5b20) = uVar1;
       (&g_CardSlot_Toughness)[iVar2 * 0x120 + spell_id * 0x5b20] =
            (undefined1)g_EventSourcePlayer;
@@ -8300,7 +8300,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
       if (g_ActivePlayer != 1) {
         if (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20) ==
             g_CurrentTurnPhase) {
-          iVar2 = Card_TapForMana(*(int *)(&g_CardSlot_CombatTarget +
+          iVar2 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget +
                                        target_id * 0x120 + spell_id * 0x5b20),
                                *(int *)(&g_CardSlot_AttachedAura +
                                        target_id * 0x120 + spell_id * 0x5b20),0x32,0xffffffff);
@@ -9148,8 +9148,8 @@ void Pic_Subsystem_0043793a(int spell_id,int target_id,int flags)
     }
     if (((flags == 0x78) &&
         (*(int *)(&g_CardSlot_OriginalCardId + target_id * 0x120 + spell_id * 0x5b20) ==
-         DAT_006b2d5c)) &&
-       (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] == DAT_007006c8 &&
+         g_EventTargetSlot)) &&
+       (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] == g_EventTargetPlayer &&
         ((((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0 &&
          ((&DAT_0051aebd)
           [*(int *)(&g_CardSlot_CardId +
@@ -9252,8 +9252,8 @@ undefined4 Pic_Subsystem_00437ac2(int spell_id,int target_id,int flags)
     }
     if (((flags == 0x78) &&
         (*(int *)(&g_CardSlot_OriginalCardId + target_id * 0x120 + spell_id * 0x5b20) ==
-         DAT_006b2d5c)) &&
-       (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] == DAT_007006c8 &&
+         g_EventTargetSlot)) &&
+       (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] == g_EventTargetPlayer &&
         ((((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0 &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -9361,8 +9361,8 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
     }
     if (((flags == 0x78) &&
         (*(int *)(&g_CardSlot_OriginalCardId + spell_id * 0x5b20 + target_id * 0x120) ==
-         DAT_006b2d5c)) &&
-       (((char)(&g_CardSlot_Toughness)[spell_id * 0x5b20 + target_id * 0x120] == DAT_007006c8 &&
+         g_EventTargetSlot)) &&
+       (((char)(&g_CardSlot_Toughness)[spell_id * 0x5b20 + target_id * 0x120] == g_EventTargetPlayer &&
         ((((&g_CardSlot_Flags)[spell_id * 0x5b20 + target_id * 0x120] & 0x20) == 0 &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -10843,7 +10843,7 @@ undefined4 Pic_Subsystem_0043b424(int player,int card_slot,int arg_3)
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
              ) {
-            iVar5 = Card_TapForMana(local_8,local_c,0x32,0xffffffff);
+            iVar5 = Magic_DispatchCardEvent(local_8,local_c,0x32,0xffffffff);
             if (iVar5 < local_10) {
               local_14 = local_8 * 0x100 + local_c;
               local_20 = 0;
@@ -10865,7 +10865,7 @@ undefined4 Pic_Subsystem_0043b424(int player,int card_slot,int arg_3)
           strcat(&g_OverworldWorldState,str_2);
           local_18 = -1;
           if (local_28 != -1) {
-            local_18 = Card_TapForMana(_DAT_0063ee20,local_28,0x32,0xffffffff);
+            local_18 = Magic_DispatchCardEvent(_DAT_0063ee20,local_28,0x32,0xffffffff);
           }
         } while (local_18 != local_10);
         Pic_Subsystem_0044867e(_DAT_0063ee20,local_28,1);
@@ -11464,7 +11464,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
         if ((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
             g_ActivePlayerPriority) {
           iVar2 = *(int *)(&DAT_006b2e40 + height * 4 + g_CurrentTurnPhase * 0x20);
-          iVar3 = Card_TapForMana((int)(char)(&g_CardSlot_Toughness)
+          iVar3 = Magic_DispatchCardEvent((int)(char)(&g_CardSlot_Toughness)
                                           [target_id * 0x120 + spell_id * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId +
                                        target_id * 0x120 + spell_id * 0x5b20),0x32,0xffffffff);
@@ -12885,7 +12885,7 @@ uint Pic_Subsystem_0043faf7(int spell_id,int target_id,int flags)
     if ((flags == 0x71) &&
        (*(int *)(&g_CardSlot_OriginalCardId + target_id * 0x120 + spell_id * 0x5b20) != -1)) {
       *(undefined4 *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) = 1;
-      uVar1 = Card_TapForMana((int)(char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20]
+      uVar1 = Magic_DispatchCardEvent((int)(char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20]
                            ,*(int *)(&g_CardSlot_OriginalCardId +
                                     target_id * 0x120 + spell_id * 0x5b20),0x34,0xffffffff);
       if ((uVar1 & 0x20) != 0) {
@@ -13880,17 +13880,17 @@ int Pic_Subsystem_00441a42(int arg1,int arg2)
           && (((&g_MasterCardColorTable)[local_27c * 0x34] & 2) != 0)) &&
          (((&g_CardSlot_Flags)[local_10 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) {
         aiStack_270[local_4d8] = local_10;
-        iVar1 = Card_TapForMana(arg1,local_10,0x32,0xffffffff);
+        iVar1 = Magic_DispatchCardEvent(arg1,local_10,0x32,0xffffffff);
         aiStack_4d4[local_4d8] = iVar1;
         if (local_274 < aiStack_4d4[local_4d8]) {
           local_274 = aiStack_4d4[local_4d8];
         }
-        iVar1 = Card_TapForMana(arg1,local_10,0x33,0xffffffff);
+        iVar1 = Magic_DispatchCardEvent(arg1,local_10,0x33,0xffffffff);
         aiStack_5a0[local_4d8] = iVar1;
         if (local_278 < aiStack_5a0[local_4d8]) {
           local_278 = aiStack_5a0[local_4d8];
         }
-        uVar2 = Card_TapForMana(arg1,local_10,0x34,0xffffffff);
+        uVar2 = Magic_DispatchCardEvent(arg1,local_10,0x34,0xffffffff);
         *(undefined4 *)(abStack_344 + local_4d8 * 4) = uVar2;
         aiStack_40c[local_4d8] = 0;
         local_4d8 = local_4d8 + 1;
@@ -16086,7 +16086,7 @@ void Pic_Subsystem_00447a1a(void)
             [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0))
          && (((&g_CardSlot_Flags)[local_c * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
         sVar1 = *(short *)(&g_CardSlot_Power + local_c * 0x120 + local_8 * 0x5b20);
-        iVar2 = Card_TapForMana(local_8,local_c,0x33,0xffffffff);
+        iVar2 = Magic_DispatchCardEvent(local_8,local_c,0x33,0xffffffff);
         if (iVar2 <= sVar1) {
           if (g_IsAiThinking != 1) {
             Duel_PlaySoundById(0x19);
@@ -16329,7 +16329,7 @@ undefined4 Pic_Subsystem_004485d6(int x,int y,int width,undefined4 arg_4)
     g_EventSourcePlayer = x;
     g_EventSourceSlot = y;
     _DAT_006b2fe8 = arg_4;
-    DAT_006b2d5c = 0xffffffff;
+    g_EventTargetSlot = 0xffffffff;
     Magic_ScanCards(width);
     uVar1 = g_CardEventResult;
   }
@@ -16437,21 +16437,21 @@ undefined4 Pic_Subsystem_0044895f(int arg1,int arg2)
         DAT_006b303c = DAT_006b303c + 1;
       }
       if (((&g_MasterCardColorTable)[iVar2 * 0x34] & 0x47) != 0) {
-        Magic_PayManaCost();
+        Magic_PushEventContext();
         g_CardEventResult = 0;
         g_EventSourcePlayer = arg1;
         g_EventSourceSlot = arg2;
-        DAT_007006c8 = 1 - arg1;
-        DAT_006b2d5c = 0xffffffff;
+        g_EventTargetPlayer = 1 - arg1;
+        g_EventTargetSlot = 0xffffffff;
         Magic_ScanCards(0x77);
         if (0 < g_CardEventResult) {
           *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) =
                *(uint *)(&g_CardSlot_Abilities1 + arg2 * 0x120 + arg1 * 0x5b20) & 0xffffff7f;
-          Magic_TapCardForMana();
+          Magic_PopEventContext();
           return 0;
         }
         cVar1 = (&DAT_006a5f50)[arg2 * 0x120 + arg1 * 0x5b20];
-        Magic_TapCardForMana();
+        Magic_PopEventContext();
       }
       if (((&g_CardSlot_Abilities1)[arg2 * 0x120 + arg1 * 0x5b20] & 0x10) == 0) {
         if (cVar1 == '\x04') {
@@ -16480,7 +16480,7 @@ undefined4 Pic_Subsystem_0044895f(int arg1,int arg2)
         }
       }
     }
-    Magic_PayManaCost();
+    Magic_PushEventContext();
     uVar4 = DAT_006b2e14;
     uVar3 = DAT_00695f08;
     DAT_00695f08 = arg1;
@@ -16490,7 +16490,7 @@ undefined4 Pic_Subsystem_0044895f(int arg1,int arg2)
     }
     DAT_00695f08 = uVar3;
     DAT_006b2e14 = uVar4;
-    Magic_TapCardForMana();
+    Magic_PopEventContext();
     if (((&g_MasterCardColorTable)[iVar2 * 0x34] & 2) != 0) {
       *(int *)(&DAT_006b3010 + arg1 * 4) = *(int *)(&DAT_006b3010 + arg1 * 4) + -1;
     }

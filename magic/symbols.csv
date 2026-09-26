@@ -10184,7 +10184,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0047316a,"LAB_0047316a",Label,true,false
 0047316f,"LAB_0047316f",Label,true,false
 00473174,"LAB_00473174",Label,true,false
-00473179,"FUN_00473179",Function,true,true
+00473179,"Magic_DispatchCardEvent",Function,true,true
 004731a2,"LAB_004731a2",Label,true,false
 00473203,"caseD_32",Label,false,false
 0047324b,"LAB_0047324b",Label,true,false
@@ -10295,10 +10295,10 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00474414,"LAB_00474414",Label,true,false
 0047441b,"LAB_0047441b",Label,true,false
 00474423,"LAB_00474423",Label,true,false
-00474428,"Magic_PayManaCost",Function,true,true
+00474428,"Magic_PushEventContext",Function,true,true
 00474440,"LAB_00474440",Label,true,false
 004744d9,"LAB_004744d9",Label,true,false
-004744de,"Magic_TapCardForMana",Function,true,true
+004744de,"Magic_PopEventContext",Function,true,true
 004744f7,"LAB_004744f7",Label,true,false
 00474588,"Magic_UntapTurnPhase",Function,true,true
 0047459d,"LAB_0047459d",Label,true,false
@@ -30805,7 +30805,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006a4b71,"DAT_006a4b71",Label,true,false
 006a4b72,"DAT_006a4b72",Label,true,false
 006a4b73,"DAT_006a4b73",Label,true,false
-006a4f70,"DAT_006a4f70",Label,true,false
+006a4f70,"g_EventCardId",Label,true,false
 006a4f80,"DAT_006a4f80",Label,true,false
 006a574c,"DAT_006a574c",Label,true,false
 006a5750,"DAT_006a5750",Label,true,false
@@ -30920,7 +30920,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006b2d50,"DAT_006b2d50",Label,true,false
 006b2d54,"DAT_006b2d54",Label,true,false
 006b2d58,"DAT_006b2d58",Label,true,false
-006b2d5c,"DAT_006b2d5c",Label,true,false
+006b2d5c,"g_EventTargetSlot",Label,true,false
 006b2d60,"DAT_006b2d60",Label,true,false
 006b2d64,"DAT_006b2d64",Label,true,false
 006b2d68,"g_OverworldPlayerCoordY",Label,true,false
@@ -31144,7 +31144,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 007006b8,"DAT_007006b8",Label,true,false
 007006c0,"DAT_007006c0",Label,true,false
 007006c4,"DAT_007006c4",Label,true,false
-007006c8,"DAT_007006c8",Label,true,false
+007006c8,"g_EventTargetPlayer",Label,true,false
 007006d0,"DAT_007006d0",Label,true,false
 007006d4,"DAT_007006d4",Label,true,false
 007006d8,"DAT_007006d8",Label,true,false

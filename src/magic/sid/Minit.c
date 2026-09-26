@@ -1002,7 +1002,7 @@ int32_t Minit_Subsystem_004543d3(int player_id,int card_slot,int event_type)
       }
       else {
         if (*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) == player) {
-          val_2 = Card_TapForMana(*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
+          val_2 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
                                *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20),
                                0x33,0xffffffff);
           (&g_PlayerCreatureCount)[player] = (&g_PlayerCreatureCount)[player] + val_2;
@@ -2037,7 +2037,7 @@ int32_t CardScript_Arena(int spell_id,int target_id,int flags)
              (*(uint32_t *)(&g_CardSlot_Flags + player_idx[0] * 0x5b20 + player_idx[1] * 0x120) =
                    *(uint32_t *)(&g_CardSlot_Flags + player_idx[0] * 0x5b20 + player_idx[1] * 0x120) | 0x10,
              *(int *)(&g_CardSlot_CardId + slot_idx * 0x120 + match_count * 0x5b20) != -1)) {
-            val_5 = Card_TapForMana(match_count,slot_idx,0x32,0xffffffff);
+            val_5 = Magic_DispatchCardEvent(match_count,slot_idx,0x32,0xffffffff);
             Card_ApplyCombatDamage(player_idx[0],player_idx[1],val_5,match_count,slot_idx);
           }
         }
@@ -2045,7 +2045,7 @@ int32_t CardScript_Arena(int spell_id,int target_id,int flags)
           *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x5b20 + slot_idx * 0x120) =
                *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x5b20 + slot_idx * 0x120) | 0x10;
           if (*(int *)(&g_CardSlot_CardId + player_idx[1] * 0x120 + player_idx[0] * 0x5b20) != -1) {
-            val_5 = Card_TapForMana(player_idx[0],player_idx[1],0x32,0xffffffff);
+            val_5 = Magic_DispatchCardEvent(player_idx[0],player_idx[1],0x32,0xffffffff);
             Card_ApplyCombatDamage(match_count,slot_idx,val_5,player_idx[0],player_idx[1]);
           }
         }
@@ -2055,8 +2055,8 @@ int32_t CardScript_Arena(int spell_id,int target_id,int flags)
              *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x5b20 + slot_idx * 0x120) | 0x10;
         *(uint32_t *)(&g_CardSlot_Flags + player_idx[0] * 0x5b20 + player_idx[1] * 0x120) =
              *(uint32_t *)(&g_CardSlot_Flags + player_idx[0] * 0x5b20 + player_idx[1] * 0x120) | 0x10;
-        val_5 = Card_TapForMana(match_count,slot_idx,0x32,0xffffffff);
-        val_6 = Card_TapForMana(player_idx[0],player_idx[1],0x32,0xffffffff);
+        val_5 = Magic_DispatchCardEvent(match_count,slot_idx,0x32,0xffffffff);
+        val_6 = Magic_DispatchCardEvent(player_idx[0],player_idx[1],0x32,0xffffffff);
         Card_ApplyCombatDamage(match_count,slot_idx,val_6,player_idx[0],player_idx[1]);
         Card_ApplyCombatDamage(player_idx[0],player_idx[1],val_5,match_count,slot_idx);
       }
@@ -3450,11 +3450,11 @@ int32_t CardScript_Tetravus(int spell_id,int target_id,int flags)
       Glue_Subsystem_004e689b(spell_id,target_id,1);
       *(uint32_t *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) =
            *(uint32_t *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) | 0x2000000;
-      slot_idx = Card_TapForMana(spell_id,target_id,0x33,0xffffffff);
+      slot_idx = Magic_DispatchCardEvent(spell_id,target_id,0x33,0xffffffff);
       if (0 < slot_idx) {
         *(uint32_t *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) =
              *(uint32_t *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) | 0x4000000;
-        Card_TapForMana(spell_id,target_id,0x32,0xffffffff);
+        Magic_DispatchCardEvent(spell_id,target_id,0x32,0xffffffff);
       }
       match_count = match_count + 1;
     }
@@ -6430,7 +6430,7 @@ int32_t Minit_Subsystem_00461390(int player_id,int card_slot,int event_type)
     g_SpellStackDepth = g_SpellStackDepth + -0xf0;
   }
   if (((arg_3 == 0x82) &&
-      (val_1 = Card_TapForMana(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff), 2 < val_1))
+      (val_1 = Magic_DispatchCardEvent(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff), 2 < val_1))
      && ((((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0 &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20) * 0x34] & 2) == 0)))) {

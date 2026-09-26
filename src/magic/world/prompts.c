@@ -2354,7 +2354,7 @@ int32_t Prompts_Load_00416d36(int spell_id,int target_id,int flags)
         g_ActivePlayer = 1;
       }
       else {
-        val_3 = Card_TapForMana(val_2, color_mask, 0x32, 0xffffffff);
+        val_3 = Magic_DispatchCardEvent(val_2, color_mask, 0x32, 0xffffffff);
         (&g_PlayerCreatureCount)[val_2] = (&g_PlayerCreatureCount)[val_2] + val_3;
         Pic_Subsystem_0044867e(val_2,color_mask,4);
       }

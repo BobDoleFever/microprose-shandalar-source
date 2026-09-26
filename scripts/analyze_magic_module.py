@@ -28,9 +28,9 @@ def analyze():
         elif addr == "00474389":
             sname = "Magic_ResolveSpellStack"
         elif addr == "0047444b":
-            sname = "Magic_PayManaCost"
+            sname = "Magic_PushEventContext"
         elif addr == "0047458f":
-            sname = "Magic_TapCardForMana"
+            sname = "Magic_PopEventContext"
         elif addr == "00474712":
             sname = "Magic_UntapTurnPhase"
         elif addr == "00474890":

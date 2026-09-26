@@ -691,7 +691,7 @@ Address,OldName,NewName
 00472b60,FUN_00472b60,GDI_RealizePaletteTree
 00472fae,FUN_00472fae,Rules_ProcessCombatDamageStep
 00473060,FUN_00473060,Rules_TriggerEndOfTurnPhase
-00473179,FUN_00473179,Card_TapForMana
+00473179,FUN_00473179,Magic_DispatchCardEvent
 004738a0,FUN_004738a0,Rules_ResolveSpellEffect
 00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
 00473ce8,FUN_00473ce8,Rules_CalculateColorCost
@@ -700,8 +700,8 @@ Address,OldName,NewName
 00473f06,FUN_00473f06,Magic_ScanCards
 00474266,FUN_00474266,Magic_TriggerCardEvent
 00474389,FUN_00474389,Magic_ResolveSpellStack
-00474428,FUN_00474428,Magic_PayManaCost
-004744de,FUN_004744de,Magic_TapCardForMana
+00474428,FUN_00474428,Magic_PushEventContext
+004744de,FUN_004744de,Magic_PopEventContext
 00474588,FUN_00474588,Magic_UntapTurnPhase
 00474939,FUN_00474939,Magic_CheckTurnTriggers
 0047496b,FUN_0047496b,Duel_PlaySoundById

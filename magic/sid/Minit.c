@@ -1002,7 +1002,7 @@ undefined4 Minit_Subsystem_004543d3(int player,int card_slot,int arg_3)
       }
       else {
         if (*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) == player) {
-          iVar2 = Card_TapForMana(*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
+          iVar2 = Magic_DispatchCardEvent(*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
                                *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20),
                                0x33,0xffffffff);
           (&g_PlayerCreatureCount)[player] = (&g_PlayerCreatureCount)[player] + iVar2;
@@ -2037,7 +2037,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
              (*(uint *)(&g_CardSlot_Flags + local_14[0] * 0x5b20 + local_14[1] * 0x120) =
                    *(uint *)(&g_CardSlot_Flags + local_14[0] * 0x5b20 + local_14[1] * 0x120) | 0x10,
              *(int *)(&g_CardSlot_CardId + local_8 * 0x120 + local_c * 0x5b20) != -1)) {
-            iVar5 = Card_TapForMana(local_c,local_8,0x32,0xffffffff);
+            iVar5 = Magic_DispatchCardEvent(local_c,local_8,0x32,0xffffffff);
             Card_ApplyCombatDamage(local_14[0],local_14[1],iVar5,local_c,local_8);
           }
         }
@@ -2045,7 +2045,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
           *(uint *)(&g_CardSlot_Flags + local_c * 0x5b20 + local_8 * 0x120) =
                *(uint *)(&g_CardSlot_Flags + local_c * 0x5b20 + local_8 * 0x120) | 0x10;
           if (*(int *)(&g_CardSlot_CardId + local_14[1] * 0x120 + local_14[0] * 0x5b20) != -1) {
-            iVar5 = Card_TapForMana(local_14[0],local_14[1],0x32,0xffffffff);
+            iVar5 = Magic_DispatchCardEvent(local_14[0],local_14[1],0x32,0xffffffff);
             Card_ApplyCombatDamage(local_c,local_8,iVar5,local_14[0],local_14[1]);
           }
         }
@@ -2055,8 +2055,8 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
              *(uint *)(&g_CardSlot_Flags + local_c * 0x5b20 + local_8 * 0x120) | 0x10;
         *(uint *)(&g_CardSlot_Flags + local_14[0] * 0x5b20 + local_14[1] * 0x120) =
              *(uint *)(&g_CardSlot_Flags + local_14[0] * 0x5b20 + local_14[1] * 0x120) | 0x10;
-        iVar5 = Card_TapForMana(local_c,local_8,0x32,0xffffffff);
-        iVar6 = Card_TapForMana(local_14[0],local_14[1],0x32,0xffffffff);
+        iVar5 = Magic_DispatchCardEvent(local_c,local_8,0x32,0xffffffff);
+        iVar6 = Magic_DispatchCardEvent(local_14[0],local_14[1],0x32,0xffffffff);
         Card_ApplyCombatDamage(local_c,local_8,iVar6,local_14[0],local_14[1]);
         Card_ApplyCombatDamage(local_14[0],local_14[1],iVar5,local_c,local_8);
       }
@@ -3450,11 +3450,11 @@ undefined4 Minit_Subsystem_0045a252(int spell_id,int target_id,int flags)
       Glue_Subsystem_004e689b(spell_id,target_id,1);
       *(uint *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) =
            *(uint *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) | 0x2000000;
-      local_8 = Card_TapForMana(spell_id,target_id,0x33,0xffffffff);
+      local_8 = Magic_DispatchCardEvent(spell_id,target_id,0x33,0xffffffff);
       if (0 < local_8) {
         *(uint *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities2 + target_id * 0x120 + spell_id * 0x5b20) | 0x4000000;
-        Card_TapForMana(spell_id,target_id,0x32,0xffffffff);
+        Magic_DispatchCardEvent(spell_id,target_id,0x32,0xffffffff);
       }
       local_c = local_c + 1;
     }
@@ -6430,7 +6430,7 @@ undefined4 Minit_Subsystem_00461390(int player,int card_slot,int arg_3)
     g_SpellStackDepth = g_SpellStackDepth + -0xf0;
   }
   if (((arg_3 == 0x82) &&
-      (iVar1 = Card_TapForMana(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff), 2 < iVar1))
+      (iVar1 = Magic_DispatchCardEvent(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff), 2 < iVar1))
      && ((((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0 &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20) * 0x34] & 2) == 0)))) {

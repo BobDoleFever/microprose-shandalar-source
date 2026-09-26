@@ -153,11 +153,10 @@ At each checkpoint, dump known global state from both sides and compare:
       (see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md)).
 - [x] Fix the systematic global mislabels: now `g_EventSourceSlot`, `g_EventSourcePlayer` and
       `g_CardEventResult`. Confirmed live with write watchpoints (600 writes).
-- [ ] Rename the event-context push and pop (`Magic_PayManaCost`, `Magic_TapCardForMana`) and the
-      dispatcher `Card_TapForMana`; all three names are wrong.
+- [x] Rename the event-context push and pop and the dispatcher (were `Magic_PayManaCost`,
+      `Magic_TapCardForMana`, `Card_TapForMana`), and name three more context globals.
 - [x] Restore the earlier names a later pass had replaced: 30 restored, 46 left (code supports neither).
-- [ ] Rename `g_PlayerManaPool` (looks like the current event code) and name the target
-      player and slot globals.
+- [ ] Rename `g_PlayerManaPool` (looks like the current event code) and work out `DAT_006b2fe4`.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

@@ -2410,7 +2410,7 @@ void FUN_00472f0c(int32_t player,int card_slot);;
 void Rules_ProcessCombatDamageStep(void);;
 
 /* Function at 00473179 (Size: 2823 bytes) */
-uint32_t Card_TapForMana(int x,int y,int width,int32_t flags);;
+uint32_t Magic_DispatchCardEvent(int player,int slot,int event_code,int32_t target_slot);;
 
 /* Function at 00473cc5 (Size: 121 bytes) */
 int32_t Rules_CalculateManaCostReduction(uint8_t value);;
@@ -2434,10 +2434,10 @@ int Magic_TriggerCardEvent(int value,int min_val,int max_val,int32_t flags,int32
 bool Magic_ResolveSpellStack(int player,int card_slot);;
 
 /* Function at 00474428 (Size: 182 bytes) */
-void Magic_PayManaCost(void);;
+void Magic_PushEventContext(void);;
 
 /* Function at 004744de (Size: 170 bytes) */
-void Magic_TapCardForMana(void);;
+void Magic_PopEventContext(void);;
 
 /* Function at 00474588 (Size: 945 bytes) */
 void Magic_UntapTurnPhase(void);;

@@ -797,7 +797,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 00472e08,FUN_00472e08,unattributed/magic_core.c,unattributed
 00472f0c,FUN_00472f0c,unattributed/magic_core.c,unattributed
 00472fae,FUN_00472fae,unattributed/magic_core.c,unattributed
-00473179,FUN_00473179,unattributed/magic_core.c,unattributed
+00473179,Magic_DispatchCardEvent,unattributed/magic_core.c,unattributed
 00473cc5,FUN_00473cc5,unattributed/magic_core.c,unattributed
 00473d7e,Mem_AllocOrFree_00473d7e,unattributed/magic_core.c,unattributed
 00473d98,FUN_00473d98,unattributed/magic_core.c,unattributed
@@ -805,8 +805,8 @@ Address,FunctionName,SourceFile,ModuleGroup
 00473f06,Magic_ScanCards,sid/Magic.c,sid
 00474266,Magic_TriggerCardEvent,sid/Magic.c,sid
 00474389,Magic_ResolveSpellStack,sid/Magic.c,sid
-00474428,Magic_PayManaCost,sid/Magic.c,sid
-004744de,Magic_TapCardForMana,sid/Magic.c,sid
+00474428,Magic_PushEventContext,sid/Magic.c,sid
+004744de,Magic_PopEventContext,sid/Magic.c,sid
 00474588,Magic_UntapTurnPhase,sid/Magic.c,sid
 00474939,Magic_CheckTurnTriggers,sid/Magic.c,sid
 0047496b,Duel_PlaySoundById,sid/Magic.c,sid

@@ -345,7 +345,7 @@ Address,OldName,NewName
 00472b60,FUN_00472b60,GDI_RealizePaletteTree
 00472fae,FUN_00472fae,Rules_ProcessCombatDamageStep
 00473060,FUN_00473060,Rules_TriggerEndOfTurnPhase
-00473179,FUN_00473179,Card_TapForMana
+00473179,FUN_00473179,Magic_DispatchCardEvent
 004738a0,FUN_004738a0,Rules_ResolveSpellEffect
 00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
 00473ce8,FUN_00473ce8,Rules_CalculateColorCost

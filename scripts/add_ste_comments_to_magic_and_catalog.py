@@ -33,18 +33,20 @@ def process_magic_c():
  * 3. Move the card to the graveyard or battlefield.
  * 4. Decrement the stack depth counter.
  */""",
-        "Magic_PayManaCost": """/*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+        "Magic_PushEventContext": """/*
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, DAT_006b2fe4, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_TapCardForMana": """/*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Procedure:
- * 1. Verify that the card is untapped.
- * 2. Set the STATUS_TAPPED flag on the card slot.
- * 3. Add mana of the card color to the player mana pool.
+        "Magic_PopEventContext": """/*
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
         "Magic_UntapTurnPhase": """/*
  * Magic_UntapTurnPhase

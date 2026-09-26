@@ -154,27 +154,42 @@ Live result: 600 writes captured over about three minutes, from the deal and sta
   analysed: `FUN_00473e69`, `Pic_Subsystem_004485d6` and `Magic_TriggerCardEvent`.
 
 Limits: one duel, the first three minutes, four event codes, capped at 600 events. It confirms
-what the globals hold, not the meaning of each event code or each bit of the result. Two related
-globals are still unnamed: `DAT_007006c8` and `DAT_006b2d5c` (the target player and slot), plus
-`DAT_006a4f70` (the event card's id) and `DAT_006b2fe4`. `g_PlayerManaPool` (`0x006ff4c0`) looks
-like the current event code and is still misnamed.
+what the globals hold, not the meaning of each event code or each bit of the result.
 
-### Two more mislabels found by the same run
+Three more members of the same 7-value context are now named, on static evidence only (not
+watched live):
+
+| Address | Was | Now | Evidence |
+|---|---|---|---|
+| `0x006a4f70` | `DAT_006a4f70` | `g_EventCardId` | assigned `g_CardSlot_CardId[player][slot]` by the dispatcher; saved and restored with the frame |
+| `0x007006c8` | `DAT_007006c8` | `g_EventTargetPlayer` | defaults to `1 - player` (the opponent) in two places; the 3 handlers that test it compare it with their player argument |
+| `0x006b2d5c` | `DAT_006b2d5c` | `g_EventTargetSlot` | defaults to `-1` (none) in three places; set from the dispatcher's `target_slot`; the same 3 handlers compare it with their slot argument, never crossed |
+
+`DAT_006b2fe4` (the seventh member: a byte at offset 2 of the 0x34-byte master card record for the
+event card) is left unnamed until its meaning is known. `g_PlayerManaPool` (`0x006ff4c0`) looks like
+the current event code and is still misnamed. These `DAT_` names are address-based and other
+programs have different variables at the same addresses, so the renames were confined to
+`magic/` and `src/magic/`.
+
+### Two more mislabels found by the same run (renamed)
 
 The event context is a **stack** of 7-value frames (0x28 bytes each, 32 deep, depth in
 `DAT_0052577c`) so events can nest:
 
 | Address | Called | Really | Evidence |
 |---|---|---|---|
-| `0x00474428` | `Magic_PayManaCost` | **push** the event context | copies the 7 globals into the next frame and increments the depth (guarded at 32) |
-| `0x004744de` | `Magic_TapCardForMana` | **pop** the event context | decrements the depth and restores the 7 globals from that frame |
-| `0x00473179` | `Card_TapForMana` | the event **dispatcher** | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
+| `0x00474428` | `Magic_PayManaCost` -> `Magic_PushEventContext` | **push** the event context | copies the 7 globals into the next frame and increments the depth (guarded at 32) |
+| `0x004744de` | `Magic_TapCardForMana` -> `Magic_PopEventContext` | **pop** the event context | decrements the depth and restores the 7 globals from that frame |
+| `0x00473179` | `Card_TapForMana` -> `Magic_DispatchCardEvent` | the event **dispatcher** | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
 
 The dispatcher calls the push first (when the depth counter `DAT_0063ee18` is non-zero), sets the
 globals from its arguments and runs the handlers. The pop ran 98 times and always restored
 `g_CardEventResult` to 0, and restored `(player, slot)` to `(0, 0)` 68 times and `(1, 3)` 30 times:
 outer event contexts being put back, as a stack predicts. None of these functions deals with mana.
-Not renamed in the source yet.
+Renamed everywhere (sources, headers, all four symbol maps, generator scripts); the dispatcher's
+parameters are now `(player, slot, event_code, target_slot)` (they were `x, y, width`), and the
+prototypes of the push and pop are `void(void)` (the header had made-up parameters). `DUEL.EXE`'s
+maps also list a `Card_TapForMana` at `0x00473179`; that is a different program and was left alone.
 
 ## Names restored (MAGIC.EXE)
 

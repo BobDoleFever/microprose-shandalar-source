@@ -8955,7 +8955,7 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       }
       break;
     case 0x12:
-      val_3 = Card_TapForMana(val_4, val_5, 0x32, 0xffffffff);
+      val_3 = Magic_DispatchCardEvent(val_4, val_5, 0x32, 0xffffffff);
       (&g_PlayerCreatureCount)[val_4] = (&g_PlayerCreatureCount)[val_4] + val_3;
       Pic_Subsystem_0044867e(val_4,val_5,4);
       break;
