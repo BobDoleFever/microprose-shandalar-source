@@ -124,9 +124,9 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
   else {
     Magic_PayManaCost();
     uval_1 = g_CombatPhaseFlags;
-    g_ActivePalette = 0;
-    g_OverworldPlayerCoordX = arg_1;
-    g_OverworldMapGrid = arg_2;
+    g_CardEventResult = 0;
+    g_EventSourcePlayer = arg_1;
+    g_EventSourceSlot = arg_2;
     DAT_007006c8 = arg_4;
     DAT_006b2d5c = arg_5;
     val_2 = (**(code **)(&g_CardScriptCallbackTable +
@@ -139,7 +139,7 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
       Magic_TapCardForMana();
       return 0;
     }
-    DAT_006b2e38 = g_ActivePalette;
+    DAT_006b2e38 = g_CardEventResult;
     Magic_TapCardForMana();
   }
   return val_2;
@@ -197,13 +197,13 @@ void Magic_PayManaCost(void)
 
 {
   if (DAT_0052577c < 0x20) {
-    *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_OverworldPlayerCoordX;
-    *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_OverworldMapGrid;
+    *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_EventSourcePlayer;
+    *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_EventSourceSlot;
     *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = DAT_006a4f70;
     *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = DAT_006b2fe4;
     *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = DAT_007006c8;
     *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = DAT_006b2d5c;
-    *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_ActivePalette;
+    *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_CardEventResult;
     DAT_0052577c = DAT_0052577c + 1;
   }
   return;
@@ -232,13 +232,13 @@ void Magic_TapCardForMana(void)
   if (0 < DAT_0052577c) {
     DAT_0052577c = DAT_0052577c + -1;
   }
-  g_OverworldPlayerCoordX = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
-  g_OverworldMapGrid = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
+  g_EventSourcePlayer = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
+  g_EventSourceSlot = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
   DAT_006a4f70 = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
   DAT_006b2fe4 = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
   DAT_007006c8 = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
   DAT_006b2d5c = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
-  g_ActivePalette = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
+  g_CardEventResult = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
   return;
 }
 
@@ -408,14 +408,14 @@ int Duel_PlaySoundById(int sound_id)
   else {
     local_28[0] = arg_1;
     if (arg_1 < 0x14) {
-      Pic_Subsystem_00423bf4(arg_1,0);
+      PlaySnd(arg_1,0);
     }
     else if (arg_1 < 0x1d) {
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
-        local_2c = Pic_Subsystem_00424165(local_28,0x14,0x16);
+        local_2c = GetLRUSnd(local_28,0x14,0x16);
         if (local_2c == 0) {
-          Pic_Subsystem_00423b93(local_28[0]);
+          CloseSndTrack(local_28[0]);
         }
         else if (local_2c != 1) {
           return 0;
@@ -423,16 +423,16 @@ int Duel_PlaySoundById(int sound_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d1c);
         strcat(local_134,(&PTR_s_artifact_wav_00525788)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
       }
-      Pic_Subsystem_00423bf4(local_28[0],0);
+      PlaySnd(local_28[0],0);
     }
     else if (arg_1 < 0x22) {
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
-        local_2c = Pic_Subsystem_00424165(local_28,0x1d,0x1d);
+        local_2c = GetLRUSnd(local_28,0x1d,0x1d);
         if (local_2c == 0) {
-          Pic_Subsystem_00423b93(local_28[0]);
+          CloseSndTrack(local_28[0]);
         }
         else if (local_2c != 1) {
           return 0;
@@ -440,16 +440,16 @@ int Duel_PlaySoundById(int sound_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d20);
         strcat(local_134,(&PTR_s_buried_wav_0052578c)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
       }
-      Pic_Subsystem_00423bf4(local_28[0],0);
+      PlaySnd(local_28[0],0);
     }
     else {
       if (0x2f < arg_1) {
         return 0;
       }
       local_28[1] = 400;
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
         if (arg_1 == 0x2b) {
           local_28[6] = 0xffffffff;
@@ -460,8 +460,8 @@ int Duel_PlaySoundById(int sound_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d24);
         strcat(local_134,(&PTR_s_draw_wav_00525790)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
-        Pic_Subsystem_00423bf4(local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
+        PlaySnd(local_28[0],local_28 + 1);
       }
       else {
         if (arg_1 == 0x2b) {
@@ -470,7 +470,7 @@ int Duel_PlaySoundById(int sound_id)
         else {
           slot_idx = slot_idx | 4;
         }
-        Pic_Subsystem_00423bf4(local_28[0],local_28 + 1);
+        PlaySnd(local_28[0],local_28 + 1);
       }
     }
     uval_1 = 1;
@@ -507,12 +507,12 @@ void Duel_PreloadSoundEffects(void)
   uint32_t slot_idx;
   
   slot_idx = slot_idx & 0xfffffffb;
-  Pic_Subsystem_00423bc7();
+  StopSndTrack();
   for (local_28 = 0; local_28 < 0x14; local_28 = local_28 + 1) {
     strcpy(local_130,&g_DuelSoundsDirectory);
     strcat(local_130,&DAT_00525d28);
     strcat(local_130,(&PTR_s_artifact_wav_00525788)[local_28]);
-    Pic_Subsystem_00423b57(local_130,local_28,0);
+    InitSndTrack(local_130,local_28,0);
   }
   return;
 }
@@ -529,7 +529,7 @@ void Duel_PreloadSoundEffects(void)
 void FUN_00474d0e(void)
 
 {
-  Pic_Subsystem_00423bc7();
+  StopSndTrack();
   return;
 }
 

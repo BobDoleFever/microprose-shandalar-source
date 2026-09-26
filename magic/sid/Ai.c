@@ -1049,8 +1049,8 @@ int Ai_AssignCombatDamage(int * x, uint * arg2, uint arg3, int arg4, uint arg5, 
     else {
       local_2c = 0;
     }
-    local_28 = Ai_Subsystem_004cbd67(arg5);
-    local_24 = Ai_Subsystem_004cbd67(arg6);
+    local_28 = CardIDFromType(arg5);
+    local_24 = CardIDFromType(arg6);
     local_20 = arg7;
     local_1c = arg_8;
     local_18 = arg_9;
@@ -2547,7 +2547,7 @@ INT_PTR Ai_ScoreCardPlay_Creature(int * player, int card_index, int target_playe
     RegisterClassA(&local_30);
     local_690 = arg4;
     for (local_34 = 0; (local_34 < arg3 && (x[local_34] != -1)); local_34 = local_34 + 1) {
-      u_temp = Ai_Subsystem_004cbd67(x[local_34] & 0xfff);
+      u_temp = CardIDFromType(x[local_34] & 0xfff);
       auStack_68c[local_34] = u_temp;
     }
     local_4c = local_34;
@@ -3196,12 +3196,12 @@ void Ai_CalcMana_AddSource(uint player, int color_index, int required_amount)
   if (BVar1 != 0) {
     if ((arg2 == -1) || (arg3 == -1)) {
       lParam_00 = 0;
-      WVar2 = Ai_Subsystem_004cbd67(x);
+      WVar2 = CardIDFromType(x);
       SendMessageA(g_MainAppWindow,0x401,WVar2,lParam_00);
     }
     else {
       lParam = &local_c;
-      WVar2 = Ai_Subsystem_004cbd67(x);
+      WVar2 = CardIDFromType(x);
       SendMessageA(g_MainAppWindow,0x401,WVar2,(LPARAM)lParam);
     }
   }
@@ -4914,14 +4914,14 @@ uint Ai_ChangeText_ApplyWord(void)
   DAT_006ff1a0 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&g_AiEvaluationPassCounter + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&g_AiEvaluationPassCounter + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&g_AiEvaluationPassCounter + local_c * 4));
     (&DAT_00695f20)[DAT_006ff1a0] = uVar7;
     DAT_006ff1a0 = DAT_006ff1a0 + 1;
   }
   DAT_007006b4 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&DAT_006ffee0 + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&DAT_006ffee0 + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&DAT_006ffee0 + local_c * 4));
     (&DAT_006fd400)[DAT_007006b4] = uVar7;
     DAT_007006b4 = DAT_007006b4 + 1;
   }
@@ -4930,14 +4930,14 @@ uint Ai_ChangeText_ApplyWord(void)
   DAT_006ff2e4 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&g_AiTemporaryBuffer_006b1590 + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&g_AiTemporaryBuffer_006b1590 + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&g_AiTemporaryBuffer_006b1590 + local_c * 4));
     (&DAT_006fe4a0)[DAT_006ff2e4] = uVar7;
     DAT_006ff2e4 = DAT_006ff2e4 + 1;
   }
   DAT_006b2d34 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&DAT_006b1d60 + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&DAT_006b1d60 + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&DAT_006b1d60 + local_c * 4));
     (&DAT_006a4f80)[DAT_006b2d34] = uVar7;
     DAT_006b2d34 = DAT_006b2d34 + 1;
   }
@@ -4947,14 +4947,14 @@ uint Ai_ChangeText_ApplyWord(void)
   DAT_006b2d30 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&g_AiLookaheadTreeCurrentNode + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&g_AiLookaheadTreeCurrentNode + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&g_AiLookaheadTreeCurrentNode + local_c * 4));
     (&DAT_006b2550)[DAT_006b2d30] = uVar7;
     DAT_006b2d30 = DAT_006b2d30 + 1;
   }
   DAT_006b2e20 = 0;
   for (local_c = 0; (local_c < 500 && (*(int *)(&DAT_0069ef00 + local_c * 4) != -1));
       local_c = local_c + 1) {
-    uVar7 = Ai_Subsystem_004cbd67(*(uint *)(&DAT_0069ef00 + local_c * 4));
+    uVar7 = CardIDFromType(*(uint *)(&DAT_0069ef00 + local_c * 4));
     (&DAT_006fdbe0)[DAT_006b2e20] = uVar7;
     DAT_006b2e20 = DAT_006b2e20 + 1;
   }
@@ -7158,12 +7158,12 @@ void Ai_Duel_CalculateLayout(int x, int * y, int width, int * height)
     EnterCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
     *y = DAT_0069f740;
     for (local_8 = 0; local_8 < DAT_0069f740; local_8 = local_8 + 1) {
-      u_res = Ai_Subsystem_004cbd67(*(uint *)(&DAT_006fec70 + local_8 * 4));
+      u_res = CardIDFromType(*(uint *)(&DAT_006fec70 + local_8 * 4));
       *(int *)(x + local_8 * 4) = u_res;
     }
     *height = DAT_00701004;
     for (local_8 = 0; local_8 < DAT_00701004; local_8 = local_8 + 1) {
-      u_res = Ai_Subsystem_004cbd67(*(uint *)(&DAT_006ff6d0 + local_8 * 4));
+      u_res = CardIDFromType(*(uint *)(&DAT_006ff6d0 + local_8 * 4));
       *(int *)(width + local_8 * 4) = u_res;
     }
     LeaveCriticalSection((LPCRITICAL_SECTION)&g_ScreenDC);
@@ -7579,7 +7579,7 @@ int Ai_Subsystem_004b7d38(char * prompt_text)
                               (LPARAM)local_70);
     InvalidateRect(g_TurnPriorityState,(RECT *)0x0,1);
     InvalidateRect(g_AiSelectedActionCode,(RECT *)0x0,1);
-    Pic_Subsystem_00423c82(0x2f);
+    StopSnd(0x2f);
   }
   return local_c;
 }
@@ -7816,7 +7816,7 @@ int Ai_Subsystem_004b832d(int x, int arg2, int arg3, int arg4, int * arg5, int *
     local_1c = arg4;
     local_18 = *arg5;
     local_14 = *arg6;
-    local_c = Ai_Subsystem_004cbd67(arg2);
+    local_c = CardIDFromType(arg2);
     IVar2 = DialogBoxParamA(g_AppHInstance,(LPCSTR)0xef,g_MainAppHwnd,Ai_WndProc_004b8421,
                             (LPARAM)&local_20);
     if (IVar2 == -1) {
@@ -8189,7 +8189,7 @@ char * Ai_FormatCardScoreString(int x, int arg2)
   if (local_8 != -1) {
     if (local_8 == DAT_006ff2dc) {
       x = Ai_Util_004cbc07(x,arg2);
-      local_8 = Ai_Subsystem_004cbd67(x);
+      local_8 = CardIDFromType(x);
     }
     local_10 = (uint)*(ushort *)(&DAT_006a5f74 + arg2 * 0x120 + x * 0x5b20);
     local_14 = (int)(char)(&g_CardSlot_DamageReceived)[arg2 * 0x120 + x * 0x5b20];
@@ -15800,18 +15800,18 @@ int Ai_Overworld_ChooseRoamDirection(int player)
 }
 
 /*
- * Ai_Subsystem_004cbd67
+ * CardIDFromType
  * Purpose: Tactical AI engine subsystem routine (004cbd67).
  * Procedure:
  * 1. Execute decision evaluation step.
  */
 /*
- * Decompiled function: Ai_Subsystem_004cbd67
+ * Decompiled function: CardIDFromType
  * Entry Point: 004cbd67
  * Size: 61 bytes
  */
 
-int Ai_Subsystem_004cbd67(uint x)
+int CardIDFromType(uint x)
 
 {
   int u_res;

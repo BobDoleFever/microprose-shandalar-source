@@ -3,7 +3,7 @@
 First oracle experiment: is `Magic_DrawCardPhase` (0x00474c7f in MAGIC.EXE) really a draw step?
 
 The decompiled body does not draw anything: it loops 0x14 times, builds a path from
-g_DuelSoundsDirectory + a table of *.wav names, and calls Pic_Subsystem_00423b57(path, i, 0).
+g_DuelSoundsDirectory + a table of *.wav names, and calls InitSndTrack(path, i, 0).
 This probe breaks on the function and on that callee in the live game and records:
   * whether/when the function runs (startup, main menu, or only once a duel is under way),
   * for every caller of the callee (by return address): how often, and which strings it passes.
@@ -22,7 +22,7 @@ from oracle_qemu import QMP, GDBRemote
 
 FUNC = 0x00474C7F       # Magic_DrawCardPhase (decomp name)
 FUNC_END = 0x00474D0E   # next function starts here (sizes tile, see docs/ORACLE_VM.md)
-CALLEE = 0x00423B57     # Pic_Subsystem_00423b57 (decomp name)
+CALLEE = 0x00423B57     # InitSndTrack (decomp name)
 BPS = {FUNC, CALLEE}
 # First bytes of the function in MAGIC.EXE (push ebp; mov ebp,esp; sub esp,0x12c). DUEL.EXE and the
 # other programs load at the same base address, so a breakpoint here can fire in the wrong
@@ -77,7 +77,7 @@ def main():
                 break
         gdb.resume(BPS)
 
-    result = {"function_hits": func_hits, "callers_of_00423b57": callers,
+    result = {"function_hits": func_hits, "InitSndTrack": callers,
               "elapsed_s": round(time.time() - t0, 1)}
     with open("probe_drawcard.json", "w") as f:
         json.dump(result, f, indent=2)

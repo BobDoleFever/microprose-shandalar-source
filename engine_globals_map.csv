@@ -195,7 +195,7 @@ Address,NewName
 0068a630,g_ScreenDC
 0068a64c,g_GlobalEnchantmentCardId
 0068a654,g_HdcBackBuffer
-0068a660,g_ActivePalette
+0068a660,g_CardEventResult
 0068a704,g_CurrentScanningCardIndex
 0068a71c,g_DefendingPlayer
 0068a73c,g_AiEvaluationTimeout
@@ -267,7 +267,7 @@ Address,NewName
 006a6028,g_CardSlot_TurnPlayed
 006a6038,g_CardSlot_ProtectionFlags
 006a6044,g_CardSlot_SpecialState
-006b2534,g_OverworldPlayerCoordX
+006b2534,g_EventSourcePlayer
 006b2d2c,g_SelectedTargetSlot
 006b2d3c,g_SelectedTargetPlayer
 006b2d40,g_AiSelectedTargetCard
@@ -303,7 +303,7 @@ Address,NewName
 006ff710,g_PlayerGraveyardList
 007006e0,g_CardDisplayOrder_Player
 00700eb0,g_DialogPromptHwnd
-0070100c,g_OverworldMapGrid
+0070100c,g_EventSourceSlot
 00703930,g_PicFileStream
 007039c4,g_MouseCursorButtonState
 007039c8,g_MouseCursorY

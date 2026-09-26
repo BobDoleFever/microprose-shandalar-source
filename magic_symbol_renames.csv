@@ -498,7 +498,7 @@ Address,OldName,NewName
 004b7de8,FUN_004b7de8,UI_PlayCoinTossAvi
 004b8421,FUN_004b8421,UI_WndProc_004b8421
 004b8cc3,FUN_004b8cc3,CardScript_Fireball
-004b9120,FUN_004b9120,UI_RegisterManaPoolClass
+004b9120,UI_Register_WINBK_ManaPool_004b9120,UI_RegisterManaPoolClass
 004b9284,FUN_004b9284,UI_ManaPoolWndProc
 004ba890,FUN_004ba890,UI_PromptManaColorSelection
 004bc029,FUN_004bc029,Action_PromptTarget_004bc029

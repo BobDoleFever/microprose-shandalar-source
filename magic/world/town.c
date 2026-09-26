@@ -1812,10 +1812,10 @@ LAB_00487364:
     Surface_TransformPoint(0,(short)DAT_00530d9c);
     SelectPalette(_hdcScreen,DAT_00626834,0);
     FUN_0046f21e(s_dbox_spr_005276ec,0x71,0xe3);
-    Pic_Subsystem_00423c82(0);
+    StopSnd(0);
     local_964[9] = -1;
     while (local_964[9] != 0) {
-      Pic_Subsystem_00424020(0,local_964 + 9);
+      GetSndState(0,local_964 + 9);
     }
     local_8 = Pic_Load_0044ef70(local_8bc,local_14);
     LoadPalNoPic(s_advfac64_pic_005276f8);
@@ -3360,7 +3360,7 @@ int Town_Process_00506580(uint arg_1)
       strcat(&g_OverworldWorldState,s_Well____No__Yes__enter_the_castl_00531af8);
       iVar3 = FUN_004896be(&g_OverworldWorldState,0x2a,0x1a);
       if (iVar3 == 1) {
-        Pic_Subsystem_00423c82(0x10);
+        StopSnd(0x10);
         FUN_004909a0(DAT_006b2d64 + -1);
         if (((DAT_0067bdb4 & 1 << ((byte)DAT_006b2d64 & 0x1f)) == 0) && (DAT_0067f380 == 3)) {
           Glue_Sound_004eb2f9(DAT_006b2d64);
@@ -3385,7 +3385,7 @@ int Town_Process_00506580(uint arg_1)
       strcat(&g_OverworldWorldState,pcVar2);
       strcat(&g_OverworldWorldState,s_Wizard_was_crushed_in_epic_comba_00531ba4);
       FUN_004896be(&g_OverworldWorldState,0x2a,0x1a);
-      Pic_Subsystem_00423c82(0x10);
+      StopSnd(0x10);
       Palette_Subsystem_00496eaf();
       iVar3 = 0;
     }
@@ -3399,7 +3399,7 @@ int Town_Process_00506580(uint arg_1)
           strcpy(&g_OverworldWorldState,s_The_keeper_is_pleased_to_receive_00531c24);
           if (DAT_0067f2c0 == 0) {
             strcat(&g_OverworldWorldState,s_You_create_a_mana_link_here__00531c5c);
-            Pic_Subsystem_00423b93(0xf);
+            CloseSndTrack(0xf);
             Glue_Subsystem_004ec5be(s_x_sound_manalink_wav_00531c7c,0xf,0);
             Glue_Subsystem_004ebd62(0xf,100,100,0);
             *(uint *)(&DAT_0067be00 + DAT_00522450 * 100) =
@@ -3410,7 +3410,7 @@ int Town_Process_00506580(uint arg_1)
             pcVar2 = (char *)Mem_AllocOrFree_00473d7e(DAT_0067b9a0);
             strcat(&g_OverworldWorldState,pcVar2);
             strcat(&g_OverworldWorldState,s_amulet__00531cb4);
-            Pic_Subsystem_00423b93(0xf);
+            CloseSndTrack(0xf);
             Glue_Subsystem_004ec5be(s_x_sound_reward_wav_00531cc0,0xf,0);
             Glue_Subsystem_004ebd62(0xf,100,100,0);
             *(int *)(&DAT_0067bdbc + DAT_0067b9a0 * 4) =
@@ -3756,7 +3756,7 @@ int Town_Process_00506580(uint arg_1)
       }
     }
     Glue_Subsystem_004eadb7(0);
-    Pic_Subsystem_00423c82(0x10);
+    StopSnd(0x10);
     Palette_Subsystem_00496eaf();
     iVar3 = 0;
   }
@@ -3989,7 +3989,7 @@ LAB_00507faa:
 LAB_005085a9:
   DAT_006265f4 = *(int *)(&DAT_0067bdf0 + arg_1 * 100) * 5 + 10;
   local_8 = DAT_006265f4;
-  Pic_Subsystem_00423b93(0x12);
+  CloseSndTrack(0x12);
   Glue_Subsystem_004ec5be(s_x_sound_button_wav_00531f44,0x12,0);
   do {
     if (local_20 == 0) {
@@ -4097,8 +4097,8 @@ LAB_005085a9:
          *(undefined4 *)(&DAT_0061e060 + local_3c * 4);
   }
   DAT_00531594 = arg_1;
-  Pic_Subsystem_00423c82(0xf);
-  Pic_Subsystem_00423b93(0xf);
+  StopSnd(0xf);
+  CloseSndTrack(0xf);
   return 0;
 }
 

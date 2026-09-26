@@ -979,85 +979,85 @@ void Pic_SeekImageStream(int32_t value);;
 int Pic_Subsystem_00423940(void);;
 
 /* Function at 00423980 (Size: 353 bytes) */
-int Pic_Subsystem_00423980(int hInst,int32_t hWnd,uint32_t flags);;
+int Sound_Init(int hInst,int32_t hWnd,uint32_t flags);;
 
 /* Function at 00423ae1 (Size: 118 bytes) */
-void Pic_Subsystem_00423ae1(void);;
+void CloseSnd(void);;
 
 /* Function at 00423b57 (Size: 60 bytes) */
-int32_t Pic_Subsystem_00423b57(int32_t value,int32_t min_val,int32_t max_val);;
+int32_t InitSndTrack(int32_t value,int32_t min_val,int32_t max_val);;
 
 /* Function at 00423b93 (Size: 52 bytes) */
-int32_t Pic_Subsystem_00423b93(int32_t value);;
+int32_t CloseSndTrack(int32_t value);;
 
 /* Function at 00423bc7 (Size: 45 bytes) */
-int32_t Pic_Subsystem_00423bc7(void);;
+int32_t StopSndTrack(void);;
 
 /* Function at 00423bf4 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423bf4(int32_t sound_id,int32_t flags);;
+int32_t PlaySnd(int32_t sound_id,int32_t flags);;
 
 /* Function at 00423c39 (Size: 73 bytes) */
-int32_t Pic_Subsystem_00423c39(int32_t filename,int32_t loop_flag,int32_t out_handle);;
+int32_t PlaySndFile(int32_t filename,int32_t loop_flag,int32_t out_handle);;
 
 /* Function at 00423c82 (Size: 65 bytes) */
-int32_t Pic_Subsystem_00423c82(int32_t sound_id);;
+int32_t StopSnd(int32_t sound_id);;
 
 /* Function at 00423cc3 (Size: 48 bytes) */
-void Pic_Subsystem_00423cc3(void);;
+void PauseSnd(void);;
 
 /* Function at 00423cf3 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423cf3(int32_t player,int32_t card_slot);;
+int32_t ResumeSnd(int32_t player,int32_t card_slot);;
 
 /* Function at 00423d38 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423d38(int32_t value,int32_t card_slot);;
+int32_t SetPitch(int32_t value,int32_t card_slot);;
 
 /* Function at 00423d7d (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423d7d(int32_t player,int32_t card_slot);;
+int32_t GetPitch(int32_t player,int32_t card_slot);;
 
 /* Function at 00423dc2 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423dc2(int32_t value,int32_t card_slot);;
+int32_t SetVol(int32_t value,int32_t card_slot);;
 
 /* Function at 00423e07 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e07(int32_t player,int32_t card_slot);;
+int32_t GetVol(int32_t player,int32_t card_slot);;
 
 /* Function at 00423e4c (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e4c(int32_t value,int32_t card_slot);;
+int32_t SetPan(int32_t value,int32_t card_slot);;
 
 /* Function at 00423e91 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e91(int32_t player,int32_t card_slot);;
+int32_t GetPan(int32_t player,int32_t card_slot);;
 
 /* Function at 00423ed6 (Size: 58 bytes) */
-int32_t Pic_Subsystem_00423ed6(void);;
+int32_t UpdateSnd(void);;
 
 /* Function at 00423f10 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423f10(int32_t player,int32_t card_slot);;
+int32_t SetSndMarker(int32_t player,int32_t card_slot);;
 
 /* Function at 00423f55 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423f55(int32_t player,int32_t card_slot);;
+int32_t PlaySndMarker(int32_t player,int32_t card_slot);;
 
 /* Function at 00423f9a (Size: 65 bytes) */
-int32_t Pic_Subsystem_00423f9a(int32_t value);;
+int32_t GetSndTime(int32_t value);;
 
 /* Function at 00423fdb (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423fdb(int32_t player,int32_t card_slot);;
+int32_t ResetSnd(int32_t player,int32_t card_slot);;
 
 /* Function at 00424020 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00424020(int32_t player,int32_t card_slot);;
+int32_t GetSndState(int32_t player,int32_t card_slot);;
 
 /* Function at 00424065 (Size: 66 bytes) */
-int32_t Pic_Subsystem_00424065(int32_t player,int32_t card_slot);;
+int32_t GetAVISndBuff(int32_t player,int32_t card_slot);;
 
 /* Function at 004240a7 (Size: 69 bytes) */
-int32_t Pic_Subsystem_004240a7(int32_t player,int32_t card_slot);;
+int32_t ReleaseAVISndBuff(int32_t player,int32_t card_slot);;
 
 /* Function at 004240ec (Size: 55 bytes) */
-int32_t Pic_Subsystem_004240ec(void);;
+int32_t GetSndHWND(void);;
 
 /* Function at 00424123 (Size: 66 bytes) */
-int32_t Pic_Subsystem_00424123(int32_t player,int32_t card_slot);;
+int32_t IsSndLoaded(int32_t player,int32_t card_slot);;
 
 /* Function at 00424165 (Size: 73 bytes) */
-int32_t Pic_Subsystem_00424165(int32_t value,int32_t min_val,int32_t max_val);;
+int32_t GetLRUSnd(int32_t value,int32_t min_val,int32_t max_val);;
 
 /* Function at 004241ae (Size: 58 bytes) */
 void Pic_Subsystem_004241ae(void);;
@@ -3775,7 +3775,7 @@ char * Ai_Subsystem_004b8e4d(int player,int card_slot);;
 void Ai_Subsystem_004b90de(int player,int card_slot);;
 
 /* Function at 004b9120 (Size: 238 bytes) */
-int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1);;
+int32_t UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1);;
 
 /* Function at 004b920e (Size: 118 bytes) */
 void Ai_Subsystem_004b920e(void);;
@@ -4009,10 +4009,10 @@ int32_t Ai_Util_004cbc36(int player,int card_slot);;
 int32_t Ai_Subsystem_004cbc65(int player,int card_slot);;
 
 /* Function at 004cbcd9 (Size: 137 bytes) */
-int Ai_Subsystem_004cbcd9(int value);;
+int CardTypeFromID(int value);;
 
 /* Function at 004cbd67 (Size: 61 bytes) */
-int32_t Ai_Subsystem_004cbd67(uint32_t value);;
+int32_t CardIDFromType(uint32_t value);;
 
 /* Function at 004cbda9 (Size: 44 bytes) */
 uint32_t Ai_Util_004cbda9(uint32_t value);;

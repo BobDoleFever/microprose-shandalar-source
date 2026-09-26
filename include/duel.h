@@ -1648,7 +1648,7 @@ uint8_t * Ai_Subsystem_004b8e4d(int player,int card_slot);;
 void FUN_0044a5a4(int player,int card_slot);;
 
 /* Function at 0044a5e0 (Size: 238 bytes) */
-int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1);;
+int32_t UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1);;
 
 /* Function at 0044a6ce (Size: 118 bytes) */
 void FUN_0044a6ce(void);;

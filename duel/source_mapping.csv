@@ -544,7 +544,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 0044a2c4,"FUN_0044a2c4","sidlib/Kimpic.c","sidlib"
 0044a314,"Ai_Subsystem_004b8e4d","sidlib/Kimpic.c","sidlib"
 0044a5a4,"FUN_0044a5a4","sidlib/Kimpic.c","sidlib"
-0044a5e0,"Ai_CalcManaRequirement_004b9120","sidlib/Kimpic.c","sidlib"
+0044a5e0,"UI_Register_WINBK_ManaPool_004b9120","sidlib/Kimpic.c","sidlib"
 0044a6ce,"FUN_0044a6ce","sidlib/Kimpic.c","sidlib"
 0044a744,"Ai_CalcManaRequirement_004b9284","sidlib/Kimpic.c","sidlib"
 0044bb84,"FUN_0044bb84","sidlib/Kimpic.c","sidlib"

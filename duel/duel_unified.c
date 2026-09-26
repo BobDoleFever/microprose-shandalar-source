@@ -26049,7 +26049,7 @@ undefined4 Palette_Subsystem_0049608e(void)
   UI_CreateWindow_004b3360(s_MAGICGAME_MainClass_004f6d58);
   UI_Register_sPoison_00499ba0(s_MAGICGAME_LifeClass_004f6d6c);
   UI_CreateWindow_0041a600(s_MAGICGAME_FullCardClass_004f6d80);
-  Ai_CalcManaRequirement_004b9120(s_MAGICGAME_ManaSummaryClass_004f6d98);
+  UI_Register_WINBK_ManaPool_004b9120(s_MAGICGAME_ManaSummaryClass_004f6d98);
   UI_CreateWindow_004b9460(s_MAGICGAME_HandClass_004f6db4);
   UI_CreateWindow_00401000(s_MAGICGAME_ChatClass_004f6dc8);
   Minit_Subsystem_00467880(s_MAGICGAME_CardClass_004f6ddc);
@@ -35047,7 +35047,7 @@ void FUN_0044a5a4(int arg1,int arg2)
 
 
 
-undefined4 Ai_CalcManaRequirement_004b9120(LPCSTR str_1)
+undefined4 UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1)
 
 {
   ATOM AVar1;

@@ -133,7 +133,7 @@ Address,NewName
 004498e5,Ai_Subsystem_004b8421
 0044a18b,Ai_Subsystem_004b8cc3
 0044a314,Ai_Subsystem_004b8e4d
-0044a5e0,Ai_CalcManaRequirement_004b9120
+0044a5e0,UI_Register_WINBK_ManaPool_004b9120
 0044a744,Ai_CalcManaRequirement_004b9284
 0044cb00,Pic_Load_004248b0
 0044cc6e,Pic_Load_00424a1e

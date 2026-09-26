@@ -275,7 +275,7 @@ int Ai_Util_004cbc07(int arg1, int arg2);
 int Ai_Util_004cbc36(int arg1, int arg2);
 int Ai_Subsystem_004cbc65(int arg1, int arg2);
 int Ai_Overworld_ChooseRoamDirection(int player);
-int Ai_Subsystem_004cbd67(uint32_t arg1);
+int CardIDFromType(uint32_t arg1);
 uint32_t Ai_Util_004cbda9(uint32_t arg1);
 void Ai_Subsystem_004cbdda(int arg1, int arg2);
 bool Ai_Subsystem_004cbe10(int arg1, int arg2);
@@ -461,7 +461,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004b8dfd Ai_Subsystem_004b8dfd
 #define Ai_004b8e4d Ai_FormatCardScoreString
 #define Ai_004b90de Ai_Subsystem_004b90de
-#define Ai_004b9120 Ai_CalcManaRequirement_MultiColor
+#define UI_Register_WINBK_ManaPool_004b9120 Ai_CalcManaRequirement_MultiColor
 #define Ai_004b920e Ai_Subsystem_004b920e
 #define Ai_004b9284 Ai_CalcManaRequirement_General
 #define Ai_004ba6b6 Ai_WndProc_004ba6b6
@@ -539,8 +539,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004cbc07 Ai_Util_004cbc07
 #define Ai_004cbc36 Ai_Util_004cbc36
 #define Ai_004cbc65 Ai_Subsystem_004cbc65
-#define Ai_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Ai_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Ai_004cbda9 Ai_Util_004cbda9
 #define Ai_004cbdda Ai_Subsystem_004cbdda
 #define Ai_004cbe10 Ai_Subsystem_004cbe10
@@ -581,7 +581,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004cd3eb Ai_Subsystem_004cd3eb
 #define Ai_CalcManaRequirement_004b32d1 Ai_CalcManaRequirement_Black
 #define Ai_CalcManaRequirement_004b7897 Ai_CalcManaRequirement_Colorless
-#define Ai_CalcManaRequirement_004b9120 Ai_CalcManaRequirement_MultiColor
+#define UI_Register_WINBK_ManaPool_004b9120 Ai_CalcManaRequirement_MultiColor
 #define Ai_CalcManaRequirement_004b9284 Ai_CalcManaRequirement_General
 #define Ai_CalcManaRequirement_004ba890 Ai_CalcManaRequirement_PayCost
 #define Ai_CalcManaRequirement_004bc423 Ai_CalcMana_004bc423
@@ -722,7 +722,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_Subsystem_004cbbd7 Ai_Util_004cbbd7
 #define Ai_Subsystem_004cbc07 Ai_Util_004cbc07
 #define Ai_Subsystem_004cbc36 Ai_Util_004cbc36
-#define Ai_Subsystem_004cbcd9 Ai_Overworld_ChooseRoamDirection
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
 #define Ai_Subsystem_004cbda9 Ai_Util_004cbda9
 #define Ai_Subsystem_004cc0c7 Ai_Util_004cc0c7
 #define Ai_Subsystem_004cc0f7 Ai_Util_004cc0f7
@@ -940,8 +940,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_Util_004cbad0 Ai_Subsystem_004cbad0
 #define Ai_Util_004cbb33 Ai_Subsystem_004cbb33
 #define Ai_Util_004cbc65 Ai_Subsystem_004cbc65
-#define Ai_Util_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Ai_Util_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Ai_Util_004cbdda Ai_Subsystem_004cbdda
 #define Ai_Util_004cbe10 Ai_Subsystem_004cbe10
 #define Ai_Util_004cbe57 Ai_Subsystem_004cbe57
@@ -1194,8 +1194,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define FUN_004cbc07 Ai_Util_004cbc07
 #define FUN_004cbc36 Ai_Util_004cbc36
 #define FUN_004cbc65 Ai_Subsystem_004cbc65
-#define FUN_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define FUN_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define FUN_004cbda9 Ai_Util_004cbda9
 #define FUN_004cbdda Ai_Subsystem_004cbdda
 #define FUN_004cbe10 Ai_Subsystem_004cbe10
@@ -1454,8 +1454,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Mem_AllocOrFree_004cbc07 Ai_Util_004cbc07
 #define Mem_AllocOrFree_004cbc36 Ai_Util_004cbc36
 #define Mem_AllocOrFree_004cbc65 Ai_Subsystem_004cbc65
-#define Mem_AllocOrFree_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Mem_AllocOrFree_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Mem_AllocOrFree_004cbda9 Ai_Util_004cbda9
 #define Mem_AllocOrFree_004cbdda Ai_Subsystem_004cbdda
 #define Mem_AllocOrFree_004cbe10 Ai_Subsystem_004cbe10
@@ -1714,8 +1714,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Pic_Load_004cbc07 Ai_Util_004cbc07
 #define Pic_Load_004cbc36 Ai_Util_004cbc36
 #define Pic_Load_004cbc65 Ai_Subsystem_004cbc65
-#define Pic_Load_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Pic_Load_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Pic_Load_004cbda9 Ai_Util_004cbda9
 #define Pic_Load_004cbdda Ai_Subsystem_004cbdda
 #define Pic_Load_004cbe10 Ai_Subsystem_004cbe10
@@ -1974,8 +1974,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_CreateWindow_004cbc07 Ai_Util_004cbc07
 #define UI_CreateWindow_004cbc36 Ai_Util_004cbc36
 #define UI_CreateWindow_004cbc65 Ai_Subsystem_004cbc65
-#define UI_CreateWindow_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_CreateWindow_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_CreateWindow_004cbda9 Ai_Util_004cbda9
 #define UI_CreateWindow_004cbdda Ai_Subsystem_004cbdda
 #define UI_CreateWindow_004cbe10 Ai_Subsystem_004cbe10
@@ -2234,8 +2234,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_DialogProc_004cbc07 Ai_Util_004cbc07
 #define UI_DialogProc_004cbc36 Ai_Util_004cbc36
 #define UI_DialogProc_004cbc65 Ai_Subsystem_004cbc65
-#define UI_DialogProc_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_DialogProc_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_DialogProc_004cbda9 Ai_Util_004cbda9
 #define UI_DialogProc_004cbdda Ai_Subsystem_004cbdda
 #define UI_DialogProc_004cbe10 Ai_Subsystem_004cbe10
@@ -2494,8 +2494,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_WndProc_004cbc07 Ai_Util_004cbc07
 #define UI_WndProc_004cbc36 Ai_Util_004cbc36
 #define UI_WndProc_004cbc65 Ai_Subsystem_004cbc65
-#define UI_WndProc_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_WndProc_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_WndProc_004cbda9 Ai_Util_004cbda9
 #define UI_WndProc_004cbdda Ai_Subsystem_004cbdda
 #define UI_WndProc_004cbe10 Ai_Subsystem_004cbe10

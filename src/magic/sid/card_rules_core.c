@@ -147,13 +147,13 @@ extern char g_DuelAssetDirectory;
 extern int32_t g_DisplayScreenWidth;
 extern int32_t g_DisplayScreenHeight;
 
-extern uint32_t g_ActivePalette;
+extern uint32_t g_CardEventResult;
 extern int32_t g_CardSlot_Counters;
 extern int32_t g_CardSlot_CardId;
 extern int32_t g_CardSlot_Flags;
-extern int g_OverworldPlayerCoordX;
+extern int g_EventSourcePlayer;
 extern int g_OverworldPlayerCoordY;
-extern int g_OverworldMapGrid;
+extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
@@ -302,8 +302,8 @@ uint Card_TapForMana(int x,int y,int width,undefined4 flags)
   if (DAT_0063ee18 != 0) {
     Magic_PayManaCost(0, 0, 0);
   }
-  g_OverworldPlayerCoordX = x;
-  g_OverworldMapGrid = y;
+  g_EventSourcePlayer = x;
+  g_EventSourceSlot = y;
   DAT_006a4f70 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
   DAT_006b2fe4 = (int)(char)(&DAT_0051aebe)[DAT_006a4f70 * 0x34];
   DAT_006b2d5c = flags;
@@ -321,7 +321,7 @@ uint Card_TapForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfbffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = (uint)*(short *)(&g_CardSlot_Counters + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint)*(short *)(&g_CardSlot_Counters + y * 0x120 + x * 0x5b20);
     break;
   case 0x33:
     if (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 2) == 0) {
@@ -336,7 +336,7 @@ uint Card_TapForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfdffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = (uint)*(short *)(&DAT_006a5f46 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint)*(short *)(&DAT_006a5f46 + y * 0x120 + x * 0x5b20);
     break;
   case 0x34:
     uVar1 = *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
@@ -361,7 +361,7 @@ uint Card_TapForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xf7ffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = *(uint *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
     break;
   case 0x35:
     local_8 = (uint)*(short *)(&g_CardSlot_Power + y * 0x120 + x * 0x5b20);
@@ -372,20 +372,20 @@ uint Card_TapForMana(int x,int y,int width,undefined4 flags)
   default:
     local_8 = 0;
 LAB_004737a0:
-    g_ActivePalette = local_8;
+    g_CardEventResult = local_8;
     if ((DAT_0063ee18 != 0) && (Magic_ScanCards(width), (g_PlayerHandCardCount & 0x10000) != 0)) {
       g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffeffff;
-      *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) = g_ActivePalette;
+      *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) = g_CardEventResult;
       g_PlayerHandCardCount = g_PlayerHandCardCount | 0x20000;
       Magic_ScanCards(width);
       g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffdffff;
     }
     if (width == 0x32) {
-      if ((int)g_ActivePalette < 0) {
-        g_ActivePalette = 0;
+      if ((int)g_CardEventResult < 0) {
+        g_CardEventResult = 0;
       }
       if (((&DAT_006a5f69)[y * 0x120 + x * 0x5b20] & 0x40) != 0) {
-        g_ActivePalette = g_ActivePalette << 1;
+        g_CardEventResult = g_CardEventResult << 1;
       }
     }
     break;
@@ -402,13 +402,13 @@ LAB_004737a0:
         (&DAT_006a604f)[y * 0x120 + x * 0x5b20] = 0;
         goto LAB_004737a0;
       }
-      g_ActivePalette = *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
     }
     else {
-      g_ActivePalette = *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
     }
   }
-  uVar1 = g_ActivePalette;
+  uVar1 = g_CardEventResult;
   iVar5 = Card_IsTapped(x, y);
   if (((iVar5 != 0) && (width == 0x33)) &&
      ((((&g_MasterCardColorTable)[DAT_006a4f70 * 0x34] & 2) != 0 &&

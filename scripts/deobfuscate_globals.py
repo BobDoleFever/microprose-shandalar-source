@@ -57,15 +57,15 @@ def main():
         "006b2e34": "g_MainAppHwnd",
         "006fecb0": "g_AppHInstance",
         "0068a654": "g_HdcBackBuffer",
-        "0068a660": "g_ActivePalette",
+        "0068a660": "g_CardEventResult",
         "0068a630": "g_ScreenDC",
         "006fe488": "g_DuelArenaHwnd",
         "00700eb0": "g_DialogPromptHwnd",
 
         # Overworld RPG Campaign & World State
         "00626850": "g_OverworldWorldState",
-        "0070100c": "g_OverworldMapGrid",
-        "006b2534": "g_OverworldPlayerCoordX",
+        "0070100c": "g_EventSourceSlot",
+        "006b2534": "g_EventSourcePlayer",
         "006b2d68": "g_OverworldPlayerCoordY",
         "0069f750": "g_OverworldGoldAmount",
         "00678830": "g_OverworldFoodAmount"

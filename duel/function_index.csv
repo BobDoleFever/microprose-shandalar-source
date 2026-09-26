@@ -544,7 +544,7 @@ Address,FunctionName,ReturnType,ParameterCount,BodySize,Status,Filename
 0044a2c4,"FUN_0044a2c4","undefined",2,80,SUCCESS,"FUN_0044a2c4_0044a2c4.c"
 0044a314,"Ai_Subsystem_004b8e4d","undefined",2,656,SUCCESS,"Ai_Subsystem_004b8e4d_0044a314.c"
 0044a5a4,"FUN_0044a5a4","undefined",2,60,SUCCESS,"FUN_0044a5a4_0044a5a4.c"
-0044a5e0,"Ai_CalcManaRequirement_004b9120","undefined",1,238,SUCCESS,"Ai_CalcManaRequirement_004b9120_0044a5e0.c"
+0044a5e0,"UI_Register_WINBK_ManaPool_004b9120","undefined",1,238,SUCCESS,"UI_Register_WINBK_ManaPool_004b9120_0044a5e0.c"
 0044a6ce,"FUN_0044a6ce","undefined",0,118,SUCCESS,"FUN_0044a6ce_0044a6ce.c"
 0044a744,"Ai_CalcManaRequirement_004b9284","undefined",4,5167,SUCCESS,"Ai_CalcManaRequirement_004b9284_0044a744.c"
 0044bb84,"FUN_0044bb84","undefined",3,475,SUCCESS,"FUN_0044bb84_0044bb84.c"

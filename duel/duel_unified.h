@@ -1866,7 +1866,7 @@ void FUN_0044a267(int x,HGDIOBJ point,HGDIOBJ hBitmap,HGDIOBJ flags);
 int FUN_0044a2c4(int player,int card_slot);
 undefined1 * Ai_Subsystem_004b8e4d(int player,int card_slot);
 void FUN_0044a5a4(int player,int card_slot);
-undefined4 Ai_CalcManaRequirement_004b9120(LPCSTR str_1);
+undefined4 UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1);
 void FUN_0044a6ce(void);
 LRESULT Ai_CalcManaRequirement_004b9284(HWND hwnd,uint uMsg,uint wParam,uint lParam);
 void FUN_0044bb84(LPRECT max_val,HWND hwnd,int hBitmap);

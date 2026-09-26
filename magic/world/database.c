@@ -1668,7 +1668,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       DAT_0067bdb4 = DAT_0067bdb4 | 1 << ((byte)local_24 & 0x1f);
       PTR_FUN_00527b3c = FUN_0048a3cc;
       if (DAT_0067bdb4 != 0x3e) {
-        Pic_Subsystem_00423c82(0x10);
+        StopSnd(0x10);
       }
       Surface_TransformPoint(0,(short)DAT_00530d9c);
       if (DAT_0067bdb4 != 0x3e) {
@@ -1708,7 +1708,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       DAT_0063ee24 = 0;
       DAT_00695df0 = 3;
       DAT_00627a7c = 0;
-      Pic_Subsystem_00423c82(0x10);
+      StopSnd(0x10);
       DAT_006b2fe0 = Pic_Subsystem_0045268f(0x11);
       DAT_0068a64c = Pic_Subsystem_0045268f(0x1d);
       Pic_Load_0044ef70(0,local_14);

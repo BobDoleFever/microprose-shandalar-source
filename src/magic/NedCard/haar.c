@@ -1504,7 +1504,7 @@ int32_t FUN_004f3579(int player_id)
     for (color_idx = 0; color_idx < 0x50; color_idx = color_idx + 1) {
       val_2 = *(int *)(&DAT_00516cbc + color_idx * 8 + player * 0x280);
       if ((*(int *)(&DAT_00516cb8 + color_idx * 8 + player * 0x280) != -1) && (val_2 != 0)) {
-        val_3 = Ai_Subsystem_004cbcd9(*(int *)(&DAT_00516cb8 + color_idx * 8 + player * 0x280));
+        val_3 = CardTypeFromID(*(int *)(&DAT_00516cb8 + color_idx * 8 + player * 0x280));
         flag_1 = (&g_MasterCardColorTable)[val_3 * 0x34];
         if ((flag_1 & 2) != 0) {
           slot_idx = slot_idx + val_2;
@@ -3818,8 +3818,8 @@ int32_t Prompts_Load_004f7658(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_00530350,s_BRAINGEYSER_00530344);
       val_1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
@@ -3957,7 +3957,7 @@ int32_t CardScript_Darkpact(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (player == g_OverworldPlayerCoordX)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (player == g_EventSourcePlayer)) {
       if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
         Ai_Subsystem_004cd198();
         val_2 = Ai_Subsystem_004cc814
@@ -4323,8 +4323,8 @@ int32_t Prompts_Load_004f8321(int spell_id,int target_id,int flags)
                          arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_0053041c,s_ENERGYTAP_00530410);
       arg_20 = &match_count;
       uval_2 = 1;
@@ -4420,8 +4420,8 @@ int32_t Prompts_Load_004f8672(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       val_1 = (&g_PlayerCreatureCount)[spell_id];
       val_3 = FUN_004fa423(spell_id,*(int *)(&g_CardSlot_CardId +
                                             target_id * 0x120 + spell_id * 0x5b20));
@@ -4560,8 +4560,8 @@ int32_t Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     }
     return uval_1;
   }
-  if (((flags == 0x6c) && (target_id == g_OverworldMapGrid)) &&
-     (spell_id == g_OverworldPlayerCoordX)) {
+  if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) &&
+     (spell_id == g_EventSourcePlayer)) {
     val_2 = FUN_004fa423(spell_id,*(int *)(&g_CardSlot_CardId +
                                           spell_id * 0x5b20 + target_id * 0x120));
     g_SpellStackDepth = g_SpellStackDepth - (int)(0x24 / (longlong)val_2);
@@ -4727,7 +4727,7 @@ int32_t FUN_004f90d7(int player_id,int card_slot,int event_type)
     uval_2 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (card_slot == g_OverworldMapGrid)) && (player == g_OverworldPlayerCoordX)) {
+    if (((arg_3 == 0x6c) && (card_slot == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
       val_1 = FUN_004fa423(player,*(int *)(&g_CardSlot_CardId + player * 0x5b20 + card_slot * 0x120));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x24 / (longlong)val_1);
       *(int32_t *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120) =
@@ -4782,7 +4782,7 @@ int32_t FUN_004f92f3(int player_id,int card_slot,int event_type)
     uval_2 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (player == g_OverworldPlayerCoordX)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (player == g_EventSourcePlayer)) {
       val_1 = FUN_004fa423(player,*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x24 / (longlong)val_1);
       *(int32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) =
@@ -4959,8 +4959,8 @@ int32_t Prompts_Load_004f9737(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       match_count = 0;
       while ((match_count < 2 && (g_ActivePlayer != 1))) {
         Pic_Subsystem_00424500(s_prompts_txt_005304c4,s_ASHESTOASHES_005304b4);
@@ -5119,8 +5119,8 @@ int32_t Prompts_Load_004f9bbd(int spell_id,int target_id,int flags)
                          arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       val_2 = FUN_004fa423(spell_id,*(int *)(&g_CardSlot_CardId +
                                             target_id * 0x120 + spell_id * 0x5b20));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x30 / (longlong)val_2);
@@ -5241,8 +5241,8 @@ int32_t Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       (&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] = 0;
       match_count = 0;
       slot_idx = 0;
@@ -5475,8 +5475,8 @@ int32_t Prompts_Load_004fa586(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       val_1 = FUN_004fa423(spell_id,*(int *)(&g_CardSlot_CardId +
                                             target_id * 0x120 + spell_id * 0x5b20));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x48 / (longlong)val_1);
@@ -5811,8 +5811,8 @@ int32_t Prompts_Load_004fb1e4(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_00530544,s_DETONATE_00530538);
       arg_20 = &match_count;
       uval_1 = 1;
@@ -5902,7 +5902,7 @@ int32_t FUN_004fb573(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       g_SpellStackDepth =
            g_SpellStackDepth +
            ((&g_PlayerCreatureCount)[player] - (&g_PlayerCreatureCount)[1 - player]) * 0x18;
@@ -5990,8 +5990,8 @@ int32_t Prompts_Load_004fb6b5(int spell_id,int target_id,int flags)
     }
     return uval_1;
   }
-  if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-     (g_OverworldPlayerCoordX == spell_id)) {
+  if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+     (g_EventSourcePlayer == spell_id)) {
     *(int *)(&g_CardSlot_ConvertedManaCost + spell_id * 0x5b20 + target_id * 0x120) = g_TurnCounter;
     (&g_CardSlot_TurnPlayed)[spell_id * 0x5b20 + target_id * 0x120] = 0;
     match_count = 0;
@@ -6128,8 +6128,8 @@ int Prompts_Load_004fbbd4(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       if ((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) {
         Pic_Subsystem_00424500(s_prompts_txt_005305b8,s_RAISEDEAD_005305ac);
         do {
@@ -6209,7 +6209,7 @@ int32_t CardScript_DrafnasRestoration(int player_id,int card_slot,int event_type
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
         val_2 = Ai_Subsystem_004cc814
                           (player,s_Drafna_s_Restoration__005305f4,0,s_My_graveyard_005305e4,
@@ -6284,8 +6284,8 @@ int Prompts_Load_004fc2e5(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       if ((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) {
         Pic_Subsystem_00424500(s_prompts_txt_00530630,s_REGROWTH_00530624);
         match_count = UI_DeckSelectionMenu(spell_id,(int)(&g_PlayerGraveyardList + spell_id * 2000),500,
@@ -6356,7 +6356,7 @@ int32_t FUN_004fc65e(int player_id,int card_slot,int event_type)
     uval_2 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
         do {
           slot_idx = UI_DeckSelectionMenu(player,(int)(&g_PlayerGraveyardList + player * 2000),500,
@@ -6412,8 +6412,8 @@ int32_t Prompts_Load_004fc89e(int spell_id,int target_id,int flags)
     uval_1 = 1;
   }
   else {
-    if ((((flags == 0x6c) && (target_id == g_OverworldMapGrid)) &&
-        (spell_id == g_OverworldPlayerCoordX)) &&
+    if ((((flags == 0x6c) && (target_id == g_EventSourceSlot)) &&
+        (spell_id == g_EventSourcePlayer)) &&
        ((spell_id == g_ActivePlayerPriority && (*(int *)(&g_PlayerDeckCardList + spell_id * 2000) == -1))))
     {
       g_ActivePlayer = 1;
@@ -6496,8 +6496,8 @@ int32_t Prompts_Load_004fcb7a(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       g_SpellStackDepth = g_SpellStackDepth + 0x18;
     }
     if (flags == 0x71) {
@@ -6581,8 +6581,8 @@ int32_t Prompts_Load_004fceea(int spell_id,int target_id,int flags)
     uval_1 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_005306ac,s_VISIONS_005306a4);
       val_2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,
@@ -6642,7 +6642,7 @@ int32_t FUN_004fd11b(int player_id,int card_slot,int event_type)
     uval_3 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
         slot_idx = UI_DeckSelectionMenu(player,(int)(&g_PlayerDeckCardList + player * 2000),500,
                                     s_Pick_an_artifact_005306fc,1);
@@ -6715,8 +6715,8 @@ int32_t Prompts_Load_004fd3cf(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_0053071c,s_MINDTWIST_00530710);
       val_1 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,
@@ -7168,8 +7168,8 @@ int32_t Prompts_Load_004fe05f(int spell_id,int target_id,int flags)
     uval_1 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       if ((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) {
         (&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] = 0;
         Pic_Subsystem_00424500(s_prompts_txt_00530934,s_PYROTECHNICS_00530924);
@@ -7320,8 +7320,8 @@ int32_t Prompts_Load_004fe67f(int spell_id,int target_id,int flags)
     uval_2 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       *(int32_t *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
            g_TurnCounter;
       Pic_Subsystem_00424500(s_prompts_txt_00530950,s_DISINTEGRATE_00530940);
@@ -7422,8 +7422,8 @@ int32_t Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
     }
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
         g_TurnCounter = 0;
         Ai_CalcManaRequirement_004ba890(spell_id,1,-1);
@@ -7492,19 +7492,19 @@ int32_t Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
       Pic_Subsystem_0044867e(spell_id,target_id,1);
     }
     if (((flags == 0x6e) &&
-        (*(int *)(&g_CardSlot_CardId + g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120
+        (*(int *)(&g_CardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120
                  ) == g_PendingSpellTargetSlot)) &&
        ((*(int *)(&g_CardSlot_OriginalCardId +
-                 g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) == -1 &&
+                 g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) == -1 &&
         ((((char)(&g_CardSlot_DamageReceived)
-                 [g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120] == spell_id &&
+                 [g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] == spell_id &&
           (*(int *)(&g_CardSlot_TypeFlags +
-                   g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) == target_id)) &&
+                   g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) == target_id)) &&
          (*(int *)(&g_CardSlot_ConvertedManaCost +
-                  g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) != 0)))))) {
+                  g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) != 0)))))) {
       (&g_CardSlot_DamageReceived)[target_id * 0x120 + spell_id * 0x5b20] =
-           (uint8_t)g_OverworldPlayerCoordX;
-      *(int *)(&g_CardSlot_TypeFlags + target_id * 0x120 + spell_id * 0x5b20) = g_OverworldMapGrid;
+           (uint8_t)g_EventSourcePlayer;
+      *(int *)(&g_CardSlot_TypeFlags + target_id * 0x120 + spell_id * 0x5b20) = g_EventSourceSlot;
     }
     uval_2 = 0;
   }
@@ -7561,8 +7561,8 @@ int32_t Prompts_Load_004fef61(int spell_id,int target_id,int flags)
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_00530980,s_STONE_RAIN_00530974);
       val_2 = Glue_Subsystem_004e6dcc(spell_id,2,target_id);
       if (val_2 == 0) {
@@ -7631,8 +7631,8 @@ int32_t Prompts_Load_004ff17f(int spell_id,int target_id,int flags)
     uval_1 = 1;
   }
   else {
-    if (((flags == 0x6c) && (g_OverworldMapGrid == target_id)) &&
-       (g_OverworldPlayerCoordX == spell_id)) {
+    if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
+       (g_EventSourcePlayer == spell_id)) {
       Pic_Subsystem_00424500(s_prompts_txt_00530998,s_DRAIN_POWER_0053098c);
       val_2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,

@@ -1263,7 +1263,7 @@ int32_t Palette_Subsystem_0049608e(void)
   UI_RegisterClass_004b3360(s_MAGICGAME_MainClass_004f6d58);
   UI_Register_sPoison_00499ba0(s_MAGICGAME_LifeClass_004f6d6c);
   UI_RegisterClass_0041a600(s_MAGICGAME_FullCardClass_004f6d80);
-  Ai_CalcManaRequirement_004b9120(s_MAGICGAME_ManaSummaryClass_004f6d98);
+  UI_Register_WINBK_ManaPool_004b9120(s_MAGICGAME_ManaSummaryClass_004f6d98);
   UI_RegisterClass_004b9460(s_MAGICGAME_HandClass_004f6db4);
   UI_BigCardDialogProc(s_MAGICGAME_ChatClass_004f6dc8);
   UI_RegisterClass_00467880(s_MAGICGAME_CardClass_004f6ddc);
