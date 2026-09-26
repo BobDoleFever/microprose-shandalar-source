@@ -37,23 +37,37 @@ def split_args(text, start):
     return None
 
 
+PROGRAMS = {"MAGIC.EXE": "magic", "DUEL.EXE": "duel", "DECK.EXE": "deck", "DECKDLL.DLL": "deckdll",
+            "STATWIN.DLL": "statwin", "MAGSND.DLL": "magsnd", "MAGVID.DLL": "magvid"}
+EXTRA = {"GetPrivateProfileStringA": 6, "SetWindowRgn": 3, "CreatePolygonRgn": 3, "DisableThreadLibraryCalls": 1}
+
+
 def main():
-    files = sys.argv[1:] or [os.path.join(ROOT, "magic", "magic_unified.c")]
-    pe = pefile.PE(EXE)
-    names = [i.name.decode() for e in pe.DIRECTORY_ENTRY_IMPORT for i in e.imports if i.name
-             and not e.dll.decode().lower().startswith("msvcrt")]
-    counts = {n: collections.Counter() for n in names}
-    for f in files:
-        text = open(f, errors="replace").read()
+    """One table for all seven binaries: each import's argument count from that binary's own decompiled calls."""
+    prog_dir = os.path.dirname(EXE)
+    out, missing = {}, set()
+    for exe, folder in PROGRAMS.items():
+        path = os.path.join(prog_dir, exe)
+        src = os.path.join(ROOT, folder, f"{folder}_unified.c")
+        if not (os.path.exists(path) and os.path.exists(src)):
+            continue
+        pe = pefile.PE(path)
+        names = [i.name.decode() for e in getattr(pe, "DIRECTORY_ENTRY_IMPORT", []) for i in e.imports if i.name
+                 and not e.dll.decode().lower().startswith("msvcrt")]
+        text = open(src, errors="replace").read()
         for n in names:
+            counts = collections.Counter()
             for m in re.finditer(r"\b%s\(" % re.escape(n), text):
                 a = split_args(text, m.end() - 1)
                 if a is not None:
-                    counts[n][a] += 1
-    out = {n: c.most_common(1)[0][0] for n, c in counts.items() if c}
-    missing = [n for n in names if n not in out]
+                    counts[a] += 1
+            if counts:
+                out.setdefault(n, counts.most_common(1)[0][0])
+            else:
+                missing.add(n)
+    out.update(EXTRA)
     json.dump(out, sys.stdout, indent=0, sort_keys=True)
-    print(f"\n{len(out)} of {len(names)} non-CRT imports have call sites; no call site: {missing}", file=sys.stderr)
+    print(f"\n{len(out)} imports with a known argument count; still none: {sorted(missing - set(out))}", file=sys.stderr)
 
 
 if __name__ == "__main__":

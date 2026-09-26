@@ -21,21 +21,35 @@ and `DECKDLL` (the game's own). There is **no DirectX**: it draws with GDI (`Bit
 Sound is `WINMM` plus its own `MAGSND.DLL`. 242 of the 245 non-C-runtime imports have call sites in the
 decompiled code, from which their argument counts were derived (`tools/emu_spike/derive_argc.py`).
 
-## The spike: it runs
+## The spike: it runs, and draws the title menu
 
-`tools/emu_spike/pe_run.py` maps `MAGIC.EXE` at its preferred base under Unicorn (a QEMU-derived CPU
-emulator with an arm64 macOS build), points each import at a trap address, and answers them from a small table.
-On this Apple Silicon Mac, with about 300 lines of Python:
+`tools/emu_spike/winemu/` is a small Win32 host in Python around Unicorn (a QEMU-derived CPU emulator with an
+arm64 macOS build). It maps `MAGIC.EXE` at its base, points every import at a trap, and answers the calls
+itself. On this Apple Silicon Mac the original code now runs from the entry point through:
 
-- the C runtime start-up runs (`__set_app_type`, `_initterm`, `__getmainargs`),
-- `WinMain` (the function around `0x00500ea5`) runs: `FindWindowA` (single-instance check), `srand`, trimming `argv[0]`, `_chdir`,
-  `LoadIconA`, `LoadCursorA`, `RegisterClassA` (it shows an error box and exits if that returns 0),
-- and it gets on into game start-up: `GetDriveTypeA`, a run of `fopen` calls, `timeBeginPeriod` and
-  `timeSetEvent` (78 imports called in all),
+- C runtime start-up, `WinMain`, window-class registration, and `CreateWindowEx` for the main window (the game's
+  window procedure runs in the emulator and is called back by the host),
+- the second thread: the game's engine runs on a thread it creates just before entering the message loop
+  (`WinMain` only pumps messages), so the host has a cooperative scheduler with per-thread CPU contexts,
+  critical sections, sleeps and multimedia timers,
+- loading its data: fonts, the palette table, `CONCISE.CSV`, the map files and sprite files, through a C runtime
+  (`fopen`, `fscanf`, `sscanf`, `_read`, ...) mapped onto the installed game folder,
+- anonymous shared-memory mappings (`CreateFileMappingA` on `-1`), which its resource library needs,
+- drawing: GDI device contexts, 8-bit DIB sections kept in emulated memory (the game draws into them itself), palette
+  changes (`SetDIBColorTable`) and `BitBlt`, onto a host surface saved as PNG.
 
-where it stops inside the stand-in `sprintf`, handed a bad pointer, a knock-on of the fake `fopen` calls
-returning 0. That is the expected next gap: the file and window calls are still fake, so this shows that the
-code executes, not that the game works.
+**Result: the title menu ("Start New Game / Load Saved Game / Resume Game / Exit") renders, with the game's own
+font and icons.** The background art is not drawn yet and there is no input, sound or DUEL.EXE.
+
+Things worth knowing that the run turned up:
+
+- MSVC's `feof` is a macro that reads `FILE._flag & 0x10` directly, so the emulated `FILE` structure must keep
+  that flag: without it the game's read-until-EOF loops never end.
+- `_filelength(_fileno(f))` is used to size a buffer before `fread`, so it must work on `FILE*` descriptors.
+- Files are looked up case-insensitively and writes go to a separate overlay folder, so the installed copy is
+  never touched.
+- The import argument counts (needed for stdcall stack clean-up) come from the decompiled call sites of all
+  seven binaries (`derive_argc.py`, 357 of 358 imports).
 
 ## What it would cost, honestly
 
@@ -77,11 +91,14 @@ alphabet.
   Apple Silicon, mobile, consoles and the long term.
 - **What was not tested:** speed under a full duel, anything past game start-up, `DUEL.EXE`.
 
-## Try the spike
+## Try it
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r tools/emu_spike/requirements.txt
-.venv/bin/python tools/emu_spike/pe_run.py [path/to/MAGIC.EXE] [max_calls]
+cd tools/emu_spike
+../../.venv/bin/python -m winemu.run --seconds 60      # runs MAGIC.EXE from sources/installed, saves sources/emu_shots/screen.png
+../../.venv/bin/python -m unittest discover -s tests   # the parts that need no game files
 ```
 
+Useful flags: `--trace-only REGEX` (log matching import calls), `--log-files` (log every file the game opens).
 `derive_argc.py` regenerates `argc_magic.json` from the decompiled C.
