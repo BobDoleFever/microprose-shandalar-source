@@ -161,7 +161,9 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Confirmed live: `Magic_RunTurnStep` and `g_CurrentStepCode` (six steps seen; combat steps not yet).
 - [x] Rename the spell stack: `Magic_CombatPhase`, `Magic_EndTurnPhase` and `Magic_DiscardToHandSize` were
       really push, resolve and drop; `g_AiSavedPlayerManaPool` was a copy of its entries (static evidence).
-- [ ] Confirm the spell stack live (break on push and resolve while casting a spell).
+- [~] Spell stack live: push and resolve seen once (playing a land); drop and clear not yet.
+- [ ] Combat steps live (`0xd9`, `0xda`, `0xdc`): needs a creature that survives a turn to attack; casting a
+      spell by clicking a hand card failed three times in one duel, so this is still open.
 - [ ] Find what the codes `0x32`-`0x3c` measure in `Magic_QueryCardValue`, and what
       `Magic_ResolveSpellStack` (a flag predicate) really is.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.

@@ -116,3 +116,11 @@ Gathering" Start menu folder), delete any `._*` files, and boot with
 - **Duel loads vary.** One duel sat on the same screen for eight minutes with the game idle in its
   message loop; restarting the VM fixed it. A re-homed pointer plus a fresh click also got a stuck
   prompt through once.
+
+## Playing cards through QMP
+
+The duel screen is mouse-driven. Clicking a Mountain in the hand list played it (hand 7 to 6, event pushed on the
+spell stack). Clicking the artifact in the hand list to cast it did nothing three times, even with a longer hold
+and a jiggled pointer; whether it needs the land tapped first is unknown. Hover the row and check the
+highlighted colour before clicking: an offset of a few pixels lands on a neighbouring card, and on the
+Worldmagic prompt a nudge moved the pointer from "Never mind" onto "Pay the gold" (not clicked).

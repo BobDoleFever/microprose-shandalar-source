@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Live check of Magic_RunTurnStep (MAGIC.EXE 0x0047624f) and g_CurrentStepCode (0x006ff4c0).
+Live check of Magic_RunTurnStep (MAGIC.EXE 0x0047624f), g_CurrentStepCode (0x006ff4c0) and the
+spell-stack operations (push 0x004751d7, resolve 0x004756a1, drop 0x00475bb0, clear 0x00474d1e).
 
 Static analysis says: Magic_RunTurnStep(player, step_code, step_name, wait_for_pass) sets
 g_CurrentStepCode to step_code, runs the step, and sets it back to -1. This probe records, on
@@ -26,6 +27,12 @@ from oracle_qemu import GDBRemote
 HERE = os.path.dirname(os.path.abspath(__file__))
 RUN_STEP = 0x0047624F
 STEP_CODE = 0x006FF4C0
+STACK_COUNT = 0x006A3F78          # g_SpellStackCount
+# The spell-stack operations (static names, docs/SYMBOL_VERIFICATION.md); the probe records the stack
+# depth on entry and, for the push, its arguments.
+STACK_FUNCS = {0x004751D7: ("Magic_PushSpellStack", 5), 0x004756A1: ("Magic_ResolveTopSpell", 0),
+               0x00475BB0: ("Magic_DropTopSpell", 0), 0x00474D1E: ("Magic_ClearSpellStack", 0)}
+BREAKS = {RUN_STEP} | set(STACK_FUNCS)
 PROGRAM = os.path.join(HERE, "..", "..", "sources", "installed", "Magic", "Program", "MAGIC.EXE")
 
 
@@ -70,11 +77,12 @@ def main():
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 900
     max_events = int(sys.argv[2]) if len(sys.argv) > 2 else 60
     fns = functions()
-    want = file_bytes(RUN_STEP)
+    want = {a: file_bytes(a) for a in BREAKS}
     gdb = GDBRemote()
-    gdb.set_breakpoint(RUN_STEP)
+    for a in BREAKS:
+        gdb.set_breakpoint(a)
     gdb.set_watchpoint(STEP_CODE)
-    print(f"[{time.strftime('%X')}] armed: breakpoint {RUN_STEP:#x}, write watchpoint {STEP_CODE:#x}", flush=True)
+    print(f"[{time.strftime('%X')}] armed: breakpoints {[hex(a) for a in sorted(BREAKS)]}, write watchpoint {STEP_CODE:#x}", flush=True)
     gdb.cont()
 
     events, t0 = [], time.time()
@@ -91,9 +99,21 @@ def main():
             ev = {"t": t, "kind": "write g_CurrentStepCode", "value": u32(gdb, STEP_CODE),
                   "written_by": (owner(fns, regs["eip"]) or ("?", "?"))[1],
                   "eip": f"0x{regs['eip']:08x}"}
+        elif regs["eip"] in STACK_FUNCS:
+            name, nargs = STACK_FUNCS[regs["eip"]]
+            try:
+                ok = gdb.read_memory(regs["eip"], 8) == want[regs["eip"]]
+            except IOError:
+                ok = None
+            esp = regs["esp"]
+            ev = {"t": t, "kind": f"enter {name}", "code_matches": ok, "called_from": f"0x{u32(gdb, esp):08x}"}
+            if ok is not None:
+                ev["stack_count_before"] = u32(gdb, STACK_COUNT)
+                if nargs:
+                    ev["args"] = [u32(gdb, esp + 4 + 4 * i) for i in range(nargs)]
         elif regs["eip"] == RUN_STEP:
             try:
-                ok = gdb.read_memory(RUN_STEP, 8) == want
+                ok = gdb.read_memory(RUN_STEP, 8) == want[RUN_STEP]
             except IOError:                               # code page not resident yet
                 ok = None
             esp = regs["esp"]
@@ -111,9 +131,9 @@ def main():
             ev = {"t": t, "kind": f"other stop {stop!r}"}
         events.append(ev)
         print(json.dumps(ev), flush=True)
-        gdb.resume({RUN_STEP})
+        gdb.resume(BREAKS)
 
-    for fn in (lambda: gdb.clear_breakpoint(RUN_STEP), lambda: gdb.clear_watchpoint(STEP_CODE), gdb.cont):
+    for fn in [lambda a=a: gdb.clear_breakpoint(a) for a in BREAKS] + [lambda: gdb.clear_watchpoint(STEP_CODE), gdb.cont]:
         try:
             fn()
         except Exception:

@@ -211,7 +211,7 @@ offset `0x10` of its master record) inside a pushed context. Its parameters are 
 
 Step codes, from the call sites that pass a name: `0xc9` Begin Upkeep, `0xcb` End Upkeep, `0xce` Draw
 Phase, `0xcf` Draw a card Phase, `0xd9` Choose Attackers, `0xda` Choose Defenders, `0xdc` Pay for
-attacker. The live run added `0xcd` End of Turn and `0xd2` Tapping.
+attacker. The live runs added `0xcd` End of Turn, `0xd2` Tapping and `0xd3` Casting.
 
 The last parameter was first called `wait_for_pass`; the code only shows that when it is non-zero the
 step is repeated while its handler returns non-zero (and a state mask of `0x30` is set), so it is now
@@ -249,11 +249,11 @@ Not seen: the combat steps (`0xd9`, `0xda`, `0xdc`), because no attack was made,
 (a step code seen non-negative on entry). What the last argument means beyond "repeat while active" is
 still a guess.
 
-## The spell stack (MAGIC.EXE): static evidence
+## The spell stack (MAGIC.EXE): push and resolve seen live, the rest static
 
 Three functions the rename pass called combat, end-of-turn and discard-to-hand-size are the push, resolve
-and drop operations of a stack of pending card events (spells, abilities, triggers). Nothing here has
-been watched live yet; the evidence is what the code does and which functions touch the same data.
+and drop operations of a stack of pending card events (spells, abilities, triggers). Push and resolve were
+watched once on the live game (next section); drop, clear and the AI's save and restore were not.
 
 | Address | Was | Now | Evidence |
 |---|---|---|---|
@@ -279,6 +279,30 @@ bits in a card's master record (bit `0x10` at offset `0x15`, bit `1` at offset `
 the stack. It is called by `Magic_TriggerCardEvent` and the step handler. Not renamed; its meaning is
 unknown. `g_PlayerHandCardCount`, tested with `& 0x224` in `Magic_TriggerCardEvent`, looks misnamed too.
 
+
+### Live result for the spell stack
+
+Breakpoints on the four stack functions during a real duel (`probe_steps.py`; raw log in the git-ignored
+`sources/oracle/probe_stack_result.log`), while I played a Mountain from my hand:
+
+| Time | Function | Stack depth on entry | Arguments / caller |
+|---|---|---|---|
+| 62.0 s | `Magic_PushSpellStack` | 0 | player 0, slot 4, event code 113 (`0x71`), target 0, flags 0; called from `0x0047009e` |
+| 63.3 s | `Magic_ResolveTopSpell` | 1 | called from `0x00470db7` |
+| 63.6 s | `Magic_RunTurnStep` | | step `0xd3` "Casting", player 0, then player 1 |
+
+- Both had `MAGIC.EXE`'s code bytes. The stack was empty before the push and had one entry before the
+  resolve, the pair predicted by the names. `0x71` is one of the three event codes the push is called
+  with (`0x72`, `0x7e`, `0x71`), and the one that occurs at a single call site.
+- The push took exactly the five arguments `(player, slot, event_code, target_slot, flags)` and the
+  slot number 4 matches the card I had just played (the fifth card in play order is not verified).
+- The step `0xd3` "Casting" is new to the step-code list.
+
+What this does and does not show: one push and one resolve, both associated with playing a land, so the
+event code `0x71` probably means "land played" (not proven). `Magic_DropTopSpell` and `Magic_ClearSpellStack`
+were never entered, so their names, and the AI save and restore, are still static only. The old names
+(`Magic_CombatPhase` and `Magic_EndTurnPhase`) were both wrong in any case: neither ran anything to do
+with combat or the end of a turn here.
 
 ## Names restored (MAGIC.EXE)
 
