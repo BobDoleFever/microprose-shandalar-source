@@ -61,12 +61,14 @@ tools/verification_harness/oracle_ctl.py shot    # screenshot; also: click X Y, 
 | `*_symbol_map.csv`, `*_renames.csv`, `engine_globals_map.csv` | name maps applied to Ghidra by the scripts |
 | `scripts/` | the Ghidra and Python pipeline that produced the tree |
 | `tools/verification_harness/` | drive and inspect the emulated original, plus tests |
+| `tools/emu_spike/` | spike: run `MAGIC.EXE` in a CPU emulator with our own imports |
 | `docs/` | see below |
 | `sources/` | local only, ignored by git: installers, disc images, extracted game files |
 
 ## Docs
 
 - [ORACLE_VM.md](docs/ORACLE_VM.md): building and using the emulated original, and its quirks
+- [PORT_STRATEGY.md](docs/PORT_STRATEGY.md): how the port will run (emulated original first, native replacement after), with a spike
 - [VERIFICATION_HARNESS_PLAN.md](docs/VERIFICATION_HARNESS_PLAN.md): the verification plan and checklist
 - [SYMBOL_VERIFICATION.md](docs/SYMBOL_VERIFICATION.md): names confirmed on the running game
 - [SYMBOL_SAMPLE.md](docs/SYMBOL_SAMPLE.md): how reliable the names are, and the known bad patterns
