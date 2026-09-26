@@ -9,7 +9,7 @@ Address,OldName,NewName
 0047496b,FUN_0047496b,Magic_Subsystem_0047496b
 00474c7f,FUN_00474c7f,Magic_Subsystem_00474c7f
 00474d0e,FUN_00474d0e,Magic_Util_00474d0e
-00474d1e,Mem_AllocOrFree_00474d1e,Magic_Util_00474d1e
+00474d1e,Magic_ClearSpellStack,Magic_Util_00474d1e
 00474d4a,FUN_00474d4a,Magic_Subsystem_00474d4a
 00474d7d,FUN_00474d7d,Magic_Subsystem_00474d7d
 004751d7,FUN_004751d7,Magic_Subsystem_004751d7

@@ -57,8 +57,8 @@ void Ai_SaveGameState(void)
   DAT_00554ff0 = DAT_0068a708;
   DAT_0055319c = g_ActiveBattlefieldFlag;
   DAT_0054be40 = g_ActivePlayer;
-  memcpy(&DAT_00552938,&DAT_006ff4d0,0x80);
-  memcpy(&DAT_00554ff8,&DAT_006fecc0,0x100);
+  memcpy(&DAT_00552938,&g_SpellStackEntries,0x80);
+  memcpy(&DAT_00554ff8,&g_SpellStackObjects,0x100);
   memcpy(&DAT_00550308,&DAT_006ff390,0x100);
   memcpy(&DAT_005558f8,&g_PlayerActiveCardCount,8);
   if (g_AiEvaluatedMoveCount < 0) {
@@ -113,8 +113,8 @@ void Ai_RestoreGameState(void)
   DAT_0068a708 = DAT_00554ff0;
   g_ActiveBattlefieldFlag = DAT_0055319c;
   g_ActivePlayer = DAT_0054be40;
-  memcpy(&DAT_006ff4d0,&DAT_00552938,0x80);
-  memcpy(&DAT_006fecc0,&DAT_00554ff8,0x100);
+  memcpy(&g_SpellStackEntries,&DAT_00552938,0x80);
+  memcpy(&g_SpellStackObjects,&DAT_00554ff8,0x100);
   memcpy(&DAT_006ff390,&DAT_00550308,0x100);
   memcpy(&g_PlayerActiveCardCount,&DAT_005558f8,8);
   g_AiEvaluatedMoveCount = DAT_0054e5e8;
@@ -165,8 +165,8 @@ void Ai_PushBoardState(void)
   DAT_00550484 = DAT_0068a708;
   DAT_00550490 = g_ActiveBattlefieldFlag;
   DAT_00552930 = g_ActivePlayer;
-  memcpy(&DAT_0054d5c0,&DAT_006ff4d0,0x80);
-  memcpy(&DAT_005531a0,&DAT_006fecc0,0x100);
+  memcpy(&DAT_0054d5c0,&g_SpellStackEntries,0x80);
+  memcpy(&DAT_005531a0,&g_SpellStackObjects,0x100);
   memcpy(&DAT_00550200,&DAT_006ff390,0x100);
   memcpy(&DAT_00550488,&g_PlayerActiveCardCount,8);
   DAT_00553188 = g_AiEvaluatedMoveCount;
@@ -214,8 +214,8 @@ void Ai_PopBoardState(void)
   DAT_0068a708 = DAT_00550484;
   g_ActiveBattlefieldFlag = DAT_00550490;
   g_ActivePlayer = DAT_00552930;
-  memcpy(&DAT_006ff4d0,&DAT_0054d5c0,0x80);
-  memcpy(&DAT_006fecc0,&DAT_005531a0,0x100);
+  memcpy(&g_SpellStackEntries,&DAT_0054d5c0,0x80);
+  memcpy(&g_SpellStackObjects,&DAT_005531a0,0x100);
   memcpy(&DAT_006ff390,&DAT_00550200,0x100);
   memcpy(&g_PlayerActiveCardCount,&DAT_00550488,8);
   g_AiEvaluatedMoveCount = DAT_00553188;
@@ -4959,10 +4959,10 @@ uint Ai_ChangeText_ApplyWord(void)
     DAT_006b2e20 = DAT_006b2e20 + 1;
   }
   g_AiCandidateActionCount = 0;
-  for (local_c = 0; ((&DAT_006fecc0)[local_c * 2] != -1 && (local_c < 0x20)); local_c = local_c + 1)
+  for (local_c = 0; ((&g_SpellStackObjects)[local_c * 2] != -1 && (local_c < 0x20)); local_c = local_c + 1)
   {
     if (*(int *)(&DAT_00695d70 + local_c * 4) != 0) {
-      status = (&DAT_006fecc0)[local_c * 2];
+      status = (&g_SpellStackObjects)[local_c * 2];
       val_result = *(int *)(&DAT_006fecc4 + local_c * 8);
       (&DAT_006a29e0)[g_AiCandidateActionCount * 0x2b] = status;
       (&DAT_006a29e4)[g_AiCandidateActionCount * 0x2b] = val_result;
@@ -5100,7 +5100,7 @@ void Ai_EvalAttackCandidate_CombatTrade(int player, uint attacker_idx)
             SendMessageA(g_TurnPriorityState,0x40b,(WPARAM)&local_30,0);
             SendMessageA(g_AiSelectedActionCode,0x40b,(WPARAM)&local_30,0);
           }
-          else if (local_1c != DAT_006fd3f4) {
+          else if (local_1c != g_StackObjectCardId) {
             if (local_20 == 1) {
               SendMessageA(g_AiLookaheadTreeRoot,0x40b,(WPARAM)&local_30,0);
               SendMessageA(g_AiDuelTurnState,0x40b,(WPARAM)&local_30,0);
@@ -9234,7 +9234,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
             else if ((((&g_MasterCardColorTable)[local_14 * 0x34] & 1) != 0) ||
                     (status = Magic_TriggerCardEvent(x,local_30,0x73,1 - x,0xffffffff),
                     status != 0)) {
-              Magic_CombatPhase(x,local_30,0x72,x,0);
+              Magic_PushSpellStack(x,local_30,0x72,x,0);
               g_AiManaPoolReserve = 1;
               DAT_006ff2d4 = 0xffffffff;
               local_18 = *(uint *)(&g_CardSlot_Flags + local_30 * 0x120 + x * 0x5b20) & 0x10;
@@ -9242,7 +9242,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
               g_AiManaPoolReserve = 0;
               if (g_ActivePlayer == 1) {
                 g_ActivePlayer = 0;
-                Magic_DiscardToHandSize();
+                Magic_DropTopSpell();
               }
               else {
                 if ((local_18 == 0) &&
@@ -9252,7 +9252,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
                 if (g_IsAiThinking != 1) {
                   Duel_PlaySoundById(0x12);
                 }
-                Magic_EndTurnPhase();
+                Magic_ResolveTopSpell();
                 Ai_Turn_ExecuteMainPhase(0,0xff);
               }
             }
@@ -9968,7 +9968,7 @@ int Ai_Subsystem_004bd23f(int x, int arg2)
      ((((&DAT_006a5f3e)[x * 0x5b20 + arg2 * 0x120] & 3) == 0 ||
       (((&g_MasterCardColorTable)
         [*(int *)(&g_CardSlot_CardId + x * 0x5b20 + arg2 * 0x120) * 0x34] & 2) == 0)))) {
-    Magic_CombatPhase(x,arg2,0x72,x,0);
+    Magic_PushSpellStack(x,arg2,0x72,x,0);
     g_AiManaPoolReserve = 1;
     DAT_006ff2d4 = 0xffffffff;
     u_res = *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + arg2 * 0x120);
@@ -9976,7 +9976,7 @@ int Ai_Subsystem_004bd23f(int x, int arg2)
     g_AiManaPoolReserve = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       local_8 = 0;
     }
     else {
@@ -9987,7 +9987,7 @@ int Ai_Subsystem_004bd23f(int x, int arg2)
       if (g_IsAiThinking != 1) {
         Duel_PlaySoundById(0x12);
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       local_8 = 1;
     }
   }
@@ -10324,7 +10324,7 @@ LAB_004bd70a:
                  (((u_temp & local_30) != 0 || (arg2 == 0)))) || (arg2 == 6)))) break;
       local_20 = local_20 + 1;
     }
-    Magic_CombatPhase(x,local_20,0x72,x,0);
+    Magic_PushSpellStack(x,local_20,0x72,x,0);
     g_AiManaPoolReserve = 1;
     DAT_006ff2d4 = 0xffffffff;
     u_temp = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + x * 0x5b20);
@@ -10333,7 +10333,7 @@ LAB_004bd70a:
     g_AiManaPoolReserve = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
     }
     else {
       if (((u_temp & 0x10) == 0) &&
@@ -10343,7 +10343,7 @@ LAB_004bd70a:
       if (g_IsAiThinking != 1) {
         Duel_PlaySoundById(0x12);
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
     }
     _DAT_006b2d28 = 0xffffffff;
   }
@@ -10385,7 +10385,7 @@ LAB_004bd70a:
       else if (((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + x * 0x5b20] != 0) &&
               ((((int)(char)(&g_CardSlot_CountersBonus)[local_34 * 0x120 + x * 0x5b20] &
                 1 << ((byte)arg2 & 0x1f)) != 0 || (arg2 == 0)))) {
-        Magic_CombatPhase(x,local_20,0x72,x,0);
+        Magic_PushSpellStack(x,local_20,0x72,x,0);
         _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20);
         g_AiManaPoolReserve = 1;
         DAT_006ff2d4 = 0xffffffff;
@@ -10394,7 +10394,7 @@ LAB_004bd70a:
         g_AiManaPoolReserve = 0;
         if (g_ActivePlayer == 1) {
           g_ActivePlayer = 0;
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
         }
         else {
           if (((u_temp & 0x10) == 0) &&
@@ -10404,7 +10404,7 @@ LAB_004bd70a:
           if (g_IsAiThinking != 1) {
             Duel_PlaySoundById(0x12);
           }
-          Magic_EndTurnPhase();
+          Magic_ResolveTopSpell();
           Ai_Turn_ExecuteMainPhase(0,0xff);
         }
         _DAT_006b2d28 = 0xffffffff;
@@ -10418,7 +10418,7 @@ LAB_004bd70a:
       return 0;
     }
   } while( true );
-  Magic_CombatPhase(x,local_20,0x72,x,0);
+  Magic_PushSpellStack(x,local_20,0x72,x,0);
   _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + x * 0x5b20);
   g_AiManaPoolReserve = 1;
   DAT_006ff2d4 = 0xffffffff;
@@ -10427,7 +10427,7 @@ LAB_004bd70a:
   g_AiManaPoolReserve = 0;
   if (g_ActivePlayer == 1) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
   }
   else {
     if (((u_temp & 0x10) == 0) &&
@@ -10437,7 +10437,7 @@ LAB_004bd70a:
     if (g_IsAiThinking != 1) {
       Duel_PlaySoundById(0x12);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     Ai_Turn_ExecuteMainPhase(0,0xff);
   }
   _DAT_006b2d28 = 0xffffffff;
@@ -16956,7 +16956,7 @@ void Ai_Subsystem_004cd3eb(void)
   DAT_006a28ac = u_res - 0x1d;
   DAT_006a28b4 = u_res - 0x1c;
   DAT_006ff564 = u_res - 0x1b;
-  DAT_006fd3f4 = u_res - 0x1a;
+  g_StackObjectCardId = u_res - 0x1a;
   DAT_006809d8 = u_res - 0x19;
   DAT_00695f14 = u_res - 0x18;
   DAT_00695edc = u_res - 0x17;

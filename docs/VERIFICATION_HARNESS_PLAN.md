@@ -159,8 +159,11 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Name `g_PlayerManaPool` (the current turn-step code) and `DAT_006b2fe4` (the event card's colour
       mask), and the three other functions that write the event context (static evidence).
 - [x] Confirmed live: `Magic_RunTurnStep` and `g_CurrentStepCode` (six steps seen; combat steps not yet).
-- [ ] Fix the remaining wrong names nearby: `Magic_CombatPhase` (it queues an event),
-      `g_AiSavedPlayerManaPool` (a copy of the event queue) and what the codes `0x32`-`0x3c` mean.
+- [x] Rename the spell stack: `Magic_CombatPhase`, `Magic_EndTurnPhase` and `Magic_DiscardToHandSize` were
+      really push, resolve and drop; `g_AiSavedPlayerManaPool` was a copy of its entries (static evidence).
+- [ ] Confirm the spell stack live (break on push and resolve while casting a spell).
+- [ ] Find what the codes `0x32`-`0x3c` measure in `Magic_QueryCardValue`, and what
+      `Magic_ResolveSpellStack` (a flag predicate) really is.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

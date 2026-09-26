@@ -113,7 +113,7 @@ undefined4 g_DefendingPlayer;
 undefined4 g_ScWillyScore;
 undefined g_MasterCardTypeTable;
 undefined g_MasterCardColorTable;
-int DAT_006a3f78;
+int g_SpellStackCount;
 string s_CASTING:_00516268;
 string s_ACTIVATING:_00516274;
 string s_PROCESSING:_00516284;
@@ -749,7 +749,7 @@ undefined g_MasterCardTable;
 int DAT_00695f08;
 int DAT_006b2e14;
 string s_Card_leaving_play_00519c0c;
-int DAT_006fd3f4;
+int g_StackObjectCardId;
 undefined UI_WndProc_0041dfe4;
 undefined *PTR_DAT_00519c20;
 undefined *PTR_DAT_005174e4;
@@ -1317,7 +1317,7 @@ undefined4 DAT_006b2d34;
 undefined4 DAT_006ff2e4;
 HWND DAT_006b3064;
 undefined4 DAT_006b2e28;
-undefined4 DAT_006fecc0;
+undefined4 g_SpellStackObjects;
 HWND DAT_006fe3fc;
 char *DAT_006a287c;
 int DAT_0052effc;
@@ -1474,7 +1474,7 @@ int DAT_00627a10;
 int DAT_0063edc4;
 undefined DAT_00538bb4;
 undefined DAT_00538bb8;
-int DAT_006fecc0;
+int g_SpellStackObjects;
 int DAT_00633434;
 int DAT_00695ec4;
 undefined DAT_0063ee84;
@@ -2338,14 +2338,14 @@ undefined DAT_00525d20;
 undefined DAT_00525d24;
 undefined DAT_00696910;
 undefined DAT_00525d28;
-undefined4 DAT_006a3f78;
+undefined4 g_SpellStackCount;
 undefined DAT_006ff4cc;
 undefined DAT_00695d70;
 undefined DAT_006fecc4;
 undefined DAT_006ff390;
 undefined DAT_006ff394;
 undefined DAT_00696880;
-undefined DAT_006ff4d0;
+undefined g_SpellStackEntries;
 int DAT_006fd3f0;
 undefined4 DAT_0052211c;
 int DAT_006ff380;
@@ -7515,7 +7515,7 @@ void Action_PromptTarget_00405370(uint spell_id,undefined4 target_id,int flags)
       strcpy(&g_OverworldWorldState,s_PROCESSING__00516284);
     }
     Ai_Subsystem_004b90de
-              (*(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8),*(int *)(&DAT_006fecbc + DAT_006a3f78 * 8)
+              (*(int *)(&DAT_006fecb8 + g_SpellStackCount * 8),*(int *)(&DAT_006fecbc + g_SpellStackCount * 8)
               );
     strcat(&g_OverworldWorldState,&DAT_00516294);
   }
@@ -17069,11 +17069,11 @@ undefined4 FUN_0041a782(int value,int min_val,int max_val)
         iVar1 = *(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20);
         arg_2_00 = *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20);
         if (iVar1 == g_CurrentTurnPhase) {
-          Magic_CombatPhase(value,min_val,0x7e,0,0);
+          Magic_PushSpellStack(value,min_val,0x7e,0,0);
           local_8 = Ai_CalcManaRequirement_004ba890
                               (iVar1,0,*(int *)(&g_CardSlot_ConvertedManaCost +
                                                min_val * 0x120 + value * 0x5b20));
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           g_ActivePlayer = 0;
         }
         else {
@@ -18391,7 +18391,7 @@ int Card_ApplyCombatDamage(int value,int min_val,int max_val,int target_slot,int
       }
       else {
         if ((*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == DAT_006fd3f4)) {
+           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == g_StackObjectCardId)) {
           local_10 = *(int *)(&g_ActiveCardsInPlay + flags * 0x120 + target_slot * 0x5b20);
         }
         else {
@@ -25170,9 +25170,9 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
           g_CardEventResult = g_CardEventResult | 2;
         }
         if (flags == 0x7e) {
-          Magic_CombatPhase(spell_id,target_id,0x7e,spell_id,0);
+          Magic_PushSpellStack(spell_id,target_id,0x7e,spell_id,0);
           Ai_CalcManaRequirement_004ba890(g_DefendingPlayer,0,3);
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           if (g_ActivePlayer == 1) {
             DAT_0068a65c = 1;
             g_ActivePlayer = 0;
@@ -25783,10 +25783,10 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
           local_10 = 2;
         }
         else if (local_8 == 1) {
-          Magic_CombatPhase(spell_id,target_id,0x7e,0,0);
+          Magic_PushSpellStack(spell_id,target_id,0x7e,0,0);
           Ai_CalcManaRequirement_004ba890
                     ((int)(char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20],0,1);
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           if (g_ActivePlayer == 1) {
             local_10 = 2;
           }
@@ -33733,7 +33733,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
       SendMessageA(DAT_006a4928,0x432,0,0);
       SendMessageA(DAT_006b3064,0x40c,0,0);
       DAT_006b2e28 = 0;
-      DAT_006fecc0 = 0xffffffff;
+      g_SpellStackObjects = 0xffffffff;
       SendMessageA(DAT_006fe3fc,0x40c,0,0);
       DAT_006b1578 = 0;
       ShowWindow(DAT_006a49f0,0);
@@ -34676,7 +34676,7 @@ uint Pic_Subsystem_004458b0(int x,char *str_2)
     _DAT_00538bb4 = 0xf;
     _DAT_00538bb8 = 0xfffffff0;
   }
-  if ((g_ActivePlayerPriority == x) && (DAT_006fecc0 == g_CurrentTurnPhase)) {
+  if ((g_ActivePlayerPriority == x) && (g_SpellStackObjects == g_CurrentTurnPhase)) {
     _DAT_00538bb4 = 0xf;
     _DAT_00538bb8 = 0xfffffff0;
   }
@@ -42072,9 +42072,9 @@ undefined4 Minit_Subsystem_00457e67(int spell_id,int target_id,int flags)
       local_8 = g_OverworldPlayerCoordY;
       g_OverworldPlayerCoordY = 0xffffffff;
       if (((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) && (DAT_006fedc0 == 0)) {
-        Magic_CombatPhase(spell_id,target_id,0x72,0,0);
+        Magic_PushSpellStack(spell_id,target_id,0x72,0,0);
         Ai_CalcManaRequirement_004ba890(spell_id,0,-1);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         local_164 = g_TurnCounter;
       }
       else {
@@ -50796,7 +50796,7 @@ void FUN_0046f300(void)
       *(undefined4 *)(&DAT_0063eed0 + local_8 * 4) = 0;
     }
   }
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   for (local_c = 0; local_c < 0x10; local_c = local_c + 1) {
     if ((&g_MasterCardTable)[(g_MasterCardCount + local_c) * 0x34] == -1) {
       *(undefined4 *)(&g_MasterCardTypeTable + (g_MasterCardCount + local_c) * 0x34) = 0xffffffff;
@@ -51115,7 +51115,7 @@ undefined4 FUN_0046ff50(int value,int min_val,int max_val)
     DAT_006b2d3c = value;
     DAT_006b2d2c = min_val;
     DAT_0068a708 = iVar5;
-    Magic_CombatPhase(value,min_val,0x71,value,0);
+    Magic_PushSpellStack(value,min_val,0x71,value,0);
     Ai_Subsystem_004bd4f0();
     if (DAT_006fe3f4 == 0) {
       if ((g_CurrentTurnPhase == value) && (g_IsAiThinking != 1)) {
@@ -51323,7 +51323,7 @@ undefined4 FUN_0046ff50(int value,int min_val,int max_val)
       DAT_00701008 = 1;
     }
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
     uVar6 = 0;
   }
@@ -51346,7 +51346,7 @@ undefined4 FUN_00470b36(int x,int y)
   iVar1 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
   Card_ColorMaskToColorIndex((&DAT_0051aebe)[iVar1 * 0x34]);
   if (iVar1 == -1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uVar3 = 0;
   }
   else {
@@ -51385,7 +51385,7 @@ undefined4 FUN_00470b36(int x,int y)
           Duel_PlaySoundById(0x10);
         }
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       uVar2 = DAT_006b2e14;
       uVar3 = DAT_00695f08;
       DAT_00695f08 = x;
@@ -51413,7 +51413,7 @@ undefined4 FUN_00470b36(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       uVar3 = 0;
     }
   }
@@ -51517,7 +51517,7 @@ bool FUN_0047103b(int x,int y)
       Ai_Subsystem_004b574d(x,y,-1,-1,&g_OverworldWorldState,0);
     }
   }
-  Magic_CombatPhase(x,y,0x72,x,0);
+  Magic_PushSpellStack(x,y,0x72,x,0);
   DAT_00695df8 = 0;
   if (((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 1) == 0) {
     if ((((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 0x10) != 0) &&
@@ -51534,7 +51534,7 @@ bool FUN_0047103b(int x,int y)
       }
       if (g_ActivePlayer != 0) {
         g_ActivePlayer = 0;
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         return false;
       }
       *(uint *)(&g_CardSlot_SpecialState + x * 0x5b20 + y * 0x120) =
@@ -51556,7 +51556,7 @@ bool FUN_0047103b(int x,int y)
       bVar4 = g_ActivePlayer == 1;
       if (bVar4) {
         Ai_Subsystem_004bd5e3(x);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
       }
       bVar4 = !bVar4;
       Ai_Util_004bd5af();
@@ -51595,7 +51595,7 @@ bool FUN_0047103b(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       bVar4 = false;
     }
     if (bVar4 != false) {
@@ -51633,7 +51633,7 @@ bool FUN_0047103b(int x,int y)
   }
   if (g_ActivePlayer != 0) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     return false;
   }
 LAB_004714f6:
@@ -51677,7 +51677,7 @@ undefined4 FUN_00471971(int x,int y)
       }
       FUN_00475c8a(local_14,g_ScWillyScore,&g_OverworldWorldState,0x6d);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     uVar3 = DAT_006b2e14;
     uVar2 = DAT_00695f08;
     DAT_00695f08 = x;
@@ -51697,9 +51697,9 @@ undefined4 FUN_00471aba(int value,int min_val,int max_val)
   undefined4 uVar1;
   
   DAT_0068078c = 1;
-  Magic_CombatPhase(value,min_val,0x7e,max_val,0);
+  Magic_PushSpellStack(value,min_val,0x7e,max_val,0);
   if (g_ActivePlayer == 1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uVar1 = 0;
   }
   else {
@@ -51715,7 +51715,7 @@ undefined4 FUN_00471aba(int value,int min_val,int max_val)
          *(uint *)(&g_CardSlot_Flags + min_val * 0x120 + value * 0x5b20) | 0x100;
     strcpy(&g_OverworldWorldState,s_Process_00525c98);
     Ai_Subsystem_004b90de(value,min_val);
-    uVar1 = Magic_EndTurnPhase();
+    uVar1 = Magic_ResolveTopSpell();
   }
   DAT_0068078c = 0;
   return uVar1;
@@ -52856,11 +52856,11 @@ void FUN_00474d0e(void)
 
 
 
-undefined4 Mem_AllocOrFree_00474d1e(void)
+undefined4 Magic_ClearSpellStack(void)
 
 {
-  DAT_006a3f78 = 0;
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackCount = 0;
+  g_SpellStackObjects = 0xffffffff;
   return 0;
 }
 
@@ -52871,11 +52871,11 @@ undefined4 FUN_00474d4a(void)
 {
   undefined4 uVar1;
   
-  if (DAT_006a3f78 == 0) {
+  if (g_SpellStackCount == 0) {
     uVar1 = 0xffffffff;
   }
   else {
-    uVar1 = *(undefined4 *)(&DAT_006ff4cc + DAT_006a3f78 * 4);
+    uVar1 = *(undefined4 *)(&DAT_006ff4cc + g_SpellStackCount * 4);
   }
   return uVar1;
 }
@@ -52892,10 +52892,10 @@ undefined4 Magic_MainTurnPhase(undefined4 value)
   undefined4 uVar5;
   int iVar6;
   
-  iVar6 = DAT_006a3f78 + -1;
-  iVar1 = (&DAT_006fecc0)[iVar6 * 2];
+  iVar6 = g_SpellStackCount + -1;
+  iVar1 = (&g_SpellStackObjects)[iVar6 * 2];
   iVar2 = *(int *)(&DAT_006fecc4 + iVar6 * 8);
-  if (*(int *)(&g_CardSlot_CardId + iVar2 * 0x120 + iVar1 * 0x5b20) == DAT_006fd3f4) {
+  if (*(int *)(&g_CardSlot_CardId + iVar2 * 0x120 + iVar1 * 0x5b20) == g_StackObjectCardId) {
     uVar3 = *(undefined4 *)(&g_CardSlot_SicknessState + iVar2 * 0x120 + iVar1 * 0x5b20);
     uVar4 = *(undefined4 *)(&g_CardSlot_TapState + iVar2 * 0x120 + iVar1 * 0x5b20);
     uVar5 = *(undefined4 *)(&g_CardSlot_DisplayIndex + iVar2 * 0x120 + iVar1 * 0x5b20);
@@ -52903,7 +52903,7 @@ undefined4 Magic_MainTurnPhase(undefined4 value)
            &g_ActiveCardsInPlay +
            *(int *)(&g_CardSlot_SicknessState + iVar2 * 0x120 + iVar1 * 0x5b20) * 0x120 +
            *(int *)(&g_CardSlot_TapState + iVar2 * 0x120 + iVar1 * 0x5b20) * 0x5b20,0x120);
-    *(int *)(&g_CardSlot_CardId + iVar2 * 0x120 + iVar1 * 0x5b20) = DAT_006fd3f4;
+    *(int *)(&g_CardSlot_CardId + iVar2 * 0x120 + iVar1 * 0x5b20) = g_StackObjectCardId;
     *(undefined4 *)(&DAT_006a5f80 + iVar2 * 0x120 + iVar1 * 0x5b20) = 0;
     (&DAT_006a5f50)[iVar2 * 0x120 + iVar1 * 0x5b20] = 0;
     *(uint *)(&g_CardSlot_Flags + iVar2 * 0x120 + iVar1 * 0x5b20) =
@@ -52944,73 +52944,73 @@ undefined4 Magic_MainTurnPhase(undefined4 value)
 
 
 
-undefined4 Magic_CombatPhase(int value,int min_val,int max_val,int target_slot,undefined4 flags)
+undefined4 Magic_PushSpellStack(int player,int slot,int event_code,int target_slot,undefined4 flags)
 
 {
   undefined4 uVar1;
   bool bVar2;
   int local_c;
   
-  if (DAT_006a3f78 < 0x20) {
-    *(undefined4 *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) =
-         *(undefined4 *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20);
-    *(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) =
-         *(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) | max_val << 0x10;
-    *(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) =
-         *(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) | target_slot << 0x18;
-    if (((max_val == 0x71) || (max_val == 0x7e)) ||
-       (*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) < 5)) {
-      local_c = min_val;
+  if (g_SpellStackCount < 0x20) {
+    *(undefined4 *)(&g_SpellStackEntries + g_SpellStackCount * 4) =
+         *(undefined4 *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
+    *(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) =
+         *(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) | event_code << 0x10;
+    *(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) =
+         *(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) | target_slot << 0x18;
+    if (((event_code == 0x71) || (event_code == 0x7e)) ||
+       (*(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) < 5)) {
+      local_c = slot;
       bVar2 = true;
     }
     else {
-      local_c = Pic_Subsystem_00451291(value,DAT_006fd3f4);
+      local_c = Pic_Subsystem_00451291(player,g_StackObjectCardId);
       if (local_c == -1) {
         bVar2 = false;
       }
       else {
-        uVar1 = *(undefined4 *)(&g_CardSlot_DisplayIndex + value * 0x5b20 + local_c * 0x120);
-        memcpy(&g_ActiveCardsInPlay + local_c * 0x120 + value * 0x5b20,
-               &g_ActiveCardsInPlay + value * 0x5b20 + min_val * 0x120,0x120);
-        *(int *)(&g_CardSlot_CardId + value * 0x5b20 + local_c * 0x120) = DAT_006fd3f4;
-        *(undefined4 *)(&DAT_006a5f80 + value * 0x5b20 + local_c * 0x120) = 0;
-        (&DAT_006a5f50)[value * 0x5b20 + local_c * 0x120] = 0;
-        if (*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) == -1) {
-          *(undefined4 *)(&g_ActiveCardsInPlay + value * 0x5b20 + local_c * 0x120) =
-               *(undefined4 *)(&g_ActiveCardsInPlay + min_val * 0x120 + value * 0x5b20);
+        uVar1 = *(undefined4 *)(&g_CardSlot_DisplayIndex + player * 0x5b20 + local_c * 0x120);
+        memcpy(&g_ActiveCardsInPlay + local_c * 0x120 + player * 0x5b20,
+               &g_ActiveCardsInPlay + player * 0x5b20 + slot * 0x120,0x120);
+        *(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_c * 0x120) = g_StackObjectCardId;
+        *(undefined4 *)(&DAT_006a5f80 + player * 0x5b20 + local_c * 0x120) = 0;
+        (&DAT_006a5f50)[player * 0x5b20 + local_c * 0x120] = 0;
+        if (*(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) == -1) {
+          *(undefined4 *)(&g_ActiveCardsInPlay + player * 0x5b20 + local_c * 0x120) =
+               *(undefined4 *)(&g_ActiveCardsInPlay + slot * 0x120 + player * 0x5b20);
         }
         else {
-          *(undefined4 *)(&g_ActiveCardsInPlay + value * 0x5b20 + local_c * 0x120) =
-               *(undefined4 *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20);
+          *(undefined4 *)(&g_ActiveCardsInPlay + player * 0x5b20 + local_c * 0x120) =
+               *(undefined4 *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
         }
-        *(undefined4 *)(&DAT_006a5f74 + value * 0x5b20 + local_c * 0x120) =
-             *(undefined4 *)(&DAT_006a5f74 + min_val * 0x120 + value * 0x5b20);
-        *(uint *)(&g_CardSlot_Flags + value * 0x5b20 + local_c * 0x120) =
-             *(uint *)(&g_CardSlot_Flags + value * 0x5b20 + local_c * 0x120) | 2;
-        *(int *)(&g_CardSlot_TapState + value * 0x5b20 + local_c * 0x120) = value;
-        *(int *)(&g_CardSlot_SicknessState + value * 0x5b20 + local_c * 0x120) = min_val;
-        *(undefined4 *)(&g_CardSlot_DisplayIndex + value * 0x5b20 + local_c * 0x120) = uVar1;
+        *(undefined4 *)(&DAT_006a5f74 + player * 0x5b20 + local_c * 0x120) =
+             *(undefined4 *)(&DAT_006a5f74 + slot * 0x120 + player * 0x5b20);
+        *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + local_c * 0x120) =
+             *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + local_c * 0x120) | 2;
+        *(int *)(&g_CardSlot_TapState + player * 0x5b20 + local_c * 0x120) = player;
+        *(int *)(&g_CardSlot_SicknessState + player * 0x5b20 + local_c * 0x120) = slot;
+        *(undefined4 *)(&g_CardSlot_DisplayIndex + player * 0x5b20 + local_c * 0x120) = uVar1;
         bVar2 = true;
       }
     }
     if (bVar2) {
-      (&DAT_006fecc0)[DAT_006a3f78 * 2] = value;
-      *(int *)(&DAT_006fecc4 + DAT_006a3f78 * 8) = local_c;
-      *(int *)(&DAT_006ff390 + DAT_006a3f78 * 8) =
-           (int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20];
-      *(undefined4 *)(&DAT_006ff394 + DAT_006a3f78 * 8) =
-           *(undefined4 *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20);
+      (&g_SpellStackObjects)[g_SpellStackCount * 2] = player;
+      *(int *)(&DAT_006fecc4 + g_SpellStackCount * 8) = local_c;
+      *(int *)(&DAT_006ff390 + g_SpellStackCount * 8) =
+           (int)(char)(&g_CardSlot_Toughness)[slot * 0x120 + player * 0x5b20];
+      *(undefined4 *)(&DAT_006ff394 + g_SpellStackCount * 8) =
+           *(undefined4 *)(&g_CardSlot_OriginalCardId + slot * 0x120 + player * 0x5b20);
       if (g_CurrentStepCode == -1) {
-        *(undefined4 *)(&DAT_00696880 + DAT_006a3f78 * 4) = g_ScWillyScore;
+        *(undefined4 *)(&DAT_00696880 + g_SpellStackCount * 4) = g_ScWillyScore;
       }
       else {
-        *(int *)(&DAT_00696880 + DAT_006a3f78 * 4) = g_CurrentStepCode;
+        *(int *)(&DAT_00696880 + g_SpellStackCount * 4) = g_CurrentStepCode;
       }
       if (g_IsAiThinking != 1) {
-        *(undefined4 *)(&DAT_00695d70 + DAT_006a3f78 * 4) = flags;
+        *(undefined4 *)(&DAT_00695d70 + g_SpellStackCount * 4) = flags;
       }
-      DAT_006a3f78 = DAT_006a3f78 + 1;
-      (&DAT_006fecc0)[DAT_006a3f78 * 2] = 0xffffffff;
+      g_SpellStackCount = g_SpellStackCount + 1;
+      (&g_SpellStackObjects)[g_SpellStackCount * 2] = 0xffffffff;
     }
   }
   return 0;
@@ -53024,8 +53024,8 @@ undefined4 FUN_004755fd(void)
   int iVar1;
   int local_c;
   
-  for (local_c = 0; local_c < DAT_006a3f78; local_c = local_c + 1) {
-    iVar1 = (&DAT_006fecc0)[local_c * 2];
+  for (local_c = 0; local_c < g_SpellStackCount; local_c = local_c + 1) {
+    iVar1 = (&g_SpellStackObjects)[local_c * 2];
     *(int *)(&DAT_006ff390 + local_c * 8) =
          (int)(char)(&g_CardSlot_Toughness)
                     [iVar1 * 0x5b20 + *(int *)(&DAT_006fecc4 + local_c * 8) * 0x120];
@@ -53039,31 +53039,31 @@ undefined4 FUN_004755fd(void)
 
 
 
-undefined4 Magic_EndTurnPhase(void)
+undefined4 Magic_ResolveTopSpell(void)
 
 {
   int value;
   int min_val;
   int local_c;
   
-  if (0 < DAT_006a3f78) {
-    DAT_006a3f78 = DAT_006a3f78 + -1;
-    value = (&DAT_006fecc0)[DAT_006a3f78 * 2];
-    min_val = *(int *)(&DAT_006fecc4 + DAT_006a3f78 * 8);
+  if (0 < g_SpellStackCount) {
+    g_SpellStackCount = g_SpellStackCount + -1;
+    value = (&g_SpellStackObjects)[g_SpellStackCount * 2];
+    min_val = *(int *)(&DAT_006fecc4 + g_SpellStackCount * 8);
     local_c = *(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20);
-    if (DAT_006fd3f4 == local_c) {
+    if (g_StackObjectCardId == local_c) {
       local_c = *(int *)(&g_ActiveCardsInPlay + min_val * 0x120 + value * 0x5b20);
     }
     if (*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) != -1) {
-      if ((char)((uint)*(undefined4 *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x10) == '~') {
+      if ((char)((uint)*(undefined4 *)(&g_SpellStackEntries + g_SpellStackCount * 4) >> 0x10) == '~') {
         Magic_BroadcastCardEventInStep
-                  (value,min_val,*(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x10 & 0xff,
-                   *(int *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x18);
+                  (value,min_val,*(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) >> 0x10 & 0xff,
+                   *(int *)(&g_SpellStackEntries + g_SpellStackCount * 4) >> 0x18);
       }
       else if (((&g_CardSlot_SpecialState)[min_val * 0x120 + value * 0x5b20] & 8) == 0) {
         if (((&g_CardSlot_SpecialState)[min_val * 0x120 + value * 0x5b20] & 0x80) == 0) {
           Magic_TriggerCardEvent
-                    (value,min_val,*(uint *)(&DAT_006ff4d0 + DAT_006a3f78 * 4) >> 0x10 & 0xff,
+                    (value,min_val,*(uint *)(&g_SpellStackEntries + g_SpellStackCount * 4) >> 0x10 & 0xff,
                      1 - value,0xffffffff);
         }
         else {
@@ -53112,14 +53112,14 @@ undefined4 Magic_EndTurnPhase(void)
                       *(int *)(&g_CardSlot_SicknessState + min_val * 0x120 + value * 0x5b20) * 0x120 +
                       *(int *)(&g_CardSlot_TapState + min_val * 0x120 + value * 0x5b20) * 0x5b20) | 4;
       }
-      if (*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) == DAT_006fd3f4) {
+      if (*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) == g_StackObjectCardId) {
         Pic_Subsystem_0044867e(value,min_val,4);
       }
     }
-    (&DAT_006fecc0)[DAT_006a3f78 * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_SpellStackCount * 2] = 0xffffffff;
     FUN_00472fae();
     if (((((&DAT_0051aed1)[local_c * 0x34] & 0x10) == 0) || (((byte)g_PlayerHandCardCount & 2) != 0)
-        ) && ((DAT_006fd3f0 < 2 && (((g_PlayerHandCardCount._1_1_ & 2) == 0 || (DAT_006a3f78 == 0)))
+        ) && ((DAT_006fd3f0 < 2 && (((g_PlayerHandCardCount._1_1_ & 2) == 0 || (g_SpellStackCount == 0)))
               ))) {
       Pic_Subsystem_004475a4(g_DefendingPlayer);
       Pic_Subsystem_004488a0();
@@ -53130,21 +53130,21 @@ undefined4 Magic_EndTurnPhase(void)
 
 
 
-undefined4 Magic_DiscardToHandSize(void)
+undefined4 Magic_DropTopSpell(void)
 
 {
-  if (0 < DAT_006a3f78) {
-    DAT_006a3f78 = DAT_006a3f78 + -1;
-    if (DAT_006fd3f4 ==
+  if (0 < g_SpellStackCount) {
+    g_SpellStackCount = g_SpellStackCount + -1;
+    if (g_StackObjectCardId ==
         *(int *)(&g_CardSlot_CardId +
-                *(int *)(&DAT_006fecc4 + DAT_006a3f78 * 8) * 0x120 +
-                (&DAT_006fecc0)[DAT_006a3f78 * 2] * 0x5b20)) {
+                *(int *)(&DAT_006fecc4 + g_SpellStackCount * 8) * 0x120 +
+                (&g_SpellStackObjects)[g_SpellStackCount * 2] * 0x5b20)) {
       *(undefined4 *)
        (&g_CardSlot_CardId +
-       *(int *)(&DAT_006fecc4 + DAT_006a3f78 * 8) * 0x120 +
-       (&DAT_006fecc0)[DAT_006a3f78 * 2] * 0x5b20) = 0xffffffff;
+       *(int *)(&DAT_006fecc4 + g_SpellStackCount * 8) * 0x120 +
+       (&g_SpellStackObjects)[g_SpellStackCount * 2] * 0x5b20) = 0xffffffff;
     }
-    (&DAT_006fecc0)[DAT_006a3f78 * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_SpellStackCount * 2] = 0xffffffff;
   }
   return 0;
 }
@@ -53170,16 +53170,16 @@ undefined4 FUN_00475c8a(int x,int min_val,char *max_val,undefined4 target_slot)
   undefined4 uVar3;
   
   uVar1 = DAT_0063ee1c;
-  if (((DAT_006a3f78 == 0) && (iVar2 = FUN_00505c74(), iVar2 != 0)) && (x != -2)) {
+  if (((g_SpellStackCount == 0) && (iVar2 = FUN_00505c74(), iVar2 != 0)) && (x != -2)) {
     DAT_0063ee1c = 1;
   }
   do {
     DAT_006ff380 = 0;
     uVar3 = Magic_CleanupPhase(x,min_val,max_val,target_slot);
-    if ((DAT_006ff380 == 0) || (0 < DAT_006a3f78)) break;
+    if ((DAT_006ff380 == 0) || (0 < g_SpellStackCount)) break;
   } while (g_IsAiThinking != 1);
   DAT_0063ee1c = uVar1;
-  if (DAT_006a3f78 == 0) {
+  if (g_SpellStackCount == 0) {
     DAT_0063ee1c = 0;
     *(uint *)(&DAT_00696740 + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) =
          *(uint *)(&DAT_00696740 + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) & 0xfffffffd;
@@ -53278,7 +53278,7 @@ LAB_0047615d:
       if (((g_DefendingPlayer == g_CurrentTurnPhase) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
         local_94 = 1;
       }
-      if ((DAT_006ff684 < DAT_006b2d24) && (-1 < DAT_006a3f78)) {
+      if ((DAT_006ff684 < DAT_006b2d24) && (-1 < g_SpellStackCount)) {
         local_98 = 0;
       }
     } while ((local_98 != 0) || (((DAT_006a4920 & 1) != 0 && (DAT_006ff684 == 1))));
@@ -53303,7 +53303,7 @@ LAB_0047615d:
       }
       g_ActivePlayer = 0;
       DAT_006a4920 = 0;
-      if (((DAT_006ff684 < DAT_006b2d24) && (-1 < DAT_006a3f78)) ||
+      if (((DAT_006ff684 < DAT_006b2d24) && (-1 < g_SpellStackCount)) ||
          (iVar4 = Pic_Subsystem_004458b0(1 - g_DefendingPlayer,local_8c), iVar4 == 0))
       goto LAB_0047615d;
       DAT_006ff380 = 1;
@@ -53555,7 +53555,7 @@ undefined4 FUN_004769c4(int x,int y)
   }
   else {
     local_8 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
-    if (DAT_006fd3f4 == local_8) {
+    if (g_StackObjectCardId == local_8) {
       local_8 = *(int *)(&g_ActiveCardsInPlay + y * 0x120 + x * 0x5b20);
     }
     if (local_8 == -1) {
@@ -57591,7 +57591,7 @@ LAB_004810c3:
           if (iVar3 == 0) {
             Duel_HitTestCardSlot(DAT_006b2e2c,&local_174,(undefined4 *)0x0,&local_144);
           }
-          if ((local_158 != DAT_006fd3f4) && (local_15c != 2)) {
+          if ((local_158 != g_StackObjectCardId) && (local_15c != 2)) {
             if (((local_158 == -1) || (local_15c != 1)) ||
                (((local_150 & 0x10000) != 0 && (DAT_006fe43c == 0)))) {
               if (local_178 != 0) {
@@ -62443,12 +62443,12 @@ uint FUN_0048d259(void)
   uVar124 = FileIo_ReadStream(&DAT_006a4b58,4);
   uVar125 = FileIo_ReadStream(&DAT_006a2858,4);
   uVar126 = FileIo_ReadStream(&DAT_00680780,8);
-  uVar127 = FileIo_ReadStream(&DAT_006ff4d0,0x80);
-  uVar128 = FileIo_ReadStream(&DAT_006fecc0,0x100);
+  uVar127 = FileIo_ReadStream(&g_SpellStackEntries,0x80);
+  uVar128 = FileIo_ReadStream(&g_SpellStackObjects,0x100);
   uVar129 = FileIo_ReadStream(&DAT_006ff390,0x100);
   uVar130 = FileIo_ReadStream(&DAT_00696880,0x80);
   uVar131 = FileIo_ReadStream(&DAT_00695d70,0x80);
-  uVar132 = FileIo_ReadStream(&DAT_006a3f78,4);
+  uVar132 = FileIo_ReadStream(&g_SpellStackCount,4);
   uVar133 = FileIo_ReadStream(&DAT_006a4920,4);
   uVar134 = FileIo_ReadStream(&DAT_006b1584,4);
   uVar135 = FileIo_ReadStream(&DAT_0068a704,4);
@@ -74386,14 +74386,14 @@ void Ai_SaveGameState(void)
   DAT_00554ff0 = DAT_0068a708;
   DAT_0055319c = DAT_006a5f20;
   DAT_0054be40 = g_ActivePlayer;
-  memcpy(&DAT_00552938,&DAT_006ff4d0,0x80);
-  memcpy(&DAT_00554ff8,&DAT_006fecc0,0x100);
+  memcpy(&DAT_00552938,&g_SpellStackEntries,0x80);
+  memcpy(&DAT_00554ff8,&g_SpellStackObjects,0x100);
   memcpy(&DAT_00550308,&DAT_006ff390,0x100);
   memcpy(&DAT_005558f8,&g_PlayerActiveCardCount,8);
-  if (DAT_006a3f78 < 0) {
+  if (g_SpellStackCount < 0) {
     assert(s_ScWilly>_0_0052ce44,s_G__NewMagic_sources_sid_Ai_c_0052ce24,0x176);
   }
-  DAT_0054e5e8 = DAT_006a3f78;
+  DAT_0054e5e8 = g_SpellStackCount;
   DAT_00550178 = DAT_00695f18;
   DAT_005528cc = DAT_007006d4;
   memcpy(&DAT_00550038,&DAT_00700ec0,0x140);
@@ -74430,11 +74430,11 @@ void Ai_RestoreGameState(void)
   DAT_0068a708 = DAT_00554ff0;
   DAT_006a5f20 = DAT_0055319c;
   g_ActivePlayer = DAT_0054be40;
-  memcpy(&DAT_006ff4d0,&DAT_00552938,0x80);
-  memcpy(&DAT_006fecc0,&DAT_00554ff8,0x100);
+  memcpy(&g_SpellStackEntries,&DAT_00552938,0x80);
+  memcpy(&g_SpellStackObjects,&DAT_00554ff8,0x100);
   memcpy(&DAT_006ff390,&DAT_00550308,0x100);
   memcpy(&g_PlayerActiveCardCount,&DAT_005558f8,8);
-  DAT_006a3f78 = DAT_0054e5e8;
+  g_SpellStackCount = DAT_0054e5e8;
   DAT_00695f18 = DAT_00550178;
   DAT_007006d4 = DAT_005528cc;
   memcpy(&DAT_00700ec0,&DAT_00550038,0x140);
@@ -74471,11 +74471,11 @@ void Ai_PushBoardState(void)
   DAT_00550484 = DAT_0068a708;
   DAT_00550490 = DAT_006a5f20;
   DAT_00552930 = g_ActivePlayer;
-  memcpy(&DAT_0054d5c0,&DAT_006ff4d0,0x80);
-  memcpy(&DAT_005531a0,&DAT_006fecc0,0x100);
+  memcpy(&DAT_0054d5c0,&g_SpellStackEntries,0x80);
+  memcpy(&DAT_005531a0,&g_SpellStackObjects,0x100);
   memcpy(&DAT_00550200,&DAT_006ff390,0x100);
   memcpy(&DAT_00550488,&g_PlayerActiveCardCount,8);
-  DAT_00553188 = DAT_006a3f78;
+  DAT_00553188 = g_SpellStackCount;
   DAT_0054e7d0 = DAT_00695f18;
   DAT_0054e788 = g_SpellStackDepth;
   memcpy(&DAT_005558d8,&DAT_006b2d40,0x1c);
@@ -74509,11 +74509,11 @@ void Ai_PopBoardState(void)
   DAT_0068a708 = DAT_00550484;
   DAT_006a5f20 = DAT_00550490;
   g_ActivePlayer = DAT_00552930;
-  memcpy(&DAT_006ff4d0,&DAT_0054d5c0,0x80);
-  memcpy(&DAT_006fecc0,&DAT_005531a0,0x100);
+  memcpy(&g_SpellStackEntries,&DAT_0054d5c0,0x80);
+  memcpy(&g_SpellStackObjects,&DAT_005531a0,0x100);
   memcpy(&DAT_006ff390,&DAT_00550200,0x100);
   memcpy(&g_PlayerActiveCardCount,&DAT_00550488,8);
-  DAT_006a3f78 = DAT_00553188;
+  g_SpellStackCount = DAT_00553188;
   DAT_00695f18 = DAT_0054e7d0;
   g_SpellStackDepth = DAT_0054e788;
   memcpy(&DAT_006b2d40,&DAT_005558d8,0x1c);
@@ -78676,10 +78676,10 @@ uint Ai_Subsystem_004b42dc(void)
     DAT_006b2e20 = DAT_006b2e20 + 1;
   }
   DAT_006b2e28 = 0;
-  for (local_c = 0; ((&DAT_006fecc0)[local_c * 2] != -1 && (local_c < 0x20)); local_c = local_c + 1)
+  for (local_c = 0; ((&g_SpellStackObjects)[local_c * 2] != -1 && (local_c < 0x20)); local_c = local_c + 1)
   {
     if (*(int *)(&DAT_00695d70 + local_c * 4) != 0) {
-      iVar1 = (&DAT_006fecc0)[local_c * 2];
+      iVar1 = (&g_SpellStackObjects)[local_c * 2];
       iVar2 = *(int *)(&DAT_006fecc4 + local_c * 8);
       (&DAT_006a29e0)[DAT_006b2e28 * 0x2b] = iVar1;
       (&DAT_006a29e4)[DAT_006b2e28 * 0x2b] = iVar2;
@@ -78806,7 +78806,7 @@ void Ai_EvalAttackCandidate_004b4a3f(undefined4 x,uint y)
             SendMessageA(DAT_006a4924,0x40b,(WPARAM)&local_30,0);
             SendMessageA(DAT_006b2e2c,0x40b,(WPARAM)&local_30,0);
           }
-          else if (local_1c != DAT_006fd3f4) {
+          else if (local_1c != g_StackObjectCardId) {
             if (local_20 == 1) {
               SendMessageA(DAT_0069e720,0x40b,(WPARAM)&local_30,0);
               SendMessageA(DAT_006fe400,0x40b,(WPARAM)&local_30,0);
@@ -82072,7 +82072,7 @@ int Ai_CalcManaRequirement_004ba890(int value,int min_val,int max_val)
             else if ((((&g_MasterCardColorTable)[local_14 * 0x34] & 1) != 0) ||
                     (iVar1 = Magic_TriggerCardEvent(value,local_30,0x73,1 - value,0xffffffff),
                     iVar1 != 0)) {
-              Magic_CombatPhase(value,local_30,0x72,value,0);
+              Magic_PushSpellStack(value,local_30,0x72,value,0);
               DAT_006ff4ac = 1;
               DAT_006ff2d4 = 0xffffffff;
               local_18 = *(uint *)(&g_CardSlot_Flags + local_30 * 0x120 + value * 0x5b20) & 0x10;
@@ -82080,7 +82080,7 @@ int Ai_CalcManaRequirement_004ba890(int value,int min_val,int max_val)
               DAT_006ff4ac = 0;
               if (g_ActivePlayer == 1) {
                 g_ActivePlayer = 0;
-                Magic_DiscardToHandSize();
+                Magic_DropTopSpell();
               }
               else {
                 if ((local_18 == 0) &&
@@ -82090,7 +82090,7 @@ int Ai_CalcManaRequirement_004ba890(int value,int min_val,int max_val)
                 if (g_IsAiThinking != 1) {
                   Duel_PlaySoundById(0x12);
                 }
-                Magic_EndTurnPhase();
+                Magic_ResolveTopSpell();
                 Ai_Subsystem_004cc9c5(0,0xff);
               }
             }
@@ -82304,8 +82304,8 @@ undefined4 Ai_Subsystem_004bc029(undefined4 spell_id,int *target_id,int flags,in
     strcpy(&g_OverworldWorldState,&DAT_0052d640);
   }
   else {
-    local_8 = *(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8);
-    local_24 = *(int *)(&DAT_006fecbc + DAT_006a3f78 * 8);
+    local_8 = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+    local_24 = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
     local_c = local_1c >> 0x10 & 0xff;
     if (local_c == 0x71) {
       strcpy(&g_OverworldWorldState,s_CASTING__0052d5f4);
@@ -82432,8 +82432,8 @@ undefined4 Ai_CalcManaRequirement_004bc423(void)
     g_OverworldWorldState = 0;
     uVar2 = FUN_00474d4a();
     if (uVar2 != 0xffffffff) {
-      iVar1 = *(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8);
-      y = *(int *)(&DAT_006fecbc + DAT_006a3f78 * 8);
+      iVar1 = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+      y = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
       uVar2 = uVar2 >> 0x10 & 0xff;
       if (uVar2 == 0x71) {
         strcpy(&g_OverworldWorldState,s_CASTING__0052d698);
@@ -82716,7 +82716,7 @@ undefined4 Ai_Subsystem_004bd23f(int x,int y)
      ((((&DAT_006a5f3e)[x * 0x5b20 + y * 0x120] & 3) == 0 ||
       (((&g_MasterCardColorTable)
         [*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) * 0x34] & 2) == 0)))) {
-    Magic_CombatPhase(x,y,0x72,x,0);
+    Magic_PushSpellStack(x,y,0x72,x,0);
     DAT_006ff4ac = 1;
     DAT_006ff2d4 = 0xffffffff;
     uVar1 = *(uint *)(&g_CardSlot_Flags + x * 0x5b20 + y * 0x120);
@@ -82724,7 +82724,7 @@ undefined4 Ai_Subsystem_004bd23f(int x,int y)
     DAT_006ff4ac = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       local_8 = 0;
     }
     else {
@@ -82735,7 +82735,7 @@ undefined4 Ai_Subsystem_004bd23f(int x,int y)
       if (g_IsAiThinking != 1) {
         Duel_PlaySoundById(0x12);
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       local_8 = 1;
     }
   }
@@ -82994,7 +82994,7 @@ LAB_004bd70a:
                  (((uVar2 & local_30) != 0 || (min_val == 0)))) || (min_val == 6)))) break;
       local_20 = local_20 + 1;
     }
-    Magic_CombatPhase(value,local_20,0x72,value,0);
+    Magic_PushSpellStack(value,local_20,0x72,value,0);
     DAT_006ff4ac = 1;
     DAT_006ff2d4 = 0xffffffff;
     uVar2 = *(uint *)(&g_CardSlot_Flags + local_34 * 0x120 + value * 0x5b20);
@@ -83003,7 +83003,7 @@ LAB_004bd70a:
     DAT_006ff4ac = 0;
     if (g_ActivePlayer == 1) {
       g_ActivePlayer = 0;
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
     }
     else {
       if (((uVar2 & 0x10) == 0) &&
@@ -83013,7 +83013,7 @@ LAB_004bd70a:
       if (g_IsAiThinking != 1) {
         Duel_PlaySoundById(0x12);
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
     }
     _DAT_006b2d28 = 0xffffffff;
   }
@@ -83055,7 +83055,7 @@ LAB_004bd70a:
       else if (((int)(char)(&DAT_006a5f4c)[local_34 * 0x120 + value * 0x5b20] != 0) &&
               ((((int)(char)(&DAT_006a5f4c)[local_34 * 0x120 + value * 0x5b20] &
                 1 << ((byte)min_val & 0x1f)) != 0 || (min_val == 0)))) {
-        Magic_CombatPhase(value,local_20,0x72,value,0);
+        Magic_PushSpellStack(value,local_20,0x72,value,0);
         _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + value * 0x5b20);
         DAT_006ff4ac = 1;
         DAT_006ff2d4 = 0xffffffff;
@@ -83064,7 +83064,7 @@ LAB_004bd70a:
         DAT_006ff4ac = 0;
         if (g_ActivePlayer == 1) {
           g_ActivePlayer = 0;
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
         }
         else {
           if (((uVar2 & 0x10) == 0) &&
@@ -83074,7 +83074,7 @@ LAB_004bd70a:
           if (g_IsAiThinking != 1) {
             Duel_PlaySoundById(0x12);
           }
-          Magic_EndTurnPhase();
+          Magic_ResolveTopSpell();
           Ai_Subsystem_004cc9c5(0,0xff);
         }
         _DAT_006b2d28 = 0xffffffff;
@@ -83088,7 +83088,7 @@ LAB_004bd70a:
       return 0;
     }
   } while( true );
-  Magic_CombatPhase(value,local_20,0x72,value,0);
+  Magic_PushSpellStack(value,local_20,0x72,value,0);
   _DAT_006b2d28 = *(int *)(&g_CardSlot_CardId + local_34 * 0x120 + value * 0x5b20);
   DAT_006ff4ac = 1;
   DAT_006ff2d4 = 0xffffffff;
@@ -83097,7 +83097,7 @@ LAB_004bd70a:
   DAT_006ff4ac = 0;
   if (g_ActivePlayer == 1) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
   }
   else {
     if (((uVar2 & 0x10) == 0) &&
@@ -83107,7 +83107,7 @@ LAB_004bd70a:
     if (g_IsAiThinking != 1) {
       Duel_PlaySoundById(0x12);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     Ai_Subsystem_004cc9c5(0,0xff);
   }
   _DAT_006b2d28 = 0xffffffff;
@@ -88668,7 +88668,7 @@ void Ai_Subsystem_004cd3eb(void)
   DAT_006a28ac = uVar1 - 0x1d;
   DAT_006a28b4 = uVar1 - 0x1c;
   DAT_006ff564 = uVar1 - 0x1b;
-  DAT_006fd3f4 = uVar1 - 0x1a;
+  g_StackObjectCardId = uVar1 - 0x1a;
   DAT_006809d8 = uVar1 - 0x19;
   DAT_00695f14 = uVar1 - 0x18;
   DAT_00695edc = uVar1 - 0x17;
@@ -90052,7 +90052,7 @@ uint SpellChain_ProcessTriggerEvent(int x,int y)
   uint uVar3;
   int local_8;
   
-  if (*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) == DAT_006fd3f4) {
+  if (*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) == g_StackObjectCardId) {
     local_8 = *(int *)(&g_ActiveCardsInPlay + y * 0x120 + x * 0x5b20);
   }
   else {
@@ -102610,8 +102610,8 @@ int Duel_LogActionStatusBanner
         g_OverworldWorldState = 0;
         local_104 = FUN_00474d4a();
         if (local_104 != 0xffffffff) {
-          iVar1 = *(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8);
-          y = *(int *)(&DAT_006fecbc + DAT_006a3f78 * 8);
+          iVar1 = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+          y = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
           uVar2 = local_104 >> 0x10 & 0xff;
           if (uVar2 == 0x71) {
             strcpy(&g_OverworldWorldState,s_CASTING__0052ffc8);
@@ -111809,7 +111809,7 @@ void FUN_00501f50(uint value)
   }
   FUN_0040a1ff();
   FUN_00472fae();
-  Mem_AllocOrFree_00474d1e();
+  Magic_ClearSpellStack();
   Magic_UntapTurnPhase();
   if ((-1 < g_IsAiThinking) && (DAT_0068a648 == 0)) goto LAB_00502276;
   for (local_2a0 = 0; local_2a0 < 2; local_2a0 = local_2a0 + 1) {

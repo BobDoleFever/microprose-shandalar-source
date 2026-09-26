@@ -604,7 +604,7 @@ void Action_PromptTarget_00405370(uint spell_id,undefined4 target_id,int flags)
       strcpy(&g_OverworldWorldState,s_PROCESSING__00516284);
     }
     Ai_Subsystem_004b90de
-              (*(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8),*(int *)(&DAT_006fecbc + DAT_006a3f78 * 8)
+              (*(int *)(&DAT_006fecb8 + g_SpellStackCount * 8),*(int *)(&DAT_006fecbc + g_SpellStackCount * 8)
               );
     strcat(&g_OverworldWorldState,&DAT_00516294);
   }

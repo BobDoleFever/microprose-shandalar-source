@@ -120,7 +120,7 @@ DAT_RENAMES = {
     "DAT_00554ff0": "g_AiSavedDefendingPlayer",
     "DAT_0055319c": "g_AiSavedActiveBattlefieldFlag",
     "DAT_0054be40": "g_AiSavedActivePlayer",
-    "DAT_00552938": "g_AiSavedPlayerManaPool",
+    "DAT_00552938": "g_AiSavedSpellStackEntries",
     "DAT_00554ff8": "g_AiSavedDuelArenaStatusFlags",
     "DAT_00550308": "g_AiSavedCombatEvaluationState",
     "DAT_005558f8": "g_AiSavedPlayerActiveCardCount",

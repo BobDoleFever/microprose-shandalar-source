@@ -2455,7 +2455,7 @@ void Duel_PreloadSoundEffects(void);;
 void FUN_00474d0e(void);;
 
 /* Function at 00474d1e (Size: 44 bytes) */
-int32_t Mem_AllocOrFree_00474d1e(void);;
+int32_t Magic_ClearSpellStack(void);;
 
 /* Function at 00474d4a (Size: 51 bytes) */
 int32_t FUN_00474d4a(void);;
@@ -2464,16 +2464,16 @@ int32_t FUN_00474d4a(void);;
 int32_t Magic_MainTurnPhase(int32_t value);;
 
 /* Function at 004751d7 (Size: 1062 bytes) */
-int32_t Magic_CombatPhase(int value,int min_val,int max_val,int flags,int32_t flags);;
+int32_t Magic_PushSpellStack(int player,int slot,int event_code,int target_slot,int32_t flags);;
 
 /* Function at 004755fd (Size: 164 bytes) */
 int32_t FUN_004755fd(void);;
 
 /* Function at 004756a1 (Size: 1295 bytes) */
-int32_t Magic_EndTurnPhase(void);;
+int32_t Magic_ResolveTopSpell(void);;
 
 /* Function at 00475bb0 (Size: 177 bytes) */
-int32_t Magic_DiscardToHandSize(void);;
+int32_t Magic_DropTopSpell(void);;
 
 /* Function at 00475c61 (Size: 41 bytes) */
 void Mem_AllocOrFree_00475c61(void);;

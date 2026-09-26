@@ -707,9 +707,9 @@ Address,OldName,NewName
 0047496b,FUN_0047496b,Duel_PlaySoundById
 00474c7f,FUN_00474c7f,Duel_PreloadSoundEffects
 00474d7d,FUN_00474d7d,Magic_MainTurnPhase
-004751d7,FUN_004751d7,Magic_CombatPhase
-004756a1,FUN_004756a1,Magic_EndTurnPhase
-00475bb0,FUN_00475bb0,Magic_DiscardToHandSize
+004751d7,FUN_004751d7,Magic_PushSpellStack
+004756a1,FUN_004756a1,Magic_ResolveTopSpell
+00475bb0,FUN_00475bb0,Magic_DropTopSpell
 00475d64,FUN_00475d64,Magic_CleanupPhase
 00476e60,FUN_00476e60,UI_RegisterClass_00476e60
 004771fa,FUN_004771fa,UI_WndProc_004771fa

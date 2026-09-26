@@ -183,7 +183,7 @@ GLOBAL_DAT_MAP = {
     "00554ff0": "g_AiSavedDefendingPlayer",
     "0055319c": "g_AiSavedActiveBattlefieldFlag",
     "0054be40": "g_AiSavedActivePlayer",
-    "00552938": "g_AiSavedPlayerManaPool",
+    "00552938": "g_AiSavedSpellStackEntries",
     "00554ff8": "g_AiSavedDuelArenaStatusFlags",
     "00550308": "g_AiSavedCombatEvaluationState",
     "005558f8": "g_AiSavedPlayerActiveCardCount",

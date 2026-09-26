@@ -85,25 +85,26 @@ def process_magic_c():
  * 1. Grant priority to the active player.
  * 2. Process land drops and spell casts.
  */""",
-        "Magic_CombatPhase": """/*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Procedure:
- * 1. Declare attackers step.
- * 2. Declare blockers step.
- * 3. Combat damage step.
+        "Magic_PushSpellStack": """/*
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_EndTurnPhase": """/*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Procedure:
- * 1. Check end-of-turn triggers.
- * 2. Prompt player to discard to maximum hand size if needed.
- * 3. Switch the active player turn index.
+        "Magic_ResolveTopSpell": """/*
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_DiscardToHandSize": """/*
- * Magic_DiscardToHandSize
- * Purpose: Force a player to discard cards when hand count exceeds 7.
+        "Magic_DropTopSpell": """/*
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
         "Magic_CleanupPhase": """/*
  * Magic_CleanupPhase

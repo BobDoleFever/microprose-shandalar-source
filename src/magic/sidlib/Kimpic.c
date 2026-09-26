@@ -5080,9 +5080,9 @@ int32_t CardScript_Brainwash(int spell_id,int target_id,int flags)
           g_CardEventResult = g_CardEventResult | 2;
         }
         if (flags == 0x7e) {
-          Magic_CombatPhase(spell_id,target_id,0x7e,spell_id,0);
+          Magic_PushSpellStack(spell_id,target_id,0x7e,spell_id,0);
           Ai_CalcManaRequirement_004ba890(g_DefendingPlayer,0,3);
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           if (g_ActivePlayer == 1) {
             DAT_0068a65c = 1;
             g_ActivePlayer = 0;
@@ -5749,10 +5749,10 @@ int32_t CardScript_PowerLeak(int spell_id,int target_id,int flags)
           card_idx = 2;
         }
         else if (slot_idx == 1) {
-          Magic_CombatPhase(spell_id,target_id,0x7e,0,0);
+          Magic_PushSpellStack(spell_id,target_id,0x7e,0,0);
           Ai_CalcManaRequirement_004ba890
                     ((int)(char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20],0,1);
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           if (g_ActivePlayer == 1) {
             card_idx = 2;
           }
@@ -14365,7 +14365,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
       SendMessageA(DAT_006a4928,0x432,0,0);
       SendMessageA(g_AiDecisionMatrix_Row,0x40c,0,0);
       g_AiCandidateActionCount = 0;
-      DAT_006fecc0 = 0xffffffff;
+      g_SpellStackObjects = 0xffffffff;
       SendMessageA(DAT_006fe3fc,0x40c,0,0);
       DAT_006b1578 = 0;
       ShowWindow(DAT_006a49f0,0);
@@ -15357,7 +15357,7 @@ uint32_t UI_PromptFastEffectsDialog(int arg1,char *mode_str)
     _DAT_00538bb4 = 0xf;
     _DAT_00538bb8 = 0xfffffff0;
   }
-  if ((g_ActivePlayerPriority == arg1) && (DAT_006fecc0 == g_CurrentTurnPhase)) {
+  if ((g_ActivePlayerPriority == arg1) && (g_SpellStackObjects == g_CurrentTurnPhase)) {
     _DAT_00538bb4 = 0xf;
     _DAT_00538bb8 = 0xfffffff0;
   }

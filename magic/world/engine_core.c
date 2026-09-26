@@ -6460,11 +6460,11 @@ undefined4 FUN_0041a782(int value,int min_val,int max_val)
         iVar1 = *(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20);
         arg_2_00 = *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20);
         if (iVar1 == g_CurrentTurnPhase) {
-          Magic_CombatPhase(value,min_val,0x7e,0,0);
+          Magic_PushSpellStack(value,min_val,0x7e,0,0);
           local_8 = Ai_CalcManaRequirement_004ba890
                               (iVar1,0,*(int *)(&g_CardSlot_ConvertedManaCost +
                                                min_val * 0x120 + value * 0x5b20));
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           g_ActivePlayer = 0;
         }
         else {
@@ -7192,7 +7192,7 @@ int Card_ApplyCombatDamage(int value,int min_val,int max_val,int target_slot,int
       }
       else {
         if ((*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == DAT_006fd3f4)) {
+           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == g_StackObjectCardId)) {
           local_10 = *(int *)(&g_ActiveCardsInPlay + flags * 0x120 + target_slot * 0x5b20);
         }
         else {
@@ -10729,7 +10729,7 @@ void FUN_0046f300(void)
       *(undefined4 *)(&DAT_0063eed0 + local_8 * 4) = 0;
     }
   }
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   for (local_c = 0; local_c < 0x10; local_c = local_c + 1) {
     if ((&g_MasterCardTable)[(g_MasterCardCount + local_c) * 0x34] == -1) {
       *(undefined4 *)(&g_MasterCardTypeTable + (g_MasterCardCount + local_c) * 0x34) = 0xffffffff;
@@ -10979,7 +10979,7 @@ undefined4 FUN_0046ff50(int value,int min_val,int max_val)
     DAT_006b2d3c = value;
     DAT_006b2d2c = min_val;
     DAT_0068a708 = iVar5;
-    Magic_CombatPhase(value,min_val,0x71,value,0);
+    Magic_PushSpellStack(value,min_val,0x71,value,0);
     Ai_Subsystem_004bd4f0();
     if (DAT_006fe3f4 == 0) {
       if ((g_CurrentTurnPhase == value) && (g_IsAiThinking != 1)) {
@@ -11187,7 +11187,7 @@ undefined4 FUN_0046ff50(int value,int min_val,int max_val)
       DAT_00701008 = 1;
     }
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
     uVar6 = 0;
   }
@@ -11215,7 +11215,7 @@ undefined4 FUN_00470b36(int x,int y)
   iVar1 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
   Card_ColorMaskToColorIndex((&DAT_0051aebe)[iVar1 * 0x34]);
   if (iVar1 == -1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uVar3 = 0;
   }
   else {
@@ -11254,7 +11254,7 @@ undefined4 FUN_00470b36(int x,int y)
           Duel_PlaySoundById(0x10);
         }
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       uVar2 = DAT_006b2e14;
       uVar3 = DAT_00695f08;
       DAT_00695f08 = x;
@@ -11282,7 +11282,7 @@ undefined4 FUN_00470b36(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       uVar3 = 0;
     }
   }
@@ -11396,7 +11396,7 @@ bool FUN_0047103b(int x,int y)
       Ai_Subsystem_004b574d(x,y,-1,-1,&g_OverworldWorldState,0);
     }
   }
-  Magic_CombatPhase(x,y,0x72,x,0);
+  Magic_PushSpellStack(x,y,0x72,x,0);
   DAT_00695df8 = 0;
   if (((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 1) == 0) {
     if ((((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 0x10) != 0) &&
@@ -11413,7 +11413,7 @@ bool FUN_0047103b(int x,int y)
       }
       if (g_ActivePlayer != 0) {
         g_ActivePlayer = 0;
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         return false;
       }
       *(uint *)(&g_CardSlot_SpecialState + x * 0x5b20 + y * 0x120) =
@@ -11435,7 +11435,7 @@ bool FUN_0047103b(int x,int y)
       bVar4 = g_ActivePlayer == 1;
       if (bVar4) {
         Ai_Subsystem_004bd5e3(x);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
       }
       bVar4 = !bVar4;
       Ai_Util_004bd5af();
@@ -11474,7 +11474,7 @@ bool FUN_0047103b(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       bVar4 = false;
     }
     if (bVar4 != false) {
@@ -11512,7 +11512,7 @@ bool FUN_0047103b(int x,int y)
   }
   if (g_ActivePlayer != 0) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     return false;
   }
 LAB_004714f6:
@@ -11561,7 +11561,7 @@ undefined4 FUN_00471971(int x,int y)
       }
       FUN_00475c8a(local_14,g_ScWillyScore,&g_OverworldWorldState,0x6d);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     uVar3 = DAT_006b2e14;
     uVar2 = DAT_00695f08;
     DAT_00695f08 = x;
@@ -11586,9 +11586,9 @@ undefined4 FUN_00471aba(int value,int min_val,int max_val)
   undefined4 uVar1;
   
   DAT_0068078c = 1;
-  Magic_CombatPhase(value,min_val,0x7e,max_val,0);
+  Magic_PushSpellStack(value,min_val,0x7e,max_val,0);
   if (g_ActivePlayer == 1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uVar1 = 0;
   }
   else {
@@ -11604,7 +11604,7 @@ undefined4 FUN_00471aba(int value,int min_val,int max_val)
          *(uint *)(&g_CardSlot_Flags + min_val * 0x120 + value * 0x5b20) | 0x100;
     strcpy(&g_OverworldWorldState,s_Process_00525c98);
     Ai_Subsystem_004b90de(value,min_val);
-    uVar1 = Magic_EndTurnPhase();
+    uVar1 = Magic_ResolveTopSpell();
   }
   DAT_0068078c = 0;
   return uVar1;
@@ -15984,12 +15984,12 @@ uint FUN_0048d259(void)
   uVar124 = FileIo_ReadStream(&DAT_006a4b58,4);
   uVar125 = FileIo_ReadStream(&DAT_006a2858,4);
   uVar126 = FileIo_ReadStream(&DAT_00680780,8);
-  uVar127 = FileIo_ReadStream(&DAT_006ff4d0,0x80);
-  uVar128 = FileIo_ReadStream(&DAT_006fecc0,0x100);
+  uVar127 = FileIo_ReadStream(&g_SpellStackEntries,0x80);
+  uVar128 = FileIo_ReadStream(&g_SpellStackObjects,0x100);
   uVar129 = FileIo_ReadStream(&DAT_006ff390,0x100);
   uVar130 = FileIo_ReadStream(&DAT_00696880,0x80);
   uVar131 = FileIo_ReadStream(&DAT_00695d70,0x80);
-  uVar132 = FileIo_ReadStream(&DAT_006a3f78,4);
+  uVar132 = FileIo_ReadStream(&g_SpellStackCount,4);
   uVar133 = FileIo_ReadStream(&DAT_006a4920,4);
   uVar134 = FileIo_ReadStream(&DAT_006b1584,4);
   uVar135 = FileIo_ReadStream(&DAT_0068a704,4);

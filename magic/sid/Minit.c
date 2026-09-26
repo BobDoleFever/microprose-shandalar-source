@@ -2646,9 +2646,9 @@ undefined4 Minit_Subsystem_00457e67(int spell_id,int target_id,int flags)
       local_8 = g_OverworldPlayerCoordY;
       g_OverworldPlayerCoordY = 0xffffffff;
       if (((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) && (DAT_006fedc0 == 0)) {
-        Magic_CombatPhase(spell_id,target_id,0x72,0,0);
+        Magic_PushSpellStack(spell_id,target_id,0x72,0,0);
         Ai_CalcManaRequirement_004ba890(spell_id,0,-1);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         local_164 = g_TurnCounter;
       }
       else {

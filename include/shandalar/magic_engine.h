@@ -129,24 +129,31 @@ void Duel_PreloadSoundEffects(void);
 void Magic_MainTurnPhase(void);
 
 /*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Manages Declare Attackers, Declare Blockers, and Combat Damage steps.
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_CombatPhase(void);
+void Magic_PushSpellStack(int player, int slot, int event_code, int target_slot, int flags);
 
 /*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Checks end-of-turn triggers and switches active player turn.
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_EndTurnPhase(void);
+void Magic_ResolveTopSpell(void);
 
 /*
- * Magic_DiscardToHandSize
- * Purpose: Force player to discard cards if hand size exceeds maximum (7 cards).
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_DiscardToHandSize(int player_id);
+void Magic_DropTopSpell(void);
 
 /*
  * Magic_CleanupPhase

@@ -1494,7 +1494,7 @@ uint32_t SpellChain_ProcessTriggerEvent(int player,int card_slot)
   uint32_t uval_3;
   int slot_idx;
   
-  if (*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == DAT_006fd3f4) {
+  if (*(int *)(&g_CardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == g_StackObjectCardId) {
     slot_idx = *(int *)(&g_ActiveCardsInPlay + card_slot * 0x120 + player * 0x5b20);
   }
   else {

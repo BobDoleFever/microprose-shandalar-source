@@ -18,7 +18,7 @@ extern int g_CardSlot_ConvertedManaCost;
 extern int DAT_006a5f74;
 extern int DAT_006a5f4d;
 extern int DAT_0050ed70;
-extern int DAT_006fd3f4;
+extern int g_StackObjectCardId;
 extern int g_CardSlot_Toughness;
 extern int DAT_006a6029;
 extern int DAT_0051aed1;
@@ -668,7 +668,7 @@ int Card_ApplyCombatDamage(int attacker_player,int attacker_slot,int defender_pl
       }
       else {
         if ((*(int *)(&g_CardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_CardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == DAT_006fd3f4)) {
+           (*(int *)(&g_CardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == g_StackObjectCardId)) {
           local_10 = *(int *)(&g_ActiveCardsInPlay + damage * 0x120 + defender_slot * 0x5b20);
         }
         else {

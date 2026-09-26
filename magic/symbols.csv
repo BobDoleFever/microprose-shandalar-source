@@ -10350,7 +10350,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00474ca3,"LAB_00474ca3",Label,true,false
 00474d09,"LAB_00474d09",Label,true,false
 00474d0e,"FUN_00474d0e",Function,true,true
-00474d1e,"Mem_AllocOrFree_00474d1e",Function,true,true
+00474d1e,"Magic_ClearSpellStack",Function,true,true
 00474d45,"LAB_00474d45",Label,true,false
 00474d4a,"FUN_00474d4a",Function,true,true
 00474d67,"LAB_00474d67",Label,true,false
@@ -10361,7 +10361,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0047515e,"LAB_0047515e",Label,true,false
 00475178,"LAB_00475178",Label,true,false
 004751d2,"LAB_004751d2",Label,true,false
-004751d7,"Magic_CombatPhase",Function,true,true
+004751d7,"Magic_PushSpellStack",Function,true,true
 004751f4,"LAB_004751f4",Label,true,false
 004753de,"LAB_004753de",Label,true,false
 0047541c,"LAB_0047541c",Label,true,false
@@ -10379,7 +10379,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00475615,"LAB_00475615",Label,true,false
 00475695,"LAB_00475695",Label,true,false
 0047569c,"LAB_0047569c",Label,true,false
-004756a1,"Magic_EndTurnPhase",Function,true,true
+004756a1,"Magic_ResolveTopSpell",Function,true,true
 004756be,"LAB_004756be",Label,true,false
 00475735,"LAB_00475735",Label,true,false
 004757ac,"LAB_004757ac",Label,true,false
@@ -10393,7 +10393,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00475b91,"LAB_00475b91",Label,true,false
 00475ba4,"LAB_00475ba4",Label,true,false
 00475bab,"LAB_00475bab",Label,true,false
-00475bb0,"Magic_DiscardToHandSize",Function,true,true
+00475bb0,"Magic_DropTopSpell",Function,true,true
 00475bcd,"LAB_00475bcd",Label,true,false
 00475c45,"LAB_00475c45",Label,true,false
 00475c5c,"LAB_00475c5c",Label,true,false
@@ -30759,7 +30759,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006a3f68,"DAT_006a3f68",Label,true,false
 006a3f70,"DAT_006a3f70",Label,true,false
 006a3f74,"DAT_006a3f74",Label,true,false
-006a3f78,"DAT_006a3f78",Label,true,false
+006a3f78,"g_SpellStackCount",Label,true,false
 006a3f7c,"DAT_006a3f7c",Label,true,false
 006a3f80,"DAT_006a3f80",Label,true,false
 006a3f84,"DAT_006a3f84",Label,true,false
@@ -30999,7 +30999,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006b30e8,"DAT_006b30e8",Label,true,false
 006b3104,"DAT_006b3104",Label,true,false
 006fd3f0,"DAT_006fd3f0",Label,true,false
-006fd3f4,"DAT_006fd3f4",Label,true,false
+006fd3f4,"g_StackObjectCardId",Label,true,false
 006fd400,"DAT_006fd400",Label,true,false
 006fdbd0,"DAT_006fdbd0",Label,true,false
 006fdbd4,"DAT_006fdbd4",Label,true,false
@@ -31042,7 +31042,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006fecb0,"g_AppHInstance",Label,true,false
 006fecb8,"DAT_006fecb8",Label,true,false
 006fecbc,"DAT_006fecbc",Label,true,false
-006fecc0,"DAT_006fecc0",Label,true,false
+006fecc0,"g_SpellStackObjects",Label,true,false
 006fecc4,"DAT_006fecc4",Label,true,false
 006fedc0,"DAT_006fedc0",Label,true,false
 006fedd0,"DAT_006fedd0",Label,true,false
@@ -31112,7 +31112,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006ff4b8,"DAT_006ff4b8",Label,true,false
 006ff4c0,"g_CurrentStepCode",Label,true,false
 006ff4cc,"DAT_006ff4cc",Label,true,false
-006ff4d0,"DAT_006ff4d0",Label,true,false
+006ff4d0,"g_SpellStackEntries",Label,true,false
 006ff550,"DAT_006ff550",Label,true,false
 006ff554,"DAT_006ff554",Label,true,false
 006ff558,"g_ScWillyScore",Label,true,false

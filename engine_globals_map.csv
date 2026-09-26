@@ -65,7 +65,7 @@ Address,NewName
 005518f8,g_AiSavedCardDisplayOrder_Slot
 005520c8,g_AiCardScore_BasicLand
 005528cc,g_AiSavedCardDisplayOrderCount
-00552938,g_AiSavedPlayerManaPool
+00552938,g_AiSavedSpellStackEntries
 005529b8,g_AiSavedCardDisplayOrder_Player
 0055319c,g_AiSavedActiveBattlefieldFlag
 005532a0,g_AiSavedManaReserveBuffer
@@ -284,11 +284,13 @@ Address,NewName
 006b2fe4,g_EventCardColorMask
 006b3008,g_ActivePlayerSpellPriority
 006b3064,g_AiDecisionMatrix_Row
+006fd3f4,g_StackObjectCardId
 006fe3f8,g_CardScanDepth
 006fe400,g_AiDuelTurnState
 006fe444,g_DuelArenaStatusFlags
 006fe488,g_DuelArenaHwnd
 006fecb0,g_AppHInstance
+006fecc0,g_SpellStackObjects
 006fedc0,g_AiTurnDecisionFlag
 006fefa8,g_AiCurrentSearchPath
 006ff19c,g_AiBlockingCreatureCount
@@ -299,6 +301,7 @@ Address,NewName
 006ff2f0,g_ActiveCombatRoundCounter
 006ff4ac,g_AiManaPoolReserve
 006ff4c0,g_CurrentStepCode
+006ff4d0,g_SpellStackEntries
 006ff558,g_ScWillyScore
 006ff55c,g_AiDecisionScore
 006ff570,g_DuelDatFilePath

@@ -55,9 +55,9 @@ def main():
         "0047496b": "Duel_PlaySoundById",
         "00474c7f": "Duel_PreloadSoundEffects",
         "00474d7d": "Magic_MainTurnPhase",
-        "004751d7": "Magic_CombatPhase",
-        "004756a1": "Magic_EndTurnPhase",
-        "00475bb0": "Magic_DiscardToHandSize",
+        "004751d7": "Magic_PushSpellStack",
+        "004756a1": "Magic_ResolveTopSpell",
+        "00475bb0": "Magic_DropTopSpell",
         "00475d64": "Magic_CleanupPhase"
     }
 

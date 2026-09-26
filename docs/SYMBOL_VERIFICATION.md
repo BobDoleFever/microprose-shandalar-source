@@ -249,6 +249,37 @@ Not seen: the combat steps (`0xd9`, `0xda`, `0xdc`), because no attack was made,
 (a step code seen non-negative on entry). What the last argument means beyond "repeat while active" is
 still a guess.
 
+## The spell stack (MAGIC.EXE): static evidence
+
+Three functions the rename pass called combat, end-of-turn and discard-to-hand-size are the push, resolve
+and drop operations of a stack of pending card events (spells, abilities, triggers). Nothing here has
+been watched live yet; the evidence is what the code does and which functions touch the same data.
+
+| Address | Was | Now | Evidence |
+|---|---|---|---|
+| `0x004751d7` | `Magic_CombatPhase` | `Magic_PushSpellStack(player, slot, event_code, target_slot, flags)` | appends an entry at `g_SpellStackCount` (max 0x20) packing card id, event code and target slot into one word, records `(player, slot)`, then increments the count; for cards with id 5 or more it copies the card's 0x120-byte slot into a free slot as a stand-in object. 12 callers, pushing event codes `0x72` (7 sites), `0x7e` (4) and `0x71` (1) |
+| `0x004756a1` | `Magic_EndTurnPhase` | `Magic_ResolveTopSpell()` | decrements the count, reads the entry, and runs the card's handler through `Magic_TriggerCardEvent` (or `Magic_BroadcastCardEventInStep` for event `0x7e`), with special handling for stand-in objects. 8 callers |
+| `0x00475bb0` | `Magic_DiscardToHandSize` | `Magic_DropTopSpell()` | decrements the count, clears the stand-in slot if its card id is the placeholder, and writes the `-1` sentinel; runs nothing. 17 callers |
+| `0x00474d1e` | `Mem_AllocOrFree_00474d1e` | `Magic_ClearSpellStack()` | sets the count to 0 and the first object to `-1`; one caller |
+
+| Address | Was | Now |
+|---|---|---|
+| `0x006a3f78` | `DAT_006a3f78` | `g_SpellStackCount` |
+| `0x006ff4d0` | `DAT_006ff4d0` | `g_SpellStackEntries` (32 packed words: card id, event code << 16, target slot << 24) |
+| `0x006fecc0` | `DAT_006fecc0` | `g_SpellStackObjects` (pairs of `(player, slot)`, terminated by `-1`) |
+| `0x006fd3f4` | `DAT_006fd3f4` | `g_StackObjectCardId` (the placeholder card id given to stand-in objects) |
+| `0x00552938` | `g_AiSavedPlayerManaPool` | `g_AiSavedSpellStackEntries` (a 0x80-byte `memcpy` of `g_SpellStackEntries`) |
+
+The AI saves and restores the count and entries around its lookahead (`Ai_SaveGameState`,
+`Ai_RestoreGameState`, `Ai_PushBoardState`, `Ai_PopBoardState`), which fits a stack. Parallel arrays that
+hold the stack entry's toughness, original card id, step code and flags are still unnamed.
+
+`Magic_ResolveSpellStack` (`0x00474389`) is also a misnomer: it is a small predicate that tests two flag
+bits in a card's master record (bit `0x10` at offset `0x15`, bit `1` at offset `0x14`) and never touches
+the stack. It is called by `Magic_TriggerCardEvent` and the step handler. Not renamed; its meaning is
+unknown. `g_PlayerHandCardCount`, tested with `& 0x224` in `Magic_TriggerCardEvent`, looks misnamed too.
+
+
 ## Names restored (MAGIC.EXE)
 
 30 names that a later pass had replaced with worse ones, each checked against its code: the sound

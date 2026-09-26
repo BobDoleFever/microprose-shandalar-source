@@ -812,13 +812,13 @@ Address,FunctionName,SourceFile,ModuleGroup
 0047496b,Duel_PlaySoundById,sid/Magic.c,sid
 00474c7f,Duel_PreloadSoundEffects,sid/Magic.c,sid
 00474d0e,FUN_00474d0e,sid/Magic.c,sid
-00474d1e,Mem_AllocOrFree_00474d1e,sid/Magic.c,sid
+00474d1e,Magic_ClearSpellStack,sid/Magic.c,sid
 00474d4a,FUN_00474d4a,sid/Magic.c,sid
 00474d7d,Magic_MainTurnPhase,sid/Magic.c,sid
-004751d7,Magic_CombatPhase,sid/Magic.c,sid
+004751d7,Magic_PushSpellStack,sid/Magic.c,sid
 004755fd,FUN_004755fd,sid/Magic.c,sid
-004756a1,Magic_EndTurnPhase,sid/Magic.c,sid
-00475bb0,Magic_DiscardToHandSize,sid/Magic.c,sid
+004756a1,Magic_ResolveTopSpell,sid/Magic.c,sid
+00475bb0,Magic_DropTopSpell,sid/Magic.c,sid
 00475c61,Mem_AllocOrFree_00475c61,sid/Magic.c,sid
 00475c8a,FUN_00475c8a,sid/Magic.c,sid
 00475d64,Magic_CleanupPhase,sid/Magic.c,sid

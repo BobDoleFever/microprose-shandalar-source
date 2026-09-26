@@ -40,9 +40,9 @@ def analyze():
         elif addr == "00474b50":
             sname = "Magic_MainTurnPhase"
         elif addr == "00474cf0":
-            sname = "Magic_CombatPhase"
+            sname = "Magic_PushSpellStack"
         elif addr == "00474e20":
-            sname = "Magic_EndTurnPhase"
+            sname = "Magic_ResolveTopSpell"
         elif "mana" in strings.lower():
             sname = f"Magic_Mana_{addr}"
         elif "damage" in strings.lower() or "life" in strings.lower():

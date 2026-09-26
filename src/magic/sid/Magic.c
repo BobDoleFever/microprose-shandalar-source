@@ -538,17 +538,17 @@ void FUN_00474d0e(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_00474d1e
+ * Decompiled function: Magic_ClearSpellStack
  * Entry Point: 00474d1e
  * Size: 44 bytes
  */
 
 
-int Mem_AllocOrFree_00474d1e(void)
+int Magic_ClearSpellStack(void)
 
 {
   g_AiEvaluatedMoveCount = 0;
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   return 0;
 }
 
@@ -602,9 +602,9 @@ int Magic_MainTurnPhase(int player_id)
   int val_6;
   
   val_6 = g_AiEvaluatedMoveCount + -1;
-  val_1 = (&DAT_006fecc0)[val_6 * 2];
+  val_1 = (&g_SpellStackObjects)[val_6 * 2];
   val_2 = *(int *)(&DAT_006fecc4 + val_6 * 8);
-  if (*(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) == DAT_006fd3f4) {
+  if (*(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) == g_StackObjectCardId) {
     uval_3 = *(int *)(&g_CardSlot_SicknessState + val_2 * 0x120 + val_1 * 0x5b20);
     uval_4 = *(int *)(&g_CardSlot_TapState + val_2 * 0x120 + val_1 * 0x5b20);
     uval_5 = *(int *)(&g_CardSlot_DisplayIndex + val_2 * 0x120 + val_1 * 0x5b20);
@@ -612,7 +612,7 @@ int Magic_MainTurnPhase(int player_id)
            &g_ActiveCardsInPlay +
            *(int *)(&g_CardSlot_SicknessState + val_2 * 0x120 + val_1 * 0x5b20) * 0x120 +
            *(int *)(&g_CardSlot_TapState + val_2 * 0x120 + val_1 * 0x5b20) * 0x5b20,0x120);
-    *(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) = DAT_006fd3f4;
+    *(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) = g_StackObjectCardId;
     *(int *)(&DAT_006a5f80 + val_2 * 0x120 + val_1 * 0x5b20) = 0;
     (&g_CardSlot_CardTypeIndex)[val_2 * 0x120 + val_1 * 0x5b20] = 0;
     *(uint32_t *)(&g_CardSlot_Flags + val_2 * 0x120 + val_1 * 0x5b20) =
@@ -654,21 +654,22 @@ int Magic_MainTurnPhase(int player_id)
 
 
 /*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Procedure:
- * 1. Declare attackers step.
- * 2. Declare blockers step.
- * 3. Combat damage step.
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_CombatPhase
+ * Decompiled function: Magic_PushSpellStack
  * Entry Point: 004751d7
  * Size: 1062 bytes
  */
 
 
-int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int arg_5)
+int Magic_PushSpellStack(int player_id,int card_slot,int event_type,int arg_4,int arg_5)
 
 {
   int uval_1;
@@ -676,19 +677,19 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
   int match_count;
   
   if (g_AiEvaluatedMoveCount < 0x20) {
-    *(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
+    *(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
          *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20);
-    *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
-         *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) | arg_3 << 0x10;
-    *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
-         *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) | arg_4 << 0x18;
+    *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
+         *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) | arg_3 << 0x10;
+    *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
+         *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) | arg_4 << 0x18;
     if (((arg_3 == 0x71) || (arg_3 == 0x7e)) ||
        (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) < 5)) {
       match_count = arg_2;
       flag_2 = true;
     }
     else {
-      match_count = Deck_AddCardToDeck(arg_1,DAT_006fd3f4);
+      match_count = Deck_AddCardToDeck(arg_1,g_StackObjectCardId);
       if (match_count == -1) {
         flag_2 = false;
       }
@@ -696,7 +697,7 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
         uval_1 = *(int *)(&g_CardSlot_DisplayIndex + arg_1 * 0x5b20 + match_count * 0x120);
         memcpy(&g_ActiveCardsInPlay + match_count * 0x120 + arg_1 * 0x5b20,
                &g_ActiveCardsInPlay + arg_1 * 0x5b20 + arg_2 * 0x120,0x120);
-        *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + match_count * 0x120) = DAT_006fd3f4;
+        *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + match_count * 0x120) = g_StackObjectCardId;
         *(int *)(&DAT_006a5f80 + arg_1 * 0x5b20 + match_count * 0x120) = 0;
         (&g_CardSlot_CardTypeIndex)[arg_1 * 0x5b20 + match_count * 0x120] = 0;
         if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == -1) {
@@ -718,7 +719,7 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
       }
     }
     if (flag_2) {
-      (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = arg_1;
+      (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = arg_1;
       *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) = match_count;
       *(int *)(&DAT_006ff390 + g_AiEvaluatedMoveCount * 8) =
            (int)(char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + arg_1 * 0x5b20];
@@ -734,7 +735,7 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
         *(int *)(&DAT_00695d70 + g_AiEvaluatedMoveCount * 4) = arg_5;
       }
       g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + 1;
-      (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+      (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
     }
   }
   return 0;
@@ -756,7 +757,7 @@ int FUN_004755fd(void)
   int match_count;
   
   for (match_count = 0; match_count < g_AiEvaluatedMoveCount; match_count = match_count + 1) {
-    val_1 = (&DAT_006fecc0)[match_count * 2];
+    val_1 = (&g_SpellStackObjects)[match_count * 2];
     *(int *)(&DAT_006ff390 + match_count * 8) =
          (int)(char)(&g_CardSlot_Toughness)
                     [val_1 * 0x5b20 + *(int *)(&DAT_006fecc4 + match_count * 8) * 0x120];
@@ -771,21 +772,20 @@ int FUN_004755fd(void)
 
 
 /*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Procedure:
- * 1. Check end-of-turn triggers.
- * 2. Prompt player to discard to maximum hand size if needed.
- * 3. Switch the active player turn index.
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_EndTurnPhase
+ * Decompiled function: Magic_ResolveTopSpell
  * Entry Point: 004756a1
  * Size: 1295 bytes
  */
 
 
-int Magic_EndTurnPhase(void)
+int Magic_ResolveTopSpell(void)
 
 {
   int player_id;
@@ -794,22 +794,22 @@ int Magic_EndTurnPhase(void)
   
   if (0 < g_AiEvaluatedMoveCount) {
     g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + -1;
-    arg_1 = (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2];
+    arg_1 = (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2];
     arg_2 = *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8);
     match_count = *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20);
-    if (DAT_006fd3f4 == match_count) {
+    if (g_StackObjectCardId == match_count) {
       match_count = *(int *)(&g_ActiveCardsInPlay + arg_2 * 0x120 + arg_1 * 0x5b20);
     }
     if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) != -1) {
-      if ((char)((uint32_t)*(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10) == '~') {
+      if ((char)((uint32_t)*(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10) == '~') {
         Magic_BroadcastCardEventInStep
-                  (arg_1,arg_2,*(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
-                   *(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x18);
+                  (arg_1,arg_2,*(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
+                   *(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x18);
       }
       else if (((&g_CardSlot_SpecialState)[arg_2 * 0x120 + arg_1 * 0x5b20] & 8) == 0) {
         if (((&g_CardSlot_SpecialState)[arg_2 * 0x120 + arg_1 * 0x5b20] & 0x80) == 0) {
           Magic_TriggerCardEvent
-                    (arg_1,arg_2,*(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
+                    (arg_1,arg_2,*(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
                      1 - arg_1,0xffffffff);
         }
         else {
@@ -858,11 +858,11 @@ int Magic_EndTurnPhase(void)
                       *(int *)(&g_CardSlot_SicknessState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x120 +
                       *(int *)(&g_CardSlot_TapState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x5b20) | 4;
       }
-      if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == DAT_006fd3f4) {
+      if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == g_StackObjectCardId) {
         Pic_Subsystem_0044867e(arg_1,arg_2,4);
       }
     }
-    (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
     Rules_ProcessCombatDamageStep();
     if (((((&g_MasterCardFlagsTable)[match_count * 0x34] & 0x10) == 0) || (((uint8_t)g_PlayerHandCardCount & 2) != 0)
         ) && ((DAT_006fd3f0 < 2 && (((g_PlayerHandCardCount._1_1_ & 2) == 0 || (g_AiEvaluatedMoveCount == 0)))
@@ -877,31 +877,32 @@ int Magic_EndTurnPhase(void)
 
 
 /*
- * Magic_DiscardToHandSize
- * Purpose: Force a player to discard cards when hand count exceeds 7.
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_DiscardToHandSize
+ * Decompiled function: Magic_DropTopSpell
  * Entry Point: 00475bb0
  * Size: 177 bytes
  */
 
 
-int Magic_DiscardToHandSize(void)
+int Magic_DropTopSpell(void)
 
 {
   if (0 < g_AiEvaluatedMoveCount) {
     g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + -1;
-    if (DAT_006fd3f4 ==
+    if (g_StackObjectCardId ==
         *(int *)(&g_CardSlot_CardId +
                 *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) * 0x120 +
-                (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] * 0x5b20)) {
+                (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] * 0x5b20)) {
       *(int *)
        (&g_CardSlot_CardId +
        *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) * 0x120 +
-       (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] * 0x5b20) = 0xffffffff;
+       (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] * 0x5b20) = 0xffffffff;
     }
-    (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
   }
   return 0;
 }
@@ -1393,7 +1394,7 @@ int FUN_004769c4(int x,int arg2)
   }
   else {
     slot_idx = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
-    if (DAT_006fd3f4 == slot_idx) {
+    if (g_StackObjectCardId == slot_idx) {
       slot_idx = *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + x * 0x5b20);
     }
     if (slot_idx == -1) {
@@ -5814,7 +5815,7 @@ LAB_004810c3:
           if (val_3 == 0) {
             Glue_Subsystem_004ef849(g_AiSelectedActionCode,&local_174,(int *)0x0,&local_144);
           }
-          if ((local_158 != DAT_006fd3f4) && (local_15c != 2)) {
+          if ((local_158 != g_StackObjectCardId) && (local_15c != 2)) {
             if (((local_158 == -1) || (local_15c != 1)) ||
                (((local_150 & 0x10000) != 0 && (DAT_006fe43c == 0)))) {
               if (local_178 != 0) {

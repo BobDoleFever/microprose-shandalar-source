@@ -6461,11 +6461,11 @@ int32_t FUN_0041a782(int player_id,int card_slot,int event_type)
         val_1 = *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20);
         arg_2_00 = *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20);
         if (val_1 == g_CurrentTurnPhase) {
-          Magic_CombatPhase(player,card_slot,0x7e,0,0);
+          Magic_PushSpellStack(player,card_slot,0x7e,0,0);
           slot_idx = Ai_CalcManaRequirement_004ba890
                               (val_1,0,*(int *)(&g_CardSlot_ConvertedManaCost +
                                                card_slot * 0x120 + player * 0x5b20));
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           g_ActivePlayer = 0;
         }
         else {
@@ -7193,7 +7193,7 @@ int Card_ApplyCombatDamage(int player_id,int card_slot,int event_type,int target
       }
       else {
         if ((*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == DAT_006fd3f4)) {
+           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == g_StackObjectCardId)) {
           card_idx = *(int *)(&g_ActiveCardsInPlay + flags * 0x120 + target_slot * 0x5b20);
         }
         else {
@@ -10730,7 +10730,7 @@ void FUN_0046f300(void)
       *(int32_t *)(&DAT_0063eed0 + slot_idx * 4) = 0;
     }
   }
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   for (match_count = 0; match_count < 0x10; match_count = match_count + 1) {
     if ((&g_MasterCardTable)[(g_MasterCardCount + match_count) * 0x34] == -1) {
       *(int32_t *)(&g_MasterCardTypeTable + (g_MasterCardCount + match_count) * 0x34) = 0xffffffff;
@@ -10980,7 +10980,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
     g_SelectedTargetPlayer = player;
     g_SelectedTargetSlot = card_slot;
     DAT_0068a708 = val_5;
-    Magic_CombatPhase(player,card_slot,0x71,player,0);
+    Magic_PushSpellStack(player,card_slot,0x71,player,0);
     Ai_Subsystem_004bd4f0();
     if (DAT_006fe3f4 == 0) {
       if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
@@ -11188,7 +11188,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
       DAT_00701008 = 1;
     }
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
     uval_6 = 0;
   }
@@ -11216,7 +11216,7 @@ int32_t Magic_ResolveCastSpell(int x,int y)
   val_1 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
   Rules_CalculateManaCostReduction((&g_MasterCardColorTable)[val_1 * 0x34]);
   if (val_1 == -1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uval_3 = 0;
   }
   else {
@@ -11255,7 +11255,7 @@ int32_t Magic_ResolveCastSpell(int x,int y)
           Duel_PlaySoundById(0x10);
         }
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       uval_2 = DAT_006b2e14;
       uval_3 = DAT_00695f08;
       DAT_00695f08 = x;
@@ -11283,7 +11283,7 @@ int32_t Magic_ResolveCastSpell(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       uval_3 = 0;
     }
   }
@@ -11397,7 +11397,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       Ai_Subsystem_004b574d(x,y,-1,-1,&g_OverworldWorldState,0);
     }
   }
-  Magic_CombatPhase(x,y,0x72,x,0);
+  Magic_PushSpellStack(x,y,0x72,x,0);
   DAT_00695df8 = 0;
   if (((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 1) == 0) {
     if ((((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 0x10) != 0) &&
@@ -11414,7 +11414,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       }
       if (g_ActivePlayer != 0) {
         g_ActivePlayer = 0;
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         return false;
       }
       *(uint32_t *)(&g_CardSlot_SpecialState + x * 0x5b20 + y * 0x120) =
@@ -11436,7 +11436,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       bVar4 = g_ActivePlayer == 1;
       if (bVar4) {
         Ai_Subsystem_004bd5e3(x);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
       }
       bVar4 = !bVar4;
       Ai_Util_004bd5af();
@@ -11475,7 +11475,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       bVar4 = false;
     }
     if (bVar4 != false) {
@@ -11513,7 +11513,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
   }
   if (g_ActivePlayer != 0) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     return false;
   }
 LAB_004714f6:
@@ -11562,7 +11562,7 @@ int32_t Magic_ExecuteTapCardAction(int x,int y)
       }
       FUN_00475c8a(player_idx,g_ScWillyScore,&g_OverworldWorldState,0x6d);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     uval_3 = DAT_006b2e14;
     uval_2 = DAT_00695f08;
     DAT_00695f08 = x;
@@ -11587,9 +11587,9 @@ int32_t Magic_ExecuteProcessTriggers(int player_id,int card_slot,int event_type)
   int32_t uval_1;
   
   DAT_0068078c = 1;
-  Magic_CombatPhase(player,card_slot,0x7e,arg_3,0);
+  Magic_PushSpellStack(player,card_slot,0x7e,arg_3,0);
   if (g_ActivePlayer == 1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uval_1 = 0;
   }
   else {
@@ -11605,7 +11605,7 @@ int32_t Magic_ExecuteProcessTriggers(int player_id,int card_slot,int event_type)
          *(uint32_t *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x100;
     strcpy(&g_OverworldWorldState,s_Process_00525c98);
     Ai_Subsystem_004b90de(player,card_slot);
-    uval_1 = Magic_EndTurnPhase();
+    uval_1 = Magic_ResolveTopSpell();
   }
   DAT_0068078c = 0;
   return uval_1;
@@ -15985,8 +15985,8 @@ uint32_t FUN_0048d259(void)
   uVar124 = FileIo_ReadStream(&DAT_006a4b58,4);
   uVar125 = FileIo_ReadStream(&DAT_006a2858,4);
   uVar126 = FileIo_ReadStream(&DAT_00680780,8);
-  uVar127 = FileIo_ReadStream(&DAT_006ff4d0,0x80);
-  uVar128 = FileIo_ReadStream(&DAT_006fecc0,0x100);
+  uVar127 = FileIo_ReadStream(&g_SpellStackEntries,0x80);
+  uVar128 = FileIo_ReadStream(&g_SpellStackObjects,0x100);
   uVar129 = FileIo_ReadStream(&DAT_006ff390,0x100);
   uVar130 = FileIo_ReadStream(&DAT_00696880,0x80);
   uVar131 = FileIo_ReadStream(&DAT_00695d70,0x80);

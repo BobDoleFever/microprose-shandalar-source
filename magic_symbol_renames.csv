@@ -353,7 +353,7 @@ Address,OldName,NewName
 00473d7e,FUN_00473d7e,Mem_AllocOrFree_00473d7e
 00473e69,FUN_00473e69,Magic_BroadcastCardEvent
 00473f06,FUN_00473f06,Magic_ScanCards
-00474d1e,FUN_00474d1e,Mem_AllocOrFree_00474d1e
+00474d1e,FUN_00474d1e,Magic_ClearSpellStack
 00475c61,FUN_00475c61,Mem_AllocOrFree_00475c61
 00476e60,FUN_00476e60,UI_PromptTellUserDialog
 004771fa,FUN_004771fa,UI_TellUserWndProc
