@@ -43,8 +43,13 @@ first main phase**, drawing life totals, mana, the hand and the phase prompt, wi
 missing. **First stage: the game runs from the title screen into the adventure screen, driven by injected input.** Scripted clicks
 and keys walked it through Start New Game, difficulty, colour, portrait ("Select Your Visage": all fourteen
 render) and the name prompt to the stained-glass adventure frame, every screen decoded and drawn by the original
-code. There is no sound and no `DUEL.EXE` yet, dialogs made with `DialogBoxParam` are not implemented, and the
+code. There is no sound yet, dialogs made with `DialogBoxParam` are not implemented, and the
 adventure screen has only been seen fading in.
+
+**What does not work yet:** clicking a hand card or the Done button reaches the right window and the game runs
+its handler (it posts a `0x464` selection message to the main window and the main thread refreshes the whole UI),
+but the duel does not advance and no card slot changes. Not yet understood; the next step is to trace what the
+engine waits on. Rendering of the hand list is also still wrong (its rows draw at the wrong size).
 
 Run it the same way with `--script`:
 
@@ -78,6 +83,18 @@ Things worth knowing that the run turned up:
   the main thread both pump messages).
 - The duel draws in direct colour (24- and 32-bit DIB sections) while the title screens use the palette, so a window
   surface keeps palette indices *and* a direct-colour overlay.
+- **All guest time is virtual.** The clock advances with executed instructions (`ips` per second) and jumps to the
+  next deadline when every thread is waiting, so a run is exactly repeatable (two runs give identical screenshots),
+  script times are virtual seconds, and idle waiting costs nothing. Threads that poll an empty message queue are
+  put to sleep for a virtual millisecond.
+- **Reading the game's memory works.** `--script "...:state"` prints the duel's card slots straight from emulated
+  memory (DUEL.EXE `g_DuelCardSlot_CardId` at 0x6826c4, stride 0x120 per slot and 0x5b20 per player) and the
+  prompt text; this is the in-process replacement for the QEMU + gdb oracle.
+- The duel draws its window backgrounds in `WM_ERASEBKGND` (a window's own procedure, not the class brush), through
+  a pattern brush, and copies 8-bit `DIB_PAL_COLORS` sections into 24-bit ones, which needs the section's own colour table.
+- Input routing needs real window semantics: a popup window (the prompt strip with its Done button) is above the
+  child windows of its owner, built-in push buttons turn a click into `WM_COMMAND`, and hover sends
+  `WM_NCHITTEST`/`WM_SETCURSOR` first.
 - Files are looked up case-insensitively and writes go to a separate overlay folder, so the installed copy is
   never touched.
 - The import argument counts (needed for stdcall stack clean-up) come from the decompiled call sites of all

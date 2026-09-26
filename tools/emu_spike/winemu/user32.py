@@ -648,6 +648,12 @@ def send_dlg_item_message(m, a):
 
 @u("PostMessageA", 4)
 def post_message(m, a):
+    if m.state.get("gdi_debug"):
+        try:
+            extra = m.rd(a[3], 24).hex() if a[3] > 0x1000 else ""
+        except Exception:
+            extra = ""
+        m.log(f"   [post] t{m.cur.tid} 0x{a[0]:x} msg=0x{a[1]:x} wp=0x{a[2]:x} lp=0x{a[3]:x} {extra}")
     _st(m)["queue"].append((a[0], a[1], a[2], a[3]))
     return 1
 
@@ -665,6 +671,9 @@ u("TranslateMessage", 1)(lambda m, a: 0)
 @u("DispatchMessageA", 1)
 def dispatch_message(m, a):
     hwnd, msg, wp, lp = struct.unpack("<4I", m.rd(a[0], 16))
+    if m.state.get("gdi_debug") and msg not in (WM_PAINT, WM_TIMER, WM_MOUSEMOVE):
+        w = window(m, hwnd)
+        m.log(f"   [dispatch] t{m.cur.tid} 0x{hwnd:x} {w['cls'] if w else None} msg=0x{msg:x} wp=0x{wp:x} lp=0x{lp:x}")
     if msg == WM_TIMER and lp:
         yield Cont(lp, [hwnd, WM_TIMER, wp, kernel32.now_ms(m)])
         return 0
@@ -1091,24 +1100,44 @@ def abs_rect(m, win):
 
 
 def window_at(m, x, y):
-    """The topmost visible window under a screen point: later-created windows are above earlier ones, and a
-    child is above its parent. Dialogs are handled separately."""
+    """The topmost visible window under a screen point. Z-order: windows under a WS_POPUP window are above those
+    that are not, and otherwise later-created windows are above earlier ones (a child above its parent)."""
     st = _st(m)
-    best = 0
-    for h, w in st["windows"].items():
-        if not w["visible"] or not w["proc"] or h == st.get("desktop_hwnd"):
+    best, best_key = 0, None
+    for order, (h, w) in enumerate(st["windows"].items()):
+        builtin_button = not w["proc"] and str(w["cls"]).upper() == "BUTTON" and w["w"] > 0 and w["enabled"]
+        if not w["visible"] or not (w["proc"] or builtin_button) or h == st.get("desktop_hwnd"):
             continue
-        anc = w
-        ok = True
+        anc, ok, popup = w, True, bool(w["style"] & WS_POPUP and not w["style"] & WS_CHILD)
         while anc["parent"] and anc["parent"] in st["windows"]:                 # every ancestor must be visible
             anc = st["windows"][anc["parent"]]
             ok = ok and anc["visible"]
+            popup = popup or bool(anc["style"] & WS_POPUP and not anc["style"] & WS_CHILD and anc["parent"] == 0
+                                  and anc is not w and False)
+        # the top-level ancestor decides popup-ness: popups sit above every non-popup window
+        top = w
+        while top["parent"] and top["parent"] in st["windows"]:
+            top = st["windows"][top["parent"]]
+        popup = sum(1 for c in [w["hwnd"]] + _ancestors(st, w)                      # popup nesting depth = layer
+                    if st["windows"][c]["style"] & WS_POPUP and not st["windows"][c]["style"] & WS_CHILD)
         if not ok:
             continue
         x0, y0, x1, y1 = abs_rect(m, w)
         if x0 <= x < x1 and y0 <= y < y1:
-            best = h                                                          # dict order = creation order
+            key = (popup, order)
+            if m.state.get("gdi_debug"):
+                m.log(f"      [hit] 0x{h:x} {w['cls']!r} popup={popup} order={order} rect={(x0, y0, x1, y1)}")
+            if best_key is None or key > best_key:
+                best, best_key = h, key
     return best
+
+
+def _ancestors(st, w):
+    out = []
+    while w["parent"] and w["parent"] in st["windows"]:
+        out.append(w["parent"])
+        w = st["windows"][w["parent"]]
+    return out
 
 
 def inject_mouse(m, kind, x, y):
@@ -1121,13 +1150,32 @@ def inject_mouse(m, kind, x, y):
     x0, y0, _, _ = abs_rect(m, st["windows"][h])
     st["cursor"] = (x, y)
     msg = {"move": WM_MOUSEMOVE, "down": WM_LBUTTONDOWN, "up": WM_LBUTTONUP, "rdown": WM_RBUTTONDOWN,
-           "rup": WM_RBUTTONUP}[kind]
-    keys = 1 if kind in ("down",) else 0
+           "rup": WM_RBUTTONUP, "dbl": 0x203}[kind]
+    keys = 1 if kind in ("down", "dbl") else 0
     st["keys"][1] = kind == "down" or (kind == "move" and st["keys"].get(1, False))
     lx, ly = x - x0, y - y0
+    tw = st["windows"][h]
+    if not tw["proc"] and str(tw["cls"]).upper() == "BUTTON":          # a built-in push button: click = WM_COMMAND
+        if kind == "down":
+            st["press"] = h
+        elif kind == "up" and st.get("press") == h:
+            st["press"] = 0
+            st["queue"].append((tw["parent"], WM_COMMAND, tw["id"] & 0xFFFF, h))    # BN_CLICKED
+            if m.state.get("gdi_debug"):
+                m.log(f"   [input] button 0x{h:x} id {tw['id']} clicked -> WM_COMMAND to 0x{tw['parent']:x}")
+        return True
     if m.state.get("gdi_debug"):
         w = st["windows"][h]
         m.log(f"   [input] {kind} at {x},{y} -> 0x{h:x} {w['cls']!r} {w['title']!r} client {lx},{ly} tid={w.get('tid')}")
+    if kind in ("move", "down", "rdown") and st.get("hover") != h:
+        old = st.get("hover")
+        st["hover"] = h
+        if old and old in st["windows"]:
+            st["queue"].append((old, 0x20, old, (0x200 << 16) | 0))                  # WM_SETCURSOR for the old one
+        st["queue"].append((h, 0x84, 0, (y << 16) | (x & 0xFFFF)))                   # WM_NCHITTEST
+        st["queue"].append((h, 0x20, h, (msg << 16) | 1))                             # WM_SETCURSOR, HTCLIENT
+        if kind != "move":
+            st["queue"].append((h, WM_MOUSEMOVE, 0, ((ly & 0xFFFF) << 16) | (lx & 0xFFFF)))
     st["queue"].append((h, msg, keys, ((ly & 0xFFFF) << 16) | (lx & 0xFFFF)))
     return True
 

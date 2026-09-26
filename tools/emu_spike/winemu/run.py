@@ -111,6 +111,7 @@ def main(argv=None):
     ap.add_argument("--all-counts", action="store_true", help="list more of the most-called imports")
     ap.add_argument("--script", default="", help='timed actions, e.g. "20:click 230 308;25:shot a;30:key 13"')
     ap.add_argument("--dump-windows", action="store_true")
+    ap.add_argument("--dump-surfaces", action="store_true", help="save every window's own surface as PNG")
     ap.add_argument("--dump-palette", action="store_true")
     ap.add_argument("--dump-bitmaps", action="store_true", help="save the game's large off-screen bitmaps as PNG")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
@@ -144,9 +145,14 @@ def main(argv=None):
         if op == "click":                                      # move, press, then release 0.3 s later
             x, y = int(cmd[1]), int(cmd[2])
             user32.inject_mouse(mm, "move", x, y)
-            user32.inject_mouse(mm, "down", x, y)
+            pending["clicks"].append((now + 0.2, "down", x, y))                   # let the hover register first
             hold = float(cmd[3]) if len(cmd) > 3 else 0.3            # click X Y [hold seconds]
-            pending["clicks"].append((now + hold, "up", x, y))
+            pending["clicks"].append((now + 0.2 + hold, "up", x, y))
+        elif op == "dclick":                                   # double click: down, up, dblclk, up
+            x, y = int(cmd[1]), int(cmd[2])
+            user32.inject_mouse(mm, "move", x, y)
+            for k, dt in (("down", 0), ("up", 0.05), ("dbl", 0.1), ("up", 0.15)):
+                pending["clicks"].append((now + dt, k, x, y))
         elif op == "move":
             user32.inject_mouse(mm, "move", int(cmd[1]), int(cmd[2]))
         elif op == "key":
@@ -159,6 +165,17 @@ def main(argv=None):
                 actions.sort(key=lambda a: a[0])
         elif op == "dlgsel":                                   # dlgsel ID INDEX
             user32.select_dialog_item(mm, int(cmd[1]), int(cmd[2]))
+        elif op == "state":                                    # print the duel's card slots (DUEL.EXE addresses)
+            tu = [w["title"] for w in mm.state.get("u32", {}).get("windows", {}).values() if w["cls"] == "MAGIC_TellUserClass"]
+            print(f"   [state {now:.0f}s] prompt: {tu[0] if tu else None!r}")
+            for pl in (0, 1):
+                rows = []
+                for slot in range(80):
+                    a = 0x6826C4 + slot * 0x120 + pl * 0x5B20
+                    cid, flags = mm.r32(a), mm.r32(a + 8)
+                    if cid not in (0xFFFFFFFF, 0):
+                        rows.append(f"{slot}:{cid}/0x{flags:x}")
+                print(f"   [state {now:.0f}s] player {pl}: " + " ".join(rows))
         elif op == "shot":
             Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"{cmd[1]}.png"))
             print(f"   [script] shot {cmd[1]}")
@@ -194,6 +211,12 @@ def main(argv=None):
     print("most-called imports:")
     for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:(60 if args.all_counts else 12)]:
         print(f"  {n:8d}  {dll}!{name}")
+    if args.dump_surfaces:
+        for h, w in m.state.get("u32", {}).get("windows", {}).items():
+            if w["surface"] is not None and w["surface"].w * w["surface"].h > 100 and w["proc"] and \
+                    (w["surface"].idx.any() or w["surface"].direct.any()):
+                Image.fromarray(gdi.surface_rgb(m, w["surface"])).save(
+                    os.path.join(args.shots, f"win_{h:x}_{str(w['cls'])[-12:]}.png"))
     if args.dump_palette:
         pal = m.state.get("gdi", {}).get("system_palette", [])
         uniq = len(set(map(tuple, pal)))
