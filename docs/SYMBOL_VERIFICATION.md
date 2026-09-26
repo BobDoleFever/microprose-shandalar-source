@@ -127,23 +127,54 @@ same name in both programs. The sound player has two names for the same code
 (`Duel_PlaySoundById` and `Sound_PlayTrackById`); unifying them would touch unrelated uses of the
 latter, so it is left for later.
 
-## Globals renamed (MAGIC.EXE): supported by code, not yet observed live
+## Globals renamed (MAGIC.EXE): VERIFIED live
 
-The card-event dispatcher `FUN_00472c0c(value, min_val, max_val, target_slot, flags)` stores its
-first two arguments in two globals, sets a third to 0, runs `Magic_ScanCards(0x78)` (which calls the
-card handlers) and then tests the third with `< 1`. `Card_TapForMana` does the same with
-`(x, y)`. Handlers use the pair to index the card table with the slot strides `0x5b20` (player) and
-`0x120` (slot) and compare their own `(player, slot)` arguments with them.
+The card-event dispatcher stores its first two arguments in two globals, clears a third and runs the
+card handlers, which use the pair to index the card table with the strides `0x5b20` (player) and
+`0x120` (slot). Renamed on that static evidence, then checked with write watchpoints on all three
+during a real duel (`probe_globals.py`; raw events in the git-ignored
+`sources/oracle/probe_globals.json`).
 
 | Address | Was | Now | Meaning |
 |---|---|---|---|
 | `0x006b2534` | `g_OverworldPlayerCoordX` | `g_EventSourcePlayer` | player that owns the card the event is about |
 | `0x0070100c` | `g_OverworldMapGrid` | `g_EventSourceSlot` | that card's slot |
-| `0x0068a660` | `g_ActivePalette` | `g_CardEventResult` | flags and counters the handlers accumulate; 0 means nothing objected |
+| `0x0068a660` | `g_ActivePalette` | `g_CardEventResult` | flags and counters the handlers accumulate |
 
-Two related globals are still unnamed (`DAT_007006c8` and `DAT_006b2d5c`: the target player and
-slot). `g_PlayerManaPool` (`0x006ff4c0`) looks like the current event code and is still misnamed. To
-confirm live: break in the dispatcher during a duel and compare these globals with its arguments.
+Live result: 600 writes captured over about three minutes, from the deal and start of the duel.
+
+- The event dispatcher at `0x00473179` (`ebp+8..` = player, slot, event code, target slot) wrote
+  `g_EventSourcePlayer` 93 times, and **93 of 93** equalled its first argument; it wrote
+  `g_EventSourceSlot` 92 times and **92 of 92** equalled its second. Players seen: 0 and 1. Slots
+  seen: 1 to 5. Event codes seen: 50, 51, 52, 60.
+- `g_CardEventResult` values written by it were 1, 3, 0, `0x200000`, 15, 271, 164 and 19: a mix of
+  small counts and single flag bits, as "flags and counters" predicts. It was 0 at the start of
+  each dispatch, so 0 means nothing was flagged.
+- Three other functions write all three globals, presumably from their own arguments and not
+  analysed: `FUN_00473e69`, `Pic_Subsystem_004485d6` and `Magic_TriggerCardEvent`.
+
+Limits: one duel, the first three minutes, four event codes, capped at 600 events. It confirms
+what the globals hold, not the meaning of each event code or each bit of the result. Two related
+globals are still unnamed: `DAT_007006c8` and `DAT_006b2d5c` (the target player and slot), plus
+`DAT_006a4f70` (the event card's id) and `DAT_006b2fe4`. `g_PlayerManaPool` (`0x006ff4c0`) looks
+like the current event code and is still misnamed.
+
+### Two more mislabels found by the same run
+
+The event context is a **stack** of 7-value frames (0x28 bytes each, 32 deep, depth in
+`DAT_0052577c`) so events can nest:
+
+| Address | Called | Really | Evidence |
+|---|---|---|---|
+| `0x00474428` | `Magic_PayManaCost` | **push** the event context | copies the 7 globals into the next frame and increments the depth (guarded at 32) |
+| `0x004744de` | `Magic_TapCardForMana` | **pop** the event context | decrements the depth and restores the 7 globals from that frame |
+| `0x00473179` | `Card_TapForMana` | the event **dispatcher** | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
+
+The dispatcher calls the push first (when the depth counter `DAT_0063ee18` is non-zero), sets the
+globals from its arguments and runs the handlers. The pop ran 98 times and always restored
+`g_CardEventResult` to 0, and restored `(player, slot)` to `(0, 0)` 68 times and `(1, 3)` 30 times:
+outer event contexts being put back, as a stack predicts. None of these functions deals with mana.
+Not renamed in the source yet.
 
 ## Names restored (MAGIC.EXE)
 

@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from oracle_qemu import GDBRemote, _checksum
+from oracle_qemu import GDBRemote, QMP, _checksum
 
 
 def fake_stub(sock, replies, seen):
@@ -41,6 +41,27 @@ def make_client(replies):
     client = GDBRemote.__new__(GDBRemote)
     client.sock, client.buf, client.pending_stops = a, b"", []
     return client, seen, a, b
+
+
+class TestQMPClose(unittest.TestCase):
+    def test_close_really_closes_the_connection(self):
+        import json, tempfile
+        path = os.path.join(tempfile.mkdtemp(), "q.sock")
+        srv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); srv.bind(path); srv.listen(1)
+        peer = {}
+
+        def serve():
+            c, _ = srv.accept(); f = c.makefile("rw")
+            f.write(json.dumps({"QMP": {}}) + "\n"); f.flush()
+            f.readline()                                   # qmp_capabilities
+            f.write(json.dumps({"return": {}}) + "\n"); f.flush()
+            peer["eof"] = f.readline() == ""               # becomes "" only when the client is gone
+        t = threading.Thread(target=serve, daemon=True); t.start()
+        q = QMP(path, timeout=5)
+        q.close()
+        t.join(3)
+        self.assertTrue(peer.get("eof"), "server never saw the client disconnect")
+        srv.close()
 
 
 class TestGDBRemote(unittest.TestCase):
@@ -106,6 +127,16 @@ class TestGDBRemote(unittest.TestCase):
         client.pending_stops.append(b"T02thread:01;")
         client.cont()
         self.assertEqual(client.pending_stops, [])   # wait_stop must block for the NEXT stop
+        a.close(); b.close()
+
+    def test_watchpoint_packets_and_stop_parsing(self):
+        client, seen, a, b = make_client({b"Z2": b"OK", b"z2": b"OK"})
+        client.set_watchpoint(0x70100C)
+        client.clear_watchpoint(0x70100C)
+        self.assertEqual(seen[:2], [b"Z2,70100c,4", b"z2,70100c,4"])
+        self.assertEqual(GDBRemote.watch_address(b"T05watch:0070100c;thread:01;"), 0x70100C)
+        self.assertEqual(GDBRemote.watch_address(b"T05awatch:0068a660;"), 0x68A660)
+        self.assertIsNone(GDBRemote.watch_address(b"T05thread:01;"))
         a.close(); b.close()
 
     def test_resume_does_not_step_when_not_on_breakpoint(self):

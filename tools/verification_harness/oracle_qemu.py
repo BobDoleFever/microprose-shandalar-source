@@ -54,7 +54,19 @@ class QMP:
             return obj.get("return")
 
     def close(self):
-        self.sock.close()
+        # The buffered reader holds its own reference to the socket; closing only the socket
+        # leaves the connection open, and QEMU serves one QMP client at a time, so the next
+        # connection from this process would wait forever for its greeting.
+        try:
+            self.f.close()
+        finally:
+            self.sock.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
 
     def status(self):
         return self.cmd("query-status")["status"]
@@ -183,6 +195,26 @@ class GDBRemote:
 
     def clear_breakpoint(self, addr):
         self.request(f"z0,{addr:x},1")
+
+    WATCH_KINDS = {"write": 2, "read": 3, "access": 4}
+
+    def set_watchpoint(self, addr, length=4, kind="write"):
+        """Stop the guest when it writes (or reads, or accesses) `length` bytes at `addr`."""
+        reply = self.request(f"Z{self.WATCH_KINDS[kind]},{addr:x},{length:x}")
+        if reply != b"OK":
+            raise IOError(f"could not set {kind} watchpoint at 0x{addr:x}: {reply!r}")
+
+    def clear_watchpoint(self, addr, length=4, kind="write"):
+        self.request(f"z{self.WATCH_KINDS[kind]},{addr:x},{length:x}")
+
+    @staticmethod
+    def watch_address(stop_reply):
+        """Address from a stop reply such as b'T05watch:0070100c;thread:01;', else None."""
+        for kind in (b"watch:", b"rwatch:", b"awatch:"):
+            i = stop_reply.find(kind)
+            if i >= 0:
+                return int(stop_reply[i + len(kind):].split(b";")[0], 16)
+        return None
 
     def cont(self):
         """Resume the guest. Use wait_stop() to block until it stops again."""

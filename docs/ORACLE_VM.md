@@ -99,3 +99,20 @@ in `WINDOWS\Start Menu\Programs\StartUp` with a copy of `Duel.lnk` (from the "Ma
 Gathering" Start menu folder), delete any `._*` files, and boot with
 `ORACLE_BASE=base_duel.raw tools/verification_harness/oracle_launch.sh <name>`.
 `probe_duel_start.py ... noclick duel` arms the `DUEL.EXE` breakpoints instead of the `MAGIC.EXE` ones.
+
+## Watchpoints, and things that went wrong
+
+`GDBRemote.set_watchpoint(addr, 4, "write")` stops the guest on a write and reports the address;
+`probe_globals.py` uses it. Single-step once to let the write complete, then read the value.
+
+- **Attach watchpoints late.** With three hot globals watched from the duel prompt onward, clicks stopped
+  registering; after removing them the click worked, and attaching them once the duel was loading
+  worked fine. Cause not proven. Get into the duel first.
+- **Close the QMP client properly.** `QMP.close()` must close the buffered reader, not only the
+  socket, or QEMU keeps serving the dead connection and the next client waits forever for its greeting.
+  Use `with QMP(...)`.
+- **A killed VM can hold the debugger port.** If the launcher fails with `Address already in use`, kill
+  every `qemu-system-i386` (`pkill -9`) and check `lsof -iTCP:1234`.
+- **Duel loads vary.** One duel sat on the same screen for eight minutes with the game idle in its
+  message loop; restarting the VM fixed it. A re-homed pointer plus a fresh click also got a stuck
+  prompt through once.
