@@ -1336,8 +1336,8 @@ int Duel_LogActionStatusBanner(int spell_id,int target_id,int flags,uint32_t arg
         g_OverworldWorldState = 0;
         local_104 = FUN_00474d4a();
         if (local_104 != 0xffffffff) {
-          status = *(int *)(&DAT_006fecb8 + g_AiEvaluatedMoveCount * 8);
-          arg2 = *(int *)(&DAT_006fecbc + g_AiEvaluatedMoveCount * 8);
+          status = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+          arg2 = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
           u_temp = local_104 >> 0x10 & 0xff;
           if (u_temp == 0x71) {
             strcpy(&g_OverworldWorldState,s_CASTING__0052ffc8);

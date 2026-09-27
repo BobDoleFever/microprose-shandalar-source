@@ -1023,7 +1023,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 0048cb7f,"FUN_0048cb7f","sid/Magic.c","sid"
 0048cc29,"FUN_0048cc29","sid/Magic.c","sid"
 0048cfda,"FUN_0048cfda","sid/Magic.c","sid"
-0048d00c,"FUN_0048d00c","sid/Magic.c","sid"
+0048d00c,"Sound_PlayTrackById","sid/Magic.c","sid"
 0048d320,"Duel_PreloadSoundEffects","sid/Magic.c","sid"
 0048d3af,"FUN_0048d3af","sid/Magic.c","sid"
 0048d3bf,"Magic_ClearSpellStack","sid/Magic.c","sid"

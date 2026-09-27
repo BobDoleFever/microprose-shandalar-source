@@ -223,7 +223,7 @@ Address,NewName
 006a285c,g_IsAiThinking
 006a28b0,g_PlayerGoldCoins
 006a28c0,g_SaveGameDirectory
-006a3f78,g_AiEvaluatedMoveCount
+006a3f78,g_SpellStackCount
 006a4920,g_CombatPhaseFlags
 006a4924,g_TurnPriorityState
 006a492c,g_ActivePlayerPriority

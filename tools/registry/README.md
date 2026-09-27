@@ -36,16 +36,10 @@ quoting its sentence in `registry.py` (`EVIDENCE_OVERRIDES`), for example "The s
 ## Checks
 
 `check_registry.py` compares each function row with `<program>/function_index.csv`, and each global
-row with `engine_globals_map.csv` (or `<program>/symbols.csv` when the map has no entry). Today it
-fails on two rows, both real drift:
-
-- DUEL `0x0048d00c`: `duel/function_index.csv` still says `FUN_0048d00c`, while `duel/duel_unified.c`
-  and the rename maps use the verified `Sound_PlayTrackById`.
-- MAGIC `0x006a3f78`: `engine_globals_map.csv` says `g_AiEvaluatedMoveCount`; the doc and
-  `magic/symbols.csv` say `g_SpellStackCount`.
-
-The test records these two in `KNOWN_DRIFT` and fails if the checker finds anything else, or no longer
-finds one of them: fix the repository, then delete the entry.
+row with `engine_globals_map.csv` (or `<program>/symbols.csv` when the map has no entry). It exits 1 on any
+mismatch. It currently finds none (it found two when it was written, DUEL `0x0048d00c` and MAGIC `0x006a3f78`,
+which are fixed). `test_registry.py` keeps a `KNOWN_DRIFT` set, empty now, and fails if the checker finds anything
+not listed there, or no longer finds something that is: real drift can be recorded, and a fixed entry cannot linger.
 
 The two table rows that cannot be read give the DUEL twin as "(twin shares a name)" (`SpellChain_InsertEntry`
 and `SpellChain_RebuildEntryTargets`). The doc's prose says the two DUEL twins share

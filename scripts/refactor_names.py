@@ -83,7 +83,7 @@ DAT_RENAMES = {
     "DAT_006ff1ac": "g_AiAttackingCreatureCount",
     "DAT_006ff19c": "g_AiBlockingCreatureCount",
     "DAT_006a5f20": "g_ActiveBattlefieldFlag",
-    "DAT_006a3f78": "g_AiEvaluatedMoveCount",
+    "DAT_006a3f78": "g_SpellStackCount",
     "DAT_006fefa8": "g_AiCurrentSearchPath",
     "DAT_006fe400": "g_AiDuelTurnState",
     "DAT_006fedc0": "g_AiTurnDecisionFlag",
