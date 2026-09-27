@@ -61,10 +61,10 @@ void Ai_SaveGameState(void)
   memcpy(&g_AiSavedDuelArenaStatusFlags,&g_SpellStackObjects,0x100);
   memcpy(&g_AiSavedCombatEvaluationState,&DAT_006ff390,0x100);
   memcpy(&g_AiSavedPlayerActiveCardCount,&g_PlayerActiveCardCount,8);
-  if (g_AiEvaluatedMoveCount < 0) {
+  if (g_SpellStackCount < 0) {
     assert(s_ScWilly>_0_0052ce44,s_G__NewMagic_sources_sid_Ai_c_0052ce24,0x176);
   }
-  g_AiSavedEvaluatedMoveCount = g_AiEvaluatedMoveCount;
+  g_AiSavedEvaluatedMoveCount = g_SpellStackCount;
   g_AiSavedPlayerLifeDifferential = DAT_00695f18;
   g_AiSavedCardDisplayOrderCount = DAT_007006d4;
   memcpy(&g_AiSavedDialogPromptBuffer,&DAT_00700ec0,0x140);
@@ -117,7 +117,7 @@ void Ai_RestoreGameState(void)
   memcpy(&g_SpellStackObjects,&g_AiSavedDuelArenaStatusFlags,0x100);
   memcpy(&DAT_006ff390,&g_AiSavedCombatEvaluationState,0x100);
   memcpy(&g_PlayerActiveCardCount,&g_AiSavedPlayerActiveCardCount,8);
-  g_AiEvaluatedMoveCount = g_AiSavedEvaluatedMoveCount;
+  g_SpellStackCount = g_AiSavedEvaluatedMoveCount;
   DAT_00695f18 = g_AiSavedPlayerLifeDifferential;
   DAT_007006d4 = g_AiSavedCardDisplayOrderCount;
   memcpy(&DAT_00700ec0,&g_AiSavedDialogPromptBuffer,0x140);
@@ -169,7 +169,7 @@ void Ai_PushBoardState(void)
   memcpy(&DAT_005531a0,&g_SpellStackObjects,0x100);
   memcpy(&DAT_00550200,&DAT_006ff390,0x100);
   memcpy(&DAT_00550488,&g_PlayerActiveCardCount,8);
-  DAT_00553188 = g_AiEvaluatedMoveCount;
+  DAT_00553188 = g_SpellStackCount;
   DAT_0054e7d0 = DAT_00695f18;
   DAT_0054e788 = g_SpellStackDepth;
   memcpy(&DAT_005558d8,&g_AiSelectedTargetCard,0x1c);
@@ -218,7 +218,7 @@ void Ai_PopBoardState(void)
   memcpy(&g_SpellStackObjects,&DAT_005531a0,0x100);
   memcpy(&DAT_006ff390,&DAT_00550200,0x100);
   memcpy(&g_PlayerActiveCardCount,&DAT_00550488,8);
-  g_AiEvaluatedMoveCount = DAT_00553188;
+  g_SpellStackCount = DAT_00553188;
   DAT_00695f18 = DAT_0054e7d0;
   g_SpellStackDepth = DAT_0054e788;
   memcpy(&g_AiSelectedTargetCard,&DAT_005558d8,0x1c);
@@ -9516,8 +9516,8 @@ int Ai_Subsystem_004bc029(int spell_id, int * target_id, int flags, int height)
     strcpy(&g_OverworldWorldState,&DAT_0052d640);
   }
   else {
-    slot_idx = *(int *)(&DAT_006fecb8 + g_AiEvaluatedMoveCount * 8);
-    local_24 = *(int *)(&DAT_006fecbc + g_AiEvaluatedMoveCount * 8);
+    slot_idx = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+    local_24 = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
     match_count = color_idx >> 0x10 & 0xff;
     if (match_count == 0x71) {
       strcpy(&g_OverworldWorldState,s_CASTING__0052d5f4);
@@ -9655,8 +9655,8 @@ int Ai_CalcMana_004bc423(void)
     g_OverworldWorldState = 0;
     u_temp = FUN_00474d4a();
     if (u_temp != 0xffffffff) {
-      status = *(int *)(&DAT_006fecb8 + g_AiEvaluatedMoveCount * 8);
-      arg2 = *(int *)(&DAT_006fecbc + g_AiEvaluatedMoveCount * 8);
+      status = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+      arg2 = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
       u_temp = u_temp >> 0x10 & 0xff;
       if (u_temp == 0x71) {
         strcpy(&g_OverworldWorldState,s_CASTING__0052d698);

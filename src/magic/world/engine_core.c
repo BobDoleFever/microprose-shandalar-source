@@ -15990,7 +15990,7 @@ uint32_t FUN_0048d259(void)
   uVar129 = FileIo_ReadStream(&DAT_006ff390,0x100);
   uVar130 = FileIo_ReadStream(&DAT_00696880,0x80);
   uVar131 = FileIo_ReadStream(&DAT_00695d70,0x80);
-  uVar132 = FileIo_ReadStream(&g_AiEvaluatedMoveCount,4);
+  uVar132 = FileIo_ReadStream(&g_SpellStackCount,4);
   uVar133 = FileIo_ReadStream(&g_CombatPhaseFlags,4);
   uVar134 = FileIo_ReadStream(&DAT_006b1584,4);
   uVar135 = FileIo_ReadStream(&g_CurrentScanningCardIndex,4);

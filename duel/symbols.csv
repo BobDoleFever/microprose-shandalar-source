@@ -12445,7 +12445,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048cfd5,"LAB_0048cfd5",Label,true,false
 0048cfda,"FUN_0048cfda",Function,true,true
 0048cffd,"LAB_0048cffd",Label,true,false
-0048d00c,"FUN_0048d00c",Function,true,true
+0048d00c,"Sound_PlayTrackById",Function,true,true
 0048d063,"LAB_0048d063",Label,true,false
 0048d086,"LAB_0048d086",Label,true,false
 0048d0d6,"LAB_0048d0d6",Label,true,false

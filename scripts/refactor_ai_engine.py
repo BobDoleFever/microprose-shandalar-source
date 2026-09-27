@@ -74,7 +74,7 @@ DAT_REPLACEMENTS = {
     "DAT_006ff19c": "g_AiBlockingCreatureCount",
     "DAT_0055a010": "g_AiLethalDamageFlag",
     "DAT_006a5f20": "g_ActiveBattlefieldFlag",
-    "DAT_006a3f78": "g_AiEvaluatedMoveCount",
+    "DAT_006a3f78": "g_SpellStackCount",
     "DAT_006fefa8": "g_AiCurrentSearchPath",
     "DAT_0067bdb0": "g_CardSlot_PowerBonus",
     "DAT_006fe400": "g_AiDuelTurnState",

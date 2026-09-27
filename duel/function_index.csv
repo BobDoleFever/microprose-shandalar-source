@@ -1023,7 +1023,7 @@ Address,FunctionName,ReturnType,ParameterCount,BodySize,Status,Filename
 0048cb7f,"FUN_0048cb7f","undefined",0,170,SUCCESS,"FUN_0048cb7f_0048cb7f.c"
 0048cc29,"FUN_0048cc29","undefined",0,945,SUCCESS,"FUN_0048cc29_0048cc29.c"
 0048cfda,"FUN_0048cfda","undefined",2,50,SUCCESS,"FUN_0048cfda_0048cfda.c"
-0048d00c,"FUN_0048d00c","undefined",1,788,SUCCESS,"FUN_0048d00c_0048d00c.c"
+0048d00c,"Sound_PlayTrackById","undefined",1,788,SUCCESS,"FUN_0048d00c_0048d00c.c"
 0048d320,"Duel_PreloadSoundEffects","undefined",0,143,SUCCESS,"FUN_0048d320_0048d320.c"
 0048d3af,"FUN_0048d3af","undefined",0,16,SUCCESS,"FUN_0048d3af_0048d3af.c"
 0048d3bf,"Magic_ClearSpellStack","undefined",0,44,SUCCESS,"Mem_AllocOrFree_0048d3bf_0048d3bf.c"

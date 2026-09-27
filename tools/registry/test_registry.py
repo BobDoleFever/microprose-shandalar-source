@@ -14,17 +14,11 @@ import build_registry  # noqa: E402
 import check_registry  # noqa: E402
 import registry as reg  # noqa: E402
 
-# Mismatches the checker finds in the repository today. They are real drift, recorded here rather than
-# fixed because this change only adds tools. Fix the repository, then delete the entry: the test fails
-# while this set and the checker disagree, in either direction, so new drift cannot slip in and a fixed
-# entry cannot linger.
-KNOWN_DRIFT = {
-    # duel/function_index.csv (and duel/symbols.csv) still say FUN_0048d00c; the C file and the rename
-    # maps already use Sound_PlayTrackById.
-    ("DUEL", 0x0048D00C, "Sound_PlayTrackById", "duel/function_index.csv", ("FUN_0048d00c",)),
-    # engine_globals_map.csv still has the old guess; magic/symbols.csv has the verified name.
-    ("MAGIC", 0x006A3F78, "g_SpellStackCount", "engine_globals_map.csv", ("g_AiEvaluatedMoveCount",)),
-}
+# Mismatches the checker is allowed to find in the repository. Empty now: the two it found when it was
+# written (DUEL 0x0048d00c and MAGIC 0x006a3f78) are fixed. If real drift has to be recorded again, list it
+# here; the test fails while this set and the checker disagree, in either direction, so new drift cannot
+# slip in and a fixed entry cannot linger.
+KNOWN_DRIFT = set()
 
 
 @pytest.fixture(scope="module")
@@ -163,5 +157,6 @@ def test_generator_report_is_current(registry_rows):
     text, script_hits, _, _ = audit_names.render_generators(rows)
     with open(audit_names.GENERATORS_MD) as f:
         assert f.read() == text, "run tools/registry/audit_names.py"
-    assert any(h["file"] == "scripts/full_codebase_refactor.py" and "g_AiEvaluatedMoveCount" in h["stale"]
-               for h in script_hits)
+    # g_AiEvaluatedMoveCount was the old name of 0x006a3f78 in several generator scripts; they were fixed so a
+    # re-run cannot bring it back. The audit must not find it again.
+    assert not any("g_AiEvaluatedMoveCount" in h["stale"] for h in script_hits)

@@ -136,7 +136,7 @@ GLOBAL_DAT_MAP = {
     "006ff1ac": "g_AiAttackingCreatureCount",
     "006ff19c": "g_AiBlockingCreatureCount",
     "006a5f20": "g_ActiveBattlefieldFlag",
-    "006a3f78": "g_AiEvaluatedMoveCount",
+    "006a3f78": "g_SpellStackCount",
     "006fefa8": "g_AiCurrentSearchPath",
     "006fe400": "g_AiDuelTurnState",
     "006fedc0": "g_AiTurnDecisionFlag",
