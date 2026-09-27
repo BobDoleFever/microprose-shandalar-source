@@ -770,7 +770,9 @@ def peek_message(m, a):
         t.empty_polls = getattr(t, "empty_polls", 0) + 1
         if t.empty_polls > 3 and not getattr(t, "polled_sleep", False):
             t.polled_sleep = True
-            return Block(until=m.vt + 0.001)
+            # back off while idle: 1 ms, doubling to 16 ms (input then waits at most 16 virtual ms)
+            back = min(0.001 * 2 ** min((t.empty_polls - 4) // 4, 5), 0.016)
+            return Block(until=m.vt + back)
         t.polled_sleep = False
         return 0
     m.cur.empty_polls = 0

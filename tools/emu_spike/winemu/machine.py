@@ -46,6 +46,9 @@ class ExitProcess(Exception):
         self.code = code
 
 
+S32 = lambda v: v - 0x100000000 if v & 0x80000000 else v
+
+
 def u32(v):
     return v & 0xFFFFFFFF
 
@@ -152,6 +155,8 @@ class Machine:
         self.handler_of = {}                        # trap address -> (fn, argc)
         self.unimplemented = {}                     # (dll, name) -> call count, for the report
         self.calls = 0
+        self.trace_seen = {}
+        self.trace_total = {}
         self.recent = []                            # last few import calls, for crash reports
         self.counts = {}                            # (dll, name) -> times called
         self.threads = []
@@ -533,6 +538,10 @@ class Machine:
         try:
             while not self.stop:
                 now = self.vt
+                lim = self.state.get("virtual_limit")
+                if lim is not None and self.vt > lim:
+                    self.log("virtual time limit reached")
+                    break
                 if self.state.get("hard_stop") and _time.time() > self.state["hard_stop"]:
                     self.log("hard stop: time limit reached")
                     self.report_threads()
@@ -595,6 +604,48 @@ class Machine:
         finally:
             pass
         return self.exit_code
+
+    def flush_trace(self, sink=None):
+        """Totals of every traced call (with its arguments) over the whole run."""
+        out = sink or self.log
+        if self.trace_total:
+            out("   [trace totals] calls with identical arguments and caller:")
+            for body, n in sorted(self.trace_total.items(), key=lambda kv: -kv[1])[:25]:
+                out(f"      {n:7d}  {body}")
+            self.trace_total = {}
+
+    def add_trace(self, addr, label, nargs, strings=(), sink=None):
+        """Log every entry to a guest function: virtual time, thread, its `nargs` stack arguments and the caller.
+        `strings` lists argument positions that are C strings (shown as text). One hook per function, so it costs
+        nothing when the function is not running."""
+        sink = sink if sink is not None else self.log
+
+        def hook(uc, address, size, user):
+            esp = uc.reg_read(UC_X86_REG_ESP)
+            args = [self.r32(esp + 4 + 4 * i) for i in range(nargs)]
+            shown = []
+            for i, a in enumerate(args):
+                if i in strings:
+                    try:
+                        shown.append(repr(self.cstr(a, 60).decode("latin-1")))
+                        continue
+                    except Exception:
+                        pass
+                shown.append(f"0x{a:x}" if a > 0xFFFF else str(S32(a)))
+            body = f"{label}({', '.join(shown)}) <- 0x{self.r32(esp):08x}"
+            # A burst repeats the same few calls thousands of times in a few milliseconds (the spell-chain loop):
+            # print each distinct call twice per 50 ms of virtual time, then only count the rest.
+            key = (body, int(self.vt * 20))
+            n = self.trace_seen.get(key, 0) + 1
+            self.trace_seen[key] = n
+            if len(self.trace_seen) > 5000:
+                self.trace_seen = {k: v for k, v in self.trace_seen.items() if k[1] >= int(self.vt * 20) - 1}
+            if n <= 2:
+                sink(f"   [trace {self.vt:8.3f}s t{self.cur.tid if self.cur else 0}] {body}")
+            elif n == 3:
+                sink(f"   [trace {self.vt:8.3f}s ...] (further identical calls in this 50 ms are counted, not shown)")
+            self.trace_total[body] = self.trace_total.get(body, 0) + 1
+        self.uc.hook_add(UC_HOOK_CODE, hook, begin=addr, end=addr)
 
     def report_threads(self):
         """Where every thread is (a spinning thread shows up as the same eip range on each report)."""

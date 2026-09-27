@@ -114,6 +114,8 @@ def main(argv=None):
     ap.add_argument("--dump-surfaces", action="store_true", help="save every window's own surface as PNG")
     ap.add_argument("--dump-palette", action="store_true")
     ap.add_argument("--dump-bitmaps", action="store_true", help="save the game's large off-screen bitmaps as PNG")
+    ap.add_argument("--break", dest="breaks", action="append", default=[],
+                    help="trace a guest function: ADDR:label:nargs[:stringargs], e.g. 0x48e8f2:RunTurnStep:4:2")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
@@ -126,6 +128,9 @@ def main(argv=None):
     m.state["argc_table"] = argc
     m.state["log_files"] = args.log_files
     m.state["gdi_debug"] = os.environ.get("GDI_DEBUG") == "1"
+    for spec in args.breaks:
+        parts = spec.split(":")
+        m.add_trace(int(parts[0], 16), parts[1], int(parts[2]), tuple(int(x) for x in parts[3].split(",")) if len(parts) > 3 else ())
     m.trace = args.trace or bool(args.trace_only)
     if args.trace_only:
         rx = re.compile(args.trace_only)
@@ -138,6 +143,7 @@ def main(argv=None):
         at, cmd = part.split(":", 1)
         actions.append((float(at), cmd.split()))
     actions.sort(key=lambda a: a[0])
+    passto_last = {}
     pending = {"clicks": []}                                   # (due_time, kind, x, y) follow-ups of a click
 
     def run_action(mm, cmd, now):
@@ -165,6 +171,21 @@ def main(argv=None):
                 actions.sort(key=lambda a: a[0])
         elif op == "dlgsel":                                   # dlgsel ID INDEX
             user32.select_dialog_item(mm, int(cmd[1]), int(cmd[2]))
+        elif op == "passto":                                   # passto PROMPT-PREFIX...: press Done until it shows
+            want = " ".join(cmd[1:])
+            tu = [w for w in mm.state.get("u32", {}).get("windows", {}).values() if w["cls"] == "MAGIC_TellUserClass"]
+            cur = tu[0]["title"] if tu else ""
+            if cur.startswith(want) and now - passto_last.get("t", -9) > 1.0:
+                print(f"   [script] passto reached {cur!r} at {now:.0f}s")
+            else:
+                btn = [b for b in mm.state.get("u32", {}).get("windows", {}).values()
+                       if str(b["cls"]).upper() == "BUTTON" and b["visible"] and b["w"] > 0 and b["parent"] == (tu[0]["hwnd"] if tu else -1)]
+                if btn and now - passto_last.get("t", -9) > 2.5:
+                    passto_last["t"] = now
+                    x0, y0, _, _ = user32.abs_rect(mm, btn[0])
+                    run_action(mm, ["click", str(x0 + 8), str(y0 + 5), "0.05"], now)
+                actions.append((now + 0.5, cmd))                # look again shortly
+                actions.sort(key=lambda a: a[0])
         elif op == "threads":                                  # where every thread is right now
             mm.report_threads()
         elif op == "state":                                    # print the duel's card slots (DUEL.EXE addresses)
@@ -204,8 +225,10 @@ def main(argv=None):
     m.state["on_schedule"] = schedule
     m.state["hard_stop"] = t0 + max(args.seconds * 6, 120)      # real-time safety net
     m.state["should_stop"] = lambda mm: mm.vt > args.seconds
+    m.state["virtual_limit"] = args.seconds
     m.state["next_host_event"] = None
     code = m.run()
+    m.flush_trace()
     print(f"\nfinished: exit code {code}, {m.calls} import calls, {m.vt:.1f}s virtual, {time.time() - t0:.1f}s real")
     shot = os.path.join(args.shots, "screen.png")
     Image.fromarray(compose(m)).save(shot)
