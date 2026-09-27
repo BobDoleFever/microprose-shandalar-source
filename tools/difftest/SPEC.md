@@ -94,6 +94,7 @@ python3 tools/difftest/run_vectors.py --strict     # UNIMPLEMENTED counts as a f
 make -C tools/difftest                             # build the harness with the full warning set
 make -C tools/difftest asan                        # build/harness-asan, with AddressSanitizer and UBSan
 python3 -m pytest tools/difftest                   # the pipeline's own tests (needs pytest)
+python3 tools/difftest/record_vectors.py OUT N --exe ... --seconds N --script "..."  # record from the original
 ```
 
 Each vector is **PASS**, **FAIL** (with every difference: return value, calls, undefined reads, memory),
@@ -104,34 +105,45 @@ the wrong entry address). The exit status is 1 if any vector failed or errored.
 The runner turns each vector into a small line protocol for the harness (documented at the top of
 `harness.c`), one process per vector, so an assert in one vector cannot affect another.
 
-## Recording vectors from the original (for the emulator; not implemented here)
+## Recording vectors from the original
 
-`tools/emu_spike/winemu` already stops at function entries (`--break ADDR:label:nargs`) and returns. A
-recorder built on the same Unicorn hooks would, for one call of a function at `entry`:
+`record_vectors.py` does this. It hooks every native function's entry in a running `tools/emu_spike`
+`Machine` (the same Unicorn instance that runs the original game unmodified) and, for a sampled call:
 
-1. **At entry**, read the `nargs` stack arguments above the return address (`[esp+4]`, `[esp+8]`, ...) and
-   note the return address and ESP.
-2. **While the function runs** (until EIP reaches the return address with ESP back above it), log memory
+1. **At entry**, reads the stack arguments (their count comes from `NATIVE_FUNCTIONS`, mirroring
+   `src/native/engine.c`) and notes the return address and ESP.
+2. **While the function runs** (until EIP reaches the return address with ESP back above it), logs memory
    accesses with `UC_HOOK_MEM_READ` and `UC_HOOK_MEM_WRITE`:
-   - a byte **read** by the function itself that it (or a callee) has not written earlier in this call goes
-     to `memory_in`, with the value it had;
+   - a byte **read** that it (or a callee) has not written earlier in this call goes to `memory_in`, with
+     the value it had;
    - every byte **written** goes to `memory_out_expected`, with its final value, and
      `memory_out_exhaustive` is set;
-   - accesses to the thread's stack (between the stack limit and the entry ESP plus the arguments) are left
-     out: native code keeps its locals in C variables.
-3. **Calls**: when a `call` leaves the function, record the target address and its stack arguments (the
-   argument count is `ParameterCount` in `<program>/function_index.csv`), then hook the return address to
-   record EAX. Writes made while inside the callee go to that call's `memory_writes`; reads made inside the
-   callee are not recorded. Calls to functions whose work the native code does itself are **transparent**:
-   record their reads and writes as the function's own, not as a call. Today that is `memcpy` (a
-   `MSVCRTD` import in `MAGIC.EXE`; the statically linked `FID_conflict:_memcpy` in `DUEL.EXE`), used by
-   `Magic_PushSpellStack`.
-4. **At return**, EAX is `expected_return`. Write `function`, `program`, `address` and a `source` naming the
-   run (script, virtual time) so a failing vector can be reproduced.
+   - accesses to the caller's stack frame (between the entry ESP and the arguments) are left out: native
+     code keeps its locals in C variables.
+3. **Calls**: when control leaves the function to one of `CALLEES_INFO`'s addresses, it records the
+   target and its stack arguments, then hooks the return address for EAX. Writes made while inside the
+   callee go to that call's `memory_writes`; reads made inside the callee are not recorded.
+4. **At return**, EAX is `expected_return`, and `function`/`program`/`address`/`source` (with the virtual
+   time) are written so a failing vector can be reproduced.
 
-Recording many calls of the same function from one scripted game gives a regression suite for it; runs are
-deterministic, so a vector can be recorded again from the same script. Keep vectors small by recording
-one call per interesting situation rather than every call (the card-attribute query runs about 350,000
+`record_vectors.py`'s function and callee tables (`NATIVE_FUNCTIONS`, `CALLEES_INFO`) are checked against
+`src/native/engine.h`'s `NativeFn`/`Callee` enums and both programs' `layout.c` tables by
+`test_record_vectors_tables_match_native_code` in `test_difftest.py` (no unicorn or game files needed),
+so adding a native function without updating the recorder fails that test rather than silently recording
+nothing for it.
+
+```bash
+python3 tools/difftest/record_vectors.py OUTDIR MAX_PER_SITUATION --exe path/to/DUEL.EXE --seconds N --script "..."
+```
+
+needs the user's own copy of the game (see `tools/emu_spike`'s own docs); the vectors it writes are plain
+numbers, not game assets, and are fine to commit (`vectors/recorded_*.json` in this repo were made this
+way, from a mono-green mirror match and a game against a red AI deck).
+
+A call is skipped once `MAX_PER_SITUATION` examples of its "situation" (`Recorder.situation_key`, a rough
+bucket on the slot's flags, its card's colour and type, and whether the AI is thinking) have been recorded,
+so a long game yields a manageable regression suite rather than one vector per call of the card-attribute
+query's roughly 350,000 calls in a single scripted turn.
 times in one game).
 
 ## Adding a native function
