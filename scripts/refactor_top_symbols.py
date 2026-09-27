@@ -47,7 +47,7 @@ TOP_DAT_MAP = {
     "00666458": "g_TurnPlayer",
     "00676510": "g_DuelTargetPlayer",
     "00676504": "g_DuelTargetCardSlot",
-    "0066aaf4": "g_DuelDebugModeFlag",
+    "0066aaf4": "g_IsAiThinking",
     "0068f2c4": "g_DuelCombatPhaseState",
     "0068f230": "g_DuelCurrentEventCode",
     "0068f104": "g_DuelTargetCardId",

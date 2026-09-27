@@ -140,7 +140,7 @@ Address,NewName
 0066642c,g_CardEventResult
 00666458,g_TurnPlayer
 006679f0,g_DuelCardNameBuffer
-0066aaf4,g_DuelDebugModeFlag
+0066aaf4,g_IsAiThinking
 00676504,g_DuelTargetCardSlot
 00676510,g_DuelTargetPlayer
 006776a0,g_AiBackupBoardRegister
@@ -303,7 +303,7 @@ Address,NewName
 006ff4c0,g_CurrentStepCode
 006ff4d0,g_SpellStackEntries
 006ff558,g_ScWillyScore
-006ff55c,g_AiDecisionScore
+006ff55c,g_AiChoiceValue
 006ff570,g_DuelDatFilePath
 006ff680,g_SpellStackDepth
 006ff710,g_PlayerGraveyardList

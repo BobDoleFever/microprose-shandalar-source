@@ -307,7 +307,7 @@ void FUN_0048cc29(void)
 void FUN_0048cfda(int x,int arg2)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     FUN_00450e84(x,arg2);
   }
   g_DuelHumanPlayerIndex = 0;
@@ -343,7 +343,7 @@ int32_t Sound_PlayTrackById(int player_id)
   local_28[6] = 0;
   local_28[7] = color_mask;
   slot_idx = 0;
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uval_1 = 0;
   }
   else {
@@ -560,7 +560,7 @@ int32_t FUN_0048d41e(int32_t color_mask)
                     *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + val_2 * 0x120 + val_1 * 0x5b20) * 0x5b20) * 0x34);
     }
   }
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     *(int32_t *)(&DAT_00666460 + val_6 * 4) = color_mask;
   }
   *(int *)(&DAT_0068f120 + val_6 * 8) = (int)(char)(&g_DuelCardSlot_ColorMask)[val_2 * 0x120 + val_1 * 0x5b20];
@@ -641,7 +641,7 @@ int32_t Magic_PushSpellStack(int player_id,int card_slot,int event_type,int arg_
       else {
         *(int *)(&DAT_00666960 + DAT_006764b8 * 4) = g_DuelCurrentEventCode;
       }
-      if (g_DuelDebugModeFlag != 1) {
+      if (g_IsAiThinking != 1) {
         *(int32_t *)(&DAT_00666460 + DAT_006764b8 * 4) = arg_5;
       }
       DAT_006764b8 = DAT_006764b8 + 1;
@@ -840,7 +840,7 @@ int32_t FUN_0048e32b(int x,int card_slot,int32_t arg_3,int32_t arg_4)
     DAT_0068f110 = 0;
     uval_3 = FUN_0048e405(x,arg_2,arg_3,arg_4);
     if ((DAT_0068f110 == 0) || (0 < DAT_006764b8)) break;
-  } while (g_DuelDebugModeFlag != 1);
+  } while (g_IsAiThinking != 1);
   DAT_0068eee4 = uval_1;
   if (DAT_006764b8 == 0) {
     DAT_0068eee4 = 0;
@@ -945,7 +945,7 @@ LAB_0048e800:
       if (local_98 != 0) {
         DAT_0068f110 = 1;
       }
-      if (((g_TurnPlayer == g_DuelTargetPlayer) && (local_98 != 0)) && (g_DuelDebugModeFlag != 1)) {
+      if (((g_TurnPlayer == g_DuelTargetPlayer) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
         local_94 = 1;
       }
       if ((DAT_0068f2d8 < DAT_0068ecc4) && (-1 < DAT_006764b8)) {
@@ -976,7 +976,7 @@ LAB_0048e800:
       if (((DAT_0068f2d8 < DAT_0068ecc4) && (-1 < DAT_006764b8)) ||
          (val_4 = UI_PromptFastEffectsDialog(1 - g_TurnPlayer,local_8c), val_4 == 0)) goto LAB_0048e800;
       DAT_0068f110 = 1;
-      if (g_DuelDebugModeFlag != 1) break;
+      if (g_IsAiThinking != 1) break;
       if ((g_TurnPlayer != g_DuelTargetPlayer) && (((DAT_00676500 & 1) == 0 || (DAT_0068f2d8 != 1))))
       goto LAB_0048e800;
     }

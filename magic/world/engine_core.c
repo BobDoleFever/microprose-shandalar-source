@@ -6132,7 +6132,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
       uVar3 = Glue_Subsystem_004d0a42(value,min_val);
-      iVar4 = Action_ValidateTarget_00405802
+      iVar4 = Duel_ChooseTarget
                         (value,2,1 - value,0x200,2,0x40,0,uVar3,uVar6,uVar5,iVar4,iVar7,uVar8,uVar9,
                          uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
       if (iVar4 == 0) {
@@ -11013,33 +11013,33 @@ undefined4 FUN_0046ff50(int value,int min_val,int max_val)
                 iVar3 = Font_DrawString(value,7,1);
                 if (iVar3 == 0) {
                   iVar3 = Font_DrawString(value,7,1);
-                  g_AiDecisionScore = Math_RandomRange(iVar3 + 1);
-                  local_18 = g_AiDecisionScore;
+                  g_AiChoiceValue = Math_RandomRange(iVar3 + 1);
+                  local_18 = g_AiChoiceValue;
                 }
                 else {
                   iVar3 = Math_RandomRange(iVar3);
-                  g_AiDecisionScore = iVar3 + 1;
-                  local_18 = g_AiDecisionScore;
+                  g_AiChoiceValue = iVar3 + 1;
+                  local_18 = g_AiChoiceValue;
                 }
               }
               else if (iVar3 == 1) {
                 local_18 = Font_DrawString(value,7,1);
-                g_AiDecisionScore = local_18;
+                g_AiChoiceValue = local_18;
                 if ((g_PlayerCreatureCount < local_18) && (iVar3 = Math_RandomRange(3), iVar3 == 0)) {
                   local_18 = g_PlayerCreatureCount;
-                  g_AiDecisionScore = g_PlayerCreatureCount;
+                  g_AiChoiceValue = g_PlayerCreatureCount;
                 }
-                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiDecisionScore)
+                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiChoiceValue)
                    ) {
                   local_18 = g_OverworldPlayerCoordY;
-                  g_AiDecisionScore = g_OverworldPlayerCoordY;
+                  g_AiChoiceValue = g_OverworldPlayerCoordY;
                 }
               }
-              Ai_EvaluateCreaturePower();
+              Ai_RecordChoice();
             }
             else {
-              Ai_CalcCardAdvantage();
-              local_18 = g_AiDecisionScore;
+              Ai_ReplayChoice();
+              local_18 = g_AiChoiceValue;
             }
             g_OverworldPlayerCoordY = local_18;
             Ai_CalcManaRequirement_004ba890(value,0,-1);
@@ -11723,14 +11723,14 @@ void FUN_00471d16(uint value)
     }
     local_20 = 0;
     while ((local_20 == 0 && (iVar1 = FUN_00472a0a(local_2c), iVar1 != 0))) {
-      iVar1 = Action_ValidateTarget_00405802
+      iVar1 = Duel_ChooseTarget
                         (local_2c,local_2c,local_2c,0x2200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0
                          ,0,0x11,s_Choose_blockers_00525ca4,2,&local_28);
       if (iVar1 == 0) {
         local_20 = 1;
       }
       else {
-        iVar1 = Action_ValidateTarget_00405802
+        iVar1 = Duel_ChooseTarget
                           (local_2c,local_80,local_80,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,
                            0,2,0,s_Block_which_attacker__00525cb4,1,&local_1c);
         if (iVar1 != 0) {
@@ -15901,7 +15901,7 @@ uint FUN_0048d259(void)
   uVar41 = FileIo_ReadStream(&DAT_006b2d90,0x80);
   uVar42 = FileIo_ReadStream(&DAT_007006d4,4);
   uVar43 = FileIo_ReadStream(&DAT_006ff2d8,4);
-  uVar44 = FileIo_ReadStream(&g_AiDecisionScore,4);
+  uVar44 = FileIo_ReadStream(&g_AiChoiceValue,4);
   uVar45 = FileIo_ReadStream(&DAT_006fefa8,4);
   uVar46 = FileIo_ReadStream(&DAT_006b3000,0x60);
   uVar47 = FileIo_ReadStream(&DAT_0068a668,8);

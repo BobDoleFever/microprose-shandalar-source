@@ -33,7 +33,7 @@ EXTRA_DAT_MAP = {
     "0068f104": "g_DuelTargetCardId",
     "0068f230": "g_DuelCurrentEventCode",
     "0068f2c4": "g_DuelCombatPhaseState",
-    "0066aaf4": "g_DuelDebugModeFlag",
+    "0066aaf4": "g_IsAiThinking",
     "00676504": "g_DuelTargetCardSlot",
     "00676510": "g_DuelTargetPlayer",
     "00666458": "g_TurnPlayer",

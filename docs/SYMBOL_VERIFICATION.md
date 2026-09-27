@@ -470,3 +470,50 @@ Structures: a table record is `0x58` bytes (`+0` HWND of the card window, whose 
 (player, slot, 20 target (player, slot) pairs, count), passed by value. Message ids: `0x40c` clear all, `0x412` sync to the
 snapshot, `0x432` repaint; `WM_COMMAND` `0x65` minimize, `0x66` restore. Also from the report, static only: the slot byte
 called `g_CardSlot_TapState` looks like a target count, not a tap state.
+
+### The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26)
+
+Three scripted runs on `DUEL.EXE` (mirror deck; me against a red AI deck for 560 virtual seconds; a short run reading the
+colour counts) with entry, return and write traces. The AI is **not** a set of `Ai_Evaluate...`/`Ai_Choose...` heuristics:
+
+1. When it must act, the turn loop (`0x00426c70`) calls `0x0048b5c9(stage, budget)`. It sets the best score to -9999, sets
+   `g_IsAiThinking` to 1 and snapshots the game (`Ai_SaveGameState`).
+2. For about 2.0 s of virtual time (`g_IsAiThinking` went 0 to 1 and back exactly 2.0 s later, four times) it runs trials:
+   `Ai_BeginTrial` restores the snapshot and clears the trial list, random choices are played and each is logged with
+   `Ai_RecordChoice`, then `Ai_EvaluateBoard` scores the board (about 4,000 of each in one search-heavy run). If the score beats
+   the best, `Ai_CommitBestPlan` copies the trial list to the best list; the best score only ever rose within a search
+   (`-9999, -139, -13, 7, 15, 33`).
+3. When the flag drops, the game **replays** the best list: `Ai_ReplayChoice` is called from the same four sites as the
+   record function, with the flag at 0, and returns 99 when the list is empty.
+
+| MAGIC.EXE / DUEL.EXE | Old MAGIC name | New name | Evidence |
+|---|---|---|---|
+| `0x4ab28b` / `0x43064a` | `Ai_EvaluateCreaturePower` | `Ai_RecordChoice` | called only while thinking; records `(mode, packed slot, choice)` |
+| `0x4ab3f3` / `0x4307b2` | `Ai_CalcCardAdvantage` | `Ai_ReplayChoice` | same four sites, flag 0; writes 99 on an empty list |
+| `0x4ab45f` / `0x43081e` | `Ai_ScoreBoardPosition` | `Ai_CommitBestPlan` | runs right after each best-score rise; copies lists, scores nothing |
+| `0x4ab214` / `0x4305d3` | `Ai_GetActivePlayerScore` | `Ai_BeginTrial` | once per trial (6,857 in one run) and at search end |
+| `0x4ab1ef` / `0x4305ae` | `Ai_ResetEvaluationState` | `Ai_ClearPlan` | called at turn starts; replays read 99 right after (medium-high) |
+| `0x4ab510` / `0x4308cf` | `Ai_Util_004ab510` | `Ai_GetPlanCursor` | returns the list length, which is also the replay cursor |
+| `0x4ab552` / `0x430911` | `Ai_SimulateCombatRound` | `Ai_EvaluateBoard` | signed zero-sum score: `EvalBoard(1) = -208` 2,577 times and `EvalBoard(0) = 208` 491 times, range -216 to +208 |
+| `0x4abff4` / `0x4313b9` | `Ai_ChooseAttackers` | `Ai_PenalizeCounterattack` | only called from the evaluator; lowers the score by 0 to 2 (medium-high) |
+| `0x4acc20` / `0x43e0e0` | `Ai_AssignCombatDamage` | `Duel_ShowStartOfDuelDialog` | opens the "Start of duel" dialog at 3.012 s and returns when the script pressed its button |
+| `0x4a99a0` / `0x42ed60` | `Palette_Subsystem_004a99a0` | `Ai_ChooseCardToPlay` | returns slots 2, 3 or -1; produces the mode 1 and 2 records |
+| `0x4468dc` / `0x46c7d0` | `Pic_Subsystem_004468dc` | `Ai_ChooseChainResponse` | returns -1 (pass) or a slot; the mode 4 records (medium-high) |
+| `0x405802` / `0x41e2a2` | `Action_ValidateTarget_*` | `Duel_ChooseTarget` | the mode 3 (target) record site is inside it (medium-high) |
+
+Globals: `g_AiDecisionScore` (MAGIC `0x6ff55c`, DUEL `0x68f2c8`) is not a score. It is the chosen value (an option index, a
+colour index in mode 1, or 99 for "no recorded choice"), now `g_AiChoiceValue`. DUEL's `g_DuelDebugModeFlag` (`0x66aaf4`) is
+`g_IsAiThinking`. Modes (`0x4f3c6c`): 1 land to play (choice = colour index, -2 = none), 2 card to cast or permanent to
+activate, 3 target, 4 spell-chain response. Packed slot (`0x68f0bc`): low byte slot, `0x100` player 1, `0x1000` cast or play from
+hand, `0x2000` activate, `0x4000` target pick, `0xffffffff` none. Best score `0x667990`; search stage `0x666400` (1 main
+phase, 2 blockers, 3 and 4 end-of-turn steps and responses, 8 declare attackers; 5 to 7 not decoded); trial list length and
+replay cursor are one variable (`0x50b37c`).
+
+Reported but **not applied** (static only or medium confidence; nothing above rests on them): `Ai_CalcLifeAdvantage` (never
+entered), `Ai_ChooseBlockers` (only runs with a debug flag; looks like a plan-to-text dump), `Ai_FilterValidBlockers`
+(reads per-colour land counts; medium), `Ai_Util_004ab525` (cursor step back; medium), `Ai_GetOpponentPlayerScore` (looks
+like a planned-slot peek; medium), `Ai_EvalAttackCandidate_004c864d` (runs the combat damage step; medium),
+`Ai_Subsystem_004cc9c5` (a board-refresh routine in DUEL's own domain). The `Ai_` prefix on the start-of-duel dialog code and
+on most `Ai_Subsystem_*` after `0x4acb7f` in MAGIC.EXE is unsupported: the real `sid\Ai.c` assert string appears only in
+`Ai_SaveGameState`. `Ai_SaveGameState`, `Ai_RestoreGameState` and the board-state push and pop (a one-deep snapshot, not a
+stack) held up.

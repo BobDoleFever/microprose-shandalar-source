@@ -8344,7 +8344,7 @@ int32_t Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       uval_5 = 0;
       uval_4 = 0;
       uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_2 = Action_ValidateTarget_00405802
+      val_2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uval_3,uval_4,uval_5,val_6,val_2,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_2 == 0) {
@@ -9277,7 +9277,7 @@ int32_t Palette_Subsystem_004a9137(int player_id,int card_slot,int32_t arg_3)
 
 
 /*
- * Decompiled function: Palette_Subsystem_004a99a0
+ * Decompiled function: Ai_ChooseCardToPlay
  * Entry Point: 004a99a0
  * Size: 3718 bytes
  */
@@ -9285,7 +9285,7 @@ int32_t Palette_Subsystem_004a9137(int player_id,int card_slot,int32_t arg_3)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint32_t Palette_Subsystem_004a99a0(int player_id)
+uint32_t Ai_ChooseCardToPlay(int player_id)
 
 {
   uint32_t uval_1;
@@ -9393,7 +9393,7 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
         if (local_9c == 0) {
           if ((g_IsAiThinking != 1) && (card_idx != 0)) {
             DAT_0052ce1c = 1;
-            Ai_CalcCardAdvantage();
+            Ai_ReplayChoice();
           }
           local_40 = 99;
         }
@@ -9415,21 +9415,21 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
             } while ((target_idx & 1 << ((uint8_t)local_40 & 0x1f)) == 0);
           }
           if (g_IsAiThinking == 1) {
-            g_AiDecisionScore = local_40;
+            g_AiChoiceValue = local_40;
             g_AiCurrentSearchPath = 0xffffffff;
             val_2 = Util_GetRandomNumber(4);
             if ((val_2 == 0) && (DAT_006a2838 == 0)) {
-              g_AiDecisionScore = 0xfffffffe;
+              g_AiChoiceValue = 0xfffffffe;
             }
             if ((((local_28 == 0) && (slot_idx == 0)) && (card_idx == 0)) &&
                ((match_count < 7 && (3 < *(int *)(&g_PlayerManaPoolDelta + player * 0x20) - local_38)))) {
-              g_AiDecisionScore = 0xfffffffe;
+              g_AiChoiceValue = 0xfffffffe;
             }
           }
           else {
             DAT_0052ce1c = 1;
-            Ai_CalcCardAdvantage();
-            local_40 = g_AiDecisionScore;
+            Ai_ReplayChoice();
+            local_40 = g_AiChoiceValue;
           }
         }
         local_44 = 0xffffffff;
@@ -9448,15 +9448,15 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
           }
         }
         if ((g_IsAiThinking == 1) && ((local_9c != 0 || (card_idx != 0)))) {
-          if (g_AiDecisionScore == 0xfffffffe) {
+          if (g_AiChoiceValue == 0xfffffffe) {
             g_AiCurrentSearchPath = 0xffffffff;
           }
           else {
             g_AiCurrentSearchPath = player << 8 | local_44 | 0x1000;
           }
           DAT_0052ce1c = 1;
-          Ai_EvaluateCreaturePower();
-          if (g_AiDecisionScore != 0xfffffffe) {
+          Ai_RecordChoice();
+          if (g_AiChoiceValue != 0xfffffffe) {
             if (0xf < DAT_006a2844) {
               DAT_006a2844 = DAT_006a2844 + -1;
             }
@@ -9466,7 +9466,7 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
             DAT_006a2844 = DAT_006a2844 + 1;
           }
         }
-        if (g_AiDecisionScore != 0xfffffffe) {
+        if (g_AiChoiceValue != 0xfffffffe) {
           return local_44;
         }
         if ((local_9c == 0) && (card_idx == 0)) {
@@ -9543,9 +9543,9 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
       color_idx = color_idx + 1;
       if (g_IsAiThinking == 1) {
         if ((DAT_006a2840 == -1) || (DAT_006a2838 != 0)) {
-          g_AiDecisionScore = Util_GetRandomNumber(color_idx);
+          g_AiChoiceValue = Util_GetRandomNumber(color_idx);
           if (DAT_006a2838 != 0) {
-            g_AiDecisionScore = color_idx - 1;
+            g_AiChoiceValue = color_idx - 1;
             if (DAT_006a2838 == 1) {
               val_2 = Math_Clamp(color_idx * color_idx,10,0x14);
               DAT_006fe40c = val_2 * (g_CampaignDifficultyLevel + 1) * 5;
@@ -9553,11 +9553,11 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
             DAT_006a2838 = -1;
           }
           g_AiCurrentSearchPath = (-(uint32_t)((*(uint32_t *)(&g_CardSlot_Flags +
-                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
-                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
+                                            player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120)
+                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiChoiceValue]
                          | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
-          Ai_EvaluateCreaturePower();
+          Ai_RecordChoice();
         }
         else {
           player_idx = Ai_ClearCandidateScoreList();
@@ -9566,7 +9566,7 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
             DAT_006a2840 = player_idx;
           }
           if (player_idx == DAT_006a2840) {
-            g_AiDecisionScore = DAT_0052ce20;
+            g_AiChoiceValue = DAT_0052ce20;
             DAT_0052ce20 = DAT_0052ce20 + 1;
             if (color_idx + -1 <= (int)uval_1) {
               DAT_006a2840 = DAT_006a2840 + 1;
@@ -9574,23 +9574,23 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
             }
           }
           if (DAT_006a2840 < player_idx) {
-            g_AiDecisionScore = color_idx - 1;
+            g_AiChoiceValue = color_idx - 1;
           }
           if (player_idx < DAT_006a2840) {
             DAT_0052ce1c = 2;
-            Ai_CalcCardAdvantage();
+            Ai_ReplayChoice();
             Ai_SortCandidateScoreList();
-            if (color_idx <= (int)g_AiDecisionScore) {
-              g_AiDecisionScore = color_idx - 1;
+            if (color_idx <= (int)g_AiChoiceValue) {
+              g_AiChoiceValue = color_idx - 1;
             }
           }
           g_AiCurrentSearchPath = (-(uint32_t)((*(uint32_t *)(&g_CardSlot_Flags +
-                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
-                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
+                                            player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120)
+                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiChoiceValue]
                          | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
-          Ai_EvaluateCreaturePower();
-          if ((color_idx - 1U == g_AiDecisionScore) && (player_idx < DAT_006a2840)) {
+          Ai_RecordChoice();
+          if ((color_idx - 1U == g_AiChoiceValue) && (player_idx < DAT_006a2840)) {
             DAT_006a2840 = -1;
             DAT_0052ce20 = 0;
           }
@@ -9598,22 +9598,22 @@ uint32_t Palette_Subsystem_004a99a0(int player_id)
       }
       else {
         DAT_0052ce1c = 2;
-        Ai_CalcCardAdvantage();
-        if (color_idx <= (int)g_AiDecisionScore) {
-          g_AiDecisionScore = color_idx - 1;
+        Ai_ReplayChoice();
+        if (color_idx <= (int)g_AiChoiceValue) {
+          g_AiChoiceValue = color_idx - 1;
         }
       }
-      if (auStack_98[g_AiDecisionScore] != 0xffffffff) {
+      if (auStack_98[g_AiChoiceValue] != 0xffffffff) {
         if (0xf < DAT_006a2844) {
           DAT_006a2844 = DAT_006a2844 + -1;
         }
         *(int32_t *)(&DAT_006fe3b0 + DAT_006a2844 * 4) =
              *(int32_t *)
-              (&g_CardSlot_CardId + player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120);
-        *(uint32_t *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_98[g_AiDecisionScore];
+              (&g_CardSlot_CardId + player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120);
+        *(uint32_t *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_98[g_AiChoiceValue];
         DAT_006a2844 = DAT_006a2844 + 1;
       }
-      uval_1 = auStack_98[g_AiDecisionScore];
+      uval_1 = auStack_98[g_AiChoiceValue];
     }
   }
   else {

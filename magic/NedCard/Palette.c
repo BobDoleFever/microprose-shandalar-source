@@ -8344,7 +8344,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      iVar2 = Action_ValidateTarget_00405802
+      iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar2,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
       if (iVar2 == 0) {
@@ -9277,7 +9277,7 @@ undefined4 Palette_Subsystem_004a9137(int player,int card_slot,undefined4 arg_3)
 
 
 /*
- * Decompiled function: Palette_Subsystem_004a99a0
+ * Decompiled function: Ai_ChooseCardToPlay
  * Entry Point: 004a99a0
  * Size: 3718 bytes
  */
@@ -9285,7 +9285,7 @@ undefined4 Palette_Subsystem_004a9137(int player,int card_slot,undefined4 arg_3)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint Palette_Subsystem_004a99a0(int player)
+uint Ai_ChooseCardToPlay(int player)
 
 {
   uint uVar1;
@@ -9393,7 +9393,7 @@ uint Palette_Subsystem_004a99a0(int player)
         if (local_9c == 0) {
           if ((g_IsAiThinking != 1) && (local_10 != 0)) {
             DAT_0052ce1c = 1;
-            Ai_CalcCardAdvantage();
+            Ai_ReplayChoice();
           }
           local_40 = 99;
         }
@@ -9415,21 +9415,21 @@ uint Palette_Subsystem_004a99a0(int player)
             } while ((local_18 & 1 << ((byte)local_40 & 0x1f)) == 0);
           }
           if (g_IsAiThinking == 1) {
-            g_AiDecisionScore = local_40;
+            g_AiChoiceValue = local_40;
             DAT_006fefa8 = 0xffffffff;
             iVar2 = Math_RandomRange(4);
             if ((iVar2 == 0) && (DAT_006a2838 == 0)) {
-              g_AiDecisionScore = 0xfffffffe;
+              g_AiChoiceValue = 0xfffffffe;
             }
             if ((((local_28 == 0) && (local_8 == 0)) && (local_10 == 0)) &&
                ((local_c < 7 && (3 < *(int *)(&DAT_0063ee4c + player * 0x20) - local_38)))) {
-              g_AiDecisionScore = 0xfffffffe;
+              g_AiChoiceValue = 0xfffffffe;
             }
           }
           else {
             DAT_0052ce1c = 1;
-            Ai_CalcCardAdvantage();
-            local_40 = g_AiDecisionScore;
+            Ai_ReplayChoice();
+            local_40 = g_AiChoiceValue;
           }
         }
         local_44 = 0xffffffff;
@@ -9448,15 +9448,15 @@ uint Palette_Subsystem_004a99a0(int player)
           }
         }
         if ((g_IsAiThinking == 1) && ((local_9c != 0 || (local_10 != 0)))) {
-          if (g_AiDecisionScore == 0xfffffffe) {
+          if (g_AiChoiceValue == 0xfffffffe) {
             DAT_006fefa8 = 0xffffffff;
           }
           else {
             DAT_006fefa8 = player << 8 | local_44 | 0x1000;
           }
           DAT_0052ce1c = 1;
-          Ai_EvaluateCreaturePower();
-          if (g_AiDecisionScore != 0xfffffffe) {
+          Ai_RecordChoice();
+          if (g_AiChoiceValue != 0xfffffffe) {
             if (0xf < DAT_006a2844) {
               DAT_006a2844 = DAT_006a2844 + -1;
             }
@@ -9466,7 +9466,7 @@ uint Palette_Subsystem_004a99a0(int player)
             DAT_006a2844 = DAT_006a2844 + 1;
           }
         }
-        if (g_AiDecisionScore != 0xfffffffe) {
+        if (g_AiChoiceValue != 0xfffffffe) {
           return local_44;
         }
         if ((local_9c == 0) && (local_10 == 0)) {
@@ -9543,9 +9543,9 @@ uint Palette_Subsystem_004a99a0(int player)
       local_1c = local_1c + 1;
       if (g_IsAiThinking == 1) {
         if ((DAT_006a2840 == -1) || (DAT_006a2838 != 0)) {
-          g_AiDecisionScore = Math_RandomRange(local_1c);
+          g_AiChoiceValue = Math_RandomRange(local_1c);
           if (DAT_006a2838 != 0) {
-            g_AiDecisionScore = local_1c - 1;
+            g_AiChoiceValue = local_1c - 1;
             if (DAT_006a2838 == 1) {
               iVar2 = Math_Clamp(local_1c * local_1c,10,0x14);
               DAT_006fe40c = iVar2 * (DAT_0067f380 + 1) * 5;
@@ -9553,20 +9553,20 @@ uint Palette_Subsystem_004a99a0(int player)
             DAT_006a2838 = -1;
           }
           DAT_006fefa8 = (-(uint)((*(uint *)(&g_CardSlot_Flags +
-                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
-                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
+                                            player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120)
+                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiChoiceValue]
                          | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
-          Ai_EvaluateCreaturePower();
+          Ai_RecordChoice();
         }
         else {
-          local_14 = Ai_Util_004ab510();
+          local_14 = Ai_GetPlanCursor();
           uVar1 = DAT_0052ce20;
           if ((DAT_0052ce20 == 0) && (DAT_006a2840 < local_14)) {
             DAT_006a2840 = local_14;
           }
           if (local_14 == DAT_006a2840) {
-            g_AiDecisionScore = DAT_0052ce20;
+            g_AiChoiceValue = DAT_0052ce20;
             DAT_0052ce20 = DAT_0052ce20 + 1;
             if (local_1c + -1 <= (int)uVar1) {
               DAT_006a2840 = DAT_006a2840 + 1;
@@ -9574,23 +9574,23 @@ uint Palette_Subsystem_004a99a0(int player)
             }
           }
           if (DAT_006a2840 < local_14) {
-            g_AiDecisionScore = local_1c - 1;
+            g_AiChoiceValue = local_1c - 1;
           }
           if (local_14 < DAT_006a2840) {
             DAT_0052ce1c = 2;
-            Ai_CalcCardAdvantage();
+            Ai_ReplayChoice();
             Ai_Util_004ab525();
-            if (local_1c <= (int)g_AiDecisionScore) {
-              g_AiDecisionScore = local_1c - 1;
+            if (local_1c <= (int)g_AiChoiceValue) {
+              g_AiChoiceValue = local_1c - 1;
             }
           }
           DAT_006fefa8 = (-(uint)((*(uint *)(&g_CardSlot_Flags +
-                                            player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120)
-                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiDecisionScore]
+                                            player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120)
+                                  & 2) == 0) & 0xfffff000) + 0x2000 | auStack_98[g_AiChoiceValue]
                          | (player == 0) - 1 & 0x100;
           DAT_0052ce1c = 2;
-          Ai_EvaluateCreaturePower();
-          if ((local_1c - 1U == g_AiDecisionScore) && (local_14 < DAT_006a2840)) {
+          Ai_RecordChoice();
+          if ((local_1c - 1U == g_AiChoiceValue) && (local_14 < DAT_006a2840)) {
             DAT_006a2840 = -1;
             DAT_0052ce20 = 0;
           }
@@ -9598,22 +9598,22 @@ uint Palette_Subsystem_004a99a0(int player)
       }
       else {
         DAT_0052ce1c = 2;
-        Ai_CalcCardAdvantage();
-        if (local_1c <= (int)g_AiDecisionScore) {
-          g_AiDecisionScore = local_1c - 1;
+        Ai_ReplayChoice();
+        if (local_1c <= (int)g_AiChoiceValue) {
+          g_AiChoiceValue = local_1c - 1;
         }
       }
-      if (auStack_98[g_AiDecisionScore] != 0xffffffff) {
+      if (auStack_98[g_AiChoiceValue] != 0xffffffff) {
         if (0xf < DAT_006a2844) {
           DAT_006a2844 = DAT_006a2844 + -1;
         }
         *(undefined4 *)(&DAT_006fe3b0 + DAT_006a2844 * 4) =
              *(undefined4 *)
-              (&g_CardSlot_CardId + player * 0x5b20 + auStack_98[g_AiDecisionScore] * 0x120);
-        *(uint *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_98[g_AiDecisionScore];
+              (&g_CardSlot_CardId + player * 0x5b20 + auStack_98[g_AiChoiceValue] * 0x120);
+        *(uint *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_98[g_AiChoiceValue];
         DAT_006a2844 = DAT_006a2844 + 1;
       }
-      uVar1 = auStack_98[g_AiDecisionScore];
+      uVar1 = auStack_98[g_AiChoiceValue];
     }
   }
   else {

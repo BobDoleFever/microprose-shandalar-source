@@ -18,7 +18,7 @@ FUNCTION_PROTOTYPE = re.compile(
 )
 GLOBAL_DECLARATION = re.compile(r"^(.*?\b)([^\s;]+);\s*$")
 SHADOWED_PARAMETERS = {
-    "Ai_ChooseAttackers": {"x"},
+    "Ai_PenalizeCounterattack": {"x"},
     "FUN_00492cb1": {"y"},
     "Pic_Subsystem_0044e2e7": {"y"},
     "Prompts_Load_004fe67f": {"flags"},

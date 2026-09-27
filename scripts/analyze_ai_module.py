@@ -44,29 +44,29 @@ def analyze():
         elif addr == "004aafa8":
             semantic_name = "Ai_PopBoardState"
         elif addr == "004ab1ef":
-            semantic_name = "Ai_ResetEvaluationState"
+            semantic_name = "Ai_ClearPlan"
         elif addr == "004ab214":
-            semantic_name = "Ai_GetActivePlayerScore"
+            semantic_name = "Ai_BeginTrial"
         elif addr == "004ab28b":
-            semantic_name = "Ai_EvaluateCreaturePower"
+            semantic_name = "Ai_RecordChoice"
         elif addr == "004ab35e":
             semantic_name = "Ai_GetOpponentPlayerScore"
         elif addr == "004ab3a9":
             semantic_name = "Ai_CalcLifeAdvantage"
         elif addr == "004ab3f3":
-            semantic_name = "Ai_CalcCardAdvantage"
+            semantic_name = "Ai_ReplayChoice"
         elif addr == "004ab45f":
-            semantic_name = "Ai_ScoreBoardPosition"
+            semantic_name = "Ai_CommitBestPlan"
         elif addr == "004ab552":
-            semantic_name = "Ai_SimulateCombatRound"
+            semantic_name = "Ai_EvaluateBoard"
         elif addr == "004abff4":
-            semantic_name = "Ai_ChooseAttackers"
+            semantic_name = "Ai_PenalizeCounterattack"
         elif addr == "004ac940":
             semantic_name = "Ai_ChooseBlockers"
         elif addr == "004acb7f":
             semantic_name = "Ai_FilterValidBlockers"
         elif addr == "004acc20":
-            semantic_name = "Ai_AssignCombatDamage"
+            semantic_name = "Duel_ShowStartOfDuelDialog"
         elif addr == "004ace3a":
             semantic_name = "Ai_DuelDialogProc"
         elif addr == "004ad6c5":

@@ -109,7 +109,7 @@ Address,NewName
 0043dbb9,Sound_GetPan
 0043dbda,Sound_SetPitch
 0043dbfb,Sound_GetPitch
-0043e0e0,Ai_AssignCombatDamage
+0043e0e0,Duel_ShowStartOfDuelDialog
 0043e2fa,Ai_DuelDialogProc
 0043eb81,Ai_LoadStartDuel2Backdrop
 0043ec81,Ai_StartDuelWndProc

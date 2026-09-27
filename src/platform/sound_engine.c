@@ -95,7 +95,7 @@ extern int32_t g_CardEventResult;
 extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -268,7 +268,7 @@ undefined4 Sound_PlayTrackById(int track_id)
   local_28[6] = 0;
   local_28[7] = track_id;
   local_8 = 0;
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uVar1 = 0;
   }
   else {
@@ -356,7 +356,7 @@ undefined4 Sound_PlaySpatialSound(int x, int y, int width, int height)
 {
   undefined4 uVar1;
   
-  if ((width == 0x71) && (g_DuelDebugModeFlag != 1)) {
+  if ((width == 0x71) && (g_IsAiThinking != 1)) {
     Sound_PlayTrackById(height + 8);
   }
   if (width == 0x73) {

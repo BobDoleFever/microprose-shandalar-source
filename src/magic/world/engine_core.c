@@ -6133,7 +6133,7 @@ int32_t FUN_00417c96(int player_id,int card_slot,int event_type)
       uval_5 = 1 << (flag_1 & 0x1f);
       uval_6 = 0;
       uval_3 = Glue_Subsystem_004d0a42(player,card_slot);
-      val_4 = Action_ValidateTarget_00405802
+      val_4 = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0x40,0,uval_3,uval_6,uval_5,val_4,val_7,uval_8,uVar9,
                          uVar10,uVar11,uVar12,arg_18,uval_2,arg_20);
       if (val_4 == 0) {
@@ -11014,33 +11014,33 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
                 val_3 = Font_DrawString(player,7,1);
                 if (val_3 == 0) {
                   val_3 = Font_DrawString(player,7,1);
-                  g_AiDecisionScore = Util_GetRandomNumber(val_3 + 1);
-                  target_idx = g_AiDecisionScore;
+                  g_AiChoiceValue = Util_GetRandomNumber(val_3 + 1);
+                  target_idx = g_AiChoiceValue;
                 }
                 else {
                   val_3 = Util_GetRandomNumber(val_3);
-                  g_AiDecisionScore = val_3 + 1;
-                  target_idx = g_AiDecisionScore;
+                  g_AiChoiceValue = val_3 + 1;
+                  target_idx = g_AiChoiceValue;
                 }
               }
               else if (val_3 == 1) {
                 target_idx = Font_DrawString(player,7,1);
-                g_AiDecisionScore = target_idx;
+                g_AiChoiceValue = target_idx;
                 if ((g_PlayerCreatureCount < target_idx) && (val_3 = Util_GetRandomNumber(3), val_3 == 0)) {
                   target_idx = g_PlayerCreatureCount;
-                  g_AiDecisionScore = g_PlayerCreatureCount;
+                  g_AiChoiceValue = g_PlayerCreatureCount;
                 }
-                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiDecisionScore)
+                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiChoiceValue)
                    ) {
                   target_idx = g_OverworldPlayerCoordY;
-                  g_AiDecisionScore = g_OverworldPlayerCoordY;
+                  g_AiChoiceValue = g_OverworldPlayerCoordY;
                 }
               }
-              Ai_EvaluateCreaturePower();
+              Ai_RecordChoice();
             }
             else {
-              Ai_CalcCardAdvantage();
-              target_idx = g_AiDecisionScore;
+              Ai_ReplayChoice();
+              target_idx = g_AiChoiceValue;
             }
             g_OverworldPlayerCoordY = target_idx;
             Ai_CalcManaRequirement_004ba890(player,0,-1);
@@ -11724,14 +11724,14 @@ void Magic_ExecuteDeclareBlockersPhase(uint32_t player)
     }
     loop_idx = 0;
     while ((loop_idx == 0 && (val_1 = FUN_00472a0a(local_2c), val_1 != 0))) {
-      val_1 = Action_ValidateTarget_00405802
+      val_1 = Duel_ChooseTarget
                         (local_2c,local_2c,local_2c,0x2200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0
                          ,0,0x11,s_Choose_blockers_00525ca4,2,&local_28);
       if (val_1 == 0) {
         loop_idx = 1;
       }
       else {
-        val_1 = Action_ValidateTarget_00405802
+        val_1 = Duel_ChooseTarget
                           (local_2c,local_80,local_80,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,
                            0,2,0,s_Block_which_attacker__00525cb4,1,&color_idx);
         if (val_1 != 0) {
@@ -15902,7 +15902,7 @@ uint32_t FUN_0048d259(void)
   uVar41 = FileIo_ReadStream(&DAT_006b2d90,0x80);
   uVar42 = FileIo_ReadStream(&DAT_007006d4,4);
   uVar43 = FileIo_ReadStream(&DAT_006ff2d8,4);
-  uVar44 = FileIo_ReadStream(&g_AiDecisionScore,4);
+  uVar44 = FileIo_ReadStream(&g_AiChoiceValue,4);
   uVar45 = FileIo_ReadStream(&g_AiCurrentSearchPath,4);
   uVar46 = FileIo_ReadStream(&DAT_006b3000,0x60);
   uVar47 = FileIo_ReadStream(&DAT_0068a668,8);

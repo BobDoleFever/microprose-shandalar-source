@@ -92,7 +92,7 @@ extern int32_t g_CardEventResult;
 extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -331,7 +331,7 @@ int Duel_DrawString(int x,uint y,int text)
       }
     }
     local_1c = *(int *)(&DAT_0068ed10 + local_28 * 4 + x * 0x20);
-    if (((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_DuelDebugModeFlag == 1)) {
+    if (((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_IsAiThinking == 1)) {
       for (local_24 = 0; (int)local_24 < 7; local_24 = local_24 + 1) {
         if ((local_24 != local_28) && ((local_2c & 1 << ((byte)local_24 & 0x1f)) != 0)) {
           local_1c = local_1c + *(int *)(&DAT_0068ed10 + local_24 * 4 + x * 0x20);
@@ -347,7 +347,7 @@ int Duel_DrawString(int x,uint y,int text)
       }
       else if ((*(uint *)(&DAT_00666570 + local_24 * 4 + x * 0xcc) &
                1 << ((byte)local_28 & 0x1f)) == 0) {
-        if ((((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_DuelDebugModeFlag == 1)) &&
+        if ((((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_IsAiThinking == 1)) &&
            ((local_2c & *(uint *)(&DAT_00666570 + local_24 * 4 + x * 0xcc)) != 0)) {
           local_10 = local_10 + (*(int *)(&DAT_00666570 + local_24 * 4 + x * 0xcc) >> 0x10);
         }

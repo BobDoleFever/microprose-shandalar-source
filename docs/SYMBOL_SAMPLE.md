@@ -29,7 +29,7 @@ game's own text, a matching API, a matching structure).
 
 | Function | Verdict | Evidence |
 |---|---|---|
-| `Ai_EvaluateCreaturePower` `0x004ab28b` | wrong | Appends the current candidate (id, card id, score) to a 256-entry list; evaluates no power |
+| `Ai_RecordChoice` `0x004ab28b` | wrong | Appends the current candidate (id, card id, score) to a 256-entry list; evaluates no power |
 | `Magic_CombatPhase` `0x004751d7` | wrong | Queues an event (card id, event, slot) and clones a 0x120-byte card slot into a free slot; no combat logic |
 | `SpellChain_RemoveEntry` `0x004cf965` | wrong | Removes entry `y` from a table of 0x58-byte records, destroys its child windows, shifts the rest down |
 | `Adventure_Audio_StopEffectChannel` `0x004ebe1a` | wrong (static) | Builds a volume/22050 Hz/pan struct and calls the play-sound function, the same callee the verified sound player uses to play |

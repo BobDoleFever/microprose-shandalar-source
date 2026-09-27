@@ -267,7 +267,7 @@ bool CardTarget_PromptTargetCreature(int player,uint32_t arg2,int arg3)
   arg_10 = 0;
   arg_9 = 0;
   arg_8 = Card_GetColorAndTypeFlags(player,arg3);
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,2,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -307,7 +307,7 @@ bool CardTarget_SetTargetCreature(int player,uint32_t arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&match_count);
   if (status != 0) {
@@ -351,7 +351,7 @@ int CardTarget_HasValidCreatureTarget(int player)
   int slot_idx;
   
   if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
-    status = Action_ValidateTarget_00405802
+    status = Duel_ChooseTarget
                       (player,player,player,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                        &g_OverworldGoldAmount,0,&color_idx);
     if (status == 0) {
@@ -432,7 +432,7 @@ bool CardTarget_PromptTargetPermanent(int player,uint32_t arg2,int arg3)
   arg_10 = 0;
   arg_9 = 0;
   arg_8 = Card_GetColorAndTypeFlags(player,arg3);
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,1,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -472,7 +472,7 @@ bool CardTarget_SetTargetPermanent(int player,uint32_t arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&match_count);
   if (status != 0) {
@@ -510,7 +510,7 @@ int CardTarget_HasValidPermanentTarget(int player)
   int match_count;
   int slot_idx;
   
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,player,player,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&match_count);
   if (status == 0) {
@@ -573,7 +573,7 @@ bool CardTarget_PromptTargetPlayerOrCreature(int player,uint32_t arg2,int arg3)
   arg_10 = 0;
   arg_9 = 0;
   arg_8 = Card_GetColorAndTypeFlags(player,arg3);
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,0x40,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -613,7 +613,7 @@ bool CardTarget_SetTargetPlayerOrCreature(int player,uint32_t arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&match_count);
   if (status != 0) {
@@ -651,7 +651,7 @@ int CardTarget_HasValidPlayerOrCreatureTarget(int player)
   int match_count;
   int slot_idx;
   
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,player,player,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&match_count);
   if (status == 0) {

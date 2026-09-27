@@ -90,7 +90,7 @@ Address,OldName,NewName
 0041d9d2,FUN_0041d9d2,Card_SetTapState
 0041db67,FUN_0041db67,Card_ApplyCombatDamage
 0041de10,FUN_0041de10,Action_PromptTarget_0041de10
-0041e2a2,FUN_0041e2a2,Action_ValidateTarget_0041e2a2
+0041e2a2,FUN_0041e2a2,Duel_ChooseTarget
 0041eb80,FUN_0041eb80,Prompts_Load_0041eb80
 0041f669,FUN_0041f669,Font_LoadTTF_Magim_TTF_0041f669
 00420120,FUN_00420120,Pic_Load_s_s_00420120
@@ -99,9 +99,9 @@ Address,OldName,NewName
 0042b324,FUN_0042b324,UI_WndProc_0042b324
 0042ce51,FUN_0042ce51,Action_PromptTarget_0042ce51
 0042e0cd,FUN_0042e0cd,Mem_AllocOrFree_0042e0cd
-004305ae,FUN_004305ae,Mem_AllocOrFree_004305ae
+004305ae,FUN_004305ae,Ai_ClearPlan
 0043071d,FUN_0043071d,Card_DispatchRulesEvent
-004308cf,FUN_004308cf,Mem_AllocOrFree_004308cf
+004308cf,FUN_004308cf,Ai_GetPlanCursor
 004308e4,FUN_004308e4,Mem_AllocOrFree_004308e4
 00431fe0,FUN_00431fe0,Mem_AllocOrFree_00431fe0
 00432c72,FUN_00432c72,Mem_AllocOrFree_00432c72

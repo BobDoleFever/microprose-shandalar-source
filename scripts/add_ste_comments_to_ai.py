@@ -33,21 +33,21 @@ def main():
  * Purpose: Pop and restore the previous board state from the decision tree stack.
  * Use this function after completing lookahead simulation.
  */""",
-        "Ai_ResetEvaluationState": """/*
- * Ai_ResetEvaluationState
+        "Ai_ClearPlan": """/*
+ * Ai_ClearPlan
  * Purpose: Clear all evaluation state variables for a new tactical analysis pass.
  * Sets the active creature counter to zero and resets default score tables.
  */""",
-        "Ai_GetActivePlayerScore": """/*
- * Ai_GetActivePlayerScore
+        "Ai_BeginTrial": """/*
+ * Ai_BeginTrial
  * Purpose: Calculate the total tactical score for the active player.
  * Procedure:
  * 1. Initialize the score lookup table to default values (99).
  * 2. Restore the baseline game state.
  * 3. Return the calculated total score.
  */""",
-        "Ai_EvaluateCreaturePower": """/*
- * Ai_EvaluateCreaturePower
+        "Ai_RecordChoice": """/*
+ * Ai_RecordChoice
  * Purpose: Calculate attacking power and defensive toughness of creatures on the board.
  * Procedure:
  * 1. Read the power and toughness attributes of the active creature.
@@ -64,29 +64,29 @@ def main():
  * Purpose: Calculate the score value for the life point difference.
  * Gives a positive score when player life is higher than opponent life.
  */""",
-        "Ai_CalcCardAdvantage": """/*
- * Ai_CalcCardAdvantage
+        "Ai_ReplayChoice": """/*
+ * Ai_ReplayChoice
  * Purpose: Calculate the score value for card advantage.
  * Gives a higher score for more cards in hand and available cards in the library.
  */""",
-        "Ai_ScoreBoardPosition": """/*
- * Ai_ScoreBoardPosition
+        "Ai_CommitBestPlan": """/*
+ * Ai_CommitBestPlan
  * Purpose: Calculate the composite score of the full board position.
  * Procedure:
  * 1. Iterate through all active cards on the battlefield.
  * 2. Copy evaluated scores into the master position buffer.
  * 3. Set the position valid flag to 1.
  */""",
-        "Ai_SimulateCombatRound": """/*
- * Ai_SimulateCombatRound
+        "Ai_EvaluateBoard": """/*
+ * Ai_EvaluateBoard
  * Purpose: Simulate a complete combat step between the attacking player and defending player.
  * Procedure:
  * 1. Check legal blocking assignments with Ai_FilterValidBlockers.
  * 2. Calculate potential damage dealt to creatures and defending player.
  * 3. Calculate life point changes and determine combat advantage score.
  */""",
-        "Ai_ChooseAttackers": """/*
- * Ai_ChooseAttackers
+        "Ai_PenalizeCounterattack": """/*
+ * Ai_PenalizeCounterattack
  * Purpose: Select the optimal set of creatures to attack during combat.
  * Procedure:
  * 1. Evaluate combat strength for each untapped creature.
@@ -110,8 +110,8 @@ def main():
  * 3. Check protection abilities against the attacker color.
  * Returns: 1 if block is legal, or 0 if block is illegal.
  */""",
-        "Ai_AssignCombatDamage": """/*
- * Ai_AssignCombatDamage
+        "Duel_ShowStartOfDuelDialog": """/*
+ * Duel_ShowStartOfDuelDialog
  * Purpose: Distribute lethal combat damage to blockers and trample damage to the defending player.
  */""",
         "Ai_DuelDialogProc": """/*

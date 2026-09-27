@@ -2574,7 +2574,7 @@ int32_t FUN_00450e84(int arg1,int arg2)
 {
   int32_t uval_1;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uval_1 = 0;
   }
   else {
@@ -2595,7 +2595,7 @@ int32_t FUN_00450e84(int arg1,int arg2)
 void FUN_00450eb8(int32_t arg_1,int32_t arg_2,int32_t arg_3,int32_t arg_4)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     FUN_00440eff(arg_1,arg_2,arg_3,arg_4);
   }
   return;
@@ -2632,7 +2632,7 @@ int32_t FUN_00450f15(int *arg_1,int card_slot,int32_t arg_3,int arg_4,int32_t ar
 {
   int32_t uval_1;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uval_1 = 1;
   }
   else {
@@ -2655,7 +2655,7 @@ int32_t FUN_00450f5a(int *arg_1,int card_slot,int event_type,int32_t arg_4,int a
 {
   int32_t uval_1;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uval_1 = 1;
   }
   else {
@@ -2676,7 +2676,7 @@ int32_t FUN_00450f5a(int *arg_1,int card_slot,int event_type,int32_t arg_4,int a
 void Mem_AllocOrFree_00450fa1(int32_t arg_1)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     Mem_AllocOrFree_0044274a(arg_1);
   }
   return;
@@ -2694,7 +2694,7 @@ void Mem_AllocOrFree_00450fa1(int32_t arg_1)
 void FUN_00450fca(int32_t arg_1,int32_t arg_2,int32_t arg_3,int32_t arg_4)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       Mem_AllocOrFree_0049f6bf(arg_1,arg_2,arg_3,arg_4);
     }
@@ -2725,7 +2725,7 @@ int Ai_Subsystem_004cc56d(int player_id,int card_slot,int event_type,int arg_4,i
   int match_count;
   uint32_t slot_idx;
   
-  if ((((g_DuelDebugModeFlag != 1) && (-1 < arg_1)) && (-1 < arg_2)) && (-1 < arg_3)) {
+  if ((((g_IsAiThinking != 1) && (-1 < arg_1)) && (-1 < arg_2)) && (-1 < arg_3)) {
     Mem_AllocOrFree_004d9630(local_26c,arg_6);
     g_DuelCardChoicePrompt = 0;
     if (arg_1 == g_DuelTargetPlayer) {
@@ -2784,7 +2784,7 @@ int Ai_Subsystem_004cc56d(int player_id,int card_slot,int event_type,int arg_4,i
 void FUN_00451282(int32_t arg1,int32_t arg2)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       Mem_AllocOrFree_0049f6ca(arg1,arg2);
     }
@@ -2807,7 +2807,7 @@ void FUN_00451282(int32_t arg1,int32_t arg2)
 INT_PTR FUN_004512d1(int player_id,int32_t arg_2,INT_PTR arg_3,char *str_4,char *str_5,char *str_6)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       arg_3 = Mem_AllocOrFree_0049f6d5(arg_1,arg_2,arg_3);
     }
@@ -2830,7 +2830,7 @@ INT_PTR FUN_004512d1(int player_id,int32_t arg_2,INT_PTR arg_3,char *str_4,char 
 INT_PTR FUN_0045133c(int player_id,int32_t arg_2,INT_PTR arg_3)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       arg_3 = Mem_AllocOrFree_0049f6d5(arg_1,arg_2,arg_3);
     }
@@ -2853,7 +2853,7 @@ INT_PTR FUN_0045133c(int player_id,int32_t arg_2,INT_PTR arg_3)
 INT_PTR FUN_0045139b(int player_id,int32_t arg_2,INT_PTR arg_3)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       arg_3 = Mem_AllocOrFree_0049f6e7(arg_1,arg_2,arg_3);
     }
@@ -2876,7 +2876,7 @@ INT_PTR FUN_0045139b(int player_id,int32_t arg_2,INT_PTR arg_3)
 int FUN_004513fa(int player_id,int32_t arg_2,int32_t arg_3,int arg_4,uint32_t arg_5)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     arg_4 = FUN_00443784(arg_1,arg_2,arg_3,arg_4,arg_5);
   }
   return arg_4;
@@ -2894,7 +2894,7 @@ int FUN_004513fa(int player_id,int32_t arg_2,int32_t arg_3,int arg_4,uint32_t ar
 void FUN_0045143b(int32_t arg_1)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       Mem_AllocOrFree_0049f6f9(arg_1);
     }
@@ -2948,7 +2948,7 @@ void Duel_UpdateBoardState(int32_t arg1,int32_t arg2)
       }
     }
   }
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     DAT_00676500 = 0;
     for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
       for (card_idx = 0; card_idx < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; card_idx = card_idx + 1) {
@@ -3082,7 +3082,7 @@ void FUN_00451995(void)
 void FUN_00451c0c(int32_t arg_1)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       Mem_AllocOrFree_0049f70f(arg_1);
     }
@@ -3105,7 +3105,7 @@ void FUN_00451c0c(int32_t arg_1)
 void FUN_00451c55(void)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     if (DAT_0068eed8 == 0) {
       Mem_AllocOrFree_0049f71a();
     }
@@ -3130,7 +3130,7 @@ int32_t FUN_00451c8e(void)
 {
   int32_t uval_1;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     uval_1 = 0;
   }
   else if (DAT_0068eed8 == 0) {

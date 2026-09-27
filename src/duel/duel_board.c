@@ -90,7 +90,7 @@ extern int32_t g_CardEventResult;
 extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -277,7 +277,7 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
       }
     }
   }
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     DAT_00676500 = 0;
     for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
       for (local_10 = 0; local_10 < (int)(&g_DuelPlayerCreatureCount)[local_8]; local_10 = local_10 + 1) {

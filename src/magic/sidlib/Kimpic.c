@@ -3372,7 +3372,7 @@ int CardScript_Kismet(int spell_id,int target_id,int flags)
     if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) &&
        (spell_id == g_EventSourcePlayer)) {
       Pic_Subsystem_00424500(s_prompts_txt_005211c0,s_KISMET_005211b8);
-      val_1 = Action_ValidateTarget_00405802
+      val_1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,
                          0,&g_OverworldGoldAmount,1,&match_count);
       if (val_1 == 0) {
@@ -3463,15 +3463,15 @@ uint32_t Pic_Load_0042a1c9(int spell_id,int target_id,int flags)
     }
     else {
       if (g_IsAiThinking == 1) {
-        g_AiDecisionScore = Util_GetRandomNumber(2);
-        Ai_EvaluateCreaturePower();
+        g_AiChoiceValue = Util_GetRandomNumber(2);
+        Ai_RecordChoice();
       }
       else {
-        Ai_CalcCardAdvantage();
+        Ai_ReplayChoice();
       }
       *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
-           g_AiDecisionScore;
-      uval_2 = *(uint32_t *)(&DAT_00695e00 + g_AiDecisionScore * 4) & 2;
+           g_AiChoiceValue;
+      uval_2 = *(uint32_t *)(&DAT_00695e00 + g_AiChoiceValue * 4) & 2;
     }
   }
   else {
@@ -3772,7 +3772,7 @@ int32_t CardScript_AnimateArtifact(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,0x40,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,uval_8,uVar9
                          ,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -4103,7 +4103,7 @@ int32_t CardScript_AnimateWall(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,uval_8,
                          uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -4275,7 +4275,7 @@ int32_t Pic_Subsystem_0042bfa5(int x,int y,int width,uint32_t height)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(x,y);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (x,2,1 - x,0x200,height,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,uval_8,uVar9,
                          uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -4862,7 +4862,7 @@ int32_t CardScript_Feedback(int spell_id,int target_id,int flags)
       uval_5 = 0;
       uval_4 = 0;
       uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_1 = Action_ValidateTarget_00405802
+      val_1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uval_3,uval_4,uval_5,val_1,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_2,arg_20);
       if (val_1 == 0) {
@@ -5016,7 +5016,7 @@ int32_t CardScript_Brainwash(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -5204,7 +5204,7 @@ int32_t CardScript_SpiritShackle(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -5370,7 +5370,7 @@ int32_t CardScript_RelicBind(uint32_t spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,1 - spell_id,1 - spell_id,0x200,0x40,0,0,uval_2,uval_3,uval_4,val_5,
                          val_6,uval_7,uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -5435,7 +5435,7 @@ int32_t CardScript_RelicBind(uint32_t spell_id,int target_id,int flags)
       else {
         player_idx = 1 - spell_id;
       }
-      Action_ValidateTarget_00405802
+      Duel_ChooseTarget
                 (spell_id,2,player_idx,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0xffffffff,0,0,
                  &DAT_0069f84a,0,&card_idx);
       if (slot_idx == 0) {
@@ -5661,7 +5661,7 @@ int32_t CardScript_PowerLeak(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -6933,7 +6933,7 @@ int32_t CardScript_Blight(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,1,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,uval_8,uVar9,
                          uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -7087,7 +7087,7 @@ int32_t CardScript_TargetLand(int spell_id,int target_id,int flags)
       uval_4 = 0;
       uval_3 = 0;
       uval_2 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_5 = Action_ValidateTarget_00405802
+      val_5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,1,0,0,uval_2,uval_3,uval_4,val_5,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
       if (val_5 == 0) {
@@ -9921,7 +9921,7 @@ int32_t Pic_Subsystem_00439408(int player_id,int card_slot,int event_type)
                     (player,player,card_slot,card_idx,match_count,s_Opponent_chooses_to_untap__00521614,0);
         }
         else {
-          Action_ValidateTarget_00405802
+          Duel_ChooseTarget
                     (g_TurnPlayer,g_TurnPlayer,g_TurnPlayer,0x200,2,0,0,0,0,0,-1,-1,
                      0xffffffff,0xffffffff,0,0x401,0,s_PROCESSING_Smoke__Select_creatur_00521630,0,
                      &card_idx);
@@ -10566,7 +10566,7 @@ int32_t CardScript_Flood(int spell_id,int target_id,int flags)
         uval_5 = 0;
         uval_4 = 0;
         uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-        val_2 = Action_ValidateTarget_00405802
+        val_2 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,2,0,0,uval_3 | 0x20,uval_4,uval_5,val_2,val_6,
                            uval_7,uval_8,uVar9,uVar10,uVar11,arg_18,uval_1,arg_20);
         if (val_2 == 0) {
@@ -11831,7 +11831,7 @@ int32_t CardScript_CopyArtifact(int spell_id,int target_id,int flags)
         uval_5 = 0;
         uval_4 = 0;
         uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-        val_6 = Action_ValidateTarget_00405802
+        val_6 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0x40,0,0,uval_3,uval_4,uval_5,val_6,val_7,uval_8,uVar9,
                            uVar10,uVar11,uVar12,arg_18,uval_2,arg_20);
         if (val_6 == 0) {
@@ -12065,7 +12065,7 @@ int32_t CardScript_TargetArtifact(int spell_id,int target_id,int flags)
       uval_5 = 0;
       uval_4 = 0;
       uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
-      val_1 = Action_ValidateTarget_00405802
+      val_1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,0x40,0,0,uval_3,uval_4,uval_5,val_1,val_6,uval_7,
                          uval_8,uVar9,uVar10,uVar11,arg_18,uval_2,arg_20);
       if (val_1 == 0) {
@@ -13050,7 +13050,7 @@ int32_t CardScript_CircleOfProtection(int spell_id,int target_id,int flags,int h
           (((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0)) &&
          (Ai_Subsystem_004be192(spell_id,target_id,0,1), g_ActivePlayer != 1)) {
         Pic_Subsystem_00424500(s_prompts_txt_00521948,s_CIRCLE_OF_PROTECTION_00521930);
-        val_2 = Action_ValidateTarget_00405802
+        val_2 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0,0,0,0,1 << ((uint8_t)height & 0x1f),0,g_PendingSpellTargetSlot,-1,
                            0xffffffff,0xffffffff,0x20,0,0,&g_OverworldGoldAmount,1,&match_count);
         if (val_2 == 0) {
@@ -13144,7 +13144,7 @@ int32_t CardScript_CircleOfProtection(int spell_id,int target_id,int flags)
           (((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0)) &&
          (Ai_Subsystem_004be192(spell_id,target_id,0,2), g_ActivePlayer != 1)) {
         Pic_Subsystem_00424500(s_prompts_txt_0052196c,s_CIRCLE_OF_PROTECTION_00521954);
-        val_2 = Action_ValidateTarget_00405802
+        val_2 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0,0,0,0,1 << ((uint8_t)slot_idx & 0x1f),0,g_PendingSpellTargetSlot,-1,
                            0xffffffff,0xffffffff,0x20,0,0,&g_OverworldGoldAmount,1,&card_idx);
         if (val_2 == 0) {
@@ -13262,12 +13262,12 @@ int32_t CardScript_PhantasmalTerrain(int spell_id,int target_id,int flags)
         else if (g_IsAiThinking == 1) {
           slot_idx = Util_GetRandomNumber(5);
           slot_idx = slot_idx + 1;
-          g_AiDecisionScore = slot_idx;
-          Ai_EvaluateCreaturePower();
+          g_AiChoiceValue = slot_idx;
+          Ai_RecordChoice();
         }
         else {
-          Ai_CalcCardAdvantage();
-          slot_idx = g_AiDecisionScore;
+          Ai_ReplayChoice();
+          slot_idx = g_AiChoiceValue;
         }
         if (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20) == spell_id)
         {
@@ -15365,7 +15365,7 @@ uint32_t UI_PromptFastEffectsDialog(int arg1,char *mode_str)
        ((g_CurrentStepCode != -1 && (g_ActivePlayerPriority == g_CurrentCardColorTarget)))) ||
       (g_ActiveCardTargetSlot == 4)) ||
      ((g_ActivePlayerPriority == arg1 && ((g_DuelModeFlags & 0x200) != 0)))) {
-    local_84 = Pic_Subsystem_004468dc(arg1);
+    local_84 = Ai_ChooseChainResponse(arg1);
     player_idx = g_TemporaryToughnessBuffer;
   }
   else {
@@ -15675,7 +15675,7 @@ LAB_00446898:
 
 
 /*
- * Decompiled function: Pic_Subsystem_004468dc
+ * Decompiled function: Ai_ChooseChainResponse
  * Entry Point: 004468dc
  * Size: 1142 bytes
  */
@@ -15683,7 +15683,7 @@ LAB_00446898:
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-uint32_t Pic_Subsystem_004468dc(int player_id)
+uint32_t Ai_ChooseChainResponse(int player_id)
 
 {
   int val_1;
@@ -15754,39 +15754,39 @@ uint32_t Pic_Subsystem_004468dc(int player_id)
       if (g_IsAiThinking == 1) {
         val_1 = Util_GetRandomNumber(2);
         if ((val_1 == 0) || (val_1 = Ai_ClearCandidateScoreList(), val_1 == 0)) {
-          g_AiDecisionScore = Util_GetRandomNumber(slot_idx);
+          g_AiChoiceValue = Util_GetRandomNumber(slot_idx);
         }
         else {
-          g_AiDecisionScore = slot_idx + -1;
+          g_AiChoiceValue = slot_idx + -1;
         }
-        if ((DAT_006a2838 != 0) && (g_AiDecisionScore = slot_idx + -1, DAT_006a2838 == 1)) {
+        if ((DAT_006a2838 != 0) && (g_AiChoiceValue = slot_idx + -1, DAT_006a2838 == 1)) {
           DAT_006a2838 = -1;
         }
         g_AiCurrentSearchPath = (-(uint32_t)((*(uint32_t *)(&g_CardSlot_Flags +
-                                          player * 0x5b20 + auStack_68[g_AiDecisionScore] * 0x120) &
-                                2) == 0) & 0xfffff000) + 0x2000 | auStack_68[g_AiDecisionScore] |
+                                          player * 0x5b20 + auStack_68[g_AiChoiceValue] * 0x120) &
+                                2) == 0) & 0xfffff000) + 0x2000 | auStack_68[g_AiChoiceValue] |
                        (player == 0) - 1 & 0x100;
         DAT_0052ce1c = 4;
-        Ai_EvaluateCreaturePower();
+        Ai_RecordChoice();
       }
       else {
         DAT_0052ce1c = 4;
-        Ai_CalcCardAdvantage();
-        if (slot_idx <= g_AiDecisionScore) {
-          g_AiDecisionScore = slot_idx + -1;
+        Ai_ReplayChoice();
+        if (slot_idx <= g_AiChoiceValue) {
+          g_AiChoiceValue = slot_idx + -1;
         }
       }
-      if (auStack_68[g_AiDecisionScore] != 0xffffffff) {
+      if (auStack_68[g_AiChoiceValue] != 0xffffffff) {
         if (0xf < DAT_006a2844) {
           DAT_006a2844 = DAT_006a2844 + -1;
         }
         *(int32_t *)(&DAT_006fe3b0 + DAT_006a2844 * 4) =
              *(int32_t *)
-              (&g_CardSlot_CardId + player * 0x5b20 + auStack_68[g_AiDecisionScore] * 0x120);
-        *(uint32_t *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_68[g_AiDecisionScore];
+              (&g_CardSlot_CardId + player * 0x5b20 + auStack_68[g_AiChoiceValue] * 0x120);
+        *(uint32_t *)(&DAT_006966f0 + DAT_006a2844 * 4) = auStack_68[g_AiChoiceValue];
         DAT_006a2844 = DAT_006a2844 + 1;
       }
-      uval_2 = auStack_68[g_AiDecisionScore];
+      uval_2 = auStack_68[g_AiChoiceValue];
     }
   }
   return uval_2;
@@ -15993,7 +15993,7 @@ void Rules_ProcessDamagePrevention(void)
     }
     while( true ) {
       if ((DAT_006808a8 == 9) && (flag_1)) {
-        Ai_GetActivePlayerScore();
+        Ai_BeginTrial();
         DAT_006b253c = 0;
         DAT_006b2538 = 0;
         DAT_006a2844 = 0;
@@ -16040,10 +16040,10 @@ void Rules_ProcessDamagePrevention(void)
         return;
       }
       Rules_SendCardsToGraveyard();
-      val_2 = Ai_SimulateCombatRound(g_ActivePlayerPriority);
+      val_2 = Ai_EvaluateBoard(g_ActivePlayerPriority);
       val_2 = g_SpellStackDepth + val_2;
       if (card_idx < val_2) {
-        Ai_ScoreBoardPosition();
+        Ai_CommitBestPlan();
         match_count = DAT_00680790;
         card_idx = val_2;
       }
@@ -19634,7 +19634,7 @@ int32_t Pic_Subsystem_0044f1de(int32_t arg1,int arg2)
           *(int32_t *)(&g_PlayerDeckCardList + local_54 * 4 + local_50 * 2000) = 0xffffffff;
         }
       }
-      Ai_AssignCombatDamage
+      Duel_ShowStartOfDuelDialog
                 (&card_idx,(uint32_t *)(local_4c + 5),card_idx,local_28,DAT_006b2dd0,DAT_006b2d90,
                  target_idx,local_34,loop_idx);
       if (local_4c[5] != 0) {
@@ -19829,7 +19829,7 @@ int32_t Pic_Subsystem_0044f1de(int32_t arg1,int arg2)
         }
       }
       Pic_Subsystem_00450711(&target_idx,&local_34,&loop_idx);
-      Ai_AssignCombatDamage
+      Duel_ShowStartOfDuelDialog
                 (&card_idx,(uint32_t *)(local_4c + 5),card_idx,local_28,DAT_006b2dd0,DAT_006b2d90,
                  target_idx,local_34,loop_idx);
       if (local_4c[5] != 0) {
@@ -20347,16 +20347,16 @@ int UI_DeckSelectionMenu(int player_id,int card_slot,int event_type,int32_t arg_
         local_7dc = local_7dc + 1;
       }
     }
-    g_AiDecisionScore = Util_GetRandomNumber(local_7dc);
+    g_AiChoiceValue = Util_GetRandomNumber(local_7dc);
     if (g_CurrentTurnPhase != player) {
       if (g_IsAiThinking == 1) {
-        Ai_EvaluateCreaturePower();
+        Ai_RecordChoice();
       }
       else {
-        Ai_CalcCardAdvantage();
+        Ai_ReplayChoice();
       }
     }
-    local_178c = aiStackY_7d8[g_AiDecisionScore];
+    local_178c = aiStackY_7d8[g_AiChoiceValue];
   }
   return local_178c;
 }

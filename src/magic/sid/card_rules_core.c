@@ -130,7 +130,7 @@ extern int32_t g_CardEventResult;
 extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -580,7 +580,7 @@ undefined4 Card_ColorMaskToColorIndex(byte color_mask)
 undefined4 Card_DispatchRulesEvent(int arg_1)
 
 {
-  if ((g_DuelDebugModeFlag != 1) &&
+  if ((g_IsAiThinking != 1) &&
      (DAT_0068f0bc = *(uint *)(&DAT_0050ed70 + (arg_1 + DAT_0050b37c) * 4),
      DAT_0068f0bc != 0xffffffff)) {
     DAT_0068f0bc = DAT_0068f0bc & 0xfff;

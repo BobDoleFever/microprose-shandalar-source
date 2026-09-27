@@ -226,19 +226,19 @@ void Ai_PopBoardState(void)
 }
 
 /*
- * Ai_ResetEvaluationState
+ * Ai_ClearPlan
  * Purpose: Clear all tactical evaluation state variables for new analysis pass.
  * Procedure:
  * 1. Reset active creature counter to zero.
  * 2. Initialize score lookup table to default values (99).
  */
 /*
- * Decompiled function: Ai_ResetEvaluationState
+ * Decompiled function: Ai_ClearPlan
  * Entry Point: 004ab1ef
  * Size: 37 bytes
  */
 
-void Ai_ResetEvaluationState(void)
+void Ai_ClearPlan(void)
 
 {
   g_AiBestScoreTable = 0;
@@ -247,7 +247,7 @@ void Ai_ResetEvaluationState(void)
 }
 
 /*
- * Ai_GetActivePlayerScore
+ * Ai_BeginTrial
  * Purpose: Calculate total tactical score for the active AI player.
  * Procedure:
  * 1. Restore baseline evaluation state.
@@ -255,12 +255,12 @@ void Ai_ResetEvaluationState(void)
  * 3. Return calculated total score.
  */
 /*
- * Decompiled function: Ai_GetActivePlayerScore
+ * Decompiled function: Ai_BeginTrial
  * Entry Point: 004ab214
  * Size: 119 bytes
  */
 
-void Ai_GetActivePlayerScore(void)
+void Ai_BeginTrial(void)
 
 {
   int local_8;
@@ -279,7 +279,7 @@ void Ai_GetActivePlayerScore(void)
 }
 
 /*
- * Ai_EvaluateCreaturePower
+ * Ai_RecordChoice
  * Purpose: Calculate attacking power and defensive toughness for creature.
  * Procedure:
  * 1. Read power and toughness attributes of creature slot.
@@ -287,12 +287,12 @@ void Ai_GetActivePlayerScore(void)
  * 3. Store evaluated power in creature score array.
  */
 /*
- * Decompiled function: Ai_EvaluateCreaturePower
+ * Decompiled function: Ai_RecordChoice
  * Entry Point: 004ab28b
  * Size: 211 bytes
  */
 
-void Ai_EvaluateCreaturePower(void)
+void Ai_RecordChoice(void)
 
 {
   if (g_AiBestScoreTable < 0x100) {
@@ -302,7 +302,7 @@ void Ai_EvaluateCreaturePower(void)
           (&g_CardSlot_CardId +
           (g_AiCurrentSearchPath & 0xff) * 0x120 + ((g_AiCurrentSearchPath & 0x100) >> 8) * 0x5b20);
     *(int *)(&DAT_00553c40 + g_AiBestScoreTable * 4) = DAT_0052ce1c;
-    (&DAT_005524c8)[g_AiBestScoreTable] = g_AiDecisionScore;
+    (&DAT_005524c8)[g_AiBestScoreTable] = g_AiChoiceValue;
     g_AiBestScoreTable = g_AiBestScoreTable + 1;
     if ((DAT_005524c8 == 99) || (g_AiCardScore_BasicLand == 99)) {
       g_AiCurrentSearchPath = 0xffffffff;
@@ -363,7 +363,7 @@ int Ai_CalcLifeAdvantage(int x)
 }
 
 /*
- * Ai_CalcCardAdvantage
+ * Ai_ReplayChoice
  * Purpose: Calculate heuristic score for hand and library card advantage.
  * Procedure:
  * 1. Count available cards in hand and library.
@@ -371,16 +371,16 @@ int Ai_CalcLifeAdvantage(int x)
  * 3. Return card advantage bonus score.
  */
 /*
- * Decompiled function: Ai_CalcCardAdvantage
+ * Decompiled function: Ai_ReplayChoice
  * Entry Point: 004ab3f3
  * Size: 108 bytes
  */
 
-void Ai_CalcCardAdvantage(void)
+void Ai_ReplayChoice(void)
 
 {
   g_AiCurrentSearchPath = *(int *)(&DAT_0054f838 + g_AiBestScoreTable * 4);
-  g_AiDecisionScore = (&g_AiCardScore_BasicLand)[g_AiBestScoreTable];
+  g_AiChoiceValue = (&g_AiCardScore_BasicLand)[g_AiBestScoreTable];
   if ((&g_AiCardScore_BasicLand)[g_AiBestScoreTable] != 99) {
     g_AiBestScoreTable = g_AiBestScoreTable + 1;
   }
@@ -389,7 +389,7 @@ void Ai_CalcCardAdvantage(void)
 }
 
 /*
- * Ai_ScoreBoardPosition
+ * Ai_CommitBestPlan
  * Purpose: Calculate composite score for entire battlefield board position.
  * Procedure:
  * 1. Iterate through all active permanents on battlefield.
@@ -397,12 +397,12 @@ void Ai_CalcCardAdvantage(void)
  * 3. Store evaluated composite score in master position buffer.
  */
 /*
- * Decompiled function: Ai_ScoreBoardPosition
+ * Decompiled function: Ai_CommitBestPlan
  * Entry Point: 004ab45f
  * Size: 177 bytes
  */
 
-void Ai_ScoreBoardPosition(void)
+void Ai_CommitBestPlan(void)
 
 {
   int local_8;
@@ -464,7 +464,7 @@ void Ai_Score_SetValidityFlag(void)
 }
 
 /*
- * Ai_SimulateCombatRound
+ * Ai_EvaluateBoard
  * Purpose: Simulate complete combat step between attacker and defender.
  * Procedure:
  * 1. Evaluate legal blocking assignments with Ai_FilterValidBlockers.
@@ -472,12 +472,12 @@ void Ai_Score_SetValidityFlag(void)
  * 3. Compute life point changes and determine combat advantage score.
  */
 /*
- * Decompiled function: Ai_SimulateCombatRound
+ * Decompiled function: Ai_EvaluateBoard
  * Entry Point: 004ab552
  * Size: 2722 bytes
  */
 
-int Ai_SimulateCombatRound(int x)
+int Ai_EvaluateBoard(int x)
 
 {
   int status;
@@ -542,7 +542,7 @@ int Ai_SimulateCombatRound(int x)
         }
       }
       if ((DAT_00676c8c == 0) && (g_TurnPlayer == x)) {
-        local_c = Ai_ChooseAttackers(x,local_c);
+        local_c = Ai_PenalizeCounterattack(x,local_c);
       }
       g_CardSlot_PowerBonus = 0;
       return local_c;
@@ -692,7 +692,7 @@ int Ai_SimulateCombatRound(int x)
 }
 
 /*
- * Ai_ChooseAttackers
+ * Ai_PenalizeCounterattack
  * Purpose: Select optimal set of creatures to declare as attackers.
  * Procedure:
  * 1. Evaluate combat strength for each untapped creature.
@@ -700,12 +700,12 @@ int Ai_SimulateCombatRound(int x)
  * 3. Mark optimal candidates with attacking flag.
  */
 /*
- * Decompiled function: Ai_ChooseAttackers
+ * Decompiled function: Ai_PenalizeCounterattack
  * Entry Point: 004abff4
  * Size: 2380 bytes
  */
 
-int Ai_ChooseAttackers(int player, int attacker_idx)
+int Ai_PenalizeCounterattack(int player, int attacker_idx)
 
 {
   int x;
@@ -988,7 +988,7 @@ void Ai_FilterValidBlockers(uint * x, uint * arg2)
 }
 
 /*
- * Ai_AssignCombatDamage
+ * Duel_ShowStartOfDuelDialog
  * Purpose: Assign combat damage distribution among blocking and attacking creatures.
  * Procedure:
  * 1. Calculate lethal damage threshold for primary blocker.
@@ -996,12 +996,12 @@ void Ai_FilterValidBlockers(uint * x, uint * arg2)
  * 3. Apply damage points to card slot damage registers.
  */
 /*
- * Decompiled function: Ai_AssignCombatDamage
+ * Decompiled function: Duel_ShowStartOfDuelDialog
  * Entry Point: 004acc20
  * Size: 538 bytes
  */
 
-int Ai_AssignCombatDamage(int * x, uint * arg2, uint arg3, int arg4, uint arg5, uint arg6, int arg7, int arg8, int arg9)
+int Duel_ShowStartOfDuelDialog(int * x, uint * arg2, uint arg3, int arg4, uint arg5, uint arg6, int arg7, int arg8, int arg9)
 
 {
   int u_res;
@@ -5344,7 +5344,7 @@ int Ai_Eval_SortCandidates(void)
   if ((g_AiTurnDecisionFlag == 0) && (LVar1 = SendMessageA(g_AiDecisionMatrix_Row,0x411,0,0), LVar1 != 0)) {
     if (DAT_0069f6d0 == 0) {
       do {
-        val_result = Action_ValidateTarget_00405802
+        val_result = Duel_ChooseTarget
                           (0,0,1,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0x10,
                            s_Choose_defenders_0052d3bc,2,local_c);
       } while (val_result != 0);
@@ -8998,15 +8998,15 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
               local_60 = Math_RandomRange(local_64 + -1);
               local_60 = local_60 + 1;
             }
-            g_AiDecisionScore = local_60;
-            Ai_EvaluateCreaturePower();
+            g_AiChoiceValue = local_60;
+            Ai_RecordChoice();
           }
           else {
-            Ai_CalcCardAdvantage();
-            if (g_AiDecisionScore == 99) {
-              g_AiDecisionScore = 0;
+            Ai_ReplayChoice();
+            if (g_AiChoiceValue == 99) {
+              g_AiChoiceValue = 0;
             }
-            local_60 = g_AiDecisionScore;
+            local_60 = g_AiChoiceValue;
           }
         }
       }
@@ -13366,7 +13366,7 @@ void Ai_Subsystem_004c4c84(int x)
     g_AiEvaluationCandidateCount = 0;
     Magic_ScanCards(199);
     Pic_Subsystem_004475a4(x);
-    local_88 = Ai_SimulateCombatRound(x);
+    local_88 = Ai_EvaluateBoard(x);
     local_88 = g_SpellStackDepth + local_88;
     Ai_PopBoardState();
     g_SpellStackDepth = local_64;
@@ -13407,7 +13407,7 @@ void Ai_Subsystem_004c4c84(int x)
         Pic_Subsystem_0044867e(x,local_70,2);
         Magic_ScanCards(199);
         Pic_Subsystem_004475a4(x);
-        local_c = Ai_SimulateCombatRound(x);
+        local_c = Ai_EvaluateBoard(x);
         local_c = g_SpellStackDepth + local_c;
         Ai_PopBoardState();
         g_SpellStackDepth = local_64;
@@ -13477,7 +13477,7 @@ void Ai_Subsystem_004c4c84(int x)
           Pic_Subsystem_0044867e(x,local_70,2);
           Magic_ScanCards(199);
           Pic_Subsystem_004475a4(x);
-          local_c = Ai_SimulateCombatRound(x);
+          local_c = Ai_EvaluateBoard(x);
           local_c = g_SpellStackDepth + local_c;
           Ai_PopBoardState();
           g_SpellStackDepth = local_64;
@@ -13590,12 +13590,12 @@ void Ai_Subsystem_004c4c84(int x)
       Pic_Subsystem_0044867e(g_AiCreatureToughnessEval,local_70,2);
       Magic_ScanCards(199);
       Pic_Subsystem_004475a4(x);
-      local_c = Ai_SimulateCombatRound(x);
+      local_c = Ai_EvaluateBoard(x);
       local_c = g_SpellStackDepth + local_c;
       Ai_PopBoardState();
       g_SpellStackDepth = 0;
       *(int *)(&g_CardSlot_CardId + local_70 * 0x120 + g_AiCreatureToughnessEval * 0x5b20) = 0xffffffff;
-      local_14 = Ai_SimulateCombatRound(x);
+      local_14 = Ai_EvaluateBoard(x);
       local_14 = g_SpellStackDepth + local_14;
       Ai_PopBoardState();
       g_SpellStackDepth = local_64;
@@ -14652,7 +14652,7 @@ void Ai_EvalAttackCandidate_General(uint player)
                 Ai_Subsystem_004cad65(spell_id,(&g_AiAttackerList)[local_b8],1);
                 local_8 = 0;
                 while (local_8 == 0) {
-                  Action_ValidateTarget_00405802
+                  Duel_ChooseTarget
                             (g_CurrentTurnPhase,local_6c,local_6c,0x200,2,0,0,0,0,0,-1,-1,0xffffffff
                              ,0xffffffff,0,0x10,0,&g_OverworldWorldState,0,local_e4 + 8);
                   for (local_68 = 0; local_68 < g_AiCombatScoreBuffer; local_68 = local_68 + 1) {
@@ -14768,7 +14768,7 @@ void Ai_EvalAttackCandidate_General(uint player)
                 Ai_Subsystem_004cadc5(local_6c,(&g_AiCombatDamageTable)[local_b8],1);
                 local_8 = 0;
                 while (local_8 == 0) {
-                  Action_ValidateTarget_00405802
+                  Duel_ChooseTarget
                             (g_CurrentTurnPhase,spell_id,spell_id,0x200,2,0,0,0,0,0,-1,-1,0xffffffff
                              ,0xffffffff,0,2,0,&g_OverworldWorldState,0,local_e4 + 8);
                   for (local_68 = 0; local_68 < g_AiCreaturePowerEval; local_68 = local_68 + 1) {

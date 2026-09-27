@@ -1440,19 +1440,19 @@ LAB_004f024d:
       }
       else {
         if (g_IsAiThinking == 1) {
-          g_AiDecisionScore = Util_GetRandomNumber(local_110);
-          g_AiCurrentSearchPath = CONCAT31((int3)((aiStack_f4[g_AiDecisionScore] == 0) - 1 >> 8),
-                                  (char)aiStack_200[g_AiDecisionScore]) & 0x1ff | 0x4000;
-          Ai_EvaluateCreaturePower();
+          g_AiChoiceValue = Util_GetRandomNumber(local_110);
+          g_AiCurrentSearchPath = CONCAT31((int3)((aiStack_f4[g_AiChoiceValue] == 0) - 1 >> 8),
+                                  (char)aiStack_200[g_AiChoiceValue]) & 0x1ff | 0x4000;
+          Ai_RecordChoice();
         }
         else {
-          Ai_CalcCardAdvantage();
-          if (g_AiDecisionScore == 99) {
-            g_AiDecisionScore = Util_GetRandomNumber(local_110);
+          Ai_ReplayChoice();
+          if (g_AiChoiceValue == 99) {
+            g_AiChoiceValue = Util_GetRandomNumber(local_110);
           }
         }
-        g_TemporaryToughnessBuffer = aiStack_f4[g_AiDecisionScore];
-        local_108 = aiStack_200[g_AiDecisionScore];
+        g_TemporaryToughnessBuffer = aiStack_f4[g_AiChoiceValue];
+        local_108 = aiStack_200[g_AiChoiceValue];
       }
     }
   }

@@ -259,7 +259,7 @@ int Catalog_ParseCsvLine(uint *csv_buffer,uint *out_record)
   int local_c;
   int local_8;
   
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     Mem_AllocOrFree_004d9630(local_108,(uint *)&DAT_004f45f8);
     Str_CopyFast(local_108,out_record);
     Str_CopyFast(local_108,(uint *)&DAT_004f45fc);
@@ -318,7 +318,7 @@ uint FUN_004348b2(undefined4 csv_buffer,undefined4 out_record)
   int local_10;
   int local_c;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     arg_1 = 0;
   }
   else {

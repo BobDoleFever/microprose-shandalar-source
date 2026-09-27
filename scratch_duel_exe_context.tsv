@@ -254,22 +254,22 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0042e1a0	FUN_0042e1a0			0	114
 0042e217	FUN_0042e217	(or none) X is | Tap a forest. | Tap a mountain. | Tap a plains. | Tap a swamp. | Tap an island. | Tap any land.	__itoa	13	2683
 0042ecaf	FUN_0042ecaf			2	169
-0042ed60	FUN_0042ed60			10	3718
+0042ed60	Ai_ChooseCardToPlay			10	3718
 0042fbf0	FUN_0042fbf0	D:\Newmagic\sources\sid\Ai.c | ScWilly>=0	FID_conflict:_memcpy | __assert	3	697
 0042fea9	FUN_0042fea9		FID_conflict:_memcpy	2	631
 00430120	FUN_00430120		FID_conflict:_memcpy	1	583
 00430367	FUN_00430367		FID_conflict:_memcpy	1	583
 004305ae	FUN_004305ae			0	37
-004305d3	FUN_004305d3			1	119
-0043064a	FUN_0043064a			0	211
+004305d3	Ai_BeginTrial			1	119
+0043064a	Ai_RecordChoice			0	211
 0043071d	FUN_0043071d			0	75
 00430768	FUN_00430768			0	74
-004307b2	FUN_004307b2			0	108
-0043081e	FUN_0043081e			0	177
+004307b2	Ai_ReplayChoice			0	108
+0043081e	Ai_CommitBestPlan			0	177
 004308cf	FUN_004308cf			0	21
 004308e4	FUN_004308e4			0	45
-00430911	FUN_00430911		__itoa | _memset	9	2728
-004313b9	FUN_004313b9			5	2380
+00430911	Ai_EvaluateBoard		__itoa | _memset	9	2728
+004313b9	Ai_PenalizeCounterattack			5	2380
 00431d05	FUN_00431d05	... | ...target | Cast | Player	__itoa	4	572
 00431f41	FUN_00431f41			0	155
 00431fe0	FUN_00431fe0			0	21
@@ -812,7 +812,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0046add8	FUN_0046add8			1	351
 0046af37	FUN_0046af37	Bottle of Suleiman | Call the coin flip:  Heads  Tails | Sinbad draws... | activates Aladdin's Ring effect! | activates Bottle of Suleiman effect! | activates Disrupting Sceptre effect! | activates Millstone effect! | activates Nevinyrral's Disk effect! | activates Pandora's Box effect! | activates Sinbad effect! | activates The Hive effect! | activates Time Elemental effect! | casts Ancestral Recall! | casts Crumble! | casts Disenchant! | casts Fissure! | casts Fog effect! | casts Healing Salve! | casts Twiddle to | made an error! | untap.		22	2076
 0046b7a0	FUN_0046b7a0	Didn't expect that, did ya? | Fast Effects?... | I knew that was coming. | Interrupts?... | Triggered effects?...		20	4139
-0046c7d0	FUN_0046c7d0			6	1141
+0046c7d0	Ai_ChooseChainResponse			6	1141
 0046cc45	FUN_0046cc45			4	1260
 0046d140	FUN_0046d140			0	840
 0046d497	FUN_0046d497	Damage Dealing | Damage prevention		13	1142

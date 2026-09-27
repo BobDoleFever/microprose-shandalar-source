@@ -204,13 +204,13 @@ void FUN_00430367(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004305ae
+ * Decompiled function: Ai_ClearPlan
  * Entry Point: 004305ae
  * Size: 37 bytes
  */
 
 
-void Mem_AllocOrFree_004305ae(void)
+void Ai_ClearPlan(void)
 
 {
   DAT_0050b37c = 0;
@@ -221,13 +221,13 @@ void Mem_AllocOrFree_004305ae(void)
 
 
 /*
- * Decompiled function: FUN_004305d3
+ * Decompiled function: Ai_BeginTrial
  * Entry Point: 004305d3
  * Size: 119 bytes
  */
 
 
-void FUN_004305d3(void)
+void Ai_BeginTrial(void)
 
 {
   int slot_idx;
@@ -239,7 +239,7 @@ void FUN_004305d3(void)
     (&DAT_00511a00)[slot_idx] = 99;
   }
   FUN_0042fea9();
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     DAT_00666400 = 0xffffffff;
   }
   return;
@@ -248,13 +248,13 @@ void FUN_004305d3(void)
 
 
 /*
- * Decompiled function: FUN_0043064a
+ * Decompiled function: Ai_RecordChoice
  * Entry Point: 0043064a
  * Size: 211 bytes
  */
 
 
-void FUN_0043064a(void)
+void Ai_RecordChoice(void)
 
 {
   if (DAT_0050b37c < 0x100) {
@@ -263,7 +263,7 @@ void FUN_0043064a(void)
          *(int32_t *)
           (&g_DuelCardSlot_CardId + (DAT_0068f0bc & 0xff) * 0x120 + ((DAT_0068f0bc & 0x100) >> 8) * 0x5b20);
     *(int32_t *)(&DAT_00513178 + DAT_0050b37c * 4) = DAT_004f3c6c;
-    (&DAT_00511a00)[DAT_0050b37c] = DAT_0068f2c8;
+    (&DAT_00511a00)[DAT_0050b37c] = g_AiChoiceValue;
     DAT_0050b37c = DAT_0050b37c + 1;
     if ((DAT_00511a00 == 99) || (DAT_00511600 == 99)) {
       DAT_0068f0bc = 0xffffffff;
@@ -288,7 +288,7 @@ void FUN_0043064a(void)
 int32_t Card_DispatchRulesEvent(int player_id)
 
 {
-  if ((g_DuelDebugModeFlag != 1) &&
+  if ((g_IsAiThinking != 1) &&
      (DAT_0068f0bc = *(uint32_t *)(&DAT_0050ed70 + (arg_1 + DAT_0050b37c) * 4),
      DAT_0068f0bc != 0xffffffff)) {
     DAT_0068f0bc = DAT_0068f0bc & 0xfff;
@@ -308,7 +308,7 @@ int32_t Card_DispatchRulesEvent(int player_id)
 int32_t FUN_00430768(int player_id)
 
 {
-  if ((g_DuelDebugModeFlag != 1) &&
+  if ((g_IsAiThinking != 1) &&
      (DAT_00666410 = (&DAT_00511600)[DAT_0050b37c + arg_1], DAT_00666410 == 99)) {
     DAT_00666410 = 0;
   }
@@ -318,17 +318,17 @@ int32_t FUN_00430768(int player_id)
 
 
 /*
- * Decompiled function: FUN_004307b2
+ * Decompiled function: Ai_ReplayChoice
  * Entry Point: 004307b2
  * Size: 108 bytes
  */
 
 
-void FUN_004307b2(void)
+void Ai_ReplayChoice(void)
 
 {
   DAT_0068f0bc = *(int32_t *)(&DAT_0050ed70 + DAT_0050b37c * 4);
-  DAT_0068f2c8 = (&DAT_00511600)[DAT_0050b37c];
+  g_AiChoiceValue = (&DAT_00511600)[DAT_0050b37c];
   if ((&DAT_00511600)[DAT_0050b37c] != 99) {
     DAT_0050b37c = DAT_0050b37c + 1;
   }
@@ -339,13 +339,13 @@ void FUN_004307b2(void)
 
 
 /*
- * Decompiled function: FUN_0043081e
+ * Decompiled function: Ai_CommitBestPlan
  * Entry Point: 0043081e
  * Size: 177 bytes
  */
 
 
-void FUN_0043081e(void)
+void Ai_CommitBestPlan(void)
 
 {
   int slot_idx;
@@ -367,13 +367,13 @@ void FUN_0043081e(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004308cf
+ * Decompiled function: Ai_GetPlanCursor
  * Entry Point: 004308cf
  * Size: 21 bytes
  */
 
 
-int32_t Mem_AllocOrFree_004308cf(void)
+int32_t Ai_GetPlanCursor(void)
 
 {
   return DAT_0050b37c;
@@ -403,13 +403,13 @@ void Mem_AllocOrFree_004308e4(void)
 
 
 /*
- * Decompiled function: FUN_00430911
+ * Decompiled function: Ai_EvaluateBoard
  * Entry Point: 00430911
  * Size: 2728 bytes
  */
 
 
-int FUN_00430911(int player_id)
+int Ai_EvaluateBoard(int player_id)
 
 {
   int val_1;
@@ -473,7 +473,7 @@ int FUN_00430911(int player_id)
         }
       }
       if ((DAT_006c121c == 0) && (g_TurnPlayer == arg_1)) {
-        match_count = FUN_004313b9(arg_1,match_count);
+        match_count = Ai_PenalizeCounterattack(arg_1,match_count);
       }
       DAT_005ef980 = 0;
       return match_count;
@@ -622,13 +622,13 @@ int FUN_00430911(int player_id)
 
 
 /*
- * Decompiled function: FUN_004313b9
+ * Decompiled function: Ai_PenalizeCounterattack
  * Entry Point: 004313b9
  * Size: 2380 bytes
  */
 
 
-int FUN_004313b9(int arg1,int arg2)
+int Ai_PenalizeCounterattack(int arg1,int arg2)
 
 {
   int x;
@@ -1496,7 +1496,7 @@ uint32_t FUN_00432e04(void)
   uVar41 = FileIo_ReadDataBlock(&DAT_0068ed50,0x80);
   uVar42 = FileIo_ReadDataBlock(&DAT_00690318,4);
   uVar43 = FileIo_ReadDataBlock(&DAT_0068f0f8,4);
-  uVar44 = FileIo_ReadDataBlock(&DAT_0068f2c8,4);
+  uVar44 = FileIo_ReadDataBlock(&g_AiChoiceValue,4);
   uVar45 = FileIo_ReadDataBlock(&DAT_0068f0bc,4);
   uVar46 = FileIo_ReadDataBlock(&DAT_0068ee70,0x60);
   uVar47 = FileIo_ReadDataBlock(&DAT_00666430,8);

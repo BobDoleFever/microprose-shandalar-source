@@ -648,7 +648,7 @@ int Card_XenicPoltergeist_AnimateArtifact(int player,int card_index,int event_co
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,player,0x200,0x40,2,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (val_result == 0) {
@@ -728,7 +728,7 @@ int Card_VesuvanDoppelganger_Copy(int player,int card_index,int event_code)
   if (((event_code == 0x6c) && (g_EventSourceSlot == card_index)) &&
      (g_EventSourcePlayer == player)) {
     Pic_Subsystem_00424500(s_prompts_txt_0052e9a0,s_VESUVAN_DOPPELGANGER_0052e988);
-    status = Action_ValidateTarget_00405802
+    status = Duel_ChooseTarget
                       (player,2,2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                        &g_OverworldGoldAmount,1,(int *)local_c);
     if (status == 0) {
@@ -1455,7 +1455,7 @@ int Card_PersonalIncarnation_RedirectDamage(int player,int card_index,int event_
       }
       do {
         Pic_Subsystem_00424500(s_prompts_txt_0052e9ec,s_PERSONAL_INCARNATION_0052e9d4);
-        val_result = Action_ValidateTarget_00405802
+        val_result = Duel_ChooseTarget
                           (player,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,-1,0xffffffff,0xffffffff,0,0,
                            0,&g_OverworldGoldAmount,1,&local_14);
         if (val_result == 0) {
@@ -1589,7 +1589,7 @@ int Card_AliFromCairo_PreventLethalDamage(int player,int card_index,int event_co
         sprintf(&g_OverworldWorldState,&g_OverworldGoldAmount,
                 *(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) + 1,
                 local_14);
-        Action_ValidateTarget_00405802
+        Duel_ChooseTarget
                   (player,2,player,0x200,0,0,0,0,0,0,DAT_006ff2e0,-1,0xffffffff,0xffffffff,0,0,0
                    ,&g_OverworldWorldState,0,&local_10);
         if (((char)(&g_CardSlot_Toughness)[local_10 * 0x5b20 + local_c * 0x120] == player) &&
@@ -2615,7 +2615,7 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,1 - player,0x200,1,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (val_result == 0) {
@@ -3792,7 +3792,7 @@ int Card_TimeElemental_BouncePermanent(int player,int card_index,int event_code)
         uVar6 = 0;
         uVar5 = 0;
         uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-        status = Action_ValidateTarget_00405802
+        status = Duel_ChooseTarget
                           (player,2,1 - player,0x200,0x1047,0,0,uVar3,uVar5,uVar6,status,iVar7,
                            uVar8,uVar9,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
         if (status == 0) {
@@ -3948,7 +3948,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       is_valid = Card_SetTapState(player, card_index, 1);
       uVar5 = 1 << (is_valid & 0x1f);
       uVar4 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7,val_result,iVar8,uVar9,uVar10,
                          uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
       if (val_result == 0) {
@@ -4251,7 +4251,7 @@ int Card_Targeting_PromptCreature(int x,int y,int width,uint height)
       arg_10 = 0;
       arg_9 = 0;
       arg_8 = Card_GetColorAndTypeFlags(x,y);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (x,2,height,0x200,2,0,0,arg_8,arg_9,arg_10,val_result,arg_12,arg_13,arg_14,arg_15
                          ,arg_16,arg_17,arg_18,u_res,arg_20);
       if (val_result == 0) {
@@ -4577,7 +4577,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
       uVar4 = 0;
       uVar3 = 0;
       u_temp = Card_GetColorAndTypeFlags(player,card_index);
-      iVar5 = Action_ValidateTarget_00405802
+      iVar5 = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0,0,u_temp,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (iVar5 == 0) {
@@ -4796,7 +4796,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
       uVar6 = 0;
       uVar5 = 0;
       uVar4 = Card_GetColorAndTypeFlags(player,card_index);
-      temp_idx = Action_ValidateTarget_00405802
+      temp_idx = Duel_ChooseTarget
                         (player,player,player,0x200,2,0,0,uVar4,uVar5,uVar6,temp_idx,iVar7,uVar8,
                          u_res,uVar9,uVar10,uVar11,arg_18,u_temp,arg_20);
       if (temp_idx == 0) {
@@ -4926,7 +4926,7 @@ int Card_DwarvenWarriors_MakeUnblockable(int player,int card_index,int event_cod
       uVar4 = 0;
       uVar3 = 0;
       u_temp = Card_GetColorAndTypeFlags(player,card_index);
-      iVar5 = Action_ValidateTarget_00405802
+      iVar5 = Duel_ChooseTarget
                         (player,2,player,0x200,2,0,0,u_temp,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (iVar5 == 0) {
@@ -5072,7 +5072,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
         uVar7 = 0;
         uVar6 = 0;
         uVar4 = Card_GetColorAndTypeFlags(player,card_index);
-        val_result = Action_ValidateTarget_00405802
+        val_result = Duel_ChooseTarget
                           (player,2,player,0x200,2,0,0,uVar4,uVar6,uVar7,val_result,iVar8,uVar9,
                            uVar10,uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
         if (val_result == 0) {
@@ -5215,7 +5215,7 @@ int Card_PradeshGypsies_PreventAttack(int player,int card_index,int event_code)
         uVar6 = 0;
         uVar5 = 0;
         uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-        status = Action_ValidateTarget_00405802
+        status = Duel_ChooseTarget
                           (player,2,player,0x200,2,0,0,uVar3,uVar5,uVar6,status,iVar7,uVar8,uVar9
                            ,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
         if (status == 0) {
@@ -5400,7 +5400,7 @@ uint8_t Card_SamiteHealer_PreventDamage(int player,int card_index,int event_code
   else {
     if (event_code == 0x6d) {
       Pic_Subsystem_00424500(s_prompts_txt_0052ec84,s_SAMITE_HEALER_0052ec74);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,-1,0xffffffff,0xffffffff,0,0,0,
                          &g_OverworldGoldAmount,1,&local_c);
       if (val_result == 0) {
@@ -6028,7 +6028,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
     else if (aiStack_20[6] == 2) {
       FUN_004f4a92(&g_OverworldGoldAmount,s_island_0052ed1c,0,s_FOREST_0052ed14);
     }
-    status = Action_ValidateTarget_00405802
+    status = Duel_ChooseTarget
                       (player,player,player,0x200,0,0,0,0,0,0,aiStack_20[6],-1,0xffffffff,
                        0xffffffff,0,0,0,&g_OverworldGoldAmount,(uint)(event_code != 0),
                        aiStack_20 + aiStack_20[5] * 2);
@@ -6328,7 +6328,7 @@ int Card_CrimsonManticore_DamageTarget(int player,int card_index,int event_code)
       uVar6 = 0;
       uVar5 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      status = Action_ValidateTarget_00405802
+      status = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar5,uVar6,status,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
       if (status == 0) {
@@ -6493,7 +6493,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
       uVar4 = 0;
       uVar3 = 0;
       u_res = Card_GetColorAndTypeFlags(player,card_index);
-      iVar5 = Action_ValidateTarget_00405802
+      iVar5 = Duel_ChooseTarget
                         (player,2,1 - player,0x1200,2,0,0,u_res,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,puVar12,uVar13,piVar14);
       if (iVar5 == 0) {
@@ -6510,13 +6510,13 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
   else {
     if (g_IsAiThinking == 1) {
       iVar5 = Math_RandomRange(3);
-      g_AiDecisionScore = (uint)(iVar5 == 0);
-      Ai_EvaluateCreaturePower();
+      g_AiChoiceValue = (uint)(iVar5 == 0);
+      Ai_RecordChoice();
     }
     else {
-      Ai_CalcCardAdvantage();
+      Ai_ReplayChoice();
     }
-    if (g_AiDecisionScore == 0) {
+    if (g_AiChoiceValue == 0) {
       piVar14 = &local_10;
       uVar13 = 1;
       puVar12 = &g_OverworldGoldAmount;
@@ -6530,7 +6530,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
       uVar4 = 0;
       uVar3 = 0;
       u_res = Card_GetColorAndTypeFlags(player,card_index);
-      Action_ValidateTarget_00405802
+      Duel_ChooseTarget
                 (player,2,1 - player,0x1200,2,0,0,u_res,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10
                  ,uVar11,puVar12,uVar13,piVar14);
       local_14 = local_c;
@@ -6540,12 +6540,12 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
       local_14 = 0xffffffff;
       _DAT_0063ee20 = 1 - player;
       if (g_IsAiThinking == 1) {
-        g_AiDecisionScore = 0;
+        g_AiChoiceValue = 0;
         DAT_006fefa8 = CONCAT31((uint3)((_DAT_0063ee20 == 0) - 1 >> 8) & 1,0xff);
-        Ai_EvaluateCreaturePower();
+        Ai_RecordChoice();
       }
       else {
-        Ai_CalcCardAdvantage();
+        Ai_ReplayChoice();
       }
     }
   }
@@ -8563,7 +8563,7 @@ int Card_AliBaba_TapWall(int player,int card_index,int event_code)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      status = Action_ValidateTarget_00405802
+      status = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,status,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_temp,arg_20);
       if (status == 0) {
@@ -8685,7 +8685,7 @@ int Card_LeyDruid_UntapLand(int player,int card_index,int event_code)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,player,0x200,1,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (val_result == 0) {
@@ -9526,7 +9526,7 @@ int Card_RadjanSpirit_RemoveFlying(int player,int card_index,int event_code)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (val_result == 0) {
@@ -9654,7 +9654,7 @@ int Card_HurrJackal_GrantCombatAbility(int player,int card_index,int event_code)
       uVar5 = 0;
       uVar4 = 0;
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
-      val_result = Action_ValidateTarget_00405802
+      val_result = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
       if (val_result == 0) {

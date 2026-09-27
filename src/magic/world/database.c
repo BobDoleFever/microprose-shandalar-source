@@ -675,7 +675,7 @@ void Action_PromptTarget_00405370(uint32_t spell_id,int32_t target_id,int flags)
 }
 
 /*
- * Decompiled function: Action_ValidateTarget_00405802
+ * Decompiled function: Duel_ChooseTarget
  * Entry Point: 00405802
  * Size: 1737 bytes
  */
@@ -683,7 +683,7 @@ void Action_PromptTarget_00405370(uint32_t spell_id,int32_t target_id,int flags)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-int Action_ValidateTarget_00405802
+int Duel_ChooseTarget
               (int spell_id,uint32_t target_id,uint32_t flags,uint32_t arg_4,uint32_t arg_5,uint32_t arg_6,uint32_t arg_7,
               uint32_t arg_8,uint32_t arg_9,uint32_t arg_10,int arg_11,int arg_12,uint32_t arg_13,uint32_t arg_14,
               uint32_t arg_15,uint32_t arg_16,uint32_t arg_17,uint8_t *arg_18,int32_t arg_19,int *arg_20)
@@ -787,22 +787,22 @@ int Action_ValidateTarget_00405802
       }
       else {
         if (g_IsAiThinking == 1) {
-          g_AiDecisionScore = Util_GetRandomNumber(local_124);
-          g_AiCurrentSearchPath = CONCAT31((int3)((aiStack_118[g_AiDecisionScore] == 0) - 1 >> 8),
-                                  (char)aiStack_214[g_AiDecisionScore]) & 0x1ff | 0x4000;
+          g_AiChoiceValue = Util_GetRandomNumber(local_124);
+          g_AiCurrentSearchPath = CONCAT31((int3)((aiStack_118[g_AiChoiceValue] == 0) - 1 >> 8),
+                                  (char)aiStack_214[g_AiChoiceValue]) & 0x1ff | 0x4000;
           DAT_0052ce1c = 3;
-          Ai_EvaluateCreaturePower();
+          Ai_RecordChoice();
         }
         else {
           DAT_0052ce1c = 3;
-          Ai_CalcCardAdvantage();
-          if ((g_AiDecisionScore == 99) || (local_124 <= g_AiDecisionScore)) {
-            g_AiDecisionScore = Util_GetRandomNumber(local_124);
+          Ai_ReplayChoice();
+          if ((g_AiChoiceValue == 99) || (local_124 <= g_AiChoiceValue)) {
+            g_AiChoiceValue = Util_GetRandomNumber(local_124);
           }
         }
-        g_TemporaryToughnessBuffer = aiStack_118[g_AiDecisionScore];
-        *arg_20 = aiStack_118[g_AiDecisionScore];
-        arg_20[1] = aiStack_214[g_AiDecisionScore];
+        g_TemporaryToughnessBuffer = aiStack_118[g_AiChoiceValue];
+        *arg_20 = aiStack_118[g_AiChoiceValue];
+        arg_20[1] = aiStack_214[g_AiChoiceValue];
         card_idx = 1;
       }
     }

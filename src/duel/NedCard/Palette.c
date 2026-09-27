@@ -2060,7 +2060,7 @@ int FUN_004396ea(int player_id)
         match_count = match_count - (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2];
         if (match_count < 0) {
           player_idx = *(int *)(&DAT_004f71c0 + slot_idx * 8 + arg_1 * 0x280);
-          if (g_DuelDebugModeFlag != 1) {
+          if (g_IsAiThinking != 1) {
             (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2] =
                  (&DAT_004f71c4)[arg_1 * 0xa0 + slot_idx * 2] + -1;
           }
@@ -2380,12 +2380,12 @@ HGDIOBJ Palette_Subsystem_00496497(HWND hwnd,uint32_t y,HDC hdc,HWND param_4)
       }
       else if (((uint32_t)hdc & 0xffff) == 0x471) {
         FUN_004328ba(1);
-        g_DuelDebugModeFlag = 0xfffffffe;
+        g_IsAiThinking = 0xfffffffe;
         EndDialog(hwnd,0);
       }
       else if (((uint32_t)hdc & 0xffff) == 0x472) {
         FUN_004328ba(0);
-        g_DuelDebugModeFlag = 0xffffffff;
+        g_IsAiThinking = 0xffffffff;
         EndDialog(hwnd,0);
       }
       return (HGDIOBJ)0x1;

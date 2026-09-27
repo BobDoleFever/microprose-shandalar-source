@@ -2388,7 +2388,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
               FID_conflict__memcpy(local_624,&DAT_00664780,0xe8);
               GetWindowTextA(DAT_0060cc6c,local_69c,100);
               local_628 = DAT_00618158;
-              local_634 = Action_ValidateTarget_0041e2a2
+              local_634 = Duel_ChooseTarget
                                     (0,0,1,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,2,0,
                                      s_Band_with_which_attacker__004fa634,1,&local_630);
               DAT_00618158 = local_628;
@@ -2490,7 +2490,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
             FID_conflict__memcpy(local_790,&DAT_00664780,0xe8);
             GetWindowTextA(DAT_0060cc6c,local_808,100);
             local_794 = DAT_00618158;
-            local_7a0 = Action_ValidateTarget_0041e2a2
+            local_7a0 = Duel_ChooseTarget
                                   (0,1,0,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,2,0,
                                    s_Block_which_attacker__004fa678,1,&local_79c);
             DAT_00618158 = local_794;

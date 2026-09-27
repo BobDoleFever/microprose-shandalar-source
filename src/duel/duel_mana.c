@@ -12,7 +12,7 @@ extern int DAT_00618ad8;
 extern int DAT_006826dc;
 extern int DAT_006826d0;
 extern int DAT_006826f9;
-int Action_ValidateTarget_0041e2a2();
+int Duel_ChooseTarget();
 int Pic_Subsystem_004488a0();
 extern int DAT_004ff596;
 extern int DAT_004ff59c;
@@ -105,7 +105,7 @@ extern int32_t g_CardEventResult;
 extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -544,7 +544,7 @@ bool Mana_CanAffordCost(int player,uint cost_mask,int card_slot)
   arg_10 = 0;
   arg_9 = 0;
   arg_8 = Mana_GetCardColorRequirement(player,card_slot);
-  iVar1 = Action_ValidateTarget_0041e2a2
+  iVar1 = Duel_ChooseTarget
                     (player,2,cost_mask,0x200,2,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (iVar1 != 0) {

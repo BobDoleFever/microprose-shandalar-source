@@ -541,7 +541,7 @@ int FUN_0041dd17(int player,int card_slot);;
 void Ai_Subsystem_004bc029(uint32_t spell_id,int32_t target_id,int flags);;
 
 /* Function at 0041e2a2 (Size: 1736 bytes) */
-int Action_ValidateTarget_0041e2a2(int spell_id,uint32_t target_id,uint32_t flags,uint32_t flags,uint32_t damage,uint32_t arg_6,uint32_t arg_7,uint32_t arg_8,uint32_t arg_9,uint32_t arg_10,int arg_11,int arg_12,uint32_t arg_13,uint32_t arg_14,uint32_t arg_15,uint32_t arg_16,uint32_t arg_17,uint8_t *arg_18,int32_t arg_19,int *arg_20);;
+int Duel_ChooseTarget(int spell_id,uint32_t target_id,uint32_t flags,uint32_t flags,uint32_t damage,uint32_t arg_6,uint32_t arg_7,uint32_t arg_8,uint32_t arg_9,uint32_t arg_10,int arg_11,int arg_12,uint32_t arg_13,uint32_t arg_14,uint32_t arg_15,uint32_t arg_16,uint32_t arg_17,uint8_t *arg_18,int32_t arg_19,int *arg_20);;
 
 /* Function at 0041e97e (Size: 184 bytes) */
 int32_t FUN_0041e97e(int player,int card_slot);;
@@ -778,7 +778,7 @@ int32_t Ai_Subsystem_004bd6f9(int max_val,uint32_t point,int hBitmap);;
 int FUN_0042ecaf(int x,int y,int width,int height);;
 
 /* Function at 0042ed60 (Size: 3718 bytes) */
-uint32_t FUN_0042ed60(int max_val);;
+uint32_t Ai_ChooseCardToPlay(int max_val);;
 
 /* Function at 0042fbf0 (Size: 697 bytes) */
 void Ai_SaveGameState(void);;
@@ -793,13 +793,13 @@ void FUN_00430120(void);;
 void FUN_00430367(void);;
 
 /* Function at 004305ae (Size: 37 bytes) */
-void Mem_AllocOrFree_004305ae(void);;
+void Ai_ClearPlan(void);;
 
 /* Function at 004305d3 (Size: 119 bytes) */
-void FUN_004305d3(void);;
+void Ai_BeginTrial(void);;
 
 /* Function at 0043064a (Size: 211 bytes) */
-void FUN_0043064a(void);;
+void Ai_RecordChoice(void);;
 
 /* Function at 0043071d (Size: 75 bytes) */
 int32_t Card_DispatchRulesEvent(int max_val);;
@@ -808,22 +808,22 @@ int32_t Card_DispatchRulesEvent(int max_val);;
 int32_t FUN_00430768(int max_val);;
 
 /* Function at 004307b2 (Size: 108 bytes) */
-void FUN_004307b2(void);;
+void Ai_ReplayChoice(void);;
 
 /* Function at 0043081e (Size: 177 bytes) */
-void FUN_0043081e(void);;
+void Ai_CommitBestPlan(void);;
 
 /* Function at 004308cf (Size: 21 bytes) */
-int32_t Mem_AllocOrFree_004308cf(void);;
+int32_t Ai_GetPlanCursor(void);;
 
 /* Function at 004308e4 (Size: 45 bytes) */
 void Mem_AllocOrFree_004308e4(void);;
 
 /* Function at 00430911 (Size: 2728 bytes) */
-int FUN_00430911(int max_val);;
+int Ai_EvaluateBoard(int max_val);;
 
 /* Function at 004313b9 (Size: 2380 bytes) */
-int FUN_004313b9(int player,int card_slot);;
+int Ai_PenalizeCounterattack(int player,int card_slot);;
 
 /* Function at 00431d05 (Size: 572 bytes) */
 int32_t Ai_ChooseBlockers(int player,int card_slot);;
@@ -1273,7 +1273,7 @@ int32_t GetLRUSnd(int32_t max_val,int32_t point,int32_t hBitmap);;
 void FUN_0043e09c(void);;
 
 /* Function at 0043e0e0 (Size: 538 bytes) */
-int32_t Ai_AssignCombatDamage(int32_t *max_val,uint32_t *point,uint32_t hBitmap,int flags,uint32_t damage,uint32_t arg_6,int32_t arg_7,int arg_8,int32_t arg_9);;
+int32_t Duel_ShowStartOfDuelDialog(int32_t *max_val,uint32_t *point,uint32_t hBitmap,int flags,uint32_t damage,uint32_t arg_6,int32_t arg_7,int arg_8,int32_t arg_9);;
 
 /* Function at 0043e2fa (Size: 2163 bytes) */
 HGDIOBJ Ai_DuelDialogProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam);;
@@ -2452,7 +2452,7 @@ int32_t Palette_Subsystem_004a9137(int max_val,int point,int32_t hBitmap);;
 uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot);;
 
 /* Function at 0046c7d0 (Size: 1141 bytes) */
-uint32_t FUN_0046c7d0(int max_val);;
+uint32_t Ai_ChooseChainResponse(int max_val);;
 
 /* Function at 0046cc45 (Size: 1260 bytes) */
 int32_t FUN_0046cc45(int player,int card_slot);;
