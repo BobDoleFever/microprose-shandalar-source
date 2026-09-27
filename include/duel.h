@@ -1897,7 +1897,7 @@ int FUN_0045219a(void);;
 int32_t Card_DefaultEventHandler(void);;
 
 /* Function at 004521e2 (Size: 645 bytes) */
-uint32_t Mana_GetCardColorRequirement(int player, int card_slot);;
+uint32_t Card_GetColorAndTypeFlags(int player, int card_slot);;
 
 /* Function at 0045247b (Size: 959 bytes) */
 int32_t Glue_Subsystem_004d0cdb(int max_val,int point,int hBitmap);;

@@ -1949,7 +1949,7 @@ undefined4 FUN_00452153(void);
 void Mem_AllocOrFree_00452185(void);
 int FUN_0045219a(void);
 undefined4 Card_DefaultEventHandler(void);
-uint Mana_GetCardColorRequirement(int player, int card_slot);
+uint Card_GetColorAndTypeFlags(int player, int card_slot);
 undefined4 Glue_Subsystem_004d0cdb(int max_val,int point,int hBitmap);
 undefined4 Glue_Subsystem_004d109a(int max_val,int point,int hBitmap);
 bool Palette_Subsystem_004a9137(int max_val,int point,int hBitmap);

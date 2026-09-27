@@ -232,7 +232,7 @@ Address,OldName,NewName
 004509e8,FUN_004509e8,UI_DeckSelectionMenu
 00451291,FUN_00451291,Deck_AddCardToDeck
 00451482,FUN_00451482,Duel_UpdateBoardState
-004521e2,Card_GetColorAndTypeFlags,Mana_GetCardColorRequirement
+004521e2,Card_GetColorAndTypeFlags,Card_GetColorAndTypeFlags
 00452551,FUN_00452551,Csv_LoadInfo_00452551
 00452793,FUN_00452793,Engine_ReportFatalError
 004527bc,FUN_004527bc,UI_DrawCombatBanner

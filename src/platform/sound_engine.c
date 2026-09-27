@@ -31,7 +31,7 @@ typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
-uint Mana_GetCardColorRequirement(int player, int card_slot);
+uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
 

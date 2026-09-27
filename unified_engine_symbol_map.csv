@@ -469,7 +469,7 @@ Address,OldName,NewName
 00452065,FUN_00452065,Pic_Subsystem_00452065
 004520b2,FUN_004520b2,Pic_Subsystem_004520b2
 004521a6,FUN_004521a6,Pic_Subsystem_004521a6
-004521e2,Card_GetColorAndTypeFlags,Mana_GetCardColorRequirement
+004521e2,Card_GetColorAndTypeFlags,Card_GetColorAndTypeFlags
 00452276,FUN_00452276,Pic_Subsystem_00452276
 004523fd,FUN_004523fd,Pic_Subsystem_004523fd
 0045245e,FUN_0045245e,Pic_Subsystem_0045245e
