@@ -5054,7 +5054,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                          arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -5073,7 +5073,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar6 = Duel_ChooseTarget
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -5098,7 +5098,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar6 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,(byte)spell_id,(byte)spell_id,
                          0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12)
@@ -5257,7 +5257,7 @@ undefined4 Glue_Subsystem_004dec09(int spell_id,int target_id,int flags)
     arg_13 = 3;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     UI_SelectTargetCardDialog((int *)(-(uint)(DAT_0068f100 == 0) & 0x68ed04),0,spell_id,2,2,0x200,0,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((spell_id == g_DuelTargetCardSlot) &&
@@ -5304,7 +5304,7 @@ undefined4 Glue_Subsystem_004dec09(int spell_id,int target_id,int flags)
       uVar5 = 0;
       uVar4 = 0;
       iVar2 = local_14;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,0,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -5364,7 +5364,7 @@ undefined4 Glue_Subsystem_004dec09(int spell_id,int target_id,int flags)
       uVar5 = 0;
       uVar4 = 0;
       iVar2 = local_14;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                  local_18 * 8 + target_id * 0x120 + spell_id * 0x5b20),
@@ -5601,7 +5601,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     UI_SelectTargetCardDialog(&local_10,0,spell_id,2,2,0x200,2,0x40,0,uVar1,arg_11,arg_12,arg_13,arg_14,arg_15,
                  arg_16,arg_17,arg_18_00,arg_19);
     if (local_10 < 2) {
@@ -5628,7 +5628,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar5 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,2,0x40,0,uVar2,uVar3,uVar4,iVar5,iVar6,
                            uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -5679,7 +5679,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar5 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                    local_c * 8 + spell_id * 0x5b20 + target_id * 0x120),
@@ -5750,7 +5750,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar1,arg_11,arg_12,arg_13,
                          arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -5772,7 +5772,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,
                          uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -5797,7 +5797,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar3,uVar4
                          ,uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -5857,7 +5857,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     UI_SelectTargetCardDialog((int *)(-(uint)(DAT_0068f100 == 0) & 0x68ed04),0,spell_id,2,2,0x200,2,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((g_DuelTargetCardSlot == spell_id) &&
@@ -5888,7 +5888,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -5945,7 +5945,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                    target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
@@ -6093,7 +6093,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           arg_13 = 0xffffffff;
           arg_12 = 0;
           arg_11 = 0;
-          uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
           UI_SelectTargetCardDialog(&local_18,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,arg_15
                        ,arg_16,arg_17,arg_18,arg_19);
           local_18 = local_18 + 2;
@@ -6129,7 +6129,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
                 iVar1 = -1;
                 uVar5 = 0;
                 uVar4 = 0;
-                uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+                uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
                 iVar1 = Duel_ChooseTarget
                                   (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar3,uVar4,uVar5,iVar1,
                                    iVar10,uVar6,uVar7,uVar9,uVar11,uVar13,puVar8,uVar2,piVar12);
@@ -6197,7 +6197,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
             iVar1 = -1;
             uVar5 = 0;
             uVar4 = 0;
-            uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+            uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
             iVar1 = Duel_ChooseTarget
                               (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar10,
                                uVar6,uVar7,uVar9,uVar11,uVar13,puVar8,uVar2,piVar12);
@@ -6289,7 +6289,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           iVar1 = -1;
           uVar5 = 0;
           uVar4 = 0;
-          uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar1 = Rules_ParseFilter_0041c0ab
                             (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                      target_id * 0x120 + spell_id * 0x5b20 + local_20 * 8),
@@ -6374,7 +6374,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar2 == 0) {
@@ -6402,7 +6402,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -6428,7 +6428,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x40,0,0,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -6536,7 +6536,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     UI_SelectTargetCardDialog((int *)(-(uint)(DAT_0068f100 == 0) & 0x68ed04),0,spell_id,2,2,0x200,2,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((g_DuelTargetCardSlot == spell_id) &&
@@ -6568,7 +6568,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -6625,7 +6625,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                  target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
@@ -7594,7 +7594,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar5 = Duel_ChooseTarget
                             (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,
                              uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -7655,7 +7655,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar5 = Rules_ParseFilter_0041c0ab
                             (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                      target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
@@ -7907,7 +7907,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -7939,7 +7939,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,1,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -8016,7 +8016,7 @@ undefined4 FUN_004099bb(int player,int card_slot,int arg_3)
   if (((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0) &&
       (((&g_DuelMasterCardTable)[arg_3 * 0x34] & 1) != 0)) && (((&DAT_004ff5a9)[arg_3 * 0x34] & 0x10) != 0))
   {
-    Duel_PlayCardSoundEffect(player,card_slot,0x6d,1 - player,0xffffffff);
+    Magic_TriggerCardEvent(player,card_slot,0x6d,1 - player,0xffffffff);
     if (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) != 0) {
       FUN_0048c50b(player,card_slot,0x81);
     }
@@ -8769,7 +8769,7 @@ undefined4 FUN_0040ba3d(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -8879,7 +8879,7 @@ undefined4 Minit_Subsystem_004592ae(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -9337,7 +9337,7 @@ bool Minit_Subsystem_0045a825(int spell_id,int target_id,int flags)
     bVar1 = 0 < iVar2;
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar1 = false;
   }
   else {
@@ -9849,7 +9849,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -9858,7 +9858,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
@@ -9880,7 +9880,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -9910,7 +9910,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,(byte)spell_id,(byte)spell_id,
                          0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -10024,7 +10024,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -10033,7 +10033,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0))
@@ -10052,7 +10052,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -10082,7 +10082,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -10223,7 +10223,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
     uVar10 = 0xffffffff;
     uVar8 = 0;
     uVar6 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     UI_SelectTargetCardDialog((int *)(-(uint)(DAT_0068f100 == 0) & 0x68ed04),0,spell_id,2,2,0x200,1,0,0,uVar1,
                  uVar6,uVar8,uVar10,uVar12,uVar14,uVar16,uVar18,uVar19,uVar20);
     if (((((&g_DuelCardSlot_Subtypes)[target_id * 0x120 + spell_id * 0x5b20] & 3) == 0) ||
@@ -10256,7 +10256,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
       uVar12 = 0xffffffff;
       uVar10 = 0;
       uVar8 = 0;
-      uVar6 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar6 = Card_GetColorAndTypeFlags(spell_id, target_id);
       UI_SelectTargetCardDialog(&DAT_0068ed04,0,spell_id,2,2,0x200,1,0,0,uVar6,uVar8,uVar10,uVar12,uVar14,uVar16,
                    uVar18,uVar19,uVar20,arg_19);
       DAT_0068ece0 = 0xffffffff;
@@ -10281,7 +10281,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar5 = Duel_ChooseTarget
                             (spell_id,2,spell_id,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar7,uVar9,
                              uVar11,uVar13,uVar15,uVar17,arg_18,uVar1,arg_20);
@@ -10344,7 +10344,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar5 = Rules_ParseFilter_0041c0ab
                           (local_14,local_10,(undefined1 *)0x0,spell_id,2,2,0x200,1,0,0,uVar2,uVar3,
                            uVar4,iVar5,iVar7,uVar9,uVar11,uVar13,uVar15,uVar17);
@@ -10352,7 +10352,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
           g_DuelHumanPlayerIndex = 1;
         }
         else {
-          Duel_PlayCardSoundEffect(local_14,local_10,1,0xffffffff,0xffffffff);
+          Magic_TriggerCardEvent(local_14,local_10,1,0xffffffff,0xffffffff);
           *(uint *)(&g_DuelCardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) =
                *(uint *)(&g_DuelCardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) & 0xffffffef;
         }
@@ -10440,7 +10440,7 @@ undefined4 Minit_Subsystem_0045d8dc(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -10869,7 +10869,7 @@ undefined4 Minit_Subsystem_0045ebe4(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -11429,7 +11429,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -11438,7 +11438,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((((flags == 0x6d) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0))
@@ -11458,7 +11458,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -11488,7 +11488,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,(byte)spell_id,(byte)spell_id,
                          0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -11811,7 +11811,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -11820,7 +11820,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0))
@@ -11839,7 +11839,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -11869,7 +11869,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -11910,7 +11910,7 @@ undefined4 Minit_Subsystem_00461ba1(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (iVar1 = Duel_DrawString(spell_id,7,1), iVar1 != 0)) &&
@@ -12039,7 +12039,7 @@ undefined4 Minit_Subsystem_004622d9(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -12105,7 +12105,7 @@ undefined4 FUN_00415450(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -12188,7 +12188,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0x20,uVar1,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -12197,7 +12197,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((flags == 0x6d) &&
@@ -12215,7 +12215,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0x20,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -12245,7 +12245,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0x20,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -12283,7 +12283,7 @@ undefined4 FUN_00415a9c(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar2 = 0;
   }
   else {
@@ -12357,7 +12357,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,1 - spell_id,1 - spell_id,0x200,0,0,0,uVar2,arg_11,
                            arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -12366,7 +12366,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (iVar1 = Duel_DrawString(spell_id,7,4), iVar1 != 0)) &&
@@ -12384,7 +12384,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,1 - spell_id,1 - spell_id,0x200,0x7f,0,0,uVar3,uVar4,uVar5,iVar1,
                          iVar6,uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -12411,7 +12411,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,1 - (char)spell_id,
                          1 - (char)spell_id,0x200,0x7f,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8
@@ -12624,7 +12624,7 @@ undefined4 Minit_Subsystem_00463cd1(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar2 = 0;
   }
   else {
@@ -12672,7 +12672,7 @@ undefined4 Minit_Subsystem_00463ef0(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar2 = 0;
   }
   else {
@@ -13049,7 +13049,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -13058,7 +13058,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0))
@@ -13077,7 +13077,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -13102,7 +13102,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -13156,7 +13156,7 @@ undefined4 FUN_00418380(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -13266,7 +13266,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -13275,7 +13275,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (iVar1 = Duel_DrawString(spell_id,7,1), iVar1 != 0)) &&
@@ -13293,7 +13293,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -13323,7 +13323,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -13390,7 +13390,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -13399,7 +13399,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && ((&DAT_0068ee78)[spell_id] != 0)) &&
@@ -13419,7 +13419,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -13447,7 +13447,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -13487,7 +13487,7 @@ undefined4 FUN_00419061(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -13565,7 +13565,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -13574,7 +13574,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0))
@@ -13593,7 +13593,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -13623,7 +13623,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -13668,7 +13668,7 @@ undefined4 Card_Setup_0046695e(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -19267,7 +19267,7 @@ LAB_004270a4:
            (((&DAT_006827c8)[local_2ec * 0x120 + player * 0x5b20] & 2) != 0)) {
           *(uint *)(&g_DuelCardSlot_Flags + local_2ec * 0x120 + player * 0x5b20) =
                *(uint *)(&g_DuelCardSlot_Flags + local_2ec * 0x120 + player * 0x5b20) & 0xffffffef;
-          Duel_PlayCardSoundEffect(player,local_2ec,0x83,1 - player,0xffffffff);
+          Magic_TriggerCardEvent(player,local_2ec,0x83,1 - player,0xffffffff);
         }
       }
       for (local_2ec = 0; local_2ec < (&g_DuelPlayerCreatureCount)[player]; local_2ec = local_2ec + 1) {
@@ -19593,7 +19593,7 @@ LAB_00428424:
             if (((((&DAT_004ff5a8)[local_158 * 0x34] & 3) == 0) ||
                 (((&g_DuelCardSlot_Flags)[local_2dc * 0x120 + player * 0x5b20] & 0x24) != 0)) &&
                (((&DAT_004ff5a9)[local_158 * 0x34] & 0x10) == 0)) goto LAB_00428c4f;
-            iVar1 = Duel_PlayCardSoundEffect(player,local_2dc,0x73,local_2b8,0xffffffff);
+            iVar1 = Magic_TriggerCardEvent(player,local_2dc,0x73,local_2b8,0xffffffff);
             if (iVar1 == 0) goto LAB_00428c4f;
             if ((player != g_DuelTargetPlayer) && (g_IsAiThinking != 1)) {
               DAT_0066aac4 = g_TurnPlayer;
@@ -19939,12 +19939,12 @@ LAB_00429d78:
           if ((*(int *)(&g_DuelCardSlot_CardId + local_2ac * 0x120 + player * 0x5b20) != -1) &&
              (((&g_DuelCardSlot_Flags)[local_2ac * 0x120 + player * 0x5b20] & 2) != 0)) {
             *(undefined2 *)(&DAT_006826d0 + local_2ac * 0x120 + player * 0x5b20) = 0;
-            Duel_PlayCardSoundEffect(player,local_2ac,0x22,local_2b8,0xffffffff);
+            Magic_TriggerCardEvent(player,local_2ac,0x22,local_2b8,0xffffffff);
           }
           if ((*(int *)(&g_DuelCardSlot_CardId + local_2b8 * 0x5b20 + local_2ac * 0x120) != -1) &&
              (((&g_DuelCardSlot_Flags)[local_2b8 * 0x5b20 + local_2ac * 0x120] & 2) != 0)) {
             *(undefined2 *)(&DAT_006826d0 + local_2b8 * 0x5b20 + local_2ac * 0x120) = 0;
-            Duel_PlayCardSoundEffect(local_2b8,local_2ac,0x22,player,0xffffffff);
+            Magic_TriggerCardEvent(local_2b8,local_2ac,0x22,player,0xffffffff);
           }
           local_2ac = local_2ac + 1;
         }
@@ -20502,7 +20502,7 @@ void FUN_0042ae2a(void)
       if (((*(int *)(&g_DuelCardSlot_CardId + g_DuelTargetCardSlot * 0x5b20 + local_c * 0x120) != -1) &&
           (((byte)*(undefined4 *)(&g_DuelCardSlot_Flags + g_DuelTargetCardSlot * 0x5b20 + local_c * 0x120) & 0x22)
            == 2)) &&
-         (Duel_PlayCardSoundEffect(g_DuelTargetCardSlot,local_c,0x8f,1 - g_DuelTargetCardSlot,0xffffffff), DAT_0068edd8 != 0))
+         (Magic_TriggerCardEvent(g_DuelTargetCardSlot,local_c,0x8f,1 - g_DuelTargetCardSlot,0xffffffff), DAT_0068edd8 != 0))
       break;
       local_c = local_c + 1;
     }
@@ -20613,7 +20613,7 @@ undefined4 FUN_0042b213(int arg1,int arg2)
 {
   DAT_0068f220 = 1;
   DAT_0068f0f4 = 0xffffffff;
-  Duel_PlayCardSoundEffect(arg1,arg2,0x6d,1 - arg1,0xffffffff);
+  Magic_TriggerCardEvent(arg1,arg2,0x6d,1 - arg1,0xffffffff);
   if (((&g_DuelCardSlot_Flags)[arg1 * 0x5b20 + arg2 * 0x120] & 0x10) != 0) {
     FUN_0048c50b(arg1,arg2,0x81);
   }
@@ -21057,12 +21057,12 @@ int Ai_CalcManaRequirement_004ba890(int player,int card_slot,int arg_3)
               Duel_UpdateBoardState(0,0xff);
             }
             else if ((((&g_DuelMasterCardTable)[local_14 * 0x34] & 1) != 0) ||
-                    (iVar1 = Duel_PlayCardSoundEffect(player,local_30,0x73,1 - player,0xffffffff), iVar1 != 0)) {
+                    (iVar1 = Magic_TriggerCardEvent(player,local_30,0x73,1 - player,0xffffffff), iVar1 != 0)) {
               Magic_PushSpellStack(player,local_30,0x72,player,0);
               DAT_0068f220 = 1;
               DAT_0068f0f4 = 0xffffffff;
               local_18 = *(uint *)(&g_DuelCardSlot_Flags + player * 0x5b20 + local_30 * 0x120) & 0x10;
-              Duel_PlayCardSoundEffect(player,local_30,0x6d,1 - player,0xffffffff);
+              Magic_TriggerCardEvent(player,local_30,0x6d,1 - player,0xffffffff);
               DAT_0068f220 = 0;
               if (g_DuelHumanPlayerIndex == 1) {
                 g_DuelHumanPlayerIndex = 0;
@@ -21417,7 +21417,7 @@ undefined4 FUN_0042d247(int player,undefined4 card_slot,undefined4 arg_3,undefin
     for (local_c = 0; local_c < (int)(&g_DuelPlayerCreatureCount)[player]; local_c = local_c + 1) {
       iVar3 = FUN_0042db54(player,local_c,(byte)arg_4);
       if (iVar3 != 0) {
-        iVar3 = Duel_PlayCardSoundEffect(player,local_c,0x73,1 - player,0xffffffff);
+        iVar3 = Magic_TriggerCardEvent(player,local_c,0x73,1 - player,0xffffffff);
         if (iVar3 != 0) {
           bVar2 = false;
           for (local_14 = 0; local_14 < 7; local_14 = local_14 + 1) {
@@ -21477,7 +21477,7 @@ undefined4 FUN_0042d247(int player,undefined4 card_slot,undefined4 arg_3,undefin
     for (local_c = 0; local_c < (int)(&g_DuelPlayerCreatureCount)[player]; local_c = local_c + 1) {
       iVar3 = FUN_0042db54(player,local_c,(byte)arg_4);
       if (iVar3 != 0) {
-        iVar3 = Duel_PlayCardSoundEffect(player,local_c,0x73,1 - player,0xffffffff);
+        iVar3 = Magic_TriggerCardEvent(player,local_c,0x73,1 - player,0xffffffff);
         if (iVar3 != 0) {
           bVar2 = false;
           if (DAT_0068ece0 < 1) {
@@ -21519,7 +21519,7 @@ undefined4 FUN_0042d247(int player,undefined4 card_slot,undefined4 arg_3,undefin
     for (local_c = 0; local_c < (int)(&g_DuelPlayerCreatureCount)[player]; local_c = local_c + 1) {
       iVar3 = FUN_0042db54(player,local_c,(byte)arg_4);
       if (iVar3 != 0) {
-        iVar3 = Duel_PlayCardSoundEffect(player,local_c,0x73,1 - player,0xffffffff);
+        iVar3 = Magic_TriggerCardEvent(player,local_c,0x73,1 - player,0xffffffff);
         if (iVar3 != 0) {
           bVar1 = false;
           for (local_14 = 1; local_14 < 7; local_14 = local_14 + 1) {
@@ -21628,7 +21628,7 @@ undefined4 FUN_0042dd5e(int arg1,int arg2)
     DAT_0068f220 = 1;
     DAT_0068f0f4 = 0xffffffff;
     uVar1 = *(uint *)(&g_DuelCardSlot_Flags + arg2 * 0x120 + arg1 * 0x5b20);
-    Duel_PlayCardSoundEffect(arg1,arg2,0x6d,1 - arg1,0xffffffff);
+    Magic_TriggerCardEvent(arg1,arg2,0x6d,1 - arg1,0xffffffff);
     DAT_0068f220 = 0;
     if (g_DuelHumanPlayerIndex == 1) {
       g_DuelHumanPlayerIndex = 0;
@@ -21905,7 +21905,7 @@ LAB_0042e228:
     DAT_0068f0f4 = 0xffffffff;
     uVar2 = *(uint *)(&g_DuelCardSlot_Flags + local_34 * 0x120 + player * 0x5b20);
     _DAT_0068ecc8 = iVar1;
-    Duel_PlayCardSoundEffect(player,local_20,0x6d,1 - player,0xffffffff);
+    Magic_TriggerCardEvent(player,local_20,0x6d,1 - player,0xffffffff);
     DAT_0068f220 = 0;
     if (g_DuelHumanPlayerIndex == 1) {
       g_DuelHumanPlayerIndex = 0;
@@ -21955,7 +21955,7 @@ LAB_0042e228:
           == 0) {
         if ((((&DAT_004ff5a9)[*(int *)(&g_DuelCardSlot_CardId + local_34 * 0x120 + player * 0x5b20) * 0x34] &
              0x10) != 0) &&
-           (iVar1 = Duel_PlayCardSoundEffect(player,local_34,0x73,1 - player,0xffffffff), iVar1 != 0)) break;
+           (iVar1 = Magic_TriggerCardEvent(player,local_34,0x73,1 - player,0xffffffff), iVar1 != 0)) break;
       }
       else if (((int)(char)(&DAT_006826dc)[local_34 * 0x120 + player * 0x5b20] != 0) &&
               ((((int)(char)(&DAT_006826dc)[local_34 * 0x120 + player * 0x5b20] &
@@ -21965,7 +21965,7 @@ LAB_0042e228:
         DAT_0068f220 = 1;
         DAT_0068f0f4 = 0xffffffff;
         uVar2 = *(uint *)(&g_DuelCardSlot_Flags + local_34 * 0x120 + player * 0x5b20);
-        Duel_PlayCardSoundEffect(player,local_34,0x6d,1 - player,0xffffffff);
+        Magic_TriggerCardEvent(player,local_34,0x6d,1 - player,0xffffffff);
         DAT_0068f220 = 0;
         if (g_DuelHumanPlayerIndex == 1) {
           g_DuelHumanPlayerIndex = 0;
@@ -21997,7 +21997,7 @@ LAB_0042e228:
   DAT_0068f220 = 1;
   DAT_0068f0f4 = 0xffffffff;
   uVar2 = *(uint *)(&g_DuelCardSlot_Flags + local_34 * 0x120 + player * 0x5b20);
-  Duel_PlayCardSoundEffect(player,local_34,0x6d,1 - player,0xffffffff);
+  Magic_TriggerCardEvent(player,local_34,0x6d,1 - player,0xffffffff);
   DAT_0068f220 = 0;
   if (g_DuelHumanPlayerIndex == 1) {
     g_DuelHumanPlayerIndex = 0;
@@ -22266,7 +22266,7 @@ uint Ai_ChooseCardToPlay(int player)
         else if ((((((&g_DuelCardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 0x34) == 0) &&
                   ((*(uint *)(&DAT_004ff5a8 + local_20 * 0x34) & 0x1003) != 0x1000)) &&
                  ((_DAT_00511e00 & (int)(char)(&DAT_004ff5ad)[local_20 * 0x34]) != 0)) &&
-                (iVar2 = Duel_PlayCardSoundEffect(player,local_2c,0x73,1 - player,0xffffffff), iVar2 != 0)) {
+                (iVar2 = Magic_TriggerCardEvent(player,local_2c,0x73,1 - player,0xffffffff), iVar2 != 0)) {
           auStack_98[local_1c] = local_2c;
           local_1c = local_1c + 1;
         }
@@ -22590,7 +22590,7 @@ void Ai_RecordChoice(void)
 
 
 
-undefined4 Card_DispatchRulesEvent(int player)
+undefined4 Ai_PeekPlannedSlot(int player)
 
 {
   if ((g_IsAiThinking != 1) &&
@@ -38309,12 +38309,12 @@ void FUN_00451760(void)
       if ((*(int *)(&DAT_004ff590 +
                    *(int *)(&g_DuelCardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34) == 0xee) &&
          (((&g_DuelCardSlot_Flags)[local_c * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
-        Duel_PlayCardSoundEffect(local_8,local_c,0x7f,0xffffffff,0xffffffff);
+        Magic_TriggerCardEvent(local_8,local_c,0x7f,0xffffffff,0xffffffff);
       }
       if ((*(int *)(&DAT_004ff590 +
                    *(int *)(&g_DuelCardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34) == 100) &&
          (((&g_DuelCardSlot_Flags)[local_c * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
-        Duel_PlayCardSoundEffect(local_8,local_c,0x7f,0xffffffff,0xffffffff);
+        Magic_TriggerCardEvent(local_8,local_c,0x7f,0xffffffff,0xffffffff);
       }
     }
   }
@@ -38590,7 +38590,7 @@ undefined4 Card_DefaultEventHandler(void)
 
 
 
-uint Mana_GetCardColorRequirement(int arg1,int arg2)
+uint Card_GetColorAndTypeFlags(int arg1,int arg2)
 
 {
   char cVar1;
@@ -39152,7 +39152,7 @@ undefined4 Glue_Subsystem_004d2610(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,2,0,uVar1,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -39161,7 +39161,7 @@ undefined4 Glue_Subsystem_004d2610(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (flags == 0x6d) {
@@ -39178,7 +39178,7 @@ undefined4 Glue_Subsystem_004d2610(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,0x40,2,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -39205,7 +39205,7 @@ undefined4 Glue_Subsystem_004d2610(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_14,local_10,(undefined1 *)0x0,spell_id,2,2,0x200,0x40,2,0,uVar3,uVar4
                          ,uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -39270,7 +39270,7 @@ undefined4 Glue_Subsystem_004d29da(int spell_id,int target_id,int flags)
                   (char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] * 0x5b20) * 0x34];
     *(uint *)(&g_DuelCardSlot_Abilities1 + target_id * 0x120 + spell_id * 0x5b20) =
          *(uint *)(&g_DuelCardSlot_Abilities1 + target_id * 0x120 + spell_id * 0x5b20) | 0x2000;
-    Duel_PlayCardSoundEffect(spell_id,target_id,0x6c,1 - spell_id,0xffffffff);
+    Magic_TriggerCardEvent(spell_id,target_id,0x6c,1 - spell_id,0xffffffff);
   }
   return 0;
 }
@@ -39694,7 +39694,7 @@ undefined4 Glue_Subsystem_004d420e(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -40635,7 +40635,7 @@ undefined4 Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -40644,7 +40644,7 @@ undefined4 Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (flags == 0x6d) {
@@ -40661,7 +40661,7 @@ undefined4 Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,1,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -40688,7 +40688,7 @@ undefined4 Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,1,0,0,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -40920,7 +40920,7 @@ undefined4 FUN_004593fd(int player,int card_slot,int arg_3,int arg_4,int arg_5)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -41611,13 +41611,13 @@ undefined4 Glue_Subsystem_004d9f7e(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar2,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -41639,7 +41639,7 @@ undefined4 Glue_Subsystem_004d9f7e(int spell_id,int target_id,int flags)
         iVar1 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar1 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,
                            uVar8,uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -41667,7 +41667,7 @@ undefined4 Glue_Subsystem_004d9f7e(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar3,uVar5
                          ,uVar6,iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -41754,13 +41754,13 @@ undefined4 Glue_Subsystem_004da482(int spell_id,int target_id,int flags)
       arg_12 = 0;
       bVar1 = Duel_GetCardColorOverride(spell_id,target_id,1);
       iVar2 = 1 << (bVar1 & 0x1f);
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar2,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -41781,7 +41781,7 @@ undefined4 Glue_Subsystem_004da482(int spell_id,int target_id,int flags)
       uVar7 = 0;
       bVar1 = Duel_GetCardColorOverride(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7,iVar2,iVar8,uVar9,uVar10,
                          uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -41809,7 +41809,7 @@ undefined4 Glue_Subsystem_004da482(int spell_id,int target_id,int flags)
       uVar7 = 0;
       bVar1 = Duel_GetCardColorOverride(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar4,uVar5
                          ,uVar7,iVar2,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -41852,7 +41852,7 @@ undefined4 Glue_Subsystem_004da858(int spell_id,int target_id,int flags)
     local_8 = FUN_0045c613(spell_id,target_id,flags,1 - spell_id);
   }
   if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else {
@@ -41868,7 +41868,7 @@ undefined4 Glue_Subsystem_004da858(int spell_id,int target_id,int flags)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (card_id,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12
                          ,arg_13,iVar1,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -41906,7 +41906,7 @@ undefined4 Glue_Subsystem_004daa50(int spell_id,int target_id,int flags)
     local_8 = FUN_0045c613(spell_id,target_id,flags,1 - spell_id);
   }
   if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else if ((flags == 0x72) &&
@@ -41940,7 +41940,7 @@ undefined4 Glue_Subsystem_004dac11(int spell_id,int target_id,int flags)
     local_8 = FUN_0045c613(spell_id,target_id,flags,1 - spell_id);
   }
   if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else if ((flags == 0x72) &&
@@ -42015,7 +42015,7 @@ undefined4 FUN_0045c613(int x,int y,int width,uint height)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(x,y);
+      uVar1 = Card_GetColorAndTypeFlags(x,y);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,x,2,2,0x200,2,0,0,uVar1,arg_11,arg_12_00,arg_13_00,arg_14_00
                            ,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19);
     }
@@ -42034,7 +42034,7 @@ undefined4 FUN_0045c613(int x,int y,int width,uint height)
       iVar2 = -1;
       arg_10 = 0;
       arg_9 = 0;
-      arg_8 = Mana_GetCardColorRequirement(x,y);
+      arg_8 = Card_GetColorAndTypeFlags(x,y);
       iVar2 = Duel_ChooseTarget
                         (x,2,height,0x200,2,0,0,arg_8,arg_9,arg_10,iVar2,arg_12,arg_13,arg_14,arg_15
                          ,arg_16,arg_17,arg_18,uVar1,arg_20);
@@ -42075,7 +42075,7 @@ undefined4 Glue_Subsystem_004db024(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else {
@@ -42279,13 +42279,13 @@ undefined4 Glue_Subsystem_004dba1c(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -42307,7 +42307,7 @@ undefined4 Glue_Subsystem_004dba1c(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -42336,7 +42336,7 @@ undefined4 Glue_Subsystem_004dba1c(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_14,local_10,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -42398,7 +42398,7 @@ void FUN_0045d774(int player,int card_slot,int arg_3)
   
   if (arg_3 != 0x73) {
     if (arg_3 == 0x90) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
     }
     else {
       if ((arg_3 == 0x6d) &&
@@ -42473,13 +42473,13 @@ undefined4 Glue_Subsystem_004dc2ca(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,uVar1,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -42499,7 +42499,7 @@ undefined4 Glue_Subsystem_004dc2ca(int spell_id,int target_id,int flags)
       iVar3 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Duel_ChooseTarget
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,
                          uVar1,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -42526,7 +42526,7 @@ undefined4 Glue_Subsystem_004dc2ca(int spell_id,int target_id,int flags)
       iVar3 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,(byte)spell_id,(byte)spell_id,
                          0x200,2,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,uVar1,uVar9,uVar10,uVar11);
@@ -42592,13 +42592,13 @@ undefined4 Glue_Subsystem_004dc6c7(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -42617,7 +42617,7 @@ undefined4 Glue_Subsystem_004dc6c7(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -42644,7 +42644,7 @@ undefined4 Glue_Subsystem_004dc6c7(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -42715,13 +42715,13 @@ undefined4 Glue_Subsystem_004dc9ed(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -42752,7 +42752,7 @@ undefined4 Glue_Subsystem_004dc9ed(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar7 = 0;
         uVar6 = 0;
-        uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = Duel_ChooseTarget
                           (spell_id,2,spell_id,0x200,2,0,0,uVar4,uVar6,uVar7,iVar2,iVar8,uVar9,
                            uVar10,uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -42780,7 +42780,7 @@ undefined4 Glue_Subsystem_004dc9ed(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar7 = 0;
       uVar6 = 0;
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar4,uVar6,
                          uVar7,iVar2,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -42855,13 +42855,13 @@ undefined4 Glue_Subsystem_004dce51(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -42883,7 +42883,7 @@ undefined4 Glue_Subsystem_004dce51(int spell_id,int target_id,int flags)
         iVar1 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar1 = Duel_ChooseTarget
                           (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,uVar8,uVar9
                            ,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -42911,7 +42911,7 @@ undefined4 Glue_Subsystem_004dce51(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar5,
                          uVar6,iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -42979,7 +42979,7 @@ undefined4 FUN_0045ead4(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -43042,7 +43042,7 @@ undefined1 Glue_Subsystem_004dd632(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -43106,7 +43106,7 @@ undefined4 FUN_0045f127(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -43623,7 +43623,7 @@ undefined4 Glue_Subsystem_004df04a(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar2 = 0;
   }
   else {
@@ -43667,7 +43667,7 @@ bool FUN_00460999(int player,int card_slot,int arg_3)
     bVar1 = (*(uint *)(&g_DuelCardSlot_Flags + player * 0x5b20 + card_slot * 0x120) & 0x20010) == 0;
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar1 = false;
   }
   else {
@@ -43732,13 +43732,13 @@ undefined4 Glue_Subsystem_004df314(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -43758,7 +43758,7 @@ undefined4 Glue_Subsystem_004df314(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -43785,7 +43785,7 @@ undefined4 Glue_Subsystem_004df314(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar5,
                          uVar6,iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -43815,7 +43815,7 @@ bool Glue_Subsystem_004df678(int spell_id,int target_id,int flags)
     bVar1 = (*(uint *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0;
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar1 = false;
   }
   else {
@@ -43896,7 +43896,7 @@ bool FUN_00461047(int arg1,int arg2)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = Mana_GetCardColorRequirement(arg1,arg2);
+      uVar1 = Card_GetColorAndTypeFlags(arg1,arg2);
       iVar5 = Duel_ChooseTarget
                         (arg1,2,1 - arg1,0x1200,2,0,0,uVar1,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,puVar12,uVar13,piVar14);
@@ -43933,7 +43933,7 @@ bool FUN_00461047(int arg1,int arg2)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = Mana_GetCardColorRequirement(arg1,arg2);
+      uVar1 = Card_GetColorAndTypeFlags(arg1,arg2);
       Duel_ChooseTarget
                 (arg1,2,1 - arg1,0x1200,2,0,0,uVar1,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10
                  ,uVar11,puVar12,uVar13,piVar14);
@@ -44007,7 +44007,7 @@ undefined4 FUN_004612b0(int x,int y,int width,int arg_4)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(x,y);
+      arg_11 = Card_GetColorAndTypeFlags(x,y);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + y * 0x120 + x * 0x5b20),(undefined1 *)0x0,x,2,2,
@@ -44044,7 +44044,7 @@ bool Glue_Subsystem_004dfd39(int spell_id,int target_id,int flags)
     bVar1 = (*(uint *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0;
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar1 = false;
   }
   else {
@@ -44246,7 +44246,7 @@ uint FUN_00461d0d(int player,int card_slot,int arg_3)
     uVar1 = *(uint *)(&DAT_0066aad0 + player * 4) & 0x40;
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -44295,7 +44295,7 @@ undefined4 FUN_00461f42(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -44354,7 +44354,7 @@ undefined4 FUN_004620e8(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar1 = 0;
   }
   else {
@@ -44392,7 +44392,7 @@ bool Glue_Subsystem_004e0ab7(int spell_id,int target_id,int flags)
     bVar2 = (*(uint *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0;
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar2 = false;
   }
   else {
@@ -44439,7 +44439,7 @@ bool Glue_Subsystem_004e0c1c(int spell_id,int target_id,int flags)
     bVar2 = (*(uint *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0;
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     bVar2 = false;
   }
   else {
@@ -44487,7 +44487,7 @@ undefined4 FUN_004625ed(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -45080,7 +45080,7 @@ undefined4 Glue_Subsystem_004e2c7f(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -45440,7 +45440,7 @@ undefined4 Glue_Subsystem_004e3b55(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -45449,7 +45449,7 @@ undefined4 Glue_Subsystem_004e3b55(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (iVar1 = Duel_DrawString(spell_id,4,1), iVar1 != 0)) &&
@@ -45467,7 +45467,7 @@ undefined4 Glue_Subsystem_004e3b55(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -45492,7 +45492,7 @@ undefined4 Glue_Subsystem_004e3b55(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -45552,7 +45552,7 @@ undefined4 Glue_Subsystem_004e3e46(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -45561,7 +45561,7 @@ undefined4 Glue_Subsystem_004e3e46(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (flags == 0x6d) {
@@ -45578,7 +45578,7 @@ undefined4 Glue_Subsystem_004e3e46(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,1,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -45605,7 +45605,7 @@ undefined4 Glue_Subsystem_004e3e46(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,1,0,0,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -45615,7 +45615,7 @@ undefined4 Glue_Subsystem_004e3e46(int spell_id,int target_id,int flags)
       else {
         *(uint *)(&g_DuelCardSlot_Flags + local_c * 0x5b20 + local_8 * 0x120) =
              *(uint *)(&g_DuelCardSlot_Flags + local_c * 0x5b20 + local_8 * 0x120) & 0xffffffef;
-        Duel_PlayCardSoundEffect(local_c,local_8,1,0xffffffff,0xffffffff);
+        Magic_TriggerCardEvent(local_c,local_8,1,0xffffffff,0xffffffff);
       }
       (&g_DuelCardSlot_TapState)
       [*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20 +
@@ -45649,7 +45649,7 @@ uint FUN_004658c8(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -45702,7 +45702,7 @@ undefined4 FUN_00465a30(int player,int card_slot,int arg_3)
     *(undefined4 *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20) = 0xffffffff;
     (&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20] =
          (&g_DuelCardSlot_TargetSlot)[card_slot * 0x120 + player * 0x5b20];
-    Duel_PlayCardSoundEffect(player,card_slot,0x6c,1 - player,0xffffffff);
+    Magic_TriggerCardEvent(player,card_slot,0x6c,1 - player,0xffffffff);
   }
   return 0;
 }
@@ -45822,12 +45822,12 @@ undefined4 Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -45848,7 +45848,7 @@ undefined4 Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
@@ -46244,7 +46244,7 @@ undefined4 Glue_Subsystem_004e5e3b(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -46253,7 +46253,7 @@ undefined4 Glue_Subsystem_004e5e3b(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((flags == 0x6d) &&
@@ -46271,7 +46271,7 @@ undefined4 Glue_Subsystem_004e5e3b(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -46298,7 +46298,7 @@ undefined4 Glue_Subsystem_004e5e3b(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -46361,7 +46361,7 @@ undefined4 Glue_Subsystem_004e61a6(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -46370,7 +46370,7 @@ undefined4 Glue_Subsystem_004e61a6(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((flags == 0x6d) &&
@@ -46388,7 +46388,7 @@ undefined4 Glue_Subsystem_004e61a6(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -46421,7 +46421,7 @@ undefined4 Glue_Subsystem_004e61a6(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,
                          uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -46598,7 +46598,7 @@ bool CardTarget_PromptTargetCreature(int player,uint card_slot,int arg_3)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = Mana_GetCardColorRequirement(player,arg_3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg_3);
   iVar1 = Duel_ChooseTarget
                     (player,2,card_slot,0x200,2,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -46731,7 +46731,7 @@ bool FUN_00468550(int player,uint card_slot,int arg_3)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = Mana_GetCardColorRequirement(player,arg_3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg_3);
   iVar1 = Duel_ChooseTarget
                     (player,2,card_slot,0x200,1,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -46840,7 +46840,7 @@ bool FUN_00468831(int player,uint card_slot,int arg_3)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = Mana_GetCardColorRequirement(player,arg_3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg_3);
   iVar1 = Duel_ChooseTarget
                     (player,2,card_slot,0x200,0x40,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -46947,7 +46947,7 @@ int FUN_00468b20(int player,int card_slot,int arg_3)
         }
         if (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_14 * 0x120 + local_8 * 0x5b20) * 0x34] &
             2) != 0) {
-          uVar2 = Mana_GetCardColorRequirement(player,card_slot);
+          uVar2 = Card_GetColorAndTypeFlags(player,card_slot);
           if ((*(uint *)(&g_DuelCardSlot_Abilities2 + local_14 * 0x120 + local_8 * 0x5b20) & uVar2) == 0) {
             local_10 = 1;
           }
@@ -47175,7 +47175,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      arg_10 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_10 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11,arg_12,arg_13,uVar1,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -47184,7 +47184,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((((flags == 0x6d) &&
@@ -47211,7 +47211,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar2,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -47243,7 +47243,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -47353,7 +47353,7 @@ undefined4 FUN_00469614(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     Ai_PeekPlannedChoice(0);
     uVar2 = 0;
   }
@@ -47438,7 +47438,7 @@ int FUN_004699cd(int player,int card_slot,int arg_3)
           (((&g_DuelCardSlot_Flags)[local_8 * 0x5b20 + local_10 * 0x120] & 2) != 0)) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34] & 2
           ) != 0)) {
-        uVar1 = Mana_GetCardColorRequirement(player,card_slot);
+        uVar1 = Card_GetColorAndTypeFlags(player,card_slot);
         if ((*(uint *)(&g_DuelCardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0) {
           *(int *)(arg_3 + local_c * 8) = local_8;
           *(int *)(arg_3 + 4 + local_c * 8) = local_10;
@@ -47469,7 +47469,7 @@ int FUN_00469b05(int arg1,int arg2)
           (((&g_DuelCardSlot_Flags)[local_10 * 0x120 + local_8 * 0x5b20] & 2) != 0)) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        uVar1 = Mana_GetCardColorRequirement(arg1,arg2);
+        uVar1 = Card_GetColorAndTypeFlags(arg1,arg2);
         if ((*(uint *)(&g_DuelCardSlot_Abilities2 + local_10 * 0x120 + local_8 * 0x5b20) & uVar1) == 0) {
           local_c = 1;
         }
@@ -47520,7 +47520,7 @@ undefined4 FUN_00469d2a(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -47576,7 +47576,7 @@ undefined4 Palette_Subsystem_004a8111(int player,int card_slot,int arg_3)
   iVar4 = -1;
   arg_13 = 0;
   arg_12 = 0;
-  arg_11 = Mana_GetCardColorRequirement(player,card_slot);
+  arg_11 = Card_GetColorAndTypeFlags(player,card_slot);
   iVar4 = Rules_ParseFilter_0041c0ab
                     (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + player * 0x5b20),
                      *(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + player * 0x5b20),(undefined1 *)0x0,
@@ -47851,7 +47851,7 @@ int FUN_0046add8(int x,int y,int width,uint height)
          ((height & (byte)(&g_DuelMasterCardTable)
                           [*(int *)(&g_DuelCardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34]) !=
           0)) {
-        uVar1 = Mana_GetCardColorRequirement(x,y);
+        uVar1 = Card_GetColorAndTypeFlags(x,y);
         if ((*(uint *)(&g_DuelCardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0) {
           *(int *)(width + local_c * 8) = local_8;
           *(int *)(width + 4 + local_c * 8) = local_10;
@@ -48147,7 +48147,7 @@ uint Pic_Subsystem_004458b0(int arg1,uint *arg2)
         }
       }
       else {
-        Duel_PlayCardSoundEffect(local_14,local_84,0x73,1 - local_14,0xffffffff);
+        Magic_TriggerCardEvent(local_14,local_84,0x73,1 - local_14,0xffffffff);
         iVar4 = FUN_0048974c(local_14,local_84);
         if (iVar4 != 0) {
           FUN_0048a07d(local_14,local_84);
@@ -48542,7 +48542,7 @@ undefined4 FUN_0046cc45(int arg1,int arg2)
         ((((byte)g_DuelModeFlags & 4) == 0 || ((*(uint *)(&DAT_004ff5a8 + iVar1 * 0x34) & 0x3004) != 0)
          ))) && (((g_DuelTargetPlayer == arg1 ||
                   ((_DAT_0052243c & (int)(char)(&DAT_004ff5ad)[iVar1 * 0x34]) != 0)) &&
-                 (iVar1 = Duel_PlayCardSoundEffect(arg1,arg2,0x74,1 - arg1,0xffffffff), iVar1 != 0)))) {
+                 (iVar1 = Magic_TriggerCardEvent(arg1,arg2,0x74,1 - arg1,0xffffffff), iVar1 != 0)))) {
       return 3;
     }
   }
@@ -48580,7 +48580,7 @@ undefined4 FUN_0046cc45(int arg1,int arg2)
          (((DAT_00676500 = DAT_00676500 & 0xfffffffd, g_DuelTargetPlayer == arg1 ||
            ((_DAT_00522440 & (int)(char)(&DAT_004ff5ad)[iVar1 * 0x34]) != 0)) &&
           ((((&g_DuelCardSlot_Flags)[arg2 * 0x120 + arg1 * 0x5b20] & 0x20) == 0 &&
-           (iVar1 = Duel_PlayCardSoundEffect(arg1,arg2,0x73,1 - arg1,0xffffffff), iVar1 != 0)))))) {
+           (iVar1 = Magic_TriggerCardEvent(arg1,arg2,0x73,1 - arg1,0xffffffff), iVar1 != 0)))))) {
         if ((DAT_00676500 & 2) != 0) {
           DAT_00666758 = DAT_00666758 | 4;
           return 2;
@@ -48866,7 +48866,7 @@ int FUN_0046da4a(int arg1,int arg2)
                     (((((byte)g_DuelModeFlags & 4) == 0 ||
                       ((*(uint *)(&DAT_004ff5a8 + iVar1 * 0x34) & 0x3004) != 0)) &&
                      ((((&g_DuelMasterCardTable)[iVar1 * 0x34] & 0x42) != 0 ||
-                      (iVar1 = Duel_PlayCardSoundEffect(arg1,arg2,0x74,1 - arg1,0xffffffff), iVar1 != 0))))))))
+                      (iVar1 = Magic_TriggerCardEvent(arg1,arg2,0x74,1 - arg1,0xffffffff), iVar1 != 0))))))))
                 {
                   DAT_0068f100 = 0;
                   return 4;
@@ -48909,7 +48909,7 @@ int FUN_0046da4a(int arg1,int arg2)
                        ((*(uint *)(&DAT_004ff5a8 + iVar1 * 0x34) & 0x5004) != 0)) &&
                       (DAT_00676500 = DAT_00676500 & 0xfffffffd,
                       ((&g_DuelCardSlot_Flags)[arg2 * 0x120 + arg1 * 0x5b20] & 0x20) == 0)) &&
-                     (iVar1 = Duel_PlayCardSoundEffect(arg1,arg2,0x73,1 - arg1,0xffffffff), iVar1 != 0)))) {
+                     (iVar1 = Magic_TriggerCardEvent(arg1,arg2,0x73,1 - arg1,0xffffffff), iVar1 != 0)))) {
                 if ((DAT_00676500 & 2) != 0) {
                   DAT_00666758 = DAT_00666758 | 4;
                   DAT_0068f100 = 0;
@@ -53901,7 +53901,7 @@ undefined4 Minit_Subsystem_004537b0(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = 0;
   }
   else {
@@ -54124,7 +54124,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (iVar1,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,1,0,0,arg_11,arg_12,
                          arg_13,iVar2,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -54400,7 +54400,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
                         *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20 +
                         *(int *)(&g_DuelCardSlot_AttachedAuraSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120) | 2
           ;
-          Duel_PlayCardSoundEffect(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x6c,1 - g_DuelCombatAttackerPlayer,0xffffffff);
+          Magic_TriggerCardEvent(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x6c,1 - g_DuelCombatAttackerPlayer,0xffffffff);
           *(uint *)(&g_DuelCardSlot_Flags +
                    *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20 +
                    *(int *)(&g_DuelCardSlot_AttachedAuraSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120) =
@@ -54408,7 +54408,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
                         *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20 +
                         *(int *)(&g_DuelCardSlot_AttachedAuraSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120) |
                0x80;
-          Duel_PlayCardSoundEffect(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x71,1 - g_DuelCombatAttackerPlayer,0xffffffff);
+          Magic_TriggerCardEvent(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x71,1 - g_DuelCombatAttackerPlayer,0xffffffff);
         }
         else if ((local_8 == 2) && ((&g_DuelCardSlot_TapState)[target_id * 0x120 + spell_id * 0x5b20] != '\0'))
         {
@@ -54423,7 +54423,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
           iVar3 = Card_IsValidCardId(0x38e);
           uVar7 = 0;
           uVar6 = 0;
-          uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar3 = Rules_ParseFilter_0041c0ab
                             (local_14,local_10,(undefined1 *)0x0,spell_id,2,2,0x200,0,0,0,uVar5,
                              uVar6,uVar7,iVar3,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -54501,7 +54501,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
     uVar4 = Card_IsValidCardId(0x38e);
     arg_12 = 0;
     arg_11 = 0;
-    arg_10 = Mana_GetCardColorRequirement(spell_id, target_id);
+    arg_10 = Card_GetColorAndTypeFlags(spell_id, target_id);
     iVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0,0,0,arg_10,arg_11,arg_12,uVar4,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar3 != 0) {
@@ -54552,7 +54552,7 @@ LAB_0047c563:
     iVar3 = Card_IsValidCardId(0x38e);
     uVar7 = 0;
     uVar6 = 0;
-    uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
     iVar3 = Duel_ChooseTarget
                       (spell_id,2,spell_id,0x200,0,0,0,uVar5,uVar6,uVar7,iVar3,iVar8,uVar9,uVar10,
                        uVar11,uVar12,uVar13,arg_18,uVar4,arg_20);
@@ -54678,7 +54678,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
                         *(int *)(&g_DuelCardSlot_AttachedAuraSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
                         *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + spell_id * 0x5b20 + target_id * 0x120) * 0x5b20) |
                2;
-          Duel_PlayCardSoundEffect(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x6c,1 - g_DuelCombatAttackerPlayer,0xffffffff);
+          Magic_TriggerCardEvent(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x6c,1 - g_DuelCombatAttackerPlayer,0xffffffff);
           *(uint *)(&g_DuelCardSlot_Flags +
                    *(int *)(&g_DuelCardSlot_AttachedAuraSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
                    *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + spell_id * 0x5b20 + target_id * 0x120) * 0x5b20) =
@@ -54686,7 +54686,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
                         *(int *)(&g_DuelCardSlot_AttachedAuraSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
                         *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + spell_id * 0x5b20 + target_id * 0x120) * 0x5b20) |
                0x80;
-          Duel_PlayCardSoundEffect(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x71,1 - g_DuelCombatAttackerPlayer,0xffffffff);
+          Magic_TriggerCardEvent(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,0x71,1 - g_DuelCombatAttackerPlayer,0xffffffff);
         }
         else if ((local_8 == 2) && ((&g_DuelCardSlot_TapState)[spell_id * 0x5b20 + target_id * 0x120] != '\0'))
         {
@@ -54701,7 +54701,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
           iVar2 = Card_IsValidCardId(0x38e);
           uVar5 = 0;
           uVar4 = 0;
-          uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+          uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
           iVar2 = Rules_ParseFilter_0041c0ab
                             (local_14,local_10,(undefined1 *)0x0,spell_id,2,2,0x200,0,0,0,uVar3,
                              uVar4,uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -54763,7 +54763,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
     uVar1 = Card_IsValidCardId(0x38e);
     arg_12 = 0;
     arg_11 = 0;
-    arg_10 = Mana_GetCardColorRequirement(spell_id, target_id);
+    arg_10 = Card_GetColorAndTypeFlags(spell_id, target_id);
     iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0,0,0,arg_10,arg_11,arg_12,uVar1,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar2 != 0) {
@@ -54814,7 +54814,7 @@ LAB_0047d1c9:
     iVar2 = Card_IsValidCardId(0x38e);
     uVar5 = 0;
     uVar4 = 0;
-    uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
     iVar2 = Duel_ChooseTarget
                       (spell_id,2,spell_id,0x200,0,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,uVar8,
                        uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -55047,7 +55047,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
             iVar5 = -1;
             uVar7 = 0;
             uVar4 = 0;
-            uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+            uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
             iVar5 = Duel_ChooseTarget
                               (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar7,iVar5,iVar6,
                                uVar8,uVar9,uVar10,uVar11,arg_17,arg_18,uVar2,arg_20);
@@ -55085,7 +55085,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,1,1,1,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5
                          ,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -55098,7 +55098,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar6 = Rules_ParseFilter_0041c0ab
                         (local_14[0],local_14[1],(undefined1 *)0x0,0,0,0,0x200,2,0,0,uVar2,uVar3,
                          uVar4,iVar6,arg_15,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -59383,7 +59383,7 @@ void Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           Ai_Subsystem_004cc56d(1,1,local_1c,-1,-1,s_at_random_to_discard__004faf4c,0);
         }
       }
-      Duel_PlayCardSoundEffect(spell_id,local_1c,0x8d,1 - spell_id,0xffffffff);
+      Magic_TriggerCardEvent(spell_id,local_1c,0x8d,1 - spell_id,0xffffffff);
       FUN_0046f02d(spell_id,local_1c);
       *(undefined4 *)(&g_DuelCardSlot_CardId + local_1c * 0x120 + spell_id * 0x5b20) = 0xffffffff;
       FUN_00450eb8(spell_id,local_1c,0xb,1);
@@ -59399,7 +59399,7 @@ void Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         FUN_00450eb8(spell_id,local_1c,10,1);
       }
       else {
-        Duel_PlayCardSoundEffect(spell_id,local_1c,0x8d,1 - spell_id,0xffffffff);
+        Magic_TriggerCardEvent(spell_id,local_1c,0x8d,1 - spell_id,0xffffffff);
         FUN_0046f02d(spell_id,local_1c);
         *(undefined4 *)(&g_DuelCardSlot_CardId + local_1c * 0x120 + spell_id * 0x5b20) = 0xffffffff;
         FUN_00450eb8(spell_id,local_1c,0xb,1);
@@ -59471,7 +59471,7 @@ undefined4 FUN_00488662(int player,int card_slot,int arg_3)
     DAT_0068ef44 = 0;
     DAT_0068ed04 = -1;
     if ((((&g_DuelMasterCardTable)[iVar5 * 0x34] & 0x3c) != 0) &&
-       (iVar4 = Duel_PlayCardSoundEffect(player,card_slot,0x74,1 - player,0xffffffff), iVar4 == 0)) {
+       (iVar4 = Magic_TriggerCardEvent(player,card_slot,0x74,1 - player,0xffffffff), iVar4 == 0)) {
       return 0;
     }
     iVar2 = DAT_0068ecd0;
@@ -59839,7 +59839,7 @@ bool FUN_0048974c(int arg1,int arg2)
     local_c = DAT_00681eb4;
   }
   if ((local_c != g_DuelTargetPlayer) && (g_IsAiThinking != 1)) {
-    Duel_PlayCardSoundEffect(arg1,arg2,0x90,1 - arg1,0xffffffff);
+    Magic_TriggerCardEvent(arg1,arg2,0x90,1 - arg1,0xffffffff);
     Mem_AllocOrFree_004d9630((uint *)&g_DuelCardChoicePrompt,(uint *)&DAT_00666500);
     Str_CopyFast((uint *)&g_DuelCardChoicePrompt,(uint *)s_activates____004faff0);
     iVar2 = FUN_0048f067(arg1,arg2);
@@ -59884,7 +59884,7 @@ bool FUN_0048974c(int arg1,int arg2)
              (int)(char)(&DAT_006827cc)[local_24 + arg1 * 0x5b20 + arg2 * 0x120];
       }
       Ai_CalcManaRequirement_004ba890(arg1,0,0);
-      if ((g_DuelHumanPlayerIndex == 0) && (Duel_PlayCardSoundEffect(arg1,arg2,1,1 - arg1,0xffffffff), DAT_0068edd8 == 0))
+      if ((g_DuelHumanPlayerIndex == 0) && (Magic_TriggerCardEvent(arg1,arg2,1,1 - arg1,0xffffffff), DAT_0068edd8 == 0))
       {
         *(uint *)(&DAT_006827d4 + arg2 * 0x120 + arg1 * 0x5b20) =
              *(uint *)(&DAT_006827d4 + arg2 * 0x120 + arg1 * 0x5b20) | 0x40;
@@ -59909,7 +59909,7 @@ bool FUN_0048974c(int arg1,int arg2)
       }
       FUN_0042e00f();
       uVar1 = *(uint *)(&g_DuelCardSlot_Flags + arg2 * 0x120 + arg1 * 0x5b20);
-      Duel_PlayCardSoundEffect(arg1,arg2,0x6d,1 - arg1,0xffffffff);
+      Magic_TriggerCardEvent(arg1,arg2,0x6d,1 - arg1,0xffffffff);
       bVar4 = g_DuelHumanPlayerIndex == 1;
       if (bVar4) {
         FUN_0042e101(arg1);
@@ -59982,7 +59982,7 @@ bool FUN_0048974c(int arg1,int arg2)
                          local_14), iVar2 == 0)) {
     if (!bVar4) goto LAB_00489c02;
     Ai_CalcManaRequirement_004ba890(local_c,0,0);
-    if ((g_DuelHumanPlayerIndex == 0) && (Duel_PlayCardSoundEffect(arg1,arg2,4,1 - arg1,0xffffffff), DAT_0068edd8 == 0)) {
+    if ((g_DuelHumanPlayerIndex == 0) && (Magic_TriggerCardEvent(arg1,arg2,4,1 - arg1,0xffffffff), DAT_0068edd8 == 0)) {
       *(uint *)(&DAT_006827d4 + arg2 * 0x120 + arg1 * 0x5b20) =
            *(uint *)(&DAT_006827d4 + arg2 * 0x120 + arg1 * 0x5b20) | 0x200;
     }
@@ -60884,7 +60884,7 @@ void Magic_ScanCards(int player)
 
 
 
-int Duel_PlayCardSoundEffect(int player,int card_slot,int arg_3,undefined4 arg_4,undefined4 arg_5)
+int Magic_TriggerCardEvent(int player,int card_slot,int arg_3,undefined4 arg_4,undefined4 arg_5)
 
 {
   undefined4 uVar1;
@@ -61400,7 +61400,7 @@ undefined4 FUN_0048dd43(void)
       }
       else if (((&DAT_006827d4)[player * 0x5b20 + card_slot * 0x120] & 8) == 0) {
         if (((&DAT_006827d4)[player * 0x5b20 + card_slot * 0x120] & 0x80) == 0) {
-          Duel_PlayCardSoundEffect(player,card_slot,*(uint *)(&DAT_0068f240 + g_SpellStackCount * 4) >> 0x10 & 0xff,
+          Magic_TriggerCardEvent(player,card_slot,*(uint *)(&DAT_0068f240 + g_SpellStackCount * 4) >> 0x10 & 0xff,
                        1 - player,0xffffffff);
         }
         else {
@@ -61412,7 +61412,7 @@ undefined4 FUN_0048dd43(void)
                           *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + player * 0x5b20 + card_slot * 0x120) * 0x5b20 +
                           *(int *)(&g_DuelCardSlot_AttachedAuraSlot + player * 0x5b20 + card_slot * 0x120) * 0x120) &
                  0xffffffef;
-            Duel_PlayCardSoundEffect(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + player * 0x5b20 + card_slot * 0x120),
+            Magic_TriggerCardEvent(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + player * 0x5b20 + card_slot * 0x120),
                          *(int *)(&g_DuelCardSlot_AttachedAuraSlot + player * 0x5b20 + card_slot * 0x120),0x83,1 - player,
                          0xffffffff);
           }
@@ -61427,7 +61427,7 @@ undefined4 FUN_0048dd43(void)
       }
       else {
         if (((((&DAT_006827d5)[player * 0x5b20 + card_slot * 0x120] & 2) == 0) &&
-            (Duel_PlayCardSoundEffect(player,card_slot,0x86,1 - player,0xffffffff),
+            (Magic_TriggerCardEvent(player,card_slot,0x86,1 - player,0xffffffff),
             *(int *)(&g_DuelCardSlot_CardId + player * 0x5b20 + card_slot * 0x120) != -1)) &&
            (((&DAT_006827d4)[player * 0x5b20 + card_slot * 0x120] & 2) != 0)) {
           Duel_DrawCardSprite(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + player * 0x5b20 + card_slot * 0x120),
@@ -61824,7 +61824,7 @@ undefined4 FUN_0048ed18(int arg1,int arg2)
       uVar1 = 0;
     }
     else {
-      Duel_PlayCardSoundEffect(arg1,arg2,0x88,1 - arg1,0xffffffff);
+      Magic_TriggerCardEvent(arg1,arg2,0x88,1 - arg1,0xffffffff);
       if (DAT_0068edd8 == 0) {
         uVar1 = 1;
       }
@@ -71696,7 +71696,7 @@ undefined4 FUN_004a68fc(int player,int card_slot,int arg_3)
   undefined4 uVar2;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_0068ecd0 == -1) {
       uVar2 = 0;
     }
@@ -71803,7 +71803,7 @@ undefined4 FUN_004a6d94(int player,int card_slot,int arg_3)
        (((&g_DuelMasterCardTable)[arg_3 * 0x34] & 1) != 0)) && (((&DAT_004ff5a9)[arg_3 * 0x34] & 0x10) != 0))
      && ((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0 &&
          (((&g_DuelMasterCardTable)[arg_3 * 0x34] & 1) != 0)))) {
-    Duel_PlayCardSoundEffect(player,card_slot,0x6d,1 - player,0xffffffff);
+    Magic_TriggerCardEvent(player,card_slot,0x6d,1 - player,0xffffffff);
     if (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) != 0) {
       FUN_0048c50b(player,card_slot,0x81);
     }
@@ -71908,7 +71908,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -71918,7 +71918,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar1,arg_11_00,
                          arg_12_00,arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,
                          arg_19_00);
@@ -71947,7 +71947,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,(byte)spell_id,(byte)spell_id,
                          0x200,2,0,0,arg_11,arg_12,arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,
@@ -71985,7 +71985,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int iVar3;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
@@ -72042,7 +72042,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x44,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
@@ -72062,7 +72062,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,0x44,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -72087,7 +72087,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x44,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -72136,7 +72136,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -72146,7 +72146,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x43,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -72166,7 +72166,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,0x43,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -72214,7 +72214,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,0x43,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -72283,7 +72283,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 1;
@@ -72293,7 +72293,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -72312,7 +72312,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -72337,7 +72337,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -72448,7 +72448,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       uVar2 = 0;
     }
     else {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       arg_19_00 = 0;
       arg_18_00 = 0;
       arg_17_00 = 0;
@@ -72458,7 +72458,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,spell_id,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
     }
@@ -72493,7 +72493,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar1,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -72544,7 +72544,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (g_DuelCombatPhaseState < 0x1e) {
       arg_19_00 = 0;
       arg_18_00 = 0;
@@ -72555,7 +72555,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      arg_10 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_10 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
       if (iVar1 != 0) {
@@ -72583,7 +72583,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (iVar1,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar2,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -72639,7 +72639,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0x10;
     arg_17 = 0;
@@ -72649,7 +72649,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -72668,7 +72668,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -72693,7 +72693,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_10,local_c,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -72745,7 +72745,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -72755,7 +72755,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -72782,7 +72782,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (iVar3,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar4,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -72855,7 +72855,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -72865,7 +72865,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -72889,7 +72889,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -72922,7 +72922,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   
   if ((flags == 0x74) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     bVar1 = false;
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     for (local_10 = 0; local_10 < 2; local_10 = local_10 + 1) {
       local_8 = 0;
       while ((local_8 < (int)(&g_DuelPlayerCreatureCount)[local_10] && (!bVar1))) {
@@ -73106,7 +73106,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -73116,7 +73116,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -73151,7 +73151,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -73327,7 +73327,7 @@ undefined4 FUN_004a9ad1(int player,int card_slot,int arg_3)
   int local_8;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -73338,7 +73338,7 @@ undefined4 FUN_004a9ad1(int player,int card_slot,int arg_3)
     bVar1 = Duel_GetCardColorOverride(player,card_slot,1);
     iVar4 = 1 << (bVar1 & 0x1f);
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(player,card_slot);
+    uVar2 = Card_GetColorAndTypeFlags(player,card_slot);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,player,2,2,0x200,2,0x40,0,uVar2,arg_11,iVar4,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -73357,7 +73357,7 @@ undefined4 FUN_004a9ad1(int player,int card_slot,int arg_3)
       bVar1 = Duel_GetCardColorOverride(player,card_slot,1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
-      uVar3 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_slot);
       iVar4 = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0x40,0,uVar3,uVar6,uVar5,iVar4,iVar7,uVar8,uVar9,
                          uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -73383,7 +73383,7 @@ undefined4 FUN_004a9ad1(int player,int card_slot,int arg_3)
       bVar1 = Duel_GetCardColorOverride(player,card_slot,1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
-      uVar3 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_slot);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,player,2,2,0x200,2,0x40,0,uVar3,uVar6,
                          uVar5,iVar4,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -73410,7 +73410,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int iVar2;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(1);
+    Ai_PeekPlannedSlot(1);
     uVar1 = 1;
   }
   else {
@@ -73460,7 +73460,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -73470,7 +73470,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11_00,arg_12_00,
                          arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -73494,7 +73494,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (iVar3,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,0x40,0,0,arg_11,
                          arg_12,arg_13,iVar4,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -73555,7 +73555,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -73565,7 +73565,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -73593,7 +73593,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -73648,7 +73648,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -73658,7 +73658,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -73683,7 +73683,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (iVar2,color_mask,(undefined1 *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -73772,7 +73772,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (DAT_0068ecd0 == -1) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -73782,7 +73782,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0xff,0,0,uVar2,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -73814,7 +73814,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar3 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar3 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0xff,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,uVar9,
                            uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -73845,7 +73845,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar3 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar3 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -73938,7 +73938,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   if (flags == 0x74) {
     if (spell_id == g_DuelTargetPlayer) {
       if (DAT_0068ecd0 == -1) {
-        Card_DispatchRulesEvent(0);
+        Ai_PeekPlannedSlot(0);
         uVar2 = 1;
       }
       else {
@@ -73946,7 +73946,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       }
     }
     else if ((DAT_0068ecd0 == -1) || (g_TurnPlayer != g_DuelTargetPlayer)) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       uVar2 = 1;
     }
     else {
@@ -73969,7 +73969,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar3 = -1;
         arg_10 = 0;
         arg_9 = 0;
-        arg_8 = Mana_GetCardColorRequirement(spell_id, target_id);
+        arg_8 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar3 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0x7f,0,0,arg_8,arg_9,arg_10,iVar3,iVar4,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18,uVar2,arg_20);
@@ -74140,7 +74140,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   if (flags == 0x74) {
     if (g_DuelTargetPlayer == spell_id) {
       if (DAT_0068ecd0 == -1) {
-        Card_DispatchRulesEvent(0);
+        Ai_PeekPlannedSlot(0);
         uVar2 = 1;
       }
       else {
@@ -74148,7 +74148,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       }
     }
     else if ((DAT_0068ecd0 == -1) || (g_TurnPlayer != g_DuelTargetPlayer)) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       uVar2 = 1;
     }
     else {
@@ -74171,7 +74171,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         iVar3 = -1;
         arg_10 = 0;
         arg_9 = 0;
-        arg_8 = Mana_GetCardColorRequirement(spell_id, target_id);
+        arg_8 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar3 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0x7f,0,0,arg_8,arg_9,arg_10,iVar3,iVar4,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18,uVar2,arg_20);
@@ -74325,7 +74325,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (DAT_0068ecd0 == -1) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -74336,7 +74336,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_12 = 0;
       bVar2 = Duel_GetCardColorOverride(spell_id,target_id,4);
       iVar4 = 1 << (bVar2 & 0x1f);
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -74378,7 +74378,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Duel_GetCardColorOverride(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar4 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar5,uVar7,uVar8,iVar4,iVar6,
                            uVar9,uVar10,uVar12,uVar11,uVar13,arg_18,uVar3,arg_20);
@@ -74410,7 +74410,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Duel_GetCardColorOverride(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar4 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -74472,7 +74472,7 @@ uint FUN_004ac030(int player,int card_slot,int arg_3)
       uVar1 = 0;
     }
     else {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       if (player == g_DuelTargetPlayer) {
         uVar1 = g_DuelModeFlags & 0x20;
       }
@@ -74523,7 +74523,7 @@ undefined4 FUN_004ac2b1(int player,int card_slot,int arg_3)
   undefined4 uVar2;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_0068ecd0 == -1) {
       uVar2 = 0;
     }
@@ -74590,7 +74590,7 @@ undefined4 FUN_004ac56d(int player,int card_slot,int arg_3)
   int local_8;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_0068ecd0 == -1) {
       uVar2 = 0;
     }
@@ -74715,7 +74715,7 @@ undefined4 FUN_004acbac(int player,int card_slot,int arg_3)
   int local_c;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_0068ecd0 == -1) {
       uVar3 = 0;
     }
@@ -74814,7 +74814,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (DAT_0068ecd0 == -1) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -74825,7 +74825,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_12 = 0;
       bVar2 = Duel_GetCardColorOverride(spell_id,target_id,2);
       iVar4 = 1 << (bVar2 & 0x1f);
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -74867,7 +74867,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Duel_GetCardColorOverride(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar4 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar5,uVar7,uVar8,iVar4,iVar6,
                            uVar9,uVar10,uVar12,uVar11,uVar13,arg_18,uVar3,arg_20);
@@ -74899,7 +74899,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Duel_GetCardColorOverride(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar4 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -74957,7 +74957,7 @@ uint FUN_004ad480(int player,int card_slot,int arg_3)
   int local_10;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = *(uint *)(&DAT_0066aad0 + player * 4) & 2;
   }
   else {
@@ -75236,7 +75236,7 @@ undefined4 Glue_Subsystem_004dd632(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if (((byte)g_DuelModeFlags & 4) == 0) {
       uVar2 = 1;
     }
@@ -75364,7 +75364,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     if ((((byte)g_DuelModeFlags & 4) == 0) ||
        (iVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,g_DuelTargetCardId,0xffffffff,
                              0xffffffff,0xffffffff,0x20,0,0), iVar1 == 0)) {
@@ -75423,7 +75423,7 @@ uint FUN_004ae985(int player,int card_slot,int arg_3)
   int iVar2;
   
   if (arg_3 == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = g_DuelModeFlags & 4;
   }
   else {
@@ -75576,7 +75576,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   int local_8;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -75586,7 +75586,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,3,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -75605,7 +75605,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,3,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -75630,7 +75630,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (local_c,local_8,(undefined1 *)0x0,spell_id,2,2,0x200,3,0,0,uVar2,uVar3,
                          uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -75690,7 +75690,7 @@ undefined4 FUN_004af1fa(int player,int card_slot,int arg_3)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      uVar2 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar2 = Card_GetColorAndTypeFlags(player,card_slot);
       uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,player,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                            arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
     }
@@ -75729,7 +75729,7 @@ undefined4 FUN_004af1fa(int player,int card_slot,int arg_3)
         iVar1 = -1;
         arg_13 = 0;
         arg_12 = 0;
-        arg_11 = Mana_GetCardColorRequirement(player,card_slot);
+        arg_11 = Card_GetColorAndTypeFlags(player,card_slot);
         iVar1 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer +
                                    card_slot * 0x120 +
@@ -81066,7 +81066,7 @@ undefined4 Pic_Subsystem_0042ac1f(int arg1,int arg2)
     *(uint *)(&g_DuelCardSlot_Flags + arg1 * 0x5b20 + arg2 * 0x120) =
          *(uint *)(&g_DuelCardSlot_Flags + arg1 * 0x5b20 + arg2 * 0x120) |
          CONCAT31((uint3)((arg1 == 0) - 1 >> 8) & 0x4000,0x80);
-    Duel_PlayCardSoundEffect(arg1,arg2,0x71,1 - arg1,0xffffffff);
+    Magic_TriggerCardEvent(arg1,arg2,0x71,1 - arg1,0xffffffff);
     *(uint *)(&g_DuelCardSlot_Flags + arg1 * 0x5b20 + arg2 * 0x120) =
          *(uint *)(&g_DuelCardSlot_Flags + arg1 * 0x5b20 + arg2 * 0x120) & 0xffffffdf;
     DAT_00666754 = arg1;
@@ -81117,7 +81117,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -81136,7 +81136,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,0x40,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -81160,7 +81160,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -81400,7 +81400,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -81419,7 +81419,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -81442,7 +81442,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
@@ -81549,7 +81549,7 @@ undefined4 FUN_004beda5(int x,int y,int width,uint height)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(x,y);
+    uVar1 = Card_GetColorAndTypeFlags(x,y);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,x,2,2,0x200,height,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -81567,7 +81567,7 @@ undefined4 FUN_004beda5(int x,int y,int width,uint height)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(x,y);
+      uVar2 = Card_GetColorAndTypeFlags(x,y);
       iVar5 = Duel_ChooseTarget
                         (x,2,1 - x,0x200,height,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,
                          uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -81590,7 +81590,7 @@ undefined4 FUN_004beda5(int x,int y,int width,uint height)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(x,y);
+      uVar2 = Card_GetColorAndTypeFlags(x,y);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + y * 0x120 + x * 0x5b20),(undefined1 *)0x0,x,2,2,
@@ -82060,7 +82060,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,4,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -82079,7 +82079,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -82108,7 +82108,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -82201,7 +82201,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -82220,7 +82220,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -82251,7 +82251,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -82371,7 +82371,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -82390,7 +82390,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -82420,7 +82420,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -82521,7 +82521,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,1 - spell_id,1 - spell_id,0x200,0x40,0,0,uVar1,arg_11
                          ,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -82540,7 +82540,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,1 - spell_id,1 - spell_id,0x200,0x40,0,0,uVar2,uVar3,uVar4,iVar5,
                          iVar6,uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -82570,7 +82570,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -82775,7 +82775,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,4,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -82794,7 +82794,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -82818,7 +82818,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -83058,7 +83058,7 @@ uint FUN_004c3059(int player,int card_slot,int arg_3)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar1 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar1 = Card_GetColorAndTypeFlags(player,card_slot);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + player * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + player * 0x5b20),(undefined1 *)0x0,
@@ -83154,7 +83154,7 @@ undefined4 Pic_Subsystem_0043070c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar2,arg_11,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -83190,7 +83190,7 @@ undefined4 Pic_Subsystem_0043070c(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar3 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -83358,7 +83358,7 @@ undefined4 Pic_Subsystem_00430f0a(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -83386,7 +83386,7 @@ undefined4 Pic_Subsystem_00430f0a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -83617,7 +83617,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -83652,7 +83652,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -83755,7 +83755,7 @@ undefined4 Pic_Subsystem_00431ed3(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11_00,arg_12_00,
                          arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -83796,7 +83796,7 @@ undefined4 Pic_Subsystem_00431ed3(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -83899,7 +83899,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -83918,7 +83918,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,2,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,
                          uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -83953,7 +83953,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84040,7 +84040,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -84059,7 +84059,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -84094,7 +84094,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar5 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84512,7 +84512,7 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -84536,7 +84536,7 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84610,7 +84610,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -84635,7 +84635,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84758,7 +84758,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -84784,7 +84784,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84881,7 +84881,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -84909,7 +84909,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -84983,7 +84983,7 @@ undefined4 Pic_Subsystem_00434f32(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85008,7 +85008,7 @@ undefined4 Pic_Subsystem_00434f32(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -85087,7 +85087,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85119,7 +85119,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -85237,7 +85237,7 @@ undefined4 Pic_Subsystem_00435abf(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85266,7 +85266,7 @@ undefined4 Pic_Subsystem_00435abf(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
@@ -85450,7 +85450,7 @@ undefined4 Pic_Subsystem_00436500(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85478,7 +85478,7 @@ undefined4 Pic_Subsystem_00436500(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -85665,7 +85665,7 @@ undefined4 Pic_Subsystem_00436f60(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85694,7 +85694,7 @@ undefined4 Pic_Subsystem_00436f60(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
@@ -85902,7 +85902,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -85927,7 +85927,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -86001,7 +86001,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -86026,7 +86026,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -86098,7 +86098,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -86121,7 +86121,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -86374,7 +86374,7 @@ undefined4 Pic_Subsystem_00438ced(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -86428,7 +86428,7 @@ undefined4 Pic_Subsystem_00438ced(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -86758,7 +86758,7 @@ undefined4 Pic_Subsystem_00439e06(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -86784,7 +86784,7 @@ undefined4 Pic_Subsystem_00439e06(int spell_id,int target_id,int flags)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -86873,7 +86873,7 @@ undefined4 Pic_Subsystem_0043a32c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -86914,7 +86914,7 @@ undefined4 Pic_Subsystem_0043a32c(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -87072,7 +87072,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         arg_13 = 0xffffffff;
         arg_12 = 0;
         uVar1 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3 | 0x20,uVar1,arg_12,arg_13,
                              arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
         if (iVar2 != 0) {
@@ -87096,7 +87096,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = Duel_ChooseTarget
                           (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3 | 0x20,uVar4,uVar5,iVar2,iVar6,
                            uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -87119,7 +87119,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar2 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -87423,7 +87423,7 @@ void FUN_004ce5ce(int x,int y,int width,uint height)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    arg_10 = Mana_GetCardColorRequirement(x,y);
+    arg_10 = Card_GetColorAndTypeFlags(x,y);
     UI_SelectTargetCardDialog((int *)0x0,0,x,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,arg_13_00,arg_14,
                  arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -87447,7 +87447,7 @@ void FUN_004ce5ce(int x,int y,int width,uint height)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(x,y);
+      arg_11 = Card_GetColorAndTypeFlags(x,y);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + y * 0x120 + x * 0x5b20),(undefined1 *)0x0,x,2,2,
@@ -87584,7 +87584,7 @@ undefined4 FUN_004ceabe(uint player,int card_slot,int arg_3,int arg_4,int arg_5)
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar1 = Card_GetColorAndTypeFlags(player,card_slot);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,player,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -87598,7 +87598,7 @@ undefined4 FUN_004ceabe(uint player,int card_slot,int arg_3,int arg_4,int arg_5)
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar1 = Card_GetColorAndTypeFlags(player,card_slot);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,player,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -87612,7 +87612,7 @@ undefined4 FUN_004ceabe(uint player,int card_slot,int arg_3,int arg_4,int arg_5)
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = Mana_GetCardColorRequirement(player,card_slot);
+      uVar1 = Card_GetColorAndTypeFlags(player,card_slot);
       uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,player,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -87643,7 +87643,7 @@ undefined4 FUN_004ceabe(uint player,int card_slot,int arg_3,int arg_4,int arg_5)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(player,card_slot);
+      arg_11 = Card_GetColorAndTypeFlags(player,card_slot);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + player * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + player * 0x5b20),(undefined1 *)0x0,
@@ -87800,7 +87800,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -87834,7 +87834,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar4 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -87931,7 +87931,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -87957,7 +87957,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -88120,7 +88120,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -88140,7 +88140,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
         iVar6 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
         iVar6 = Duel_ChooseTarget
                           (spell_id,2,2,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,uVar9,
                            uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -88182,7 +88182,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar6 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -88330,7 +88330,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -88349,7 +88349,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Duel_ChooseTarget
                         (spell_id,2,1 - spell_id,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -88381,7 +88381,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar1 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -88528,7 +88528,7 @@ undefined4 Pic_Subsystem_0043e0f6(int player,int card_slot,int arg_3)
                 (((&g_DuelCardSlot_Flags)[local_8 * 0x120 + local_290 * 0x5b20] & 2) != 0)) &&
                ((((&g_DuelMasterCardTable)
                   [*(int *)(&g_DuelCardSlot_CardId + local_8 * 0x120 + local_290 * 0x5b20) * 0x34] & 0x43) !=
-                 0 && (iVar4 = local_8 * 0x120, uVar2 = Mana_GetCardColorRequirement(player,card_slot),
+                 0 && (iVar4 = local_8 * 0x120, uVar2 = Card_GetColorAndTypeFlags(player,card_slot),
                       (*(uint *)(&g_DuelCardSlot_Abilities2 + iVar4 + local_290 * 0x5b20) & uVar2) == 0)))) {
               aiStack_288[local_294 + local_290 * 0x50] = local_8;
               local_294 = local_294 + 1;
@@ -88737,7 +88737,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -88764,7 +88764,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
@@ -88799,7 +88799,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
       }
     }
     else if (flags == 0x90) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       uVar3 = 0;
     }
     else {
@@ -88865,7 +88865,7 @@ undefined4 Pic_Subsystem_0043f19e(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -88892,7 +88892,7 @@ undefined4 Pic_Subsystem_0043f19e(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -88957,7 +88957,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
     *(int *)(&DAT_0068f330 + spell_id * 0x20) = *(int *)(&DAT_0068f330 + spell_id * 0x20) + 2;
   }
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -88967,7 +88967,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -88992,7 +88992,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar4 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -89027,7 +89027,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
       }
     }
     else if (flags == 0x90) {
-      Card_DispatchRulesEvent(0);
+      Ai_PeekPlannedSlot(0);
       uVar3 = 0;
     }
     else {
@@ -89366,7 +89366,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -89417,7 +89417,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -89550,7 +89550,7 @@ undefined4 Pic_Subsystem_00440db5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -89575,7 +89575,7 @@ undefined4 Pic_Subsystem_00440db5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -89638,7 +89638,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
   uint arg_20;
   
   if (flags == 0x74) {
-    Card_DispatchRulesEvent(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -89648,7 +89648,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = Mana_GetCardColorRequirement(spell_id, target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id, target_id);
     uVar1 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -89681,7 +89681,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = Mana_GetCardColorRequirement(spell_id, target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id, target_id);
       iVar2 = Rules_ParseFilter_0041c0ab
                         (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),

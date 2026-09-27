@@ -592,4 +592,69 @@ it is called from many sites in `duel_all.c` that `Card_GetColorAndTypeFlags` is
 row named `Mana_GetCardColorRequirement` at any address, so either the header comment's address is stale (most likely,
 given other index/source drift found this session) or two functions have been merged under one name by an earlier pass.
 Not investigated further; the call sites still compile as calls to a declared prototype (`duel/duel_unified.h`), so
-nothing is broken, just unresolved.
+nothing is broken, just unresolved. (Resolved in Round 5 below: the address was right and the name stale.)
+
+### Round 5: the `Mana_GetCardColorRequirement` anomaly and the remaining twin conflicts (static evidence only, 2026-09-27)
+
+**Static evidence only.** No emulator or live game was run for this round: every decision below comes from reading
+both decompiled bodies (`magic/magic_unified.c` against `duel/duel_unified.c`, paired through `tools/twins/twins.csv`).
+The one piece of dynamic evidence cited, the `tools/difftest` vectors, was recorded before this round.
+
+**The Round 4 anomaly is one function under two names, and the header comment was right.** `duel/duel_unified.c`
+and `duel/duel_all.c` hold exactly one body for the index slot `0x004521e2`, and it is the function defined as
+`Mana_GetCardColorRequirement`; neither file defines a `Card_GetColorAndTypeFlags` at all. When the spell-chain round
+renamed the `DUEL.EXE` twin of `Card_GetColorAndTypeFlags` (`MAGIC.EXE 0x004d0a42`), only `duel/function_index.csv`,
+`duel/symbols.csv` and `duel/source_mapping.csv` took the new name; the C files, the headers and the `NewName`
+column of three rename maps kept `Mana_GetCardColorRequirement`. So the address in the header comment was correct and
+the *name* was stale, the reverse of the index lag found elsewhere. The body matches `MAGIC.EXE 0x004d0a42` line for
+line: the same four locals (`cVar1`, `iVar2`, `uVar3`, `local_8`; Round 4's "several more locals" compared it with
+something else), the same stand-in-object check against `g_StackObjectCardId`, the same four type-bit branches
+(`0x20000`, `0x40000`, `0x80000`, `0x100000`) and the same colour-mask-to-index and colour-override calls. There is no
+cost or mana arithmetic in it. Its roughly 280 call sites in `duel_all.c` are card handlers asking for colour and type flags,
+as `MAGIC.EXE`'s roughly 300 callers are. The seven `tools/difftest` vectors recorded from `DUEL.EXE 0x004521e2` pass against
+the native `Card_GetColorAndTypeFlags`, which was written from the `MAGIC.EXE` body.
+
+The same index/source split turned up once more: at `DUEL.EXE 0x0043071d` the index says `Ai_PeekPlannedSlot`
+(round 3) but the source still said `Card_DispatchRulesEvent`. A third twin conflict from `tools/twins/propagation.md`
+was clear-cut as well. The three `DUEL.EXE` renames, applied in the C files, headers and symbol maps (static evidence
+only):
+
+| Address | Was | Now | Evidence |
+|---|---|---|---|
+| `0x004521e2` | `Mana_GetCardColorRequirement` (source, headers and the rename maps' new-name column; the index already had the new name) | `Card_GetColorAndTypeFlags` | static: body identical to `MAGIC.EXE 0x004d0a42` (above) |
+| `0x0043071d` | `Card_DispatchRulesEvent` (source and headers; the index already had the new name) | `Ai_PeekPlannedSlot` | static: body identical to `MAGIC.EXE 0x004ab35e` (`Ai_PeekPlannedSlot`, twin 1.0000): when not thinking, reads the plan list at `cursor + offset` into the packed-slot global `0x68f0bc` and masks it to 12 bits. It dispatches nothing |
+| `0x0048c907` | `Duel_PlayCardSoundEffect` | `Magic_TriggerCardEvent` | static: body identical to `MAGIC.EXE 0x00474266` (`Magic_TriggerCardEvent`, twin 1.0000): pushes the event context, sets the source and target globals, calls the card's own handler through the pointer at master record `+0x10` and pops the context. It plays no sound anywhere. The `DUEL.EXE` copy takes the engine name, as the other engine twins do |
+
+Parameter names of the renamed functions are unchanged (`Magic_TriggerCardEvent`'s `DUEL.EXE` copy still calls its
+last three `arg_3`, `arg_4`, `arg_5`). Sharing a name with the `MAGIC.EXE` function meant matching its existing
+declarations: the prototypes of `Magic_TriggerCardEvent` copied into other source files now declare the last two
+parameters `int` (they said `undefined4`, as `include/shandalar/magic_engine.h` does not), so the rename adds no
+conflicting-type errors (checked by compiling every touched file before and after). `src/magic/sid/card_rules_core.c` holds a copy of the `DUEL.EXE` function at
+`0x0043071d` (its comment gives that entry point and it uses `DUEL.EXE` globals); it was renamed with the rest, so
+`src/magic` now defines `Ai_PeekPlannedSlot` twice (the other, `MAGIC.EXE 0x004ab35e`, is in `src/magic/sid/Ai.c`;
+the copy's return type is now `int`, as there).
+Neither file is in the build; the misfiled copy should move to `src/duel` or go.
+
+**Not applied**, with the reason:
+
+- `Magic_QueryCardAttribute` (`MAGIC.EXE 0x00473179`, verified) / `Duel_QueryCardAttribute` (`DUEL.EXE 0x0048b81a`):
+  the same meaning under two program prefixes, not a disagreement about what the code does. The convention above
+  ("the same code has the same name in both programs") would give the `DUEL.EXE` copy the `Magic_` name, but this
+  document's own emulator section introduced `Duel_QueryCardAttribute`; which prefix to keep is a naming decision, not
+  something the bodies can settle.
+- `Duel_PlaySoundById` (`MAGIC.EXE 0x0047496b`) / `Sound_PlayTrackById` (`DUEL.EXE 0x0048d00c`): both verified live
+  and both accurate; already left as two names on purpose (see "Renames applied").
+- `_write` (`MAGIC.EXE 0x00513fde`) / `RtlUnwind` (`DUEL.EXE 0x004eec20`): not a real twin pair. Both are 6-byte import
+  thunks (`jmp [import]`), each named after the import it jumps to, so each name is right for its own program; the
+  twin table pairs them only because all 6-byte thunks look alike.
+
+**Found, not examined this round.** The twin conflicts above are the ones `propagation.md` can see, because it compares
+`function_index.csv` names. Comparing the names the *C files* use instead turns up more twin pairs whose two sides
+disagree while both index rows are still `FUN_...`: `Card_SetTapState` / `Duel_GetCardColorOverride`
+(`0x0041d9d2` / `0x004af7bb`; the body returns the slot's colour-override byte at `+0xf9 + i`, or `i`, so the `DUEL.EXE`
+name fits and the `MAGIC.EXE` one does not), `Card_UntapCard` / `Duel_GetCardModifiedPower` (`0x0041d963` /
+`0x004af74c`; the same lookup at `+0xff + i`, which fits neither name), `UI_PaintBigCardInfo` /
+`UI_SelectTargetCardDialog` (`0x00403250` / `0x0041bcf0`), `Card_ApplyTriggerEffect` / `Duel_TriggerCardEvent`
+(`0x00410cc0` / `0x004a2b00`) and `FileIo_ReadStream` / `FileIo_ReadDataBlock` (`0x0048e01d` / `0x00433bb6`). 21
+`MAGIC.EXE` and 20 `DUEL.EXE` index rows still say `FUN_...` for functions their C file already names. None of these was
+changed here.

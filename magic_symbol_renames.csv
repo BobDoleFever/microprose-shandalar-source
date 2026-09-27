@@ -149,7 +149,7 @@ Address,OldName,NewName
 0042ed9f,FUN_0042ed9f,CardScript_RelicBind
 0042f87b,FUN_0042f87b,CardScript_PowerLeak
 0043070c,FUN_0043070c,Prompts_Load_0043070c
-0043071d,Ai_PeekPlannedSlot,Card_DispatchRulesEvent
+0043071d,Ai_PeekPlannedSlot,Ai_PeekPlannedSlot
 00430f0a,FUN_00430f0a,CardScript_CursedLand
 004319c5,FUN_004319c5,CardScript_EvilPresence
 00431ed3,FUN_00431ed3,CardScript_LivingArtifact
@@ -232,7 +232,7 @@ Address,OldName,NewName
 004509e8,FUN_004509e8,UI_DeckSelectionMenu
 00451291,FUN_00451291,Deck_AddCardToDeck
 00451482,FUN_00451482,Duel_UpdateBoardState
-004521e2,Card_GetColorAndTypeFlags,Mana_GetCardColorRequirement
+004521e2,Card_GetColorAndTypeFlags,Card_GetColorAndTypeFlags
 00452551,FUN_00452551,Csv_LoadInfo_00452551
 00452793,FUN_00452793,Engine_ReportFatalError
 004527bc,FUN_004527bc,UI_DrawCombatBanner
@@ -392,7 +392,7 @@ Address,OldName,NewName
 0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
 0048c367,FUN_0048c367,Duel_ColorMaskToIndex
 0048c72a,FUN_0048c72a,SaveGame_LoadCampaignFile
-0048c907,FUN_0048c907,Duel_PlayCardSoundEffect
+0048c907,FUN_0048c907,Magic_TriggerCardEvent
 0048c970,FUN_0048c970,SaveGame_SaveCampaignFile
 0048cdf5,FUN_0048cdf5,Mem_AllocOrFree_0048cdf5
 0048d00c,FUN_0048d00c,Sound_PlayTrackById

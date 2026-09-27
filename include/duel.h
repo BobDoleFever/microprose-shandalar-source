@@ -802,7 +802,7 @@ void Ai_BeginTrial(void);;
 void Ai_RecordChoice(void);;
 
 /* Function at 0043071d (Size: 75 bytes) */
-int32_t Card_DispatchRulesEvent(int max_val);;
+int32_t Ai_PeekPlannedSlot(int max_val);;
 
 /* Function at 00430768 (Size: 74 bytes) */
 int32_t Ai_PeekPlannedChoice(int max_val);;
@@ -1897,7 +1897,7 @@ int FUN_0045219a(void);;
 int32_t Card_DefaultEventHandler(void);;
 
 /* Function at 004521e2 (Size: 645 bytes) */
-uint32_t Mana_GetCardColorRequirement(int player, int card_slot);;
+uint32_t Card_GetColorAndTypeFlags(int player, int card_slot);;
 
 /* Function at 0045247b (Size: 959 bytes) */
 int32_t Glue_Subsystem_004d0cdb(int max_val,int point,int hBitmap);;
@@ -3067,7 +3067,7 @@ int32_t FUN_0048c50b(int max_val,int32_t point,int hBitmap);;
 void Magic_ScanCards(int max_val);;
 
 /* Function at 0048c907 (Size: 291 bytes) */
-int Duel_PlayCardSoundEffect(int max_val,int point,int hBitmap,int32_t flags,int32_t damage);;
+int Magic_TriggerCardEvent(int max_val,int point,int hBitmap,int32_t flags,int32_t damage);;
 
 /* Function at 0048ca2a (Size: 159 bytes) */
 bool Magic_IsManaSource(int player,int slot);;

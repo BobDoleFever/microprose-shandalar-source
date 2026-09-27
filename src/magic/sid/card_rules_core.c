@@ -66,7 +66,7 @@ typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
-uint Mana_GetCardColorRequirement(int player, int card_slot);
+uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
 
@@ -77,7 +77,7 @@ int Duel_RandomRange(int arg_1);
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
 bool Duel_CardIsTapped(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_PlayCardSoundEffect(int arg_1, int arg_2, int arg_3, undefined4 arg_4, undefined4 arg_5);
+int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
 void Duel_DrawCardSprite(int arg_1, int arg_2, int arg_3);
 int Duel_DrawString(int arg_1, uint arg_2, int arg_3);
@@ -571,13 +571,13 @@ undefined4 Card_ColorMaskToColorIndex(byte color_mask)
 }
 
 /*
- * Decompiled function: Card_DispatchRulesEvent
+ * Decompiled function: Ai_PeekPlannedSlot
  * Entry Point: 0043071d
  * Size: 75 bytes
  */
 
 
-undefined4 Card_DispatchRulesEvent(int arg_1)
+int Ai_PeekPlannedSlot(int arg_1)
 
 {
   if ((g_IsAiThinking != 1) &&

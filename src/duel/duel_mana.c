@@ -41,7 +41,7 @@ typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
-uint Mana_GetCardColorRequirement(int player, int card_slot);
+uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
 
@@ -52,7 +52,7 @@ int Duel_RandomRange(int arg_1);
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
 bool Duel_CardIsTapped(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_PlayCardSoundEffect(int arg_1, int arg_2, int arg_3, undefined4 arg_4, undefined4 arg_5);
+int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
 void Duel_DrawCardSprite(int arg_1, int arg_2, int arg_3);
 int Duel_DrawString(int arg_1, uint arg_2, int arg_3);
@@ -252,13 +252,13 @@ int FUN_00486c12();
 int FUN_00478aa4();
 
 /*
- * Decompiled function: Mana_GetCardColorRequirement
+ * Decompiled function: Card_GetColorAndTypeFlags
  * Entry Point: 004521e2
  * Size: 645 bytes
  */
 
 
-uint Mana_GetCardColorRequirement(int player,int card_slot)
+uint Card_GetColorAndTypeFlags(int player,int card_slot)
 
 {
   char cVar1;
@@ -543,7 +543,7 @@ bool CardTarget_PromptTargetCreature(int player,uint cost_mask,int card_slot)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = Mana_GetCardColorRequirement(player,card_slot);
+  arg_8 = Card_GetColorAndTypeFlags(player,card_slot);
   iVar1 = Duel_ChooseTarget
                     (player,2,cost_mask,0x200,2,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
