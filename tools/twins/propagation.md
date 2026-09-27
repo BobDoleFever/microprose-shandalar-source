@@ -119,7 +119,7 @@ Candidates for carrying the MAGIC.EXE name to the DUEL.EXE twin. Verified MAGIC 
 | `0x004e689b` | `Card_RemoveCounters` (**UNVERIFIED**) | `0x0046801f` | `FUN_0046801f` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6913` | `Card_SetCounters` (**UNVERIFIED**) | `0x00468097` | `FUN_00468097` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6978` | `Card_GetCounters` (**UNVERIFIED**) | `0x004680fc` | `FUN_004680fc` (generic: Ghidra default) | 1.0000 |  |
-| `0x004e69ac` | `CardTarget_PromptTargetCreature` (**UNVERIFIED**) | `0x00468130` | `FUN_00468130` (generic: Ghidra default) | 1.0000 | DUEL C file already says `Mana_CanAffordCost` (**UNVERIFIED**; the index lags) |
+| `0x004e69ac` | `CardTarget_PromptTargetCreature` (**UNVERIFIED**) | `0x00468130` | `FUN_00468130` (generic: Ghidra default) | 1.0000 | DUEL C file already says `CardTarget_PromptTargetCreature` (**UNVERIFIED**; the index lags) |
 | `0x004e6add` | `CardTarget_SetTargetCreature` (**UNVERIFIED**) | `0x00468261` | `FUN_00468261` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6bff` | `CardTarget_HasValidCreatureTarget` (**UNVERIFIED**) | `0x00468383` | `FUN_00468383` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6dcc` | `CardTarget_PromptTargetPermanent` (**UNVERIFIED**) | `0x00468550` | `FUN_00468550` (generic: Ghidra default) | 1.0000 |  |

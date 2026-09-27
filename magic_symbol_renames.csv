@@ -319,7 +319,7 @@ Address,OldName,NewName
 0046709c,FUN_0046709c,CardScript_GlassesOfUrza
 00467880,FUN_00467880,UI_CreateWindow_00467880
 00467a68,FUN_00467a68,UI_CardContextMenu_Debug
-00468130,FUN_00468130,Mana_CanAffordCost
+00468130,FUN_00468130,CardTarget_PromptTargetCreature
 0046b4bb,FUN_0046b4bb,Mem_AllocOrFree_0046b4bb
 0046b4db,FUN_0046b4db,UI_FormatCardCounterString
 0046b92b,FUN_0046b92b,Mem_AllocOrFree_0046b92b

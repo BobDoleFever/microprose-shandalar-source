@@ -2108,7 +2108,7 @@ void FUN_00467f65(int max_val,int point,int hBitmap);
 void FUN_0046801f(int max_val,int point,int hBitmap);
 void FUN_00468097(int max_val,int point,int hBitmap);
 uint FUN_004680fc(int player,int card_slot);
-bool Mana_CanAffordCost(int max_val, uint point, int hBitmap);
+bool CardTarget_PromptTargetCreature(int max_val, uint point, int hBitmap);
 bool FUN_00468261(int max_val,uint point,int hBitmap);
 int FUN_00468383(int max_val);
 bool FUN_00468550(int max_val,uint point,int hBitmap);

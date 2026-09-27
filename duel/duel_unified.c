@@ -45681,7 +45681,7 @@ undefined4 FUN_00465a30(int player,int card_slot,int arg_3)
   int iVar1;
   
   if (((arg_3 == 0x6c) && (card_slot == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    iVar1 = Mana_CanAffordCost(player, 0xffffffff, card_slot);
+    iVar1 = CardTarget_PromptTargetCreature(player, 0xffffffff, card_slot);
     if (iVar1 == 0) {
       Duel_DrawCardSprite(player,card_slot,1);
       g_DuelHumanPlayerIndex = 1;
@@ -45833,7 +45833,7 @@ undefined4 Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       Catalog_ParseCsvLine(s_prompts_txt_004f8e40,s_VENOM_004f8e38);
-      iVar3 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar3 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar3 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -46564,7 +46564,7 @@ uint FUN_004680fc(int arg1,int arg2)
 
 
 
-bool Mana_CanAffordCost(int player,uint card_slot,int arg_3)
+bool CardTarget_PromptTargetCreature(int player,uint card_slot,int arg_3)
 
 {
   uint arg_8;
@@ -53843,7 +53843,7 @@ undefined4 Ai_Subsystem_004b8e4d(int player,int card_slot,int arg_3)
         DAT_0068f0f4 = 0;
       }
       else {
-        iVar2 = Mana_CanAffordCost(player,1 - player,card_slot);
+        iVar2 = CardTarget_PromptTargetCreature(player,1 - player,card_slot);
         if (iVar2 == 0) {
           g_DuelHumanPlayerIndex = 1;
         }
@@ -54169,7 +54169,7 @@ undefined4 FUN_0047bba3(int player,int card_slot,int arg_3)
   }
   else {
     if (arg_3 == 0x6d) {
-      iVar2 = Mana_CanAffordCost(player,player,card_slot);
+      iVar2 = CardTarget_PromptTargetCreature(player,player,card_slot);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -71926,7 +71926,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00506188,s_SIMULACRUM_0050617c);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -72466,7 +72466,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_0050620c,s_HOWL_FROM_BEYOND_005061f8);
-      iVar1 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar1 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar1 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -72566,7 +72566,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00506220,s_BERSERK_00506218);
-      iVar1 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar1 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar1 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -72762,7 +72762,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00506254,s_BLOODLUST_00506248);
-      iVar3 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar3 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar3 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -72872,7 +72872,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00506274,s_SWORD_TO_PLOWSHARES_00506260);
-      iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -73123,7 +73123,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_005062dc,&DAT_005062d4);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -73576,7 +73576,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         g_DuelDamageAccumulator = g_DuelDamageAccumulator + -0xc;
       }
       Catalog_ParseCsvLine(s_prompts_txt_00506338,s_GIANT_GROWTH_00506328);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -73666,7 +73666,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       g_DuelDamageAccumulator = g_DuelDamageAccumulator + -0x30;
       Catalog_ParseCsvLine(s_prompts_txt_00506350,s_UNSUMMON_00506344);
-      iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -84519,7 +84519,7 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508b60,s_ASPECTOFWOLF_00508b50);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if ((g_DuelHumanPlayerIndex != 1) &&
          (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) == g_DuelTargetPlayer)) {
@@ -84617,7 +84617,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508b74,&DAT_00508b6c);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -84765,7 +84765,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508b8c,s_SPIRITLINK_00508b80);
-      iVar2 = Mana_CanAffordCost(spell_id,2,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,2,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (g_DuelHumanPlayerIndex != 1) {
         iVar2 = Duel_QueryCardAttribute(*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
@@ -84888,7 +84888,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508ba8,s_CREATUREBOND_00508b98);
-      iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (g_DuelHumanPlayerIndex != 1) {
         if (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) == g_DuelTargetPlayer) {
@@ -84990,7 +84990,7 @@ undefined4 Pic_Subsystem_00434f32(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508bc0,s_GASEOUSFORM_00508bb4);
-      iVar2 = Mana_CanAffordCost(spell_id,2,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,2,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -85094,7 +85094,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508bd8,s_BACKFIRE_00508bcc);
-      iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (g_DuelHumanPlayerIndex != 1) {
         if (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) == g_DuelTargetPlayer) {
@@ -85248,7 +85248,7 @@ undefined4 Pic_Subsystem_00435abf(int spell_id,int target_id,int flags)
       *(undefined4 *)(&g_DuelCardSlot_Counters + spell_id * 0x5b20 + target_id * 0x120) =
            *(undefined4 *)(&g_DuelCardSlot_DisplayIndex + spell_id * 0x5b20 + target_id * 0x120);
       Catalog_ParseCsvLine(s_prompts_txt_00508bf0,s_HOLY_ARMOR_00508be4);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -85460,7 +85460,7 @@ undefined4 Pic_Subsystem_00436500(int spell_id,int target_id,int flags)
       *(undefined4 *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) =
            *(undefined4 *)(&g_DuelCardSlot_DisplayIndex + target_id * 0x120 + spell_id * 0x5b20);
       Catalog_ParseCsvLine(s_prompts_txt_00508c08,s_BLESSING_00508bfc);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -85675,7 +85675,7 @@ undefined4 Pic_Subsystem_00436f60(int spell_id,int target_id,int flags)
       *(undefined4 *)(&g_DuelCardSlot_Counters + spell_id * 0x5b20 + target_id * 0x120) =
            *(undefined4 *)(&g_DuelCardSlot_DisplayIndex + spell_id * 0x5b20 + target_id * 0x120);
       Catalog_ParseCsvLine(s_prompts_txt_00508c24,s_FIREBREATHING_00508c14);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120) == spell_id) {
         g_DuelDamageAccumulator = g_DuelDamageAccumulator + 0xc;
@@ -85843,7 +85843,7 @@ void Pic_Subsystem_0043793a(int spell_id,int target_id,int flags)
   if (flags != 0x74) {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508c40,s_INVISIBILITY_00508c30);
-      iVar1 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar1 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar1 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -85909,7 +85909,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508c54,&DAT_00508c4c);
-      iVar4 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar4 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar4 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -86008,7 +86008,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (spell_id == g_EventSourcePlayer)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508c68,s_SEEKER_00508c60);
-      iVar4 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar4 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar4 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -86105,7 +86105,7 @@ undefined4 Palette_Color_0049ae00(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508c78,&DAT_00508c74);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if ((g_DuelHumanPlayerIndex != 1) && (spell_id != g_DuelTargetPlayer)) {
         g_DuelDamageAccumulator = g_DuelDamageAccumulator + -0x18;
@@ -86381,7 +86381,7 @@ undefined4 Pic_Subsystem_00438ced(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508c90,s_PARALYZE_00508c84);
-      iVar2 = Mana_CanAffordCost(spell_id,2,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,2,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -86653,7 +86653,7 @@ uint Pic_Subsystem_00439b92(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508cec,s_COCOON_00508ce4);
-      iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -86765,7 +86765,7 @@ undefined4 Pic_Subsystem_00439e06(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508d1c,s_WANDERLUST_00508d10);
-      iVar1 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+      iVar1 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar1 == 0);
       if (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) == g_DuelTargetPlayer) {
         g_DuelDamageAccumulator = g_DuelDamageAccumulator + 0x30;
@@ -86880,7 +86880,7 @@ undefined4 Pic_Subsystem_0043a32c(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508d38,s_INSTILL_ENERGY_00508d28);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if ((g_DuelHumanPlayerIndex != 1) && (g_DuelTargetCardSlot == spell_id)) {
         if (((&DAT_004ff595)
@@ -87429,7 +87429,7 @@ void FUN_004ce5ce(int x,int y,int width,uint height)
   }
   else {
     if (((width == 0x6c) && (g_EventSourceSlot == y)) && (g_EventSourcePlayer == x)) {
-      iVar1 = Mana_CanAffordCost(x,x,y);
+      iVar1 = CardTarget_PromptTargetCreature(x,x,y);
       if (iVar1 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -87625,7 +87625,7 @@ undefined4 FUN_004ceabe(uint player,int card_slot,int arg_3,int arg_4,int arg_5)
       else {
         local_8 = player;
       }
-      iVar2 = Mana_CanAffordCost(player,local_8,card_slot);
+      iVar2 = CardTarget_PromptTargetCreature(player,local_8,card_slot);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -87807,7 +87807,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508e64,s_ANY_WARD_00508e58);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -87938,7 +87938,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508e84,s_UNSTABLE_MUTATION_00508e70);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (((g_DuelHumanPlayerIndex != 1) && (g_DuelTargetCardSlot == spell_id)) &&
          (((&g_DuelCardSlot_Subtypes)
@@ -88744,7 +88744,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508f60,s_REGENERATION_00508f50);
-      iVar4 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar4 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar4 == 0);
       if (((g_DuelHumanPlayerIndex != 1) && (spell_id == g_DuelTargetCardSlot)) &&
          ((((&DAT_006826fd)
@@ -88872,7 +88872,7 @@ undefined4 Pic_Subsystem_0043f19e(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508f7c,s_ETERNAL_WARRIOR_00508f6c);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
       if (((g_DuelHumanPlayerIndex != 1) && (g_DuelTargetCardSlot == spell_id)) &&
          ((iVar2 = FUN_0048af80(*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
@@ -88974,7 +88974,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508f94,s_THE_BRUTE_00508f88);
-      iVar4 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar4 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar4 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -89086,7 +89086,7 @@ uint Pic_Subsystem_0043faf7(int spell_id,int target_id,int flags)
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_00508fac,s_EARTH_BIND_00508fa0);
     }
-    iVar2 = Mana_CanAffordCost(spell_id,1 - spell_id,target_id);
+    iVar2 = CardTarget_PromptTargetCreature(spell_id,1 - spell_id,target_id);
     g_DuelHumanPlayerIndex = (uint)(iVar2 == 0);
     if ((flags == 0x71) && (*(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) != -1))
     {
@@ -89655,7 +89655,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
       Catalog_ParseCsvLine(s_prompts_txt_0050904c,s_FLIGHT_00509044);
-      iVar2 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      iVar2 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (iVar2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }

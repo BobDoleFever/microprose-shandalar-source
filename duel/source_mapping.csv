@@ -786,7 +786,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 0046801f,"FUN_0046801f","sid/glue.c","sid"
 00468097,"FUN_00468097","sid/glue.c","sid"
 004680fc,"FUN_004680fc","sid/glue.c","sid"
-00468130,"Mana_CanAffordCost","sid/glue.c","sid"
+00468130,"CardTarget_PromptTargetCreature","sid/glue.c","sid"
 00468261,"FUN_00468261","sid/glue.c","sid"
 00468383,"FUN_00468383","sid/glue.c","sid"
 00468550,"FUN_00468550","sid/glue.c","sid"

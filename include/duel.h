@@ -2374,7 +2374,7 @@ void FUN_00468097(int max_val,int point,int hBitmap);;
 uint32_t FUN_004680fc(int player,int card_slot);;
 
 /* Function at 00468130 (Size: 300 bytes) */
-bool Mana_CanAffordCost(int max_val, uint32_t point, int hBitmap);;
+bool CardTarget_PromptTargetCreature(int max_val, uint32_t point, int hBitmap);;
 
 /* Function at 00468261 (Size: 285 bytes) */
 bool FUN_00468261(int max_val,uint32_t point,int hBitmap);;

@@ -663,7 +663,7 @@ Address,OldName,NewName
 0046792a,FUN_0046792a,CardScript_HurrJackal
 0046799f,FUN_0046799f,Minit_Subsystem_0046799f
 00467a68,FUN_00467a68,UI_WndProc_00467a68
-00468130,FUN_00468130,Mana_CanAffordCost
+00468130,FUN_00468130,CardTarget_PromptTargetCreature
 00468def,FUN_00468def,CardScript_Aswanjaguar
 0046b4db,FUN_0046b4db,UI_FormatCardCounterString
 0046bcc0,FUN_0046bcc0,Catalog_LoadWaveletArt
