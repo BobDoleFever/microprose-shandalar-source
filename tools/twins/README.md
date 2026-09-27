@@ -36,3 +36,19 @@ the miss is `Card_DefaultEventHandler` (`xor eax,eax; ret`), which has several i
 
 A pair here is a static resemblance, not a verification: confirm a twin on the emulator before
 renaming anything on the strength of it.
+
+## Carrying names across: `propagate.py`
+
+```bash
+python3 tools/twins/propagate.py         # rewrites tools/twins/propagation.md (under a second)
+python3 -m pytest tools/twins/test_propagate.py
+```
+
+For every `twin` row it compares the names in `magic/function_index.csv` and `duel/function_index.csv` and
+lists, in `propagation.md`: pairs where only MAGIC.EXE has a semantic name, the reverse, pairs where both
+have different semantic names, and DUEL.EXE names carried by more than one address with a twin among them
+(cross-referenced with `tools/registry/duplicates.md`). Generic means `FUN_`, `..._Subsystem_<hex>` or a
+name ending in an 8-digit address (its own or another: copied auto-labels end in the twin's address).
+Every semantic name is marked **verified** only when `tools/registry/verified_names.csv` has it at that
+address, and **UNVERIFIED** everywhere else; notes flag names shared by several DUEL.EXE addresses and C
+files whose names the index has not caught up with. It renames nothing.
