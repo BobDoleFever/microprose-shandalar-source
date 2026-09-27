@@ -166,7 +166,8 @@ At each checkpoint, dump known global state from both sides and compare:
       (emulator).
 - [x] `Magic_QueryCardAttribute` codes `0x32`, `0x33`, `0x34`, `0x3c` = power, toughness, abilities, card id (emulator).
 - [x] `Magic_ResolveSpellStack` is really `Magic_IsManaSource`: true for cards that tap for mana (emulator).
-- [ ] Name `g_PlayerHandCardCount` (a bit set tested with `& 0x224`).
+- [x] `g_PlayerHandCardCount` is `g_DuelModeFlags`; `g_DefendingPlayer` is `g_TurnPlayer` (write watches, emulator).
+- [ ] Name `g_CurrentTurnPhase` (MAGIC.EXE `0x6a49e0`): a player index that did not change in the scripted game.
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

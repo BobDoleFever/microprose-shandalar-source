@@ -40,7 +40,7 @@ void Ai_SaveGameState(void)
   FID_conflict__memcpy(&DAT_0050ecf0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00511ef0,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_00510e30,&DAT_00681ee0,2000);
-  DAT_00514eb8 = g_DuelPlayerManaPool;
+  DAT_00514eb8 = g_DuelModeFlags;
   DAT_0050f9b8 = g_DuelCombatPhaseState;
   DAT_006c1214 = g_DuelCombatPhaseState;
   DAT_00514528 = DAT_0066644c;
@@ -92,7 +92,7 @@ void FUN_0042fea9(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_0050ecf0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00511ef0,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_00510e30,2000);
-  g_DuelPlayerManaPool = DAT_00514eb8;
+  g_DuelModeFlags = DAT_00514eb8;
   g_DuelCombatPhaseState = DAT_0050f9b8;
   DAT_0066644c = DAT_00514528;
   DAT_006826b0 = DAT_005126d4;
@@ -140,7 +140,7 @@ void FUN_00430120(void)
   FID_conflict__memcpy(&DAT_005109b0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00514640,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_0050b388,&DAT_00681ee0,2000);
-  DAT_0050f838 = g_DuelPlayerManaPool;
+  DAT_0050f838 = g_DuelModeFlags;
   DAT_00513578 = g_DuelCombatPhaseState;
   DAT_0050f9bc = DAT_0066644c;
   DAT_0050f9c8 = DAT_006826b0;
@@ -185,7 +185,7 @@ void FUN_00430367(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_005109b0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00514640,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_0050b388,2000);
-  g_DuelPlayerManaPool = DAT_0050f838;
+  g_DuelModeFlags = DAT_0050f838;
   g_DuelCombatPhaseState = DAT_00513578;
   DAT_0066644c = DAT_0050f9bc;
   DAT_006826b0 = DAT_0050f9c8;
@@ -472,7 +472,7 @@ int FUN_00430911(int player_id)
           }
         }
       }
-      if ((DAT_006c121c == 0) && (g_DuelDefendingPlayer == arg_1)) {
+      if ((DAT_006c121c == 0) && (g_TurnPlayer == arg_1)) {
         match_count = FUN_004313b9(arg_1,match_count);
       }
       DAT_005ef980 = 0;
@@ -504,7 +504,7 @@ int FUN_00430911(int player_id)
             uval_3 = uval_3 & 0xffffbfff;
             local_2c = (int)((val_1 + 3) * (uval_3 + 4)) / 2;
             if ((((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
-               (g_DuelDefendingPlayer == slot_idx)) {
+               (g_TurnPlayer == slot_idx)) {
               local_2c = local_2c + -1;
             }
             if ((uval_2 & 0x80) != 0) {
@@ -522,7 +522,7 @@ int FUN_00430911(int player_id)
             if ((uval_2 & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_DuelDefendingPlayer == arg_1)) &&
+            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_TurnPlayer == arg_1)) &&
                (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
               uval_2 = Duel_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
@@ -1511,11 +1511,11 @@ uint32_t FUN_00432e04(void)
   uVar56 = FileIo_ReadDataBlock(&DAT_006668f0,8);
   uVar57 = FileIo_ReadDataBlock(&DAT_0068f228,8);
   uVar58 = FileIo_ReadDataBlock(&DAT_00666730,0x10);
-  uVar59 = FileIo_ReadDataBlock(&g_DuelDefendingPlayer,4);
+  uVar59 = FileIo_ReadDataBlock(&g_TurnPlayer,4);
   uVar60 = FileIo_ReadDataBlock(&DAT_0068ed00,4);
   uVar61 = FileIo_ReadDataBlock(&g_DuelDamageAccumulator,4);
   uVar62 = FileIo_ReadDataBlock(&g_DuelCombatPhaseState,4);
-  uVar63 = FileIo_ReadDataBlock(&g_DuelPlayerManaPool,4);
+  uVar63 = FileIo_ReadDataBlock(&g_DuelModeFlags,4);
   uVar64 = FileIo_ReadDataBlock(&DAT_006826b0,4);
   uVar65 = FileIo_ReadDataBlock(&DAT_00666440,4);
   uVar66 = FileIo_ReadDataBlock(&DAT_006669e8,4);
@@ -1524,13 +1524,13 @@ uint32_t FUN_00432e04(void)
   uVar69 = FileIo_ReadDataBlock(&DAT_0068ed04,4);
   uVar70 = FileIo_ReadDataBlock(&g_DuelTargetPlayer,4);
   uVar71 = FileIo_ReadDataBlock(&g_DuelTargetCardSlot,4);
-  uVar72 = FileIo_ReadDataBlock(&g_DuelActivePlayer,4);
-  uVar73 = FileIo_ReadDataBlock(&g_DuelActiveCardSlot,4);
+  uVar72 = FileIo_ReadDataBlock(&g_EventSourcePlayer,4);
+  uVar73 = FileIo_ReadDataBlock(&g_EventSourceSlot,4);
   uVar74 = FileIo_ReadDataBlock(&DAT_00681ecc,4);
   uVar75 = FileIo_ReadDataBlock(&DAT_0068ee64,4);
   uVar76 = FileIo_ReadDataBlock(&DAT_00690310,4);
   uVar77 = FileIo_ReadDataBlock(&DAT_0068ecfc,4);
-  uVar78 = FileIo_ReadDataBlock(&g_DuelCurrentTurnPhase,4);
+  uVar78 = FileIo_ReadDataBlock(&g_CardEventResult,4);
   uVar79 = FileIo_ReadDataBlock(&DAT_0066aadc,4);
   uVar80 = FileIo_ReadDataBlock(&DAT_0066aae0,4);
   uVar81 = FileIo_ReadDataBlock(&DAT_0066641c,4);

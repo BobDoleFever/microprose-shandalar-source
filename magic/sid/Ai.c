@@ -51,7 +51,7 @@ void Ai_SaveGameState(void)
   memcpy(&DAT_0054f7b8,&g_AiSelectedAbilityIndex,0x80);
   memcpy(&DAT_005529b8,&DAT_007006e0,2000);
   memcpy(&DAT_005518f8,&DAT_006a5750,2000);
-  DAT_00555980 = g_PlayerHandCardCount;
+  DAT_00555980 = g_DuelModeFlags;
   DAT_00550480 = g_ScWillyScore;
   DAT_006498f0 = g_ScWillyScore;
   DAT_00554ff0 = DAT_0068a708;
@@ -108,7 +108,7 @@ void Ai_RestoreGameState(void)
   memcpy(&g_AiSelectedAbilityIndex,&DAT_0054f7b8,0x80);
   memcpy(&DAT_007006e0,&DAT_005529b8,2000);
   memcpy(&DAT_006a5750,&DAT_005518f8,2000);
-  g_PlayerHandCardCount = DAT_00555980;
+  g_DuelModeFlags = DAT_00555980;
   g_ScWillyScore = DAT_00550480;
   DAT_0068a708 = DAT_00554ff0;
   g_ActiveBattlefieldFlag = DAT_0055319c;
@@ -160,7 +160,7 @@ void Ai_PushBoardState(void)
   memcpy(&DAT_00551478,&g_AiSelectedAbilityIndex,0x80);
   memcpy(&DAT_00555108,&DAT_007006e0,2000);
   memcpy(&DAT_0054be50,&DAT_006a5750,2000);
-  DAT_00550300 = g_PlayerHandCardCount;
+  DAT_00550300 = g_DuelModeFlags;
   DAT_00554040 = g_ScWillyScore;
   DAT_00550484 = DAT_0068a708;
   DAT_00550490 = g_ActiveBattlefieldFlag;
@@ -209,7 +209,7 @@ void Ai_PopBoardState(void)
   memcpy(&g_AiSelectedAbilityIndex,&DAT_00551478,0x80);
   memcpy(&DAT_007006e0,&DAT_00555108,2000);
   memcpy(&DAT_006a5750,&DAT_0054be50,2000);
-  g_PlayerHandCardCount = DAT_00550300;
+  g_DuelModeFlags = DAT_00550300;
   g_ScWillyScore = DAT_00554040;
   DAT_0068a708 = DAT_00550484;
   g_ActiveBattlefieldFlag = DAT_00550490;
@@ -541,7 +541,7 @@ int Ai_SimulateCombatRound(int x)
           }
         }
       }
-      if ((DAT_00676c8c == 0) && (g_DefendingPlayer == x)) {
+      if ((DAT_00676c8c == 0) && (g_TurnPlayer == x)) {
         local_c = Ai_ChooseAttackers(x,local_c);
       }
       g_CardSlot_PowerBonus = 0;
@@ -574,7 +574,7 @@ int Ai_SimulateCombatRound(int x)
             u_score = u_score & 0xffffbfff;
             local_2c = (int)((status + 3) * (u_score + 4)) / 2;
             if ((((&g_CardSlot_Flags)[local_1c * 0x120 + local_8 * 0x5b20] & 0x10) != 0) &&
-               (g_DefendingPlayer == local_8)) {
+               (g_TurnPlayer == local_8)) {
               local_2c = local_2c + -1;
             }
             if ((u_temp & 0x80) != 0) {
@@ -592,7 +592,7 @@ int Ai_SimulateCombatRound(int x)
             if ((u_temp & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_00676c8c == 0) && (local_8 != x)) && (g_DefendingPlayer == x)) &&
+            if ((((DAT_00676c8c == 0) && (local_8 != x)) && (g_TurnPlayer == x)) &&
                (((&g_CardSlot_Flags)[local_1c * 0x120 + local_8 * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
               u_temp = Magic_QueryCardAttribute(local_8, local_1c, 0x34, 0xffffffff);
@@ -8954,7 +8954,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
   int local_c;
   int local_8;
   
-  if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+  if ((g_DuelModeFlags._1_1_ & 4) == 0) {
     (&g_AiSelectedTargetCard)[arg2] = (&g_AiSelectedTargetCard)[arg2] + arg3;
     local_10 = 0;
     for (local_1c = 0; (int)local_1c < 7; local_1c = local_1c + 1) {
@@ -14170,7 +14170,7 @@ void Ai_Subsystem_004c7aa8(int x)
     *(int *)(&DAT_00559738 + local_c * 4) = 0;
   }
   Ai_Subsystem_004c7be5(x,0);
-  if ((g_IsAiThinking == 1) || (g_DefendingPlayer == g_CurrentTurnPhase)) {
+  if ((g_IsAiThinking == 1) || (g_TurnPlayer == g_CurrentTurnPhase)) {
     for (local_c = 0; local_c < g_AiCombatScoreBuffer; local_c = local_c + 1) {
       (&g_CardSlot_ColorMask)[g_AiCreatureToughnessEval * 0x5b20 + (&g_AiCombatDamageTable)[local_c] * 0x120] =
            (&DAT_005597c0)[local_c * 4];

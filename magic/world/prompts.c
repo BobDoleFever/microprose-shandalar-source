@@ -1686,7 +1686,7 @@ undefined4 Prompts_Load_00415920(int spell_id,int target_id,int flags)
         *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20) = local_c;
         *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20) = local_8;
         (&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] = 1;
-        if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+        if ((g_DuelModeFlags._1_1_ & 4) == 0) {
           uVar1 = Ai_Subsystem_004cc56d
                             (spell_id,spell_id,target_id,local_c,local_8,s_Tap__Untap__00519860,
                              (*(uint *)(&g_CardSlot_Flags + local_8 * 0x120 + local_c * 0x5b20) &
@@ -2382,7 +2382,7 @@ undefined4 Prompts_Load_00416f1a(int spell_id,int target_id,int flags)
   int local_10;
   int local_8;
   
-  if ((flags == 0x74) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+  if ((flags == 0x74) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     bVar1 = false;
     Ai_GetOpponentPlayerScore(0);
     for (local_10 = 0; local_10 < 2; local_10 = local_10 + 1) {
@@ -2409,7 +2409,7 @@ undefined4 Prompts_Load_00416f1a(int spell_id,int target_id,int flags)
   else {
     if ((flags == 0x6c) &&
        (((g_EventSourceSlot == target_id && (g_EventSourcePlayer == spell_id)) &&
-        ((g_PlayerHandCardCount._1_1_ & 2) != 0)))) {
+        ((g_DuelModeFlags._1_1_ & 2) != 0)))) {
       bVar1 = false;
       do {
         Pic_Subsystem_00424500(s_prompts_txt_00519918,s_DEATH_WARD_0051990c);
@@ -2430,7 +2430,7 @@ undefined4 Prompts_Load_00416f1a(int spell_id,int target_id,int flags)
         }
       } while ((g_ActivePlayer != 1) && (!bVar1));
     }
-    if ((flags == 0x71) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+    if ((flags == 0x71) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
       iVar3 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -3036,7 +3036,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
     else if (((spell_id == g_CurrentTurnPhase) ||
-             ((spell_id == g_ActivePlayerPriority && (g_DefendingPlayer == g_CurrentTurnPhase)))) &&
+             ((spell_id == g_ActivePlayerPriority && (g_TurnPlayer == g_CurrentTurnPhase)))) &&
             (iVar3 = Rules_ParseFilter_0040360b
                                (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,spell_id,2,2,0,0xff,0,0,0,0,0,
                                 -1,-1,0xffffffff,0xffffffff,2,0,0), iVar3 != 0)) {
@@ -3182,7 +3182,7 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
         uVar2 = 99;
       }
     }
-    else if ((DAT_006b2d3c == -1) || (g_DefendingPlayer != g_CurrentTurnPhase)) {
+    else if ((DAT_006b2d3c == -1) || (g_TurnPlayer != g_CurrentTurnPhase)) {
       Ai_GetOpponentPlayerScore(0);
       uVar2 = 1;
     }
@@ -3375,7 +3375,7 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
         uVar2 = 99;
       }
     }
-    else if ((DAT_006b2d3c == -1) || (g_DefendingPlayer != g_CurrentTurnPhase)) {
+    else if ((DAT_006b2d3c == -1) || (g_TurnPlayer != g_CurrentTurnPhase)) {
       Ai_GetOpponentPlayerScore(0);
       uVar2 = 1;
     }
@@ -3902,7 +3902,7 @@ undefined4 Prompts_Load_0041b98a(int spell_id,int target_id,int flags,int height
     if ((g_ActivePlayerPriority == spell_id) && (height == 0)) {
       uVar2 = 0;
     }
-    else if (((byte)g_PlayerHandCardCount & 4) == 0) {
+    else if (((byte)g_DuelModeFlags & 4) == 0) {
       uVar2 = 1;
     }
     else {
@@ -3913,7 +3913,7 @@ undefined4 Prompts_Load_0041b98a(int spell_id,int target_id,int flags,int height
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
        (g_EventSourcePlayer == spell_id)) {
       g_SpellStackDepth = g_SpellStackDepth + -0x60;
-      if (((byte)g_PlayerHandCardCount & 4) == 0) {
+      if (((byte)g_DuelModeFlags & 4) == 0) {
         Pic_Subsystem_00424500(s_prompts_txt_00519af4,s_HEALING_SALVE_00519ae4);
         iVar3 = Action_ValidateTarget_00405802
                           (spell_id,2,spell_id,0x1000,0,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
@@ -4039,7 +4039,7 @@ undefined4 Prompts_Load_0041b98a(int spell_id,int target_id,int flags,int height
                            spell_id * 0x5b20 +
                            (char)(&g_CardSlot_TurnPlayed)[target_id * 0x120 + spell_id * 0x5b20] * 8
                            );
-        if (((byte)g_PlayerHandCardCount & 4) == 0) {
+        if (((byte)g_DuelModeFlags & 4) == 0) {
           (&g_PlayerCreatureCount)[local_18] =
                (&g_PlayerCreatureCount)[local_18] +
                *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20);
@@ -4092,7 +4092,7 @@ undefined4 Prompts_Load_0041c22f(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     Ai_GetOpponentPlayerScore(0);
-    if (((byte)g_PlayerHandCardCount & 4) == 0) {
+    if (((byte)g_DuelModeFlags & 4) == 0) {
       uVar2 = 1;
     }
     else {
@@ -4108,7 +4108,7 @@ undefined4 Prompts_Load_0041c22f(int spell_id,int target_id,int flags)
   }
   else {
     if ((((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
-        (g_EventSourcePlayer == spell_id)) && (((byte)g_PlayerHandCardCount & 4) != 0)) {
+        (g_EventSourcePlayer == spell_id)) && (((byte)g_DuelModeFlags & 4) != 0)) {
       Pic_Subsystem_00424500(s_prompts_txt_00519b98,s_SAMITE_HEALER_00519b88);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,-1,0xffffffff,0xffffffff,0x20,0
@@ -4125,7 +4125,7 @@ undefined4 Prompts_Load_0041c22f(int spell_id,int target_id,int flags)
       }
     }
     if (flags == 0x71) {
-      if (((byte)g_PlayerHandCardCount & 4) == 0) {
+      if (((byte)g_DuelModeFlags & 4) == 0) {
         local_3d4 = 0;
         local_51c = 0;
         for (local_3d0 = 0; local_3d0 < 2; local_3d0 = local_3d0 + 1) {
@@ -4230,7 +4230,7 @@ undefined4 Prompts_Load_0041c8e1(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     Ai_GetOpponentPlayerScore(0);
-    if ((((byte)g_PlayerHandCardCount & 4) == 0) ||
+    if ((((byte)g_DuelModeFlags & 4) == 0) ||
        (iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,DAT_006ff2e0,0xffffffff,
                              0xffffffff,0xffffffff,0x20,0,0), iVar1 == 0)) {
       uVar2 = 0;
@@ -4594,7 +4594,7 @@ void Prompts_Load_0046fa40(int spell_id,int target_id,int flags)
         }
       }
     }
-    if (((g_PlayerHandCardCount & 0x800 << ((byte)spell_id & 0x1f)) == 0) || (flags != 0)) {
+    if (((g_DuelModeFlags & 0x800 << ((byte)spell_id & 0x1f)) == 0) || (flags != 0)) {
       if ((spell_id == 1) && (g_IsAiThinking != 1)) {
         if (target_id == 0) {
           Ai_Subsystem_004cc56d(1,1,local_1c,-1,-1,s_to_discard__00525b94,0);

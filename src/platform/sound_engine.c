@@ -84,15 +84,15 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
 extern int32_t g_DuelDebugModeFlag;
@@ -376,7 +376,7 @@ undefined4 Sound_PlaySpatialSound(int x, int y, int width, int height)
            *(uint *)(&g_DuelCardSlot_Flags + y * 0x120 + x * 0x5b20) | 0x10;
       DAT_0068f0f4 = height;
     }
-    if (((width == 0x7f) && (g_DuelActiveCardSlot == y)) && (x == g_DuelActivePlayer)) {
+    if (((width == 0x7f) && (g_EventSourceSlot == y)) && (x == g_EventSourcePlayer)) {
       if (((((&g_DuelCardSlot_Subtypes)[y * 0x120 + x * 0x5b20] & 3) == 0) ||
           (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 2) == 0)) &&
          (((&g_DuelCardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) == 0)) {

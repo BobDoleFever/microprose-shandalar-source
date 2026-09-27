@@ -32,7 +32,7 @@ extern int DAT_006a5f4c;
 extern int DAT_006a602f;
 int Pic_Subsystem_004488a0();
 extern int DAT_006ff2e0;
-extern int g_PlayerHandCardCount;
+extern int g_DuelModeFlags;
 extern int g_MasterCardColorTable;
 extern int g_CardSlot_Power;
 extern int DAT_006a5f69;
@@ -119,15 +119,15 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
 extern int32_t g_DuelDebugModeFlag;
@@ -373,12 +373,12 @@ uint Magic_QueryCardAttribute(int player,int slot,int event_code,undefined4 flag
     local_8 = 0;
 LAB_004737a0:
     g_CardEventResult = local_8;
-    if ((DAT_0063ee18 != 0) && (Magic_ScanCards(event_code), (g_PlayerHandCardCount & 0x10000) != 0)) {
-      g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffeffff;
+    if ((DAT_0063ee18 != 0) && (Magic_ScanCards(event_code), (g_DuelModeFlags & 0x10000) != 0)) {
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffeffff;
       *(uint *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) = g_CardEventResult;
-      g_PlayerHandCardCount = g_PlayerHandCardCount | 0x20000;
+      g_DuelModeFlags = g_DuelModeFlags | 0x20000;
       Magic_ScanCards(event_code);
-      g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffdffff;
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffdffff;
     }
     if (event_code == 0x32) {
       if ((int)g_CardEventResult < 0) {
@@ -414,7 +414,7 @@ LAB_004737a0:
      ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 ||
          ((int)uVar1 <= (int)*(short *)(&g_CardSlot_Power + slot * 0x120 + player * 0x5b20))) &&
-        (g_CurrentStepCode == -1)) && ((g_PlayerHandCardCount & 0x204) == 0)))))) {
+        (g_CurrentStepCode == -1)) && ((g_DuelModeFlags & 0x204) == 0)))))) {
     Pic_Subsystem_0044867e(player,slot,2);
     Pic_Subsystem_004488a0();
   }
@@ -693,7 +693,7 @@ int Card_ApplyCombatDamage(int attacker_player,int attacker_slot,int defender_pl
                iVar2 << 0x10 | *(uint *)(&g_MasterCardTypeTable + local_10 * 0x34);
         }
       }
-      g_PlayerHandCardCount = g_PlayerHandCardCount | 2;
+      g_DuelModeFlags = g_DuelModeFlags | 2;
     }
   }
   return iVar1;

@@ -30579,7 +30579,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0068a710,"DAT_0068a710",Label,true,false
 0068a714,"DAT_0068a714",Label,true,false
 0068a718,"DAT_0068a718",Label,true,false
-0068a71c,"g_DefendingPlayer",Label,true,false
+0068a71c,"g_TurnPlayer",Label,true,false
 0068a720,"DAT_0068a720",Label,true,false
 0068a730,"DAT_0068a730",Label,true,false
 0068a734,"DAT_0068a734",Label,true,false
@@ -30789,9 +30789,9 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 006a49fc,"g_ActivePlayer",Label,true,false
 006a4a00,"g_PlayerCreatureCount",Label,true,false
 006a4a04,"DAT_006a4a04",Label,true,false
-006a4a08,"g_PlayerHandCardCount",Label,true,false
-006a4a09,"g_PlayerHandCardCount+1",Label,true,false
-006a4a0a,"g_PlayerHandCardCount+2",Label,true,false
+006a4a08,"g_DuelModeFlags",Label,true,false
+006a4a09,"g_DuelModeFlags+1",Label,true,false
+006a4a0a,"g_DuelModeFlags+2",Label,true,false
 006a4a10,"DAT_006a4a10",Label,true,false
 006a4a14,"DAT_006a4a14",Label,true,false
 006a4a20,"DAT_006a4a20",Label,true,false

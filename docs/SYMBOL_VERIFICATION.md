@@ -300,7 +300,7 @@ hold the stack entry's toughness, original card id, step code and flags are stil
 
 `Magic_IsManaSource` (`0x00474389`, was `Magic_ResolveSpellStack`) is a small predicate that tests two flag
 bits in a card's master record and never touches the stack. It is called by `Magic_TriggerCardEvent` and the step
-handler. Its meaning was found on the emulator (section below): it answers "does this card tap for mana". `g_PlayerHandCardCount`, tested with `& 0x224` in `Magic_TriggerCardEvent`, looks misnamed too.
+handler. Its meaning was found on the emulator (section below): it answers "does this card tap for mana". `g_DuelModeFlags` (was `g_PlayerHandCardCount`), tested with `& 0x224` in `Magic_TriggerCardEvent`, was misnamed too (section below).
 
 
 ### Live result for the spell stack
@@ -412,3 +412,28 @@ So bit `0x1000` marks a card that taps for mana (a land and a mana creature), wh
 for events `0x73`/`0x74` is undone when the card is not a mana source. What bit `1` excludes is not established (no card with
 `0x1000` and bit `1` together was seen). Also learned: the master record's dword at `+0x10` is the card's own
 event-handler function pointer, which `Magic_TriggerCardEvent` calls as `handler(player, slot, event_code)`.
+
+### Globals checked with write watches (emulator, 2026-09-26)
+
+`--watch ADDR:label` logs every change of a guest dword with the writing instruction and its caller. On the scripted
+game (`DUEL.EXE` addresses; the MAGIC.EXE global of the same role in brackets):
+
+| Address | Old name | New name | What the watch showed |
+|---|---|---|---|
+| `0x681eb0` (`0x006a4a08`) | `g_DuelPlayerManaPool` (`g_PlayerHandCardCount`) | `g_DuelModeFlags` | Not a count and not mana: a word of mode bits. See the table below |
+| `0x666458` (`0x0068a71c`) | `g_DuelDefendingPlayer` (`g_DefendingPlayer`) | `g_TurnPlayer` | Flips 0 to 1 just before player 1's `Begin Upkeep` and back to 0 before player 0's; it is the player argument of the per-turn function `0x00426c70`, which stores it on entry. It is the player whose turn it is, first in every `RunTurnStep` pair (player 1's turn shows `RunTurnStep(1, 205)` then `(0, 205)`) |
+| `0x66642c` | `g_DuelCurrentTurnPhase` | `g_CardEventResult` | Holds card ids (56 Elves, 61 Boars, 323 Bees) set inside the card-attribute query and cleared when the saved event context is popped: the twin of the MAGIC.EXE global of that name |
+| `0x68ecb0` | `g_DuelActivePlayer` | `g_EventSourcePlayer` | Set from the first argument of the card-attribute query, saved and restored around it |
+| `0x690c48` | `g_DuelActiveCardSlot` | `g_EventSourceSlot` | Not watched; renamed because the query function stores its second argument in it, next to the player global (static) |
+
+Bits of `g_DuelModeFlags`, from the set and clear sites seen (function addresses are `DUEL.EXE`):
+
+| Bit | Seen |
+|---|---|
+| `0x80` | Set at the start of the main phase, cleared the moment I clicked a card (18.5 s to 43.7 s), set again while waiting to pay (43.75 s to 50.7 s): a player action is awaited |
+| `0x20` | Set and cleared inside the card-playing routine `0x00488662` (605 to 780 times), the routine that calls `Magic_PushSpellStack`; also set on the way into the spell-chain window |
+| `0x2`, `0x4` | 605 exact cycles during the opponent's turn: `0x2` is set (`0x004afd08`) to ask for a state check; `Pic_Subsystem_004475a4` (`0x0046d497`) clears `0x2`, sets `0x4`, runs "Damage prevention", the "Damage Dealing" step and re-checks, then clears `0x4`. The state-based check (damage and death) is requested with `0x2` and running with `0x4` |
+| `0x1`, `0x8`, `0x100` | Written by the turn loop `0x00426c70` and the spell-chain window; meaning not established |
+
+`g_CurrentTurnPhase` (MAGIC.EXE `0x006a49e0`, DUEL.EXE `g_DuelTargetPlayer` `0x00676510`) is used as a player index too, but
+it did not change in this game (it stayed the same value), so it is not renamed yet.

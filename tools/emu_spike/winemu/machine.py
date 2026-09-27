@@ -20,7 +20,7 @@ import struct
 import time as _time
 
 import pefile
-from unicorn import Uc, UC_ARCH_X86, UC_MODE_32, UC_HOOK_CODE, UC_HOOK_MEM_UNMAPPED, UcError
+from unicorn import Uc, UC_ARCH_X86, UC_MODE_32, UC_HOOK_CODE, UC_HOOK_MEM_UNMAPPED, UC_HOOK_MEM_WRITE, UcError
 from unicorn.x86_const import (UC_X86_REG_EAX, UC_X86_REG_ESP, UC_X86_REG_EIP, UC_X86_REG_FS,
                                UC_X86_REG_GDTR, UC_X86_REG_DS, UC_X86_REG_ES, UC_X86_REG_SS,
                                UC_X86_REG_CS, UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI,
@@ -670,6 +670,30 @@ class Machine:
                     break
 
         self.uc.hook_add(UC_HOOK_CODE, hook, begin=addr, end=addr)
+
+    def add_watch(self, addr, label, sink=None):
+        """Log every write that changes the dword at `addr`: old and new value, the writing instruction's address and
+        the return address of the function it is in (when it has a standard frame)."""
+        sink = sink if sink is not None else self.log
+        state = {"v": None}
+
+        def hook(uc, access, address, size, value, user):
+            old = self.r32(addr)
+            sh = 8 * (address - addr)                            # merge a byte/word write into the dword
+            mask = ((1 << (8 * size)) - 1) << sh if 0 <= sh < 32 else 0
+            new = (old & ~mask & 0xFFFFFFFF) | ((value << sh) & mask)
+            eip = uc.reg_read(UC_X86_REG_EIP)
+            ebp = uc.reg_read(UC_X86_REG_EBP)
+            try:
+                caller = self.r32(ebp + 4)
+            except Exception:
+                caller = 0
+            if new == old:
+                return
+            sink(f"   [watch {self.vt:8.3f}s] {label}: {old:#x} -> {new:#x} "
+                 f"({size}-byte write at {address:#x}) eip=0x{eip:08x} caller=0x{caller:08x}")
+
+        self.uc.hook_add(UC_HOOK_MEM_WRITE, hook, begin=addr, end=addr + 3)
 
     def report_threads(self):
         """Where every thread is (a spinning thread shows up as the same eip range on each report)."""

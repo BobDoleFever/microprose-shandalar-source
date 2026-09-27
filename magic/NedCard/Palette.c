@@ -9318,7 +9318,7 @@ uint Palette_Subsystem_004a99a0(int player)
     local_28 = 0;
     local_9c = 0;
     local_34 = 2;
-    if (((g_PlayerHandCardCount & 1) == 0) && (0 < (&DAT_006b3008)[player] + DAT_00627a14)) {
+    if (((g_DuelModeFlags & 1) == 0) && (0 < (&DAT_006b3008)[player] + DAT_00627a14)) {
       for (local_2c = 0; (int)local_2c < (int)(&g_PlayerActiveCardCount)[player];
           local_2c = local_2c + 1) {
         if (*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_2c * 0x120) != -1) {
@@ -9472,7 +9472,7 @@ uint Palette_Subsystem_004a99a0(int player)
         if ((local_9c == 0) && (local_10 == 0)) {
           return local_44;
         }
-        g_PlayerHandCardCount = g_PlayerHandCardCount | 1;
+        g_DuelModeFlags = g_DuelModeFlags | 1;
       }
     }
     local_1c = 0;

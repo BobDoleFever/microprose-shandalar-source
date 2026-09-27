@@ -3882,7 +3882,7 @@ int32_t FUN_004f7869(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x71) {
       color_idx = 0;
-      player_idx = g_DefendingPlayer;
+      player_idx = g_TurnPlayer;
       while (color_idx < 2) {
         loop_idx = 0;
         for (slot_idx = 0; slot_idx < (int)(&g_PlayerActiveCardCount)[player_idx]; slot_idx = slot_idx + 1
@@ -3896,7 +3896,7 @@ int32_t FUN_004f7869(int player_id,int card_slot,int event_type)
           Prompts_Load_0046fa40(player_idx,1,0);
         }
         color_idx = color_idx + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           player_idx = player_idx + 1;
         }
         else {
@@ -4119,7 +4119,7 @@ int32_t FUN_004f7eee(int player_id,int card_slot,int event_type)
   else {
     if (arg_3 == 0x71) {
       card_idx = 0;
-      slot_idx = g_DefendingPlayer;
+      slot_idx = g_TurnPlayer;
       while (card_idx < 2) {
         player_idx = 0;
         for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[slot_idx]; match_count = match_count + 1)
@@ -4137,7 +4137,7 @@ int32_t FUN_004f7eee(int player_id,int card_slot,int event_type)
         Pic_Subsystem_00452276(slot_idx);
         FUN_004f823a(slot_idx,player_idx);
         card_idx = card_idx + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           slot_idx = slot_idx + 1;
         }
         else {
@@ -4178,7 +4178,7 @@ int32_t FUN_004f8031(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x71) {
       card_idx = 0;
-      slot_idx = g_DefendingPlayer;
+      slot_idx = g_TurnPlayer;
       while (card_idx < 2) {
         for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[slot_idx]; match_count = match_count + 1)
         {
@@ -4203,7 +4203,7 @@ int32_t FUN_004f8031(int player_id,int card_slot,int event_type)
         Pic_Subsystem_00452276(slot_idx);
         FUN_004f823a(slot_idx,7);
         card_idx = card_idx + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           slot_idx = slot_idx + 1;
         }
         else {
@@ -5481,7 +5481,7 @@ int32_t Prompts_Load_004fa586(int spell_id,int target_id,int flags)
                                             target_id * 0x120 + spell_id * 0x5b20));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x48 / (longlong)val_1);
       if ((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) {
-        if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+        if ((g_DuelModeFlags._1_1_ & 4) == 0) {
           player_idx = Font_DrawString(spell_id,7,1);
           player_idx = player_idx + -1;
           arg_19 = 0;
@@ -5652,7 +5652,7 @@ int32_t Prompts_Load_004fa586(int spell_id,int target_id,int flags)
         *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
              g_TurnCounter;
         if (g_IsAiThinking == 1) {
-          if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+          if ((g_DuelModeFlags._1_1_ & 4) == 0) {
             arg_3 = 5;
             iVar10 = 1;
             val_1 = Util_GetRandomNumber((g_TurnCounter + 1) / 2);
@@ -7424,7 +7424,7 @@ int32_t Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
        (g_EventSourcePlayer == spell_id)) {
-      if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+      if ((g_DuelModeFlags._1_1_ & 4) == 0) {
         g_TurnCounter = 0;
         Ai_CalcManaRequirement_004ba890(spell_id,1,-1);
         if (g_ActivePlayer == 1) {

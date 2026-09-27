@@ -51,7 +51,7 @@ void Ai_SaveGameState(void)
   memcpy(&g_AiSavedSelectedAbilityIndex,&g_AiSelectedAbilityIndex,0x80);
   memcpy(&g_AiSavedCardDisplayOrder_Player,&g_CardDisplayOrder_Player,2000);
   memcpy(&g_AiSavedCardDisplayOrder_Slot,&g_CardDisplayOrder_Slot,2000);
-  g_AiSavedPlayerHandCardCount = g_PlayerHandCardCount;
+  g_AiSavedPlayerHandCardCount = g_DuelModeFlags;
   g_AiSavedScWillyScore = g_ScWillyScore;
   g_AiSavedScWillyScoreAlt = g_ScWillyScore;
   g_AiSavedDefendingPlayer = DAT_0068a708;
@@ -108,7 +108,7 @@ void Ai_RestoreGameState(void)
   memcpy(&g_AiSelectedAbilityIndex,&g_AiSavedSelectedAbilityIndex,0x80);
   memcpy(&g_CardDisplayOrder_Player,&g_AiSavedCardDisplayOrder_Player,2000);
   memcpy(&g_CardDisplayOrder_Slot,&g_AiSavedCardDisplayOrder_Slot,2000);
-  g_PlayerHandCardCount = g_AiSavedPlayerHandCardCount;
+  g_DuelModeFlags = g_AiSavedPlayerHandCardCount;
   g_ScWillyScore = g_AiSavedScWillyScore;
   DAT_0068a708 = g_AiSavedDefendingPlayer;
   g_ActiveBattlefieldFlag = g_AiSavedActiveBattlefieldFlag;
@@ -160,7 +160,7 @@ void Ai_PushBoardState(void)
   memcpy(&DAT_00551478,&g_AiSelectedAbilityIndex,0x80);
   memcpy(&DAT_00555108,&g_CardDisplayOrder_Player,2000);
   memcpy(&DAT_0054be50,&g_CardDisplayOrder_Slot,2000);
-  DAT_00550300 = g_PlayerHandCardCount;
+  DAT_00550300 = g_DuelModeFlags;
   DAT_00554040 = g_ScWillyScore;
   DAT_00550484 = DAT_0068a708;
   DAT_00550490 = g_ActiveBattlefieldFlag;
@@ -209,7 +209,7 @@ void Ai_PopBoardState(void)
   memcpy(&g_AiSelectedAbilityIndex,&DAT_00551478,0x80);
   memcpy(&g_CardDisplayOrder_Player,&DAT_00555108,2000);
   memcpy(&g_CardDisplayOrder_Slot,&DAT_0054be50,2000);
-  g_PlayerHandCardCount = DAT_00550300;
+  g_DuelModeFlags = DAT_00550300;
   g_ScWillyScore = DAT_00554040;
   DAT_0068a708 = DAT_00550484;
   g_ActiveBattlefieldFlag = DAT_00550490;
@@ -541,7 +541,7 @@ int Ai_SimulateCombatRound(int x)
           }
         }
       }
-      if ((DAT_00676c8c == 0) && (g_DefendingPlayer == x)) {
+      if ((DAT_00676c8c == 0) && (g_TurnPlayer == x)) {
         match_count = Ai_ChooseAttackers(x,match_count);
       }
       g_CardSlot_PowerBonus = 0;
@@ -574,7 +574,7 @@ int Ai_SimulateCombatRound(int x)
             u_score = u_score & 0xffffbfff;
             local_2c = (int)((status + 3) * (u_score + 4)) / 2;
             if ((((&g_CardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
-               (g_DefendingPlayer == slot_idx)) {
+               (g_TurnPlayer == slot_idx)) {
               local_2c = local_2c + -1;
             }
             if ((u_temp & 0x80) != 0) {
@@ -592,7 +592,7 @@ int Ai_SimulateCombatRound(int x)
             if ((u_temp & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_00676c8c == 0) && (slot_idx != x)) && (g_DefendingPlayer == x)) &&
+            if ((((DAT_00676c8c == 0) && (slot_idx != x)) && (g_TurnPlayer == x)) &&
                (((&g_CardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
               u_temp = Magic_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
@@ -8954,7 +8954,7 @@ int Ai_CalcManaRequirement_PayCost(int player, int color_index, int required_amo
   int match_count;
   int slot_idx;
   
-  if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+  if ((g_DuelModeFlags._1_1_ & 4) == 0) {
     (&g_AiSelectedTargetCard)[arg2] = (&g_AiSelectedTargetCard)[arg2] + arg3;
     card_idx = 0;
     for (color_idx = 0; (int)color_idx < 7; color_idx = color_idx + 1) {
@@ -14170,7 +14170,7 @@ void Ai_Subsystem_004c7aa8(int x)
     *(int *)(&DAT_00559738 + match_count * 4) = 0;
   }
   Ai_Subsystem_004c7be5(x,0);
-  if ((g_IsAiThinking == 1) || (g_DefendingPlayer == g_CurrentTurnPhase)) {
+  if ((g_IsAiThinking == 1) || (g_TurnPlayer == g_CurrentTurnPhase)) {
     for (match_count = 0; match_count < g_AiCombatScoreBuffer; match_count = match_count + 1) {
       (&g_CardSlot_ColorMask)[g_AiCreatureToughnessEval * 0x5b20 + (&g_AiCombatDamageTable)[match_count] * 0x120] =
            (&DAT_005597c0)[match_count * 4];

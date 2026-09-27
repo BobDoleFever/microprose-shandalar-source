@@ -183,10 +183,10 @@ int32_t Glue_Subsystem_004d0cdb(int player_id,int card_slot,int event_type)
   int32_t uval_4;
   uint8_t slot_idx;
   
-  if (((((g_DuelCurrentEventCode == 0xc9) || (hBitmap == 199)) && (card_slot == g_DuelActiveCardSlot)) &&
-      ((hDIBSection == g_DuelActivePlayer && (hDIBSection == g_DuelDefendingPlayer)))) && (DAT_00681ec4 == hDIBSection)) {
+  if (((((g_DuelCurrentEventCode == 0xc9) || (hBitmap == 199)) && (card_slot == g_EventSourceSlot)) &&
+      ((hDIBSection == g_EventSourcePlayer && (hDIBSection == g_TurnPlayer)))) && (DAT_00681ec4 == hDIBSection)) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((hBitmap == 0x7e) || (hBitmap == 199)) {
       if (g_DuelDebugModeFlag != 1) {
@@ -240,10 +240,10 @@ int32_t Glue_Subsystem_004d0cdb(int player_id,int card_slot,int event_type)
              *(uint32_t *)(&g_DuelCardSlot_Counters +
                       *(int *)(&g_DuelCardSlot_AttachedAuraSlot + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x120 +
                       *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x5b20) |
-             1 << ((uint8_t)g_DuelDefendingPlayer & 0x1f);
+             1 << ((uint8_t)g_TurnPlayer & 0x1f);
       }
     }
-    if ((card_slot == g_DuelActiveCardSlot) && (hDIBSection == g_DuelActivePlayer)) {
+    if ((card_slot == g_EventSourceSlot) && (hDIBSection == g_EventSourcePlayer)) {
       flag_1 = true;
     }
     else {
@@ -277,7 +277,7 @@ int32_t Glue_Subsystem_004d109a(int player_id,int card_slot,int event_type)
   uint32_t *card_slot;
   int card_idx;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     flag_1 = Duel_RandomRange(5);
     *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0x800 << (flag_1 & 0x1f);
   }
@@ -450,18 +450,18 @@ int32_t Glue_Subsystem_004d109a(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if ((((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
+    if ((((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
        (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x20) == 0)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase |
+      g_CardEventResult = g_CardEventResult |
                      *(uint32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x1ff800;
-      uval_5 = g_DuelCurrentTurnPhase;
+      uval_5 = g_CardEventResult;
       uval_3 = Duel_ColorMaskToIndex((uint8_t)((*(uint32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) &
                                   0x1ff800) >> 10));
       FUN_00464d69(hDIBSection,card_slot,uval_3);
-      g_DuelCurrentTurnPhase = uval_5;
+      g_CardEventResult = uval_5;
     }
-    if (((hBitmap == 0x8c) && (card_slot == g_DuelActiveCardSlot)) &&
-       ((hDIBSection == g_DuelActivePlayer && (val_2 = Duel_DrawString(hDIBSection,7,1), val_2 != 0)))) {
+    if (((hBitmap == 0x8c) && (card_slot == g_EventSourceSlot)) &&
+       ((hDIBSection == g_EventSourcePlayer && (val_2 = Duel_DrawString(hDIBSection,7,1), val_2 != 0)))) {
       DAT_00693410 = DAT_00693410 | 0x100;
     }
     if ((hBitmap == 0x22) || (hBitmap == 199)) {
@@ -533,7 +533,7 @@ int32_t FUN_004535af(int player_id,int card_slot,int event_type)
   int card_idx;
   int match_count;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = Card_IsValidCardId(0x38f);
     val_1 = Deck_AddCardToDeck(1 - hDIBSection,val_1);
     if (val_1 != -1) {
@@ -574,7 +574,7 @@ int32_t FUN_004535af(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if (((hBitmap == 0x77) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+    if (((hBitmap == 0x77) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
       Duel_DrawCardSprite(1 - hDIBSection,*(int *)(&g_DuelCardSlot_Counters + hDIBSection * 0x5b20 + card_slot * 0x120),4);
     }
     uval_2 = 0;
@@ -819,7 +819,7 @@ int32_t Glue_Subsystem_004d29da(int spell_id,int target_id,int flags)
   uint8_t match_count [4];
   int32_t slot_idx;
   
-  if (((flags == 0x6c) && (g_DuelActiveCardSlot == target_id)) && (g_DuelActivePlayer == spell_id)) {
+  if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     Catalog_ParseCsvLine(s_prompts_txt_004f8834,s_VESUVAN_DOPPELGANGER_004f881c);
     val_1 = Action_ValidateTarget_0041e2a2
                       (spell_id,2,2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
@@ -865,10 +865,10 @@ int32_t Glue_Subsystem_004d2c17(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    g_CardEventResult = g_CardEventResult | 1;
   }
-  if ((((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) || (hBitmap == 199)) {
+  if ((((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) || (hBitmap == 199)) {
     if (g_DuelDebugModeFlag != 1) {
       Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Mimic_004f8840);
       FUN_0044a5a4(hDIBSection,card_slot);
@@ -894,13 +894,13 @@ int32_t Glue_Subsystem_004d2c17(int player_id,int card_slot,int event_type)
 int32_t FUN_004544c7(int player,int card_slot)
 
 {
-  if ((((*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == player)) &&
+  if ((((*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)) &&
+      ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == player)) &&
      (*(int *)(&DAT_004ff590 +
-              *(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34) ==
+              *(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34) ==
       0x197)) {
-    *(int32_t *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) = 0;
+    *(int32_t *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) = 0;
   }
   return 0;
 }
@@ -917,15 +917,15 @@ int32_t FUN_004544c7(int player,int card_slot)
 int32_t FUN_004545c9(int player,int card_slot)
 
 {
-  if ((((*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == player)) &&
+  if ((((*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)) &&
+      ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == player)) &&
      (((&g_DuelMasterCardTable)
        [*(int *)(&g_DuelCardSlot_CardId +
-                *(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x120 +
-                (char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] * 0x5b20) * 0x34
+                *(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x120 +
+                (char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] * 0x5b20) * 0x34
        ] & 2) != 0)) {
-    *(int32_t *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) = 0;
+    *(int32_t *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) = 0;
   }
   return 0;
 }
@@ -942,15 +942,15 @@ int32_t FUN_004545c9(int player,int card_slot)
 int32_t FUN_0045470b(int player,int card_slot)
 
 {
-  if ((((*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == player)) &&
+  if ((((*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)) &&
+      ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == player)) &&
      (((&g_DuelMasterCardTable)
        [*(int *)(&g_DuelCardSlot_CardId +
-                *(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x120 +
-                (char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] * 0x5b20) * 0x34
+                *(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x120 +
+                (char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] * 0x5b20) * 0x34
        ] & 0x40) != 0)) {
-    *(int32_t *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) = 0;
+    *(int32_t *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) = 0;
   }
   return 0;
 }
@@ -970,9 +970,9 @@ int32_t FUN_0045484d(int player_id,int card_slot,int event_type)
   FUN_0045470b(hDIBSection,card_slot);
   if ((((hBitmap == 0x78) && (DAT_0068ecfc == card_slot)) && (DAT_00690310 == hDIBSection)) &&
      (((&g_DuelMasterCardTable)
-       [*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34] & 0x40) != 0)
+       [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] & 0x40) != 0)
      ) {
-    g_DuelCurrentTurnPhase = 1;
+    g_CardEventResult = 1;
   }
   return 0;
 }
@@ -991,10 +991,10 @@ int32_t FUN_004548e3(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x78) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x78) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = Duel_QueryCardAttribute(DAT_00690310,DAT_0068ecfc,0x32,card_slot);
     if (1 < val_1) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   return 0;
@@ -1013,9 +1013,9 @@ int32_t FUN_00454948(int player_id,int card_slot,int event_type)
 
 {
   if ((((hBitmap == 0x78) && (DAT_0068ecfc == card_slot)) && (DAT_00690310 == hDIBSection)) &&
-     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34]
+     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34]
       == '\0')) {
-    g_DuelCurrentTurnPhase = 1;
+    g_CardEventResult = 1;
   }
   return 0;
 }
@@ -1035,9 +1035,9 @@ int32_t FUN_004549c8(int player_id,int card_slot,int event_type)
   int val_1;
   
   if (((hBitmap == 0x78) && (card_slot == DAT_0068ecfc)) && (hDIBSection == DAT_00690310)) {
-    val_1 = Duel_QueryCardAttribute(g_DuelActivePlayer,g_DuelActiveCardSlot,0x32,0xffffffff);
+    val_1 = Duel_QueryCardAttribute(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff);
     if (2 < val_1) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   return 0;
@@ -1058,11 +1058,11 @@ int32_t FUN_00454a2b(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((hBitmap == 0x78) && (card_slot == DAT_0068ecfc)) && (hDIBSection == DAT_00690310)) &&
-     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34]
+     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34]
       != '\0')) {
-    uval_1 = Duel_QueryCardAttribute(g_DuelActivePlayer,g_DuelActiveCardSlot,0x34,0xffffffff);
+    uval_1 = Duel_QueryCardAttribute(g_EventSourcePlayer,g_EventSourceSlot,0x34,0xffffffff);
     if ((uval_1 & 0x20) == 0) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   return 0;
@@ -1081,19 +1081,19 @@ int32_t FUN_00454ac9(int player_id,int card_slot,int event_type)
 
 {
   if (((((hBitmap == 0x6e) &&
-        (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)) &&
-      (((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-       (*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)))) &&
-     (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
-    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_DuelActivePlayer;
-    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelActiveCardSlot;
+        (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)) &&
+      (((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+       (*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)))) &&
+     (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
+    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_EventSourcePlayer;
+    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_EventSourceSlot;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (g_DuelActiveCardSlot == card_slot)) &&
-     ((g_DuelActivePlayer == hDIBSection &&
+  if (((g_DuelCurrentEventCode == 0xd7) && (g_EventSourceSlot == card_slot)) &&
+     ((g_EventSourcePlayer == hDIBSection &&
       (((&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1 && (DAT_00681ec4 == hDIBSection)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       Palette_Color_0049ae00((int)(char)(&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20],1,0);
@@ -1116,19 +1116,19 @@ int32_t FUN_00454cdc(int player_id,int card_slot,int event_type)
 
 {
   if (((((hBitmap == 0x6e) &&
-        (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)) &&
-      (((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-       (*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)))) &&
-     (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
-    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_DuelActivePlayer;
-    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelActiveCardSlot;
+        (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)) &&
+      (((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+       (*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)))) &&
+     (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
+    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_EventSourcePlayer;
+    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_EventSourceSlot;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer &&
+  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer &&
       (((&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1 && (hDIBSection == DAT_00681ec4)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       (&DAT_006668f0)[(char)(&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20]] =
@@ -1153,19 +1153,19 @@ int32_t FUN_00454eec(int player_id,int card_slot,int event_type)
 
 {
   if (((((hBitmap == 0x6e) &&
-        (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)) &&
-      (((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-       (*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)))) &&
-     (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
-    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_DuelActivePlayer;
-    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelActiveCardSlot;
+        (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)) &&
+      (((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+       (*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)))) &&
+     (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
+    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_EventSourcePlayer;
+    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_EventSourceSlot;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer &&
+  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer &&
       (((&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1 && (DAT_00681ec4 == hDIBSection)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       (&DAT_006668f0)[(char)(&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20]] =
@@ -1196,19 +1196,19 @@ int32_t FUN_004550fc(int player_id,int card_slot,int event_type)
   int val_4;
   
   if (((((hBitmap == 0x6e) &&
-        (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)) &&
-      (((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-       (*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)))) &&
-     (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
-    (&g_DuelCardSlot_Controller)[hDIBSection * 0x5b20 + card_slot * 0x120] = (uint8_t)g_DuelActivePlayer;
-    *(int *)(&DAT_006826ec + hDIBSection * 0x5b20 + card_slot * 0x120) = g_DuelActiveCardSlot;
+        (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)) &&
+      (((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+       (*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)))) &&
+     (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
+    (&g_DuelCardSlot_Controller)[hDIBSection * 0x5b20 + card_slot * 0x120] = (uint8_t)g_EventSourcePlayer;
+    *(int *)(&DAT_006826ec + hDIBSection * 0x5b20 + card_slot * 0x120) = g_EventSourceSlot;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer &&
+  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer &&
       (((&g_DuelCardSlot_Controller)[hDIBSection * 0x5b20 + card_slot * 0x120] != -1 && (hDIBSection == DAT_00681ec4)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       cVar1 = (&g_DuelCardSlot_Controller)[hDIBSection * 0x5b20 + card_slot * 0x120];
@@ -1250,9 +1250,9 @@ int32_t FUN_004550fc(int player_id,int card_slot,int event_type)
 int32_t FUN_004554bc(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x33) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
+  if ((((hBitmap == 0x33) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
      (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x10) == 0)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 3;
+    g_CardEventResult = g_CardEventResult + 3;
   }
   return 0;
 }
@@ -1269,10 +1269,10 @@ int32_t FUN_004554bc(int player_id,int card_slot,int event_type)
 int32_t FUN_00455521(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x33) || (hBitmap == 0x32)) && (card_slot == g_DuelActiveCardSlot)) &&
-     (((hDIBSection == g_DuelActivePlayer && (((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 8) != 0)) &&
-      (hDIBSection != g_DuelDefendingPlayer)))) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 2;
+  if ((((hBitmap == 0x33) || (hBitmap == 0x32)) && (card_slot == g_EventSourceSlot)) &&
+     (((hDIBSection == g_EventSourcePlayer && (((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 8) != 0)) &&
+      (hDIBSection != g_TurnPlayer)))) {
+    g_CardEventResult = g_CardEventResult + 2;
   }
   return 0;
 }
@@ -1289,7 +1289,7 @@ int32_t FUN_00455521(int player_id,int card_slot,int event_type)
 int32_t FUN_0045559e(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x77) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) &&
+  if ((((hBitmap == 0x77) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) &&
      (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) == 0)) {
     card_slot = Deck_AddCardToDeck(hDIBSection,*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + hDIBSection * 0x5b20));
     if (card_slot != -1) {
@@ -1298,16 +1298,16 @@ int32_t FUN_0045559e(int player_id,int card_slot,int event_type)
       *(int32_t *)(&g_DuelCardSlot_Abilities2 + card_slot * 0x120 + hDIBSection * 0x5b20) = 0x8000000;
     }
   }
-  if (((g_DuelActiveCardSlot == card_slot) && (g_DuelActivePlayer == hDIBSection)) &&
+  if (((g_EventSourceSlot == card_slot) && (g_EventSourcePlayer == hDIBSection)) &&
      (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0)) {
     if (hBitmap == 0x34) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x20;
+      g_CardEventResult = g_CardEventResult | 0x20;
     }
     if (hBitmap == 0x32) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 4;
+      g_CardEventResult = g_CardEventResult + 4;
     }
     if (hBitmap == 0x33) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
     if (hBitmap == 0x22) {
       *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -1331,10 +1331,10 @@ int32_t FUN_00455740(int player_id,int card_slot,int event_type)
 {
   if ((((hBitmap == 0x21) && (g_DuelCombatPhaseState == 0x1a)) &&
       (((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) == 0)) &&
-     (((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-      (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)))) {
-    (&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] = (uint8_t)hDIBSection;
-    *(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) = card_slot;
+     (((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+      (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)))) {
+    (&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] = (uint8_t)hDIBSection;
+    *(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) = card_slot;
   }
   return 0;
 }
@@ -1353,15 +1353,15 @@ int32_t FUN_00455838(int player_id,int card_slot,int event_type)
 {
   if ((((hBitmap == 0x21) && (g_DuelCombatPhaseState == 0x1a)) &&
       (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x10) == 0)) &&
-     ((((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1)) &&
+     ((((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+       (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1)) &&
       (((&g_DuelMasterCardTable)
         [*(int *)(&g_DuelCardSlot_CardId +
-                 *(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x120 +
-                 (char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] * 0x5b20) *
+                 *(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x120 +
+                 (char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] * 0x5b20) *
          0x34] & 0x40) != 0)))) {
-    (&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] = (uint8_t)hDIBSection;
-    *(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) = card_slot;
+    (&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] = (uint8_t)hDIBSection;
+    *(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) = card_slot;
   }
   return 0;
 }
@@ -1388,14 +1388,14 @@ int32_t Glue_Subsystem_004d420e(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (((flags == 0x21) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == spell_id)) &&
-     (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == target_id)) {
+      ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == spell_id)) &&
+     (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == target_id)) {
     *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) =
          *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) | 1;
   }
   if (flags == 0x73) {
     if ((((&g_DuelCardSlot_Counters)[target_id * 0x120 + spell_id * 0x5b20] & 1) == 0) ||
-       (((uint8_t)g_DuelPlayerManaPool & 4) == 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) == 0)) {
       uval_1 = 0;
     }
     else {
@@ -1408,7 +1408,7 @@ int32_t Glue_Subsystem_004d420e(int spell_id,int target_id,int flags)
   }
   else {
     if (((flags == 0x6d) && (((&g_DuelCardSlot_Counters)[target_id * 0x120 + spell_id * 0x5b20] & 1) != 0)) &&
-       (((uint8_t)g_DuelPlayerManaPool & 4) != 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) != 0)) {
       if (((&DAT_006826cd)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) == 0) {
         target_idx = 0;
       }
@@ -1454,7 +1454,7 @@ int32_t Glue_Subsystem_004d420e(int spell_id,int target_id,int flags)
       *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) =
            *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) & 0xfffffffe;
     }
-    if ((((flags == 0x77) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) &&
+    if ((((flags == 0x77) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) &&
        (val_2 = Deck_AddCardToDeck(spell_id,DAT_0068f2d0), val_2 != -1)) {
       *(int32_t *)(&DAT_006826c0 + spell_id * 0x5b20 + val_2 * 0x120) =
            *(int32_t *)(&g_DuelCardSlot_CardId + target_id * 0x120 + spell_id * 0x5b20);
@@ -1489,7 +1489,7 @@ int32_t Glue_Subsystem_004d4762(int spell_id,int target_id,int flags)
   int match_count;
   int slot_idx;
   
-  if (((flags == 0x6c) && (g_DuelActiveCardSlot == target_id)) && (g_DuelActivePlayer == spell_id)) {
+  if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     g_DuelDamageAccumulator = g_DuelDamageAccumulator + 0x30;
   }
   if ((flags == 0x25) && (0 < (int)(&g_DuelPlayerLifeTotals)[spell_id])) {
@@ -1553,10 +1553,10 @@ int32_t Glue_Subsystem_004d4762(int spell_id,int target_id,int flags)
       }
     }
   }
-  if (((flags == 0x8a) && (g_DuelActiveCardSlot == target_id)) && (g_DuelActivePlayer == spell_id)) {
+  if (((flags == 0x8a) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     DAT_0069340c = DAT_0069340c + 0x18;
   }
-  if (((flags == 0x8b) && (g_DuelActiveCardSlot == target_id)) && (g_DuelActivePlayer == spell_id)) {
+  if (((flags == 0x8b) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     DAT_0069340c = DAT_0069340c + -0x18;
   }
   if ((flags == 199) && (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 2) != 0)) {
@@ -1582,22 +1582,22 @@ int32_t Glue_Subsystem_004d4762(int spell_id,int target_id,int flags)
 int32_t FUN_004564bd(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x80) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection)) &&
-     ((*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot &&
+  if ((((hBitmap == 0x80) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
+      ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection)) &&
+     ((*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot &&
       (0 < *(short *)(&DAT_006826d0 + card_slot * 0x120 + hDIBSection * 0x5b20))))) {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = 1;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer && (0 < *(short *)(&DAT_006826d0 + card_slot * 0x120 + hDIBSection * 0x5b20)))))
+  if (((g_DuelCurrentEventCode == 0xd7) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer && (0 < *(short *)(&DAT_006826d0 + card_slot * 0x120 + hDIBSection * 0x5b20)))))
   {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = 1;
   }
-  if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_DuelActiveCardSlot)) &&
-      ((hDIBSection == g_DuelActivePlayer && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0))))
+  if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_EventSourceSlot)) &&
+      ((hDIBSection == g_EventSourcePlayer && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0))))
      && (DAT_00681ec4 == hDIBSection)) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((hBitmap == 0x7e) || (hBitmap == 199)) {
       *(short *)(&g_DuelCardSlot_Power + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -1626,7 +1626,7 @@ int32_t FUN_00456711(int player_id,int card_slot,int event_type)
   int32_t uval_1;
   int val_2;
   
-  if (((hBitmap == 0x6c) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+  if (((hBitmap == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
@@ -1640,7 +1640,7 @@ int32_t FUN_00456711(int player_id,int card_slot,int event_type)
   }
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,7,1), val_2 != 0)) {
-      if (g_DuelDefendingPlayer == hDIBSection) {
+      if (g_TurnPlayer == hDIBSection) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,0,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -1718,7 +1718,7 @@ int32_t FUN_00456711(int player_id,int card_slot,int event_type)
     }
     else {
       if (hBitmap == 0x8f) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if (hBitmap == 199) {
         if (hDIBSection == g_DuelTargetCardSlot) {
@@ -1757,7 +1757,7 @@ int32_t FUN_00456dc4(int player_id,int card_slot,int event_type)
   if (hBitmap == 1) {
     *(int *)(&DAT_0068f330 + hDIBSection * 0x20) = *(int *)(&DAT_0068f330 + hDIBSection * 0x20) + 1;
   }
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + hDIBSection * 0x5b20 + card_slot * 0x120) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + hDIBSection * 0x5b20 + card_slot * 0x120);
@@ -1771,7 +1771,7 @@ int32_t FUN_00456dc4(int player_id,int card_slot,int event_type)
   }
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,4,1), val_2 != 0)) {
-      if (hDIBSection == g_DuelDefendingPlayer) {
+      if (hDIBSection == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,4,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -1837,7 +1837,7 @@ int32_t FUN_00456dc4(int player_id,int card_slot,int event_type)
     }
     else {
       if ((hBitmap == 0x8f) && (*(int *)(&DAT_0068f2f0 + hDIBSection * 0x20) != 0)) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if (hBitmap == 199) {
         if (hDIBSection == g_DuelTargetCardSlot) {
@@ -1878,7 +1878,7 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
   if (hBitmap == 1) {
     *(int *)(&DAT_0068f330 + hDIBSection * 0x20) = *(int *)(&DAT_0068f330 + hDIBSection * 0x20) + 1;
   }
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
@@ -1893,7 +1893,7 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,4,1), uval_1 = DAT_0068ed04, val_2 != 0)) {
       g_DuelTurnCounter = 0;
-      if (hDIBSection == g_DuelDefendingPlayer) {
+      if (hDIBSection == g_TurnPlayer) {
         if (((hDIBSection == g_DuelTargetCardSlot) ||
             ((*(uint32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) & 0xff0000) == 0x30000)) ||
            (DAT_0066643c != 1)) {
@@ -1973,8 +1973,8 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
       val_2 = val_2 - *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20);
     }
     else {
-      if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_DuelActiveCardSlot)) &&
-          ((hDIBSection == g_DuelActivePlayer && ((&g_DuelCardSlot_Counters)[card_slot * 0x120 + hDIBSection * 0x5b20] != '\0')))) &&
+      if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_EventSourceSlot)) &&
+          ((hDIBSection == g_EventSourcePlayer && ((&g_DuelCardSlot_Counters)[card_slot * 0x120 + hDIBSection * 0x5b20] != '\0')))) &&
          (hDIBSection == DAT_00681ec4)) {
         if (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) < 4) {
           *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
@@ -1983,7 +1983,7 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
         }
         else {
           if (hBitmap == 0x7d) {
-            g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+            g_CardEventResult = g_CardEventResult | 2;
           }
           if ((hBitmap == 0x7e) || (hBitmap == 199)) {
             Duel_DrawCardSprite(hDIBSection,card_slot,2);
@@ -2016,8 +2016,8 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
 int32_t FUN_00457b2f(int player,int card_slot)
 
 {
-  if ((player == g_DuelActivePlayer) &&
-     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34]
+  if ((player == g_EventSourcePlayer) &&
+     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34]
       == '\x04')) {
     Duel_DrawCardSprite(player,card_slot,1);
   }
@@ -2154,26 +2154,26 @@ int32_t FUN_00457fdc(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   char cVar2;
   
-  if (((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     cVar2 = Duel_GetCardColorOverride(hDIBSection,card_slot,1);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x800 << (cVar2 - 1U & 0x1f);
-    uval_1 = g_DuelCurrentTurnPhase;
+    g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
+    uval_1 = g_CardEventResult;
     FUN_00464d69(hDIBSection,card_slot,1);
-    g_DuelCurrentTurnPhase = uval_1;
+    g_CardEventResult = uval_1;
   }
   if ((((hBitmap == 0x6e) &&
-       (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-      ((*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == -1 &&
-       (((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection &&
-        (*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)))))) &&
-     (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
+       (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+      ((*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == -1 &&
+       (((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection &&
+        (*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)))))) &&
+     (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = 1;
   }
-  if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_DuelActiveCardSlot)) &&
-      ((hDIBSection == g_DuelActivePlayer && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0))))
+  if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (card_slot == g_EventSourceSlot)) &&
+      ((hDIBSection == g_EventSourcePlayer && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0))))
      && (hDIBSection == DAT_00681ec4)) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((hBitmap == 0x7e) || (hBitmap == 199)) {
       FUN_00467e37(hDIBSection,card_slot);
@@ -2205,11 +2205,11 @@ int32_t FUN_00458271(int player_id,int card_slot,int event_type)
   bool bVar4;
   int slot_idx;
   
-  if (((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     cVar1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,4);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x800 << (cVar1 - 1U & 0x1f);
+    g_CardEventResult = g_CardEventResult | 0x800 << (cVar1 - 1U & 0x1f);
   }
-  if (((hBitmap == 0x32) || (hBitmap == 0x33)) && ((card_slot == g_DuelActiveCardSlot && (hDIBSection == g_DuelActivePlayer))))
+  if (((hBitmap == 0x32) || (hBitmap == 0x33)) && ((card_slot == g_EventSourceSlot && (hDIBSection == g_EventSourcePlayer))))
   {
     val_3 = Duel_GetCardColorOverride(hDIBSection,card_slot,5);
     bVar4 = *(int *)(&DAT_0068ef50 + val_3 * 4 + (1 - hDIBSection) * 0x20) != 0;
@@ -2225,7 +2225,7 @@ int32_t FUN_00458271(int player_id,int card_slot,int event_type)
       }
     }
     if (bVar4) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
   }
   return 0;
@@ -2330,9 +2330,9 @@ int32_t FUN_00458616(int player_id,int card_slot,int event_type)
       *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = val_1;
     }
   }
-  if ((((hBitmap == 0x32) || (hBitmap == 0x33)) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer))
+  if ((((hBitmap == 0x32) || (hBitmap == 0x33)) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer))
   {
-    if (hDIBSection == g_DuelDefendingPlayer) {
+    if (hDIBSection == g_TurnPlayer) {
       *(uint32_t *)(&g_DuelCardSlot_DisplayIndex +
                *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x120 +
                (char)(&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] * 0x5b20) =
@@ -2398,8 +2398,8 @@ int32_t Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
     (&g_DuelCardSlot_Controller)[target_id * 0x120 + spell_id * 0x5b20] = (uint8_t)spell_id;
     *(int *)(&DAT_006826ec + target_id * 0x120 + spell_id * 0x5b20) = slot_idx;
   }
-  if ((((flags == 0x32) || (flags == 0x33)) && (target_id == g_DuelActiveCardSlot)) &&
-     (spell_id == g_DuelActivePlayer)) {
+  if ((((flags == 0x32) || (flags == 0x33)) && (target_id == g_EventSourceSlot)) &&
+     (spell_id == g_EventSourcePlayer)) {
     if (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 4) == 0) {
       *(uint32_t *)(&g_DuelCardSlot_DisplayIndex +
                *(int *)(&DAT_006826ec + target_id * 0x120 + spell_id * 0x5b20) * 0x120 +
@@ -2518,8 +2518,8 @@ int32_t Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
        *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20] = 0;
     }
     if (((flags == 0x22) || (flags == 199)) &&
-       ((target_id == g_DuelActiveCardSlot &&
-        ((spell_id == g_DuelActivePlayer &&
+       ((target_id == g_EventSourceSlot &&
+        ((spell_id == g_EventSourcePlayer &&
          (((&DAT_006826e5)[target_id * 0x120 + spell_id * 0x5b20] & 0x40) != 0)))))) {
       *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) =
            *(uint32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) & 0xffffbfff;
@@ -2542,9 +2542,9 @@ int32_t Glue_Subsystem_004d7065(int spell_id,int target_id,int flags)
 int32_t FUN_00458ec1(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x32) || (hBitmap == 0x33)) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer))
+  if ((((hBitmap == 0x32) || (hBitmap == 0x33)) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer))
   {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + *(int *)(&DAT_0068ee70 + (7 - hDIBSection) * 4);
+    g_CardEventResult = g_CardEventResult + *(int *)(&DAT_0068ee70 + (7 - hDIBSection) * 4);
   }
   return 0;
 }
@@ -2589,8 +2589,8 @@ int32_t FUN_00458f18(int player_id,int card_slot,int event_type)
 int32_t FUN_0045902a(int32_t hDIBSection,int32_t card_slot,int event_type)
 
 {
-  if (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == hBitmap) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+  if (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == hBitmap) {
+    g_CardEventResult = g_CardEventResult + 1;
   }
   return 0;
 }
@@ -2635,14 +2635,14 @@ int32_t FUN_00459143(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if ((card_slot == g_DuelActiveCardSlot) && (hDIBSection == g_DuelActivePlayer)) {
+  if ((card_slot == g_EventSourceSlot) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,3);
     if (0 < *(int *)(&DAT_0068ef50 + val_1 * 4 + hDIBSection * 0x20)) {
       if (hBitmap == 0x32) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+        g_CardEventResult = g_CardEventResult + 1;
       }
       if (hBitmap == 0x33) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 2;
+        g_CardEventResult = g_CardEventResult + 2;
       }
     }
   }
@@ -2665,13 +2665,13 @@ int32_t Glue_Subsystem_004d7a1b(int player_id,int card_slot,int event_type)
   uint32_t arg_2_00;
   int arg_3_00;
   
-  if (((card_slot == g_DuelActiveCardSlot) && (hDIBSection == g_DuelActivePlayer)) && (0 < (int)(&DAT_0068ef54)[hDIBSection * 8]))
+  if (((card_slot == g_EventSourceSlot) && (hDIBSection == g_EventSourcePlayer)) && (0 < (int)(&DAT_0068ef54)[hDIBSection * 8]))
   {
     if (hBitmap == 0x32) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
     if (hBitmap == 0x33) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
   }
   if (hBitmap == 1) {
@@ -2679,7 +2679,7 @@ int32_t Glue_Subsystem_004d7a1b(int player_id,int card_slot,int event_type)
     *(int *)(&DAT_0068f320 + val_1 * 4 + hDIBSection * 0x20) =
          *(int *)(&DAT_0068f320 + val_1 * 4 + hDIBSection * 0x20) + 2;
   }
-  if (((hBitmap == 0x70) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x70) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = 1;
     arg_2_00 = Duel_GetCardModifiedPower(hDIBSection,card_slot,1);
     val_1 = Duel_DrawString(hDIBSection,arg_2_00,val_1);
@@ -2694,7 +2694,7 @@ int32_t Glue_Subsystem_004d7a1b(int player_id,int card_slot,int event_type)
           g_DuelHumanPlayerIndex = -1;
         }
         else {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+          g_CardEventResult = g_CardEventResult + 1;
         }
       }
     }
@@ -2739,7 +2739,7 @@ int32_t Glue_Subsystem_004d7bb5(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x70) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+  if (((hBitmap == 0x70) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
     val_1 = Duel_DrawString(hDIBSection,7,1);
     if (val_1 != 0) {
       val_1 = Ai_Subsystem_004cc56d
@@ -2750,7 +2750,7 @@ int32_t Glue_Subsystem_004d7bb5(int player_id,int card_slot,int event_type)
           g_DuelHumanPlayerIndex = -1;
         }
         else {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+          g_CardEventResult = g_CardEventResult + 1;
         }
       }
     }
@@ -2774,7 +2774,7 @@ int32_t FUN_004593fd(int player_id,int card_slot,int event_type,int arg_4,int ar
   int val_2;
   int32_t uval_3;
   
-  if (((hBitmap == 0x73) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) &&
+  if (((hBitmap == 0x73) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
      (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) == 0)) {
     flag_1 = (&DAT_006826e0)[card_slot * 0x120 + hDIBSection * 0x5b20] == '\x02' &&
             (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 2) != 0 &&
@@ -2794,13 +2794,13 @@ int32_t FUN_004593fd(int player_id,int card_slot,int event_type,int arg_4,int ar
     uval_3 = 0;
   }
   else {
-    if (((hBitmap == 0x6d) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) &&
+    if (((hBitmap == 0x6d) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
        (Ai_CalcManaRequirement_004ba890(hDIBSection,arg_4,arg_5), g_DuelHumanPlayerIndex != 1)) {
       DAT_006664ec = 1;
       *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
            *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) + 1;
     }
-    if ((hBitmap == 0x72) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) {
+    if ((hBitmap == 0x72) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
       *(int32_t *)
        (&g_DuelCardSlot_Counters +
        *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x5b20 +
@@ -2909,7 +2909,7 @@ int32_t FUN_00459918(int player_id,int card_slot,int event_type)
     *(int *)(&DAT_0068f324 + hDIBSection * 0x20) = *(int *)(&DAT_0068f324 + hDIBSection * 0x20) + 1;
   }
   if (hBitmap == 0x73) {
-    if (((g_DuelTargetCardSlot == hDIBSection) && (g_DuelDefendingPlayer == hDIBSection)) &&
+    if (((g_DuelTargetCardSlot == hDIBSection) && (g_TurnPlayer == hDIBSection)) &&
        ((*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0 && (g_DuelCombatPhaseState < 0x1a)))) {
       uval_1 = 0;
     }
@@ -2938,7 +2938,7 @@ int32_t FUN_00459918(int player_id,int card_slot,int event_type)
       else {
         DAT_0068ed04 = 1;
       }
-      if (g_DuelDefendingPlayer == hDIBSection) {
+      if (g_TurnPlayer == hDIBSection) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,1,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -3030,7 +3030,7 @@ int32_t FUN_00459f68(int player_id,int card_slot,int event_type)
   int32_t uval_1;
   int val_2;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
@@ -3047,7 +3047,7 @@ int32_t FUN_00459f68(int player_id,int card_slot,int event_type)
   }
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,1,1), val_2 != 0)) {
-      if (hDIBSection == g_DuelDefendingPlayer) {
+      if (hDIBSection == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,1,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -3125,7 +3125,7 @@ int32_t FUN_00459f68(int player_id,int card_slot,int event_type)
     }
     else {
       if ((hBitmap == 0x8f) && (*(int *)(&DAT_0068f2e4 + hDIBSection * 0x20) != 0)) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if ((hBitmap == 0x22) || (hBitmap == 199)) {
         *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
@@ -3156,7 +3156,7 @@ int32_t FUN_0045a5e9(int player_id,int card_slot,int event_type)
   if (hBitmap == 1) {
     *(int *)(&DAT_0068f32c + hDIBSection * 0x20) = *(int *)(&DAT_0068f32c + hDIBSection * 0x20) + 1;
   }
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
@@ -3170,7 +3170,7 @@ int32_t FUN_0045a5e9(int player_id,int card_slot,int event_type)
   }
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,3,1), val_2 != 0)) {
-      if (hDIBSection == g_DuelDefendingPlayer) {
+      if (hDIBSection == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,3,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -3246,7 +3246,7 @@ int32_t FUN_0045a5e9(int player_id,int card_slot,int event_type)
     }
     else {
       if ((hBitmap == 0x8f) && (*(int *)(&DAT_0068f2ec + hDIBSection * 0x20) != 0)) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if (hBitmap == 199) {
         if (hDIBSection == g_DuelTargetCardSlot) {
@@ -3285,7 +3285,7 @@ int32_t FUN_0045ac7e(int player_id,int card_slot,int event_type)
   if (hBitmap == 1) {
     *(int *)(&DAT_0068f328 + hDIBSection * 0x20) = *(int *)(&DAT_0068f328 + hDIBSection * 0x20) + 1;
   }
-  if (((hBitmap == 0x6c) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+  if (((hBitmap == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
     *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) = 0;
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
@@ -3299,7 +3299,7 @@ int32_t FUN_0045ac7e(int player_id,int card_slot,int event_type)
   }
   else {
     if ((hBitmap == 0x6d) && (val_2 = Duel_DrawString(hDIBSection,2,1), val_2 != 0)) {
-      if (g_DuelDefendingPlayer == hDIBSection) {
+      if (g_TurnPlayer == hDIBSection) {
         Ai_CalcManaRequirement_004ba890(hDIBSection,2,-1);
         if (g_DuelTurnCounter < 1) {
           g_DuelHumanPlayerIndex = 1;
@@ -3366,7 +3366,7 @@ int32_t FUN_0045ac7e(int player_id,int card_slot,int event_type)
     }
     else {
       if ((hBitmap == 0x8f) && (*(int *)(&DAT_0068f2e8 + hDIBSection * 0x20) != 0)) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if (hBitmap == 199) {
         if (g_DuelTargetCardSlot == hDIBSection) {
@@ -3618,10 +3618,10 @@ int32_t Glue_Subsystem_004d9f7e(int spell_id,int target_id,int flags)
     if ((flags == 0x22) || (flags == 199)) {
       *(int32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) = 0;
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + 0x78;
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + -0x78;
     }
     uval_2 = 0;
@@ -3823,10 +3823,10 @@ int32_t Glue_Subsystem_004da858(int spell_id,int target_id,int flags)
        *(int *)(&g_DuelCardSlot_AttachedAuraSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120] = 0;
       slot_idx = 0;
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + 0x30;
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + -0x30;
     }
   }
@@ -4031,7 +4031,7 @@ int32_t Glue_Subsystem_004db024(int spell_id,int target_id,int flags)
   
   if (flags == 0x73) {
     if ((*(uint32_t *)(&g_DuelCardSlot_Flags + spell_id * 0x5b20 + target_id * 0x120) & 0x20010) == 0) {
-      if ((spell_id == g_DuelDefendingPlayer) || (0x1a < g_DuelCombatPhaseState)) {
+      if ((spell_id == g_TurnPlayer) || (0x1a < g_DuelCombatPhaseState)) {
         slot_idx = 0;
       }
       else {
@@ -4064,7 +4064,7 @@ int32_t Glue_Subsystem_004db024(int spell_id,int target_id,int flags)
            *(uint32_t *)(&g_DuelCardSlot_Flags + spell_id * 0x5b20 + target_id * 0x120) & 0xffffffef;
     }
     if (((flags == 0x15) && (*(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) != -1))
-       && (spell_id != g_DuelDefendingPlayer)) {
+       && (spell_id != g_TurnPlayer)) {
       *(uint32_t *)(&g_DuelCardSlot_Flags +
                *(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
                (char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] * 0x5b20) =
@@ -4077,7 +4077,7 @@ int32_t Glue_Subsystem_004db024(int spell_id,int target_id,int flags)
            (int)(char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120];
     }
     if (((flags == 0x1f) && (*(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) != -1))
-       && ((spell_id != g_DuelDefendingPlayer &&
+       && ((spell_id != g_TurnPlayer &&
            (((&g_DuelCardSlot_Flags)
              [*(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
               (char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] * 0x5b20] & 0x40) == 0)))
@@ -4161,10 +4161,10 @@ bool FUN_0045cb9e(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (g_DuelActiveCardSlot == card_slot)) &&
-        ((hDIBSection == g_DuelActivePlayer && (DAT_0068eeac != 0)))) && (hDIBSection == DAT_00681ec4)) {
+    if (((((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) && (g_EventSourceSlot == card_slot)) &&
+        ((hDIBSection == g_EventSourcePlayer && (DAT_0068eeac != 0)))) && (hDIBSection == DAT_00681ec4)) {
       if (hBitmap == 0x7d) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+        g_CardEventResult = g_CardEventResult | 2;
       }
       if ((hBitmap == 0x7e) || (hBitmap == 199)) {
         FUN_00467e37(hDIBSection,card_slot);
@@ -4195,7 +4195,7 @@ int32_t FUN_0045d064(int player_id,int card_slot,int event_type)
   int val_3;
   int slot_idx;
   
-  if (((hBitmap == 0x1a) && (g_DuelDefendingPlayer == hDIBSection)) &&
+  if (((hBitmap == 0x1a) && (g_TurnPlayer == hDIBSection)) &&
      (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 4) != 0)) {
     val_2 = 1 - hDIBSection;
     flag_1 = true;
@@ -4363,10 +4363,10 @@ int32_t Glue_Subsystem_004dba1c(int spell_id,int target_id,int flags)
       [*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + spell_id * 0x5b20 + target_id * 0x120) * 0x5b20 +
        *(int *)(&g_DuelCardSlot_AttachedAuraSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120] = 0;
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + 0xc;
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + -0xc;
     }
     uval_1 = 0;
@@ -4742,13 +4742,13 @@ int32_t Glue_Subsystem_004dc9ed(int spell_id,int target_id,int flags)
     uval_3 = 0;
   }
   else {
-    if (((target_id == g_DuelActiveCardSlot) && (spell_id == g_DuelActivePlayer)) &&
+    if (((target_id == g_EventSourceSlot) && (spell_id == g_EventSourcePlayer)) &&
        (((&g_DuelCardSlot_Flags)[spell_id * 0x5b20 + target_id * 0x120] & 0x44) != 0)) {
       if (flags == 0x32) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+        g_CardEventResult = g_CardEventResult + 1;
       }
       if (flags == 0x33) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + -2;
+        g_CardEventResult = g_CardEventResult + -2;
       }
     }
     if ((flags == 0x6d) &&
@@ -4960,12 +4960,12 @@ int32_t Glue_Subsystem_004dce51(int spell_id,int target_id,int flags)
       *(int *)(&DAT_00666730 + (1 - spell_id) * 4) =
            *(int *)(&DAT_00666730 + (1 - spell_id) * 4) + -2;
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) &&
-       ((spell_id == g_DuelActivePlayer && (val_1 = Duel_DrawString(spell_id,3,1), val_1 != 0)))) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) &&
+       ((spell_id == g_EventSourcePlayer && (val_1 = Duel_DrawString(spell_id,3,1), val_1 != 0)))) {
       DAT_0069340c = DAT_0069340c + 0xc;
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) &&
-       ((spell_id == g_DuelActivePlayer && (val_1 = Duel_DrawString(spell_id,3,1), val_1 != 0)))) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) &&
+       ((spell_id == g_EventSourcePlayer && (val_1 = Duel_DrawString(spell_id,3,1), val_1 != 0)))) {
       DAT_0069340c = DAT_0069340c + -0xc;
     }
     uval_2 = 0;
@@ -5068,7 +5068,7 @@ uint8_t Glue_Subsystem_004dd632(int spell_id,int target_id,int flags)
   if (flags == 0x73) {
     uval_1 = 0;
     if ((*(uint32_t *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0 &&
-        ((uint8_t)g_DuelPlayerManaPool & 4) != 0) {
+        ((uint8_t)g_DuelModeFlags & 4) != 0) {
       val_2 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,g_DuelTargetCardId,0xffffffff,
                            0xffffffff,0xffffffff,0,0,0);
       if (val_2 == 0) {
@@ -5143,7 +5143,7 @@ int32_t FUN_0045f127(int player_id,int card_slot,int event_type)
   
   if (hBitmap == 0x73) {
     if (((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x20010) == 0) &&
-       (((uint8_t)g_DuelPlayerManaPool & 4) != 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) != 0)) {
       uval_1 = 1;
     }
     else {
@@ -5214,15 +5214,15 @@ int32_t FUN_0045f48c(int player_id,int card_slot,int event_type)
 {
   int slot_idx;
   
-  if (((((g_DuelCurrentEventCode == 0xd3) && (g_DuelActiveCardSlot == card_slot)) && (hDIBSection == g_DuelActivePlayer)) &&
-      ((hDIBSection == DAT_00681ec4 && (hDIBSection == g_DuelDefendingPlayer)))) &&
-     ((hDIBSection == g_DuelActivePlayer &&
+  if (((((g_DuelCurrentEventCode == 0xd3) && (g_EventSourceSlot == card_slot)) && (hDIBSection == g_EventSourcePlayer)) &&
+      ((hDIBSection == DAT_00681ec4 && (hDIBSection == g_TurnPlayer)))) &&
+     ((hDIBSection == g_EventSourcePlayer &&
       (((&g_DuelMasterCardTable)
         [*(int *)(&g_DuelCardSlot_CardId + DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20) * 0x34] & 4) != 0)))
      ) {
     if (hBitmap == 0x7d) {
       if (hDIBSection == g_DuelTargetPlayer) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       else {
         slot_idx = 0;
@@ -5230,10 +5230,10 @@ int32_t FUN_0045f48c(int player_id,int card_slot,int event_type)
           slot_idx = slot_idx + 1;
         }
         if (((int)(&DAT_0068ee78)[hDIBSection] < 8) && (5 < slot_idx)) {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+          g_CardEventResult = g_CardEventResult | 2;
         }
         else {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+          g_CardEventResult = g_CardEventResult | 1;
         }
       }
     }
@@ -5258,8 +5258,8 @@ int32_t FUN_0045f5e4(int player_id,int card_slot,int event_type)
 {
   if (((hBitmap == 0x6c) &&
       (((&g_DuelMasterCardTable)
-        [*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34] & 0x40) != 0
-      )) && (hDIBSection != g_DuelActivePlayer)) {
+        [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] & 0x40) != 0
+      )) && (hDIBSection != g_EventSourcePlayer)) {
     *(short *)(&g_DuelCardSlot_Power + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(short *)(&g_DuelCardSlot_Power + card_slot * 0x120 + hDIBSection * 0x5b20) + 1;
     *(short *)(&DAT_006826da + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -5280,7 +5280,7 @@ int32_t FUN_0045f5e4(int player_id,int card_slot,int event_type)
 int32_t FUN_0045f68c(int player,int card_slot)
 
 {
-  if ((card_slot == g_DuelActiveCardSlot) && (player == g_DuelActivePlayer)) {
+  if ((card_slot == g_EventSourceSlot) && (player == g_EventSourcePlayer)) {
     *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x2000;
   }
@@ -5299,9 +5299,9 @@ int32_t FUN_0045f68c(int player,int card_slot)
 int32_t FUN_0045f6dd(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     (hDIBSection == g_DuelDefendingPlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase & 0xffffffdf;
+  if ((((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     (hDIBSection == g_TurnPlayer)) {
+    g_CardEventResult = g_CardEventResult & 0xffffffdf;
   }
   return 0;
 }
@@ -5321,12 +5321,12 @@ int32_t FUN_0045f72a(int player_id,int card_slot,int event_type)
   char cVar1;
   
   if (((&DAT_004ff595)
-       [*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34] == '\x02') &&
+       [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] == '\x02') &&
      (hBitmap == 0x34)) {
     cVar1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,1);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | (1 << (cVar1 - 1U & 0x1f)) + 0x200U;
+    g_CardEventResult = g_CardEventResult | (1 << (cVar1 - 1U & 0x1f)) + 0x200U;
   }
-  if (((hBitmap == 0x77) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+  if (((hBitmap == 0x77) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
     FUN_00467d65(FUN_0045f7f1,-1);
     Duel_UpdateBoardState(0,0xff);
   }
@@ -5390,14 +5390,14 @@ int32_t FUN_0045f892(int player_id,int card_slot,int event_type)
   char cVar1;
   
   if (((&DAT_004ff595)
-       [*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34] == '\x03') &&
-     (((&g_DuelCardSlot_Flags)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] & 2) != 0)) {
+       [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] == '\x03') &&
+     (((&g_DuelCardSlot_Flags)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] & 2) != 0)) {
     if (hBitmap == 0x34) {
       cVar1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,4);
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1 << (cVar1 - 1U & 0x1f);
+      g_CardEventResult = g_CardEventResult | 1 << (cVar1 - 1U & 0x1f);
     }
     if ((hBitmap == 0x32) || (hBitmap == 0x33)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
   }
   return 0;
@@ -5415,20 +5415,20 @@ int32_t FUN_0045f892(int player_id,int card_slot,int event_type)
 int32_t Glue_Subsystem_004de1c0(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 199) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     ((hDIBSection == g_DuelDefendingPlayer &&
+  if ((((hBitmap == 199) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     ((hDIBSection == g_TurnPlayer &&
       ((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x30044) == 0)))) {
     if ((hDIBSection == g_DuelTargetPlayer) && (g_DuelDebugModeFlag != 1)) {
       Ai_Subsystem_004cc56d(hDIBSection,hDIBSection,card_slot,-1,-1,s_Erg_Raiders_take_2_life__004f8b24,0);
     }
     Mem_AllocOrFree_004afd1c(hDIBSection,2,hDIBSection,card_slot);
   }
-  if (((g_DuelCurrentEventCode == 0xcd) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer &&
-      (((hDIBSection == g_DuelDefendingPlayer && (hDIBSection == DAT_00681ec4)) &&
+  if (((g_DuelCurrentEventCode == 0xcd) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer &&
+      (((hDIBSection == g_TurnPlayer && (hDIBSection == DAT_00681ec4)) &&
        ((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x30044) == 0)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       if ((hDIBSection == g_DuelTargetPlayer) && (g_DuelDebugModeFlag != 1)) {
@@ -5455,11 +5455,11 @@ int32_t FUN_0045faf0(int player_id,int card_slot,int event_type)
   int val_1;
   
   if ((((hBitmap == 0x78) && (card_slot == DAT_0068ecfc)) && (hDIBSection == DAT_00690310)) &&
-     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34]
+     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34]
       == '\0')) {
-    g_DuelCurrentTurnPhase = 1;
+    g_CardEventResult = 1;
   }
-  if ((hBitmap == 0x15) && (hDIBSection == g_DuelDefendingPlayer)) {
+  if ((hBitmap == 0x15) && (hDIBSection == g_TurnPlayer)) {
     val_1 = FUN_0048ad82(hDIBSection,card_slot);
     if (val_1 != 0) {
       *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -5468,7 +5468,7 @@ int32_t FUN_0045faf0(int player_id,int card_slot,int event_type)
     }
   }
   if (((hBitmap == 0x22) || (hBitmap == 199)) &&
-     ((hDIBSection == g_DuelDefendingPlayer &&
+     ((hDIBSection == g_TurnPlayer &&
       ((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x20054) == 0)))) {
     Duel_DrawCardSprite(hDIBSection,card_slot,4);
   }
@@ -5491,18 +5491,18 @@ int32_t FUN_0045fc24(int player_id,int card_slot,int event_type)
   int slot_idx;
   
   if ((((hBitmap == 0x6e) &&
-       (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-      ((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection)) &&
-     ((*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot &&
-      (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)))) {
-    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_DuelActivePlayer;
-    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelActiveCardSlot;
+       (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+      ((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection)) &&
+     ((*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot &&
+      (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)))) {
+    (&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] = (uint8_t)g_EventSourcePlayer;
+    *(int *)(&DAT_006826ec + card_slot * 0x120 + hDIBSection * 0x5b20) = g_EventSourceSlot;
   }
-  if (((g_DuelCurrentEventCode == 0xd7) && (g_DuelActiveCardSlot == card_slot)) &&
-     ((g_DuelActivePlayer == hDIBSection &&
+  if (((g_DuelCurrentEventCode == 0xd7) && (g_EventSourceSlot == card_slot)) &&
+     ((g_EventSourcePlayer == hDIBSection &&
       (((&g_DuelCardSlot_Controller)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1 && (DAT_00681ec4 == hDIBSection)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       slot_idx = *(int *)(&g_DuelCardSlot_Counters +
@@ -5547,17 +5547,17 @@ int32_t FUN_0045ffcf(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(uint32_t *)(&g_DuelCardSlot_Flags + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&g_DuelCardSlot_Flags + hDIBSection * 0x5b20 + card_slot * 0x120) | 0x10;
   }
-  if (((hBitmap == 0x82) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x82) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(uint32_t *)(&DAT_006827c8 + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&DAT_006827c8 + hDIBSection * 0x5b20 + card_slot * 0x120) & 0xfffffffc;
   }
-  if (((hBitmap == 0x84) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer &&
-      (((((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) != 0 && (hDIBSection == g_DuelDefendingPlayer))
+  if (((hBitmap == 0x84) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer &&
+      (((((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) != 0 && (hDIBSection == g_TurnPlayer))
        && (hDIBSection == DAT_00681eb4)))))) {
     *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) | 0x10;
@@ -5565,12 +5565,12 @@ int32_t FUN_0045ffcf(int player_id,int card_slot,int event_type)
   if ((hBitmap == 0x88) &&
      (val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,2), *(int *)(&DAT_0068ef50 + val_1 * 4 + hDIBSection * 0x20) < 2))
   {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+    g_CardEventResult = g_CardEventResult | 1;
   }
   if (hBitmap == 1) {
     val_1 = Glue_Subsystem_004dec09(hDIBSection,card_slot,1);
     if (val_1 == 0) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+      g_CardEventResult = g_CardEventResult | 1;
     }
     else {
       *(uint32_t *)(&g_DuelCardSlot_Flags + hDIBSection * 0x5b20 + card_slot * 0x120) =
@@ -5580,13 +5580,13 @@ int32_t FUN_0045ffcf(int player_id,int card_slot,int event_type)
   if ((hBitmap == 0x79) && (*(int *)(&g_DuelCardSlot_DisplayIndex + hDIBSection * 0x5b20 + card_slot * 0x120) == 0)) {
     val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,2);
     if (*(int *)(&DAT_0068ef50 + val_1 * 4 + hDIBSection * 0x20) < 2) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   else {
     if ((((g_DuelCurrentEventCode == 0xdc) &&
-         ((((g_DuelCombatPhaseState == 0x15 && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-          ((DAT_00681ec4 == g_DuelDefendingPlayer &&
+         ((((g_DuelCombatPhaseState == 0x15 && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+          ((DAT_00681ec4 == g_TurnPlayer &&
            (*(int *)(&g_DuelCardSlot_DisplayIndex + hDIBSection * 0x5b20 + card_slot * 0x120) == 0)))))) &&
         (hDIBSection == DAT_00666754)) && (card_slot == DAT_0068edd0)) {
       val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,2);
@@ -5595,7 +5595,7 @@ int32_t FUN_0045ffcf(int player_id,int card_slot,int event_type)
       }
       else {
         if (hBitmap == 0x7d) {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+          g_CardEventResult = g_CardEventResult | 2;
         }
         if (hBitmap == 0x7e) {
           val_1 = Glue_Subsystem_004dec09(hDIBSection,card_slot,0);
@@ -5707,16 +5707,16 @@ int32_t Glue_Subsystem_004dee6b(int player_id,int card_slot,int event_type)
   int val_1;
   int slot_idx;
   
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    g_CardEventResult = g_CardEventResult | 2;
   }
-  if ((card_slot == g_DuelActiveCardSlot) && (hDIBSection == g_DuelActivePlayer)) {
+  if ((card_slot == g_EventSourceSlot) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = FUN_00467cce(hDIBSection,1);
     if (val_1 == 0) {
       Duel_DrawCardSprite(hDIBSection,card_slot,2);
     }
   }
-  if ((((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) || (hBitmap == 199)) {
+  if ((((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) || (hBitmap == 199)) {
     Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,(uint32_t *)s_Pick_a_land__004f8bb8);
     do {
     } while (slot_idx == -1);
@@ -5746,10 +5746,10 @@ int32_t Glue_Subsystem_004dee6b(int player_id,int card_slot,int event_type)
 int32_t FUN_0046074f(int player_id,int card_slot,int event_type)
 
 {
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    g_CardEventResult = g_CardEventResult | 2;
   }
-  if ((((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) || (hBitmap == 199)) {
+  if ((((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) || (hBitmap == 199)) {
     Mem_AllocOrFree_004afd1c(hDIBSection,1,hDIBSection,card_slot);
   }
   return 0;
@@ -6016,14 +6016,14 @@ bool Glue_Subsystem_004df678(int spell_id,int target_id,int flags)
       *(int *)(&DAT_00666738 + (1 - spell_id) * 4) =
            *(int *)(&DAT_00666738 + (1 - spell_id) * 4) + -1;
     }
-    if ((((flags == 199) && (spell_id == g_DuelDefendingPlayer)) && (spell_id == g_DuelTargetCardSlot)) &&
+    if ((((flags == 199) && (spell_id == g_TurnPlayer)) && (spell_id == g_DuelTargetCardSlot)) &&
        ((*(uint32_t *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) & 0x20010) == 0)) {
       g_DuelDamageAccumulator = g_DuelDamageAccumulator + 0x18;
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + 0x30;
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c + -0x30;
     }
     flag_1 = false;
@@ -6325,7 +6325,7 @@ int32_t FUN_00461715(int player_id,int card_slot,int event_type)
   if (hBitmap == 0x79) {
     val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,2);
     if (*(int *)(&DAT_0068ef50 + val_1 * 4 + (1 - hDIBSection) * 0x20) == 0) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   return 0;
@@ -6343,12 +6343,12 @@ int32_t FUN_00461715(int player_id,int card_slot,int event_type)
 int32_t FUN_004617c4(int player_id,int card_slot,int event_type)
 
 {
-  if (((hBitmap == 0x1a) && (hDIBSection != g_DuelDefendingPlayer)) &&
+  if (((hBitmap == 0x1a) && (hDIBSection != g_TurnPlayer)) &&
      ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = 1;
   }
   if ((hBitmap == 0x79) && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) == 0)) {
-    g_DuelCurrentTurnPhase = 1;
+    g_CardEventResult = 1;
   }
   return 0;
 }
@@ -6367,8 +6367,8 @@ int32_t Glue_Subsystem_004e00e7(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((((hBitmap == 0x84) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-      ((((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) != 0 && (hDIBSection == g_DuelDefendingPlayer))))
+  if (((((hBitmap == 0x84) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+      ((((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) != 0 && (hDIBSection == g_TurnPlayer))))
      && (hDIBSection == DAT_00681eb4)) {
     *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) | 0x10;
@@ -6379,21 +6379,21 @@ int32_t Glue_Subsystem_004e00e7(int player_id,int card_slot,int event_type)
     *(int *)(&DAT_0068f328 + hDIBSection * 0x20) = *(int *)(&DAT_0068f328 + hDIBSection * 0x20) + 1;
   }
   FUN_00461715(hDIBSection,card_slot,hBitmap);
-  if (((hBitmap == 0x82) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x82) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(uint32_t *)(&DAT_006827c8 + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&DAT_006827c8 + hDIBSection * 0x5b20 + card_slot * 0x120) & 0xfffffffc;
   }
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     (&DAT_006827ce)[hDIBSection * 0x5b20 + card_slot * 0x120] =
          (&DAT_006827ce)[hDIBSection * 0x5b20 + card_slot * 0x120] + '\x03';
   }
-  if ((((g_DuelCurrentEventCode == 0xca) && (hDIBSection == g_DuelDefendingPlayer)) &&
-      ((card_slot == g_DuelActiveCardSlot && ((hDIBSection == g_DuelActivePlayer && (hDIBSection == DAT_00681ec4)))))) &&
+  if ((((g_DuelCurrentEventCode == 0xca) && (hDIBSection == g_TurnPlayer)) &&
+      ((card_slot == g_EventSourceSlot && ((hDIBSection == g_EventSourcePlayer && (hDIBSection == DAT_00681ec4)))))) &&
      (((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x10) != 0)) {
     val_1 = Duel_DrawString(hDIBSection,2,3);
     if (val_1 != 0) {
       if (hBitmap == 0x7d) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+        g_CardEventResult = g_CardEventResult | 1;
       }
       if (hBitmap == 0x7e) {
         val_1 = Ai_Subsystem_004cc56d
@@ -6429,20 +6429,20 @@ int32_t FUN_00461b42(int player_id,int card_slot,int event_type)
   char cVar1;
   int val_2;
   
-  val_2 = Duel_CardIsTapped(g_DuelActivePlayer,g_DuelActiveCardSlot);
+  val_2 = Duel_CardIsTapped(g_EventSourcePlayer,g_EventSourceSlot);
   if ((val_2 != 0) &&
-     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34]
+     ((&DAT_004ff595)[*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34]
       == '\x01')) {
     if (hBitmap == 0x34) {
       cVar1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,2);
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1 << (cVar1 - 1U & 0x1f);
+      g_CardEventResult = g_CardEventResult | 1 << (cVar1 - 1U & 0x1f);
     }
     if ((hBitmap == 0x32) || (hBitmap == 0x33)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + 1;
+      g_CardEventResult = g_CardEventResult + 1;
     }
     if ((hBitmap == 0x77) && (((&g_DuelCardSlot_Abilities1)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x80) != 0)) {
-      *(uint32_t *)(&g_DuelCardSlot_Abilities2 + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) =
-           *(uint32_t *)(&g_DuelCardSlot_Abilities2 + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) | 0xe000000;
+      *(uint32_t *)(&g_DuelCardSlot_Abilities2 + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) =
+           *(uint32_t *)(&g_DuelCardSlot_Abilities2 + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) | 0xe000000;
     }
   }
   return 0;
@@ -6465,7 +6465,7 @@ int32_t FUN_00461c4b(int player_id,int card_slot,int event_type)
   if (hBitmap == 0x79) {
     val_1 = Duel_GetCardModifiedPower(hDIBSection,card_slot,4);
     if (*(int *)(&DAT_0068ef50 + val_1 * 4 + (1 - hDIBSection) * 0x20) == 0) {
-      g_DuelCurrentTurnPhase = 1;
+      g_CardEventResult = 1;
     }
   }
   if ((hBitmap == 0x1a) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 4) != 0)) {
@@ -6584,10 +6584,10 @@ int32_t FUN_00462039(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    g_CardEventResult = g_CardEventResult | 2;
   }
-  if (((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = FUN_00468a84(hDIBSection);
     if (val_1 == 0) {
       *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -6816,8 +6816,8 @@ int32_t FUN_0046275d(int player_id,int card_slot,int event_type)
 {
   if (((hBitmap == 0x77) &&
       (((&g_DuelMasterCardTable)
-        [*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x34] & 2) != 0))
-     && (g_DuelCurrentTurnPhase < 1)) {
+        [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] & 2) != 0))
+     && (g_CardEventResult < 1)) {
     *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) + 1;
   }
@@ -6848,26 +6848,26 @@ int32_t FUN_004628db(int player_id,int card_slot,int event_type)
   int val_1;
   int32_t slot_idx;
   
-  if ((hBitmap == 0x73) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) {
+  if ((hBitmap == 0x73) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = FUN_004593fd(hDIBSection,card_slot,0x73,0,0);
     val_1 = FUN_004680fc(hDIBSection,card_slot);
     if (val_1 == 0) {
       slot_idx = 0;
     }
   }
-  else if ((hBitmap == 0x6d) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) {
+  else if ((hBitmap == 0x6d) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = FUN_004593fd(hDIBSection,card_slot,0x6d,0,0);
     FUN_0046801f(hDIBSection,card_slot,1);
   }
-  else if ((hBitmap == 0x72) && ((g_DuelPlayerManaPool._1_1_ & 2) != 0)) {
+  else if ((hBitmap == 0x72) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = FUN_004593fd(hDIBSection,card_slot,0x72,0,0);
   }
   else {
     if (((g_DuelCurrentEventCode == 0xcd) || (hBitmap == 199)) &&
-       ((((card_slot == g_DuelActiveCardSlot && (hDIBSection == g_DuelActivePlayer)) && (DAT_0068eeac != 0)) &&
+       ((((card_slot == g_EventSourceSlot && (hDIBSection == g_EventSourcePlayer)) && (DAT_0068eeac != 0)) &&
         (DAT_00681ec4 == hDIBSection)))) {
       if (hBitmap == 0x7d) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+        g_CardEventResult = g_CardEventResult | 2;
       }
       if ((hBitmap == 0x7e) || (hBitmap == 199)) {
         FUN_00467f65(hDIBSection,card_slot,DAT_0068eeac);
@@ -6895,25 +6895,25 @@ int32_t FUN_00462a5c(int player_id,int card_slot,int event_type)
   int slot_idx;
   
   if (((((hBitmap == 0x6e) &&
-        (*(int *)(&g_DuelCardSlot_CardId + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == g_DuelTargetCardId)) &&
-       (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) &&
-      ((*(int *)(&DAT_006826ec + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot &&
-       ((char)(&g_DuelCardSlot_Controller)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection)))) &&
-     ((*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != -1 &&
+        (*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == g_DuelTargetCardId)) &&
+       (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) &&
+      ((*(int *)(&DAT_006826ec + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot &&
+       ((char)(&g_DuelCardSlot_Controller)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection)))) &&
+     ((*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != -1 &&
       ((((&g_DuelMasterCardTable)
          [*(int *)(&g_DuelCardSlot_CardId +
-                  *(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) * 0x120 +
-                  (char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] * 0x5b20) *
+                  *(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x120 +
+                  (char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] * 0x5b20) *
           0x34] & 2) != 0 && (*(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) < 0x13))))))
   {
     *(int32_t *)
      (&g_DuelCardSlot_CombatTargetSlot +
      card_slot * 0x120 + hDIBSection * 0x5b20 + *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) * 8)
-         = *(int32_t *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20);
+         = *(int32_t *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20);
     *(int *)(&g_DuelCardSlot_TargetPlayer +
             card_slot * 0x120 +
             hDIBSection * 0x5b20 + *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) * 8) =
-         (int)(char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20];
+         (int)(char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20];
     *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20) + 1;
   }
@@ -6921,9 +6921,9 @@ int32_t FUN_00462a5c(int player_id,int card_slot,int event_type)
     flag_1 = false;
     for (slot_idx = 0; slot_idx < *(int *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + hDIBSection * 0x5b20);
         slot_idx = slot_idx + 1) {
-      if (((*(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20 + slot_idx * 8) == g_DuelActiveCardSlot)
-          && (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + hDIBSection * 0x5b20 + slot_idx * 8) == g_DuelActivePlayer
-             )) && ((&DAT_006826e0)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] != '\x04')) {
+      if (((*(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20 + slot_idx * 8) == g_EventSourceSlot)
+          && (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + hDIBSection * 0x5b20 + slot_idx * 8) == g_EventSourcePlayer
+             )) && ((&DAT_006826e0)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] != '\x04')) {
         match_count = slot_idx;
         if (!flag_1) {
           *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -6943,9 +6943,9 @@ int32_t FUN_00462a5c(int player_id,int card_slot,int event_type)
     }
   }
   if (((g_DuelCurrentEventCode == 0xd5) && (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) != 0)) &&
-     ((DAT_00681ec4 == hDIBSection && ((card_slot == g_DuelActiveCardSlot && (hDIBSection == g_DuelActivePlayer)))))) {
+     ((DAT_00681ec4 == hDIBSection && ((card_slot == g_EventSourceSlot && (hDIBSection == g_EventSourcePlayer)))))) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       FUN_00467f65(hDIBSection,card_slot,*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20));
@@ -6976,8 +6976,8 @@ int32_t FUN_00462a5c(int player_id,int card_slot,int event_type)
 int32_t FUN_004630aa(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x85) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     ((hDIBSection == g_DuelDefendingPlayer && (hDIBSection == DAT_00681eb4)))) {
+  if ((((hBitmap == 0x85) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     ((hDIBSection == g_TurnPlayer && (hDIBSection == DAT_00681eb4)))) {
     *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&DAT_006827d4 + hDIBSection * 0x5b20 + card_slot * 0x120) | 1;
     (&DAT_006827d9)[hDIBSection * 0x5b20 + card_slot * 0x120] =
@@ -7004,8 +7004,8 @@ int32_t FUN_004630aa(int player_id,int card_slot,int event_type)
 int32_t FUN_004631b8(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x85) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     ((hDIBSection == g_DuelDefendingPlayer && (DAT_00681eb4 == hDIBSection)))) {
+  if ((((hBitmap == 0x85) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     ((hDIBSection == g_TurnPlayer && (DAT_00681eb4 == hDIBSection)))) {
     *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) | 1;
     (&DAT_006827da)[card_slot * 0x120 + hDIBSection * 0x5b20] =
@@ -7107,7 +7107,7 @@ int32_t FUN_00463523(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x1a) && (hDIBSection != g_DuelDefendingPlayer)) &&
+  if (((hBitmap == 0x1a) && (hDIBSection != g_TurnPlayer)) &&
      ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = 1;
     val_1 = Duel_RandomRange(2);
@@ -7133,10 +7133,10 @@ int32_t FUN_00463523(int player_id,int card_slot,int event_type)
 int32_t FUN_004635f8(int player_id,int card_slot,int event_type)
 
 {
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    g_CardEventResult = g_CardEventResult | 2;
   }
-  if (((((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) || (hBitmap == 199)) &&
+  if (((((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) || (hBitmap == 199)) &&
      ((int)(&g_DuelPlayerLifeTotals)[hDIBSection] < (int)(&g_DuelPlayerLifeTotals)[1 - hDIBSection])) {
     FUN_004bf853(hDIBSection,card_slot);
   }
@@ -7174,8 +7174,8 @@ int32_t FUN_00463699(int player,int card_slot)
 int32_t Glue_Subsystem_004e1fcb(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x85) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     ((hDIBSection == g_DuelDefendingPlayer && (DAT_00681eb4 == hDIBSection)))) {
+  if ((((hBitmap == 0x85) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     ((hDIBSection == g_TurnPlayer && (DAT_00681eb4 == hDIBSection)))) {
     *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) | 1;
     (&DAT_006827db)[card_slot * 0x120 + hDIBSection * 0x5b20] =
@@ -7215,15 +7215,15 @@ bool FUN_0046388d(int player_id,int card_slot,int event_type)
            *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) | 0x10;
       DAT_0068f0f4 = 3;
     }
-    if ((((hBitmap == 0x7f) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
+    if ((((hBitmap == 0x7f) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
        ((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x20010) == 0)) {
       FUN_0049b1a9(hDIBSection,3,1);
     }
-    if (((hBitmap == 0x8a) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+    if (((hBitmap == 0x8a) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c +
                      (int)(0x18 / (longlong)(*(int *)(&DAT_0068ef5c + hDIBSection * 0x20) + 2));
     }
-    if (((hBitmap == 0x8b) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+    if (((hBitmap == 0x8b) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c -
                      (int)(0x60 / (longlong)(*(int *)(&DAT_0068ef5c + hDIBSection * 0x20) + 2));
     }
@@ -7303,15 +7303,15 @@ bool Glue_Subsystem_004e22b2(int spell_id,int target_id,int flags)
         }
       }
     }
-    if ((((flags == 0x7f) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) &&
+    if ((((flags == 0x7f) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) &&
        ((*(uint32_t *)(&g_DuelCardSlot_Flags + spell_id * 0x5b20 + target_id * 0x120) & 0x20010) == 0)) {
       FUN_0049af5c(spell_id,(int)(char)(&DAT_006826dc)[spell_id * 0x5b20 + target_id * 0x120],1);
     }
-    if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c +
                      (int)(0x60 / (longlong)(*(int *)(&DAT_0068ef6c + spell_id * 0x20) + 2));
     }
-    if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       DAT_0069340c = DAT_0069340c -
                      (int)(0x60 / (longlong)(*(int *)(&DAT_0068ef6c + spell_id * 0x20) + 2));
     }
@@ -7332,8 +7332,8 @@ bool Glue_Subsystem_004e22b2(int spell_id,int target_id,int flags)
 int32_t Glue_Subsystem_004e268e(int player_id,int card_slot,int event_type)
 
 {
-  if ((((hBitmap == 0x85) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
-     ((hDIBSection == g_DuelDefendingPlayer && (DAT_00681eb4 == hDIBSection)))) {
+  if ((((hBitmap == 0x85) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
+     ((hDIBSection == g_TurnPlayer && (DAT_00681eb4 == hDIBSection)))) {
     *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + hDIBSection * 0x5b20) | 1;
     (&DAT_006827d9)[card_slot * 0x120 + hDIBSection * 0x5b20] =
@@ -7368,20 +7368,20 @@ int32_t Glue_Subsystem_004e2841(int spell_id,int target_id,int flags)
 {
   int val_1;
   
-  if ((((flags == 0x6c) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) &&
+  if ((((flags == 0x6c) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) &&
      (*(int *)(&DAT_0068ee80 + spell_id * 4) < 2)) {
     g_DuelDamageAccumulator = g_DuelDamageAccumulator + -0xa8;
   }
   if (flags == 0x87) {
     val_1 = FUN_00464325(spell_id,target_id);
     if (val_1 == 0) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+      g_CardEventResult = g_CardEventResult | 1;
     }
   }
-  if ((((flags == 0x85) && (target_id == g_DuelActiveCardSlot)) &&
-      ((spell_id == g_DuelActivePlayer &&
+  if ((((flags == 0x85) && (target_id == g_EventSourceSlot)) &&
+      ((spell_id == g_EventSourcePlayer &&
        ((*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0 &&
-        (spell_id == g_DuelDefendingPlayer)))))) && (DAT_00681eb4 == spell_id)) {
+        (spell_id == g_TurnPlayer)))))) && (DAT_00681eb4 == spell_id)) {
     *(uint32_t *)(&DAT_006827d4 + target_id * 0x120 + spell_id * 0x5b20) =
          *(uint32_t *)(&DAT_006827d4 + target_id * 0x120 + spell_id * 0x5b20) | 0x101;
     val_1 = FUN_00464325(spell_id,target_id);
@@ -7389,12 +7389,12 @@ int32_t Glue_Subsystem_004e2841(int spell_id,int target_id,int flags)
       DAT_0068f2c0 = DAT_0068f2c0 + 1;
     }
   }
-  if (((flags == 4) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+  if (((flags == 4) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
     *(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) =
          *(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) + 1;
     val_1 = FUN_00464325(spell_id,target_id);
     if (val_1 == 0) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+      g_CardEventResult = g_CardEventResult | 1;
     }
     else {
       *(uint32_t *)(&g_DuelCardSlot_Flags + target_id * 0x120 + spell_id * 0x5b20) =
@@ -7419,13 +7419,13 @@ int32_t Glue_Subsystem_004e2841(int spell_id,int target_id,int flags)
     }
   }
   if (((flags == 0x22) || (flags == 199)) &&
-     ((target_id == g_DuelActiveCardSlot && (spell_id == g_DuelActivePlayer)))) {
+     ((target_id == g_EventSourceSlot && (spell_id == g_EventSourcePlayer)))) {
     *(int32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) = 0;
   }
-  if (((flags == 0x8a) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+  if (((flags == 0x8a) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
     DAT_0069340c = DAT_0069340c + -0x30;
   }
-  if (((flags == 0x8b) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+  if (((flags == 0x8b) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
     DAT_0069340c = DAT_0069340c + 0x30;
   }
   return 0;
@@ -7512,10 +7512,10 @@ int32_t Glue_Subsystem_004e2c7f(int player_id,int card_slot,int event_type)
       (&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] =
            (&g_DuelCardSlot_TargetSlot)[card_slot * 0x120 + hDIBSection * 0x5b20];
     }
-    if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+    if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+      g_CardEventResult = g_CardEventResult | 2;
     }
-    if ((((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) || (hBitmap == 199)) {
+    if ((((hBitmap == 4) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) || (hBitmap == 199)) {
       flag_1 = false;
       val_3 = Duel_DrawString(hDIBSection,1,3);
       if ((val_3 != 0) &&
@@ -7558,26 +7558,26 @@ int32_t Glue_Subsystem_004e2c7f(int player_id,int card_slot,int event_type)
 int32_t FUN_00464774(int player_id,int card_slot,int event_type)
 
 {
-  if ((g_DuelActiveCardSlot == card_slot) && (hDIBSection == g_DuelActivePlayer)) {
+  if ((g_EventSourceSlot == card_slot) && (hDIBSection == g_EventSourcePlayer)) {
     *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) =
          *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0xfffcffff;
   }
   if (hBitmap == 199) {
     Duel_DrawCardSprite(hDIBSection,card_slot,1);
   }
-  if ((((g_DuelCurrentEventCode == 0xcd) && (g_DuelActiveCardSlot == card_slot)) && (hDIBSection == g_DuelActivePlayer)) &&
+  if ((((g_DuelCurrentEventCode == 0xcd) && (g_EventSourceSlot == card_slot)) && (hDIBSection == g_EventSourcePlayer)) &&
      (hDIBSection == DAT_00681ec4)) {
     if (hBitmap == 0x7d) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (hBitmap == 0x7e) {
       Duel_DrawCardSprite(hDIBSection,card_slot,1);
     }
   }
-  if (((hBitmap == 0x8a) && (g_DuelActiveCardSlot == card_slot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x8a) && (g_EventSourceSlot == card_slot)) && (hDIBSection == g_EventSourcePlayer)) {
     DAT_0069340c = DAT_0069340c + -0x3c;
   }
-  if (((hBitmap == 0x8b) && (g_DuelActiveCardSlot == card_slot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x8b) && (g_EventSourceSlot == card_slot)) && (hDIBSection == g_EventSourcePlayer)) {
     DAT_0069340c = DAT_0069340c + 0x3c;
   }
   return 0;
@@ -7595,8 +7595,8 @@ int32_t FUN_00464774(int player_id,int card_slot,int event_type)
 int32_t FUN_004648af(int player_id,int card_slot,int event_type)
 
 {
-  if (((hBitmap == 0x77) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    (&DAT_006826e0)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] = 4;
+  if (((hBitmap == 0x77) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    (&DAT_006826e0)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] = 4;
   }
   return 0;
 }
@@ -7615,13 +7615,13 @@ int32_t FUN_0046490c(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(uint32_t *)(&g_DuelCardSlot_Flags + hDIBSection * 0x5b20 + card_slot * 0x120) =
          *(uint32_t *)(&g_DuelCardSlot_Flags + hDIBSection * 0x5b20 + card_slot * 0x120) & 0xfffcffff;
   }
   if ((hBitmap == 0x8d) ||
-     (((hBitmap == 0x77 && (card_slot == g_DuelActiveCardSlot)) &&
-      ((hDIBSection == g_DuelActivePlayer &&
+     (((hBitmap == 0x77 && (card_slot == g_EventSourceSlot)) &&
+      ((hDIBSection == g_EventSourcePlayer &&
        ((((&g_DuelCardSlot_Flags)[hDIBSection * 0x5b20 + card_slot * 0x120] & 0x20) == 0 &&
         ((&DAT_006826e0)[hDIBSection * 0x5b20 + card_slot * 0x120] != '\x04')))))))) {
     val_1 = Deck_AddCardToDeck(hDIBSection,DAT_0066aafc);
@@ -7652,8 +7652,8 @@ int32_t Glue_Subsystem_004e32f3(int player_id,int card_slot,int event_type)
   int player_idx;
   int match_count;
   
-  if (((((g_DuelCurrentEventCode == 0xcb) || (hBitmap == 199)) && (card_slot == g_DuelActiveCardSlot)) &&
-      ((hDIBSection == g_DuelActivePlayer && (hDIBSection == g_DuelDefendingPlayer)))) && (DAT_00681ec4 == hDIBSection)) {
+  if (((((g_DuelCurrentEventCode == 0xcb) || (hBitmap == 199)) && (card_slot == g_EventSourceSlot)) &&
+      ((hDIBSection == g_EventSourcePlayer && (hDIBSection == g_TurnPlayer)))) && (DAT_00681ec4 == hDIBSection)) {
     val_1 = Card_IsValidCardId(0xab);
     player_idx = 0;
     for (match_count = 499; -1 < match_count; match_count = match_count + -1) {
@@ -7662,7 +7662,7 @@ int32_t Glue_Subsystem_004e32f3(int player_id,int card_slot,int event_type)
          && ((player_idx = player_idx + 1, *(int *)(&DAT_0068f370 + match_count * 4 + hDIBSection * 2000) == val_1
              && (3 < player_idx)))) {
         if (hBitmap == 0x7d) {
-          g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+          g_CardEventResult = g_CardEventResult | 1;
         }
         if ((hBitmap != 0x7e) && (hBitmap != 199)) {
           return 0;
@@ -7700,12 +7700,12 @@ int32_t FUN_00464c69(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   char cVar2;
   
-  if (((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     cVar2 = Duel_GetCardColorOverride(hDIBSection,card_slot,1);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x800 << (cVar2 - 1U & 0x1f);
-    uval_1 = g_DuelCurrentTurnPhase;
+    g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
+    uval_1 = g_CardEventResult;
     FUN_00464d69(hDIBSection,card_slot,1);
-    g_DuelCurrentTurnPhase = uval_1;
+    g_CardEventResult = uval_1;
   }
   return 0;
 }
@@ -7725,12 +7725,12 @@ int32_t FUN_00464ce8(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   char cVar2;
   
-  if (((hBitmap == 0x34) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+  if (((hBitmap == 0x34) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
     cVar2 = Duel_GetCardColorOverride(hDIBSection,card_slot,5);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x800 << (cVar2 - 1U & 0x1f);
-    uval_1 = g_DuelCurrentTurnPhase;
+    g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
+    uval_1 = g_CardEventResult;
     FUN_00464d69(hDIBSection,card_slot,5);
-    g_DuelCurrentTurnPhase = uval_1;
+    g_CardEventResult = uval_1;
   }
   return 0;
 }
@@ -7785,9 +7785,9 @@ int32_t FUN_00464eb5(int player_id,int card_slot,int event_type)
 {
   char cVar1;
   
-  if (((hBitmap == 0x34) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x34) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     cVar1 = Duel_GetCardColorOverride(hDIBSection,card_slot,4);
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x800 << (cVar1 - 1U & 0x1f);
+    g_CardEventResult = g_CardEventResult | 0x800 << (cVar1 - 1U & 0x1f);
   }
   return 0;
 }
@@ -7808,23 +7808,23 @@ int32_t Glue_Subsystem_004e378b(int player_id,int card_slot,int event_type)
   int val_2;
   int slot_idx;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelTurnCounter;
   }
-  if (((hBitmap == 2) && (card_slot == g_DuelActiveCardSlot)) &&
-     ((hDIBSection == g_DuelActivePlayer && (val_2 = Duel_DrawString(hDIBSection,4,3), val_2 != 0)))) {
-    g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 1;
+  if (((hBitmap == 2) && (card_slot == g_EventSourceSlot)) &&
+     ((hDIBSection == g_EventSourcePlayer && (val_2 = Duel_DrawString(hDIBSection,4,3), val_2 != 0)))) {
+    g_CardEventResult = g_CardEventResult | 1;
   }
-  if ((card_slot == g_DuelActiveCardSlot) && (hDIBSection == g_DuelActivePlayer)) {
+  if ((card_slot == g_EventSourceSlot) && (hDIBSection == g_EventSourcePlayer)) {
     if ((hBitmap == 0x32) || (hBitmap == 0x33)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase + *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20);
+      g_CardEventResult = g_CardEventResult + *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20);
     }
     if ((((hBitmap == 0x6e) &&
-         ((char)(&g_DuelCardSlot_ColorMask)[g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20] == hDIBSection)) &&
-        (*(int *)(&g_DuelCardSlot_TargetSlot + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) == card_slot)) &&
-       (*(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) != 0)) {
+         ((char)(&g_DuelCardSlot_ColorMask)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] == hDIBSection)) &&
+        (*(int *)(&g_DuelCardSlot_TargetSlot + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) == card_slot)) &&
+       (*(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) != 0)) {
       for (slot_idx = 0;
-          slot_idx < *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20);
+          slot_idx < *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20);
           slot_idx = slot_idx + 1) {
         flag_1 = false;
         val_2 = Duel_DrawString(hDIBSection,4,1);
@@ -7841,18 +7841,18 @@ int32_t Glue_Subsystem_004e378b(int player_id,int card_slot,int event_type)
           }
         }
         if (!flag_1) break;
-        *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) =
-             *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) + -1;
+        *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) =
+             *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) + -1;
       }
       val_2 = FUN_0049aa14(*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20),0,
-                           *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20));
+                           *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20));
       *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
            *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) - val_2;
-      *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) =
-           *(int *)(&g_DuelCardSlot_Counters + g_DuelActiveCardSlot * 0x120 + g_DuelActivePlayer * 0x5b20) - val_2;
+      *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) =
+           *(int *)(&g_DuelCardSlot_Counters + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) - val_2;
     }
-    if (((hBitmap == 4) && (card_slot == g_DuelActiveCardSlot)) &&
-       ((hDIBSection == g_DuelActivePlayer &&
+    if (((hBitmap == 4) && (card_slot == g_EventSourceSlot)) &&
+       ((hDIBSection == g_EventSourcePlayer &&
         ((val_2 = Duel_DrawString(hDIBSection,4,3), val_2 != 0 &&
          (val_2 = Ai_Subsystem_004cc56d
                             (hDIBSection,hDIBSection,card_slot,-1,-1,s_Grow_new_Hydra_head__Never_mind__004f8dcc,0),
@@ -8180,7 +8180,7 @@ int32_t FUN_00465a30(int player_id,int card_slot,int event_type)
 {
   int val_1;
   
-  if (((hBitmap == 0x6c) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+  if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
     val_1 = Mana_CanAffordCost(hDIBSection, 0xffffffff, card_slot);
     if (val_1 == 0) {
       Duel_DrawCardSprite(hDIBSection,card_slot,1);
@@ -8352,7 +8352,7 @@ int32_t Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
     uval_2 = 0;
   }
   else {
-    if (((flags == 0x6c) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+    if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       Catalog_ParseCsvLine(s_prompts_txt_004f8e40,s_VENOM_004f8e38);
       val_3 = Mana_CanAffordCost(spell_id,spell_id,target_id);
       if (val_3 == 0) {
@@ -8388,7 +8388,7 @@ int32_t Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
     }
     if (flags == 0x1a) {
       val_3 = 1 - (char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120];
-      if (((char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] == g_DuelDefendingPlayer) &&
+      if (((char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] == g_TurnPlayer) &&
          (((&g_DuelCardSlot_Flags)
            [*(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
             (char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] * 0x5b20] & 0x44) != 0)) {
@@ -8413,7 +8413,7 @@ int32_t Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
           }
         }
       }
-      if (((char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] != g_DuelDefendingPlayer) &&
+      if (((char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] != g_TurnPlayer) &&
          ((&DAT_006826de)
           [*(int *)(&g_DuelCardSlot_TargetSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120 +
            (char)(&g_DuelCardSlot_ColorMask)[spell_id * 0x5b20 + target_id * 0x120] * 0x5b20] != -1)) {
@@ -8469,7 +8469,7 @@ int32_t FUN_00466732(int player_id,int card_slot,int event_type)
   }
   if (hBitmap == 0x1a) {
     player = 1 - hDIBSection;
-    if ((hDIBSection == g_DuelDefendingPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
+    if ((hDIBSection == g_TurnPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
     {
       if ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] == -1) {
         target_idx = card_slot;
@@ -8487,7 +8487,7 @@ int32_t FUN_00466732(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if ((hDIBSection != g_DuelDefendingPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
+    if ((hDIBSection != g_TurnPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
       cVar1 = (&DAT_006826de)
               [player * 0x5b20 + (char)(&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] * 0x120];
       if (cVar1 == -1) {
@@ -8537,7 +8537,7 @@ int32_t FUN_00466b12(int player_id,int card_slot,int event_type)
   int val_2;
   int match_count;
   
-  if ((((hBitmap == 0x1a) && (player = 1 - hDIBSection, hDIBSection != g_DuelDefendingPlayer)) &&
+  if ((((hBitmap == 0x1a) && (player = 1 - hDIBSection, hDIBSection != g_TurnPlayer)) &&
       ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) &&
      (*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) == 0)) {
     *(uint32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) =
@@ -8588,8 +8588,8 @@ int32_t FUN_00466d59(int player_id,int card_slot,int event_type)
   int card_idx;
   
   player = 1 - hDIBSection;
-  if (((hBitmap == 0x77) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
-    if ((hDIBSection == g_DuelDefendingPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
+  if (((hBitmap == 0x77) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
+    if ((hDIBSection == g_TurnPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
     {
       for (card_idx = 0; card_idx < 0x50; card_idx = card_idx + 1) {
         if (((char)(&DAT_006826de)[card_idx * 0x120 + player * 0x5b20] == card_slot) &&
@@ -8599,7 +8599,7 @@ int32_t FUN_00466d59(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if ((hDIBSection != g_DuelDefendingPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
+    if ((hDIBSection != g_TurnPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
       cVar1 = (&DAT_006826de)
               [player * 0x5b20 + (char)(&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] * 0x120];
       if (cVar1 == -1) {
@@ -8642,7 +8642,7 @@ bool FUN_00466f91(int player_id,int card_slot,int event_type)
            *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) | 0x10;
       DAT_0068f0f4 = 4;
     }
-    if ((((hBitmap == 0x7f) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) &&
+    if ((((hBitmap == 0x7f) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) &&
        ((*(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) & 0x20010) == 0)) {
       FUN_0049b1a9(hDIBSection,4,1);
     }
@@ -8723,7 +8723,7 @@ int32_t FUN_004671bd(int player_id,int card_slot,int event_type)
     bVar4 = Duel_GetCardColorOverride(hDIBSection,card_slot,3);
     flag_2 = Duel_GetCardColorOverride(hDIBSection,card_slot,5);
     uval_6 = 1 << (bVar4 & 0x1f) | 1 << (flag_2 & 0x1f);
-    if ((hDIBSection == g_DuelDefendingPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
+    if ((hDIBSection == g_TurnPlayer) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x44) != 0))
     {
       if ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] == -1) {
         color_idx = card_slot;
@@ -8740,7 +8740,7 @@ int32_t FUN_004671bd(int player_id,int card_slot,int event_type)
         }
       }
     }
-    if ((hDIBSection != g_DuelDefendingPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
+    if ((hDIBSection != g_TurnPlayer) && ((&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] != -1)) {
       cVar1 = (&DAT_006826de)
               [player * 0x5b20 + (char)(&DAT_006826de)[card_slot * 0x120 + hDIBSection * 0x5b20] * 0x120];
       if (cVar1 == -1) {
@@ -9869,10 +9869,10 @@ int32_t Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
   int32_t slot_idx;
   
   if (flags == 0x71) {
-    slot_idx = g_DuelCurrentTurnPhase;
+    slot_idx = g_CardEventResult;
     uval_1 = FUN_004693bd(1 - spell_id);
     FUN_0046951b(spell_id,target_id,uval_1);
-    g_DuelCurrentTurnPhase = slot_idx;
+    g_CardEventResult = slot_idx;
   }
   if (flags == 0x73) {
     if (((((&g_DuelCardSlot_Subtypes)[target_id * 0x120 + spell_id * 0x5b20] & 3) == 0) ||
@@ -10030,13 +10030,13 @@ int FUN_00469450(int player,int card_slot)
   
   match_count = card_slot;
   card_idx = 0;
-  g_DuelCurrentTurnPhase = -1;
+  g_CardEventResult = -1;
   while ((match_count < 500 && (card_idx == 0))) {
     val_1 = *(int *)(&DAT_006669f0 + match_count * 4 + player * 2000);
     if ((val_1 != -1) &&
        (*(int *)(&DAT_00618ad4 + *(int *)(&DAT_004ff590 + val_1 * 0x34) * 0x98) == 7)) {
       card_idx = *(int *)(&DAT_00618ad8 + *(int *)(&DAT_004ff590 + val_1 * 0x34) * 0x98);
-      g_DuelCurrentTurnPhase = val_1;
+      g_CardEventResult = val_1;
     }
     match_count = match_count + 1;
   }
@@ -10260,9 +10260,9 @@ int32_t FUN_00469c3c(int player_id,int card_slot,int event_type)
 
 {
   if ((((hBitmap == 0x82) &&
-       (*(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) == g_DuelActiveCardSlot)) &&
-      ((char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] == g_DuelActivePlayer)) &&
-     (g_DuelActiveCardSlot != -1)) {
+       (*(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) == g_EventSourceSlot)) &&
+      ((char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] == g_EventSourcePlayer)) &&
+     (g_EventSourceSlot != -1)) {
     *(uint32_t *)(&DAT_006827c8 +
              *(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x120 +
              (char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] * 0x5b20) =
@@ -10583,7 +10583,7 @@ int32_t Palette_Subsystem_004a8d46(int player_id,int card_slot,int event_type)
     uval_2 = 1;
   }
   else {
-    if (((hBitmap == 0x6c) && (g_DuelActiveCardSlot == card_slot)) && (g_DuelActivePlayer == hDIBSection)) {
+    if (((hBitmap == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == hDIBSection)) {
       *(int32_t *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + hDIBSection * 0x5b20) = g_DuelTurnCounter;
     }
     if (hBitmap == 0x71) {
@@ -10875,11 +10875,11 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
   int slot_idx;
   
   if ((int)(&g_DuelPlayerLifeTotals)[g_DuelTargetPlayer] < 1) {
-    *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) =
-         *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) | 2;
+    *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) =
+         *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) | 2;
   }
   target_idx = 0;
-  if (((g_DuelDebugModeFlag != 1) && (g_DuelDefendingPlayer == DAT_0066aac4)) && (DAT_0066ab04 == g_DuelCombatPhaseState)) {
+  if (((g_DuelDebugModeFlag != 1) && (g_TurnPlayer == DAT_0066aac4)) && (DAT_0066ab04 == g_DuelCombatPhaseState)) {
     DAT_0068eee4 = 0;
   }
   if (player == 1) {
@@ -10890,7 +10890,7 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
   }
   Mem_AllocOrFree_004d9630(local_68,card_slot);
   uval_3 = DAT_00681eb4;
-  uval_2 = g_DuelPlayerManaPool;
+  uval_2 = g_DuelModeFlags;
   player_idx = player;
   DAT_00681eb4 = player;
   local_24 = player;
@@ -10925,7 +10925,7 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
   }
   if (((((g_DuelDebugModeFlag == 1) || (DAT_0067650c != 0)) ||
        ((g_DuelCurrentEventCode != -1 && (g_DuelTargetCardSlot == DAT_00681ec4)))) || (DAT_00666744 == 4)) ||
-     ((g_DuelTargetCardSlot == player && ((g_DuelPlayerManaPool & 0x200) != 0)))) {
+     ((g_DuelTargetCardSlot == player && ((g_DuelModeFlags & 0x200) != 0)))) {
     local_84 = FUN_0046c7d0(player);
     player_idx = DAT_0068eef0;
   }
@@ -11007,10 +11007,10 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
     }
     if (local_7c == -1) {
       if (g_DuelDebugModeFlag == 1) goto LAB_0046c78c;
-      if ((g_DuelCurrentEventCode == 0xca) && (*(int *)(&DAT_006667d0 + g_DuelDefendingPlayer * 0x98) == 0)) {
+      if ((g_DuelCurrentEventCode == 0xca) && (*(int *)(&DAT_006667d0 + g_TurnPlayer * 0x98) == 0)) {
         DAT_00666440 = 0;
       }
-      if ((g_DuelCurrentEventCode == 0xce) && (*(int *)(&DAT_006667e8 + g_DuelDefendingPlayer * 0x98) == 0)) {
+      if ((g_DuelCurrentEventCode == 0xce) && (*(int *)(&DAT_006667e8 + g_TurnPlayer * 0x98) == 0)) {
         DAT_00666440 = 0;
       }
     }
@@ -11026,7 +11026,7 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
              ((val_4 = Magic_IsManaSource(g_DuelTargetPlayer,local_70), val_4 == 0 &&
               (g_DuelTargetPlayer == DAT_00681eb4)))))) &&
            (((uval_5 = FUN_0046cc45(g_DuelTargetPlayer,local_70), 1 < (int)uval_5 ||
-             ((((DAT_00666404 != 0 || (g_DuelDefendingPlayer != g_DuelTargetPlayer)) && ((uval_5 & 2) != 0)) ||
+             ((((DAT_00666404 != 0 || (g_TurnPlayer != g_DuelTargetPlayer)) && ((uval_5 & 2) != 0)) ||
               ((DAT_00676500 & 2) != 0)))) &&
             (((g_DuelTargetPlayer != DAT_00681ec4 || (g_DuelCurrentEventCode == -1)) ||
              ((uval_5 != 2 || ((DAT_00676500 & 2) != 0)))))))) {
@@ -11113,8 +11113,8 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
             local_84 = Ai_Subsystem_004bc029(g_DuelTargetPlayer,-1,g_DuelTargetPlayer,0xff,0,0x5f6810,2);
             player_idx = DAT_0068eef0;
             if (-1 < local_84) {
-              *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) =
-                   *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) | 2;
+              *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) =
+                   *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) | 2;
             }
           }
           if (DAT_0068f2cc == -3) {
@@ -11125,7 +11125,7 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
             local_84 = -1;
             DAT_00666758 = DAT_00666758 & 0xfffffffd;
             if (g_DuelCurrentEventCode != -1) {
-              DAT_0066aac4 = g_DuelDefendingPlayer;
+              DAT_0066aac4 = g_TurnPlayer;
               DAT_0066ab04 = g_DuelCombatPhaseState;
               DAT_0068f2cc = 0;
             }
@@ -11218,7 +11218,7 @@ LAB_0046c78c:
   }
   DAT_0068edd4 = 0;
   DAT_00681eb4 = uval_3;
-  g_DuelPlayerManaPool = uval_2;
+  g_DuelModeFlags = uval_2;
   DAT_00666740 = DAT_00666740 + -1;
   return loop_idx;
 }
@@ -11368,7 +11368,7 @@ int32_t FUN_0046cc45(int player,int card_slot)
     }
     if (((((DAT_006826b4 & (uint8_t)(&g_DuelMasterCardTable)[val_1 * 0x34]) != 0) &&
          (val_2 = FUN_004895b4(player,player,card_slot), val_2 != 0)) &&
-        ((((uint8_t)g_DuelPlayerManaPool & 4) == 0 || ((*(uint32_t *)(&DAT_004ff5a8 + val_1 * 0x34) & 0x3004) != 0)
+        ((((uint8_t)g_DuelModeFlags & 4) == 0 || ((*(uint32_t *)(&DAT_004ff5a8 + val_1 * 0x34) & 0x3004) != 0)
          ))) && (((g_DuelTargetPlayer == player ||
                   ((_DAT_0052243c & (int)(char)(&DAT_004ff5ad)[val_1 * 0x34]) != 0)) &&
                  (val_1 = Duel_PlayCardSoundEffect(player,card_slot,0x74,1 - player,0xffffffff), val_1 != 0)))) {
@@ -11404,7 +11404,7 @@ int32_t FUN_0046cc45(int player,int card_slot)
       if ((DAT_004fab48 != 0) && (((&DAT_004ff5a8)[val_1 * 0x34] & 2) == 0)) {
         return 0;
       }
-      if (((((uint8_t)g_DuelPlayerManaPool & 4) == 0) ||
+      if (((((uint8_t)g_DuelModeFlags & 4) == 0) ||
           ((*(uint32_t *)(&DAT_004ff5a8 + val_1 * 0x34) & 0x5004) != 0)) &&
          (((DAT_00676500 = DAT_00676500 & 0xfffffffd, g_DuelTargetPlayer == player ||
            ((_DAT_00522440 & (int)(char)(&DAT_004ff5ad)[val_1 * 0x34]) != 0)) &&
@@ -11510,11 +11510,11 @@ void Rules_ProcessDamagePrevention(void)
   int card_idx;
   int32_t match_count;
   
-  if ((g_DuelPlayerManaPool & 2) == 0) {
+  if ((g_DuelModeFlags & 2) == 0) {
     return;
   }
-  g_DuelPlayerManaPool = g_DuelPlayerManaPool & 0xfffffffd;
-  g_DuelPlayerManaPool = g_DuelPlayerManaPool | 4;
+  g_DuelModeFlags = g_DuelModeFlags & 0xfffffffd;
+  g_DuelModeFlags = g_DuelModeFlags | 4;
   Duel_UpdateBoardState(0,0xff);
   for (player_idx = 0; player_idx < 2; player_idx = player_idx + 1) {
     for (target_idx = 0; target_idx < (int)(&g_DuelPlayerCreatureCount)[player_idx]; target_idx = target_idx + 1) {
@@ -11552,13 +11552,13 @@ void Rules_ProcessDamagePrevention(void)
           }
         }
       }
-      FUN_0048e8a8(g_DuelDefendingPlayer,0xd7,s_Damage_Dealing_004f96fc,0);
+      FUN_0048e8a8(g_TurnPlayer,0xd7,s_Damage_Dealing_004f96fc,0);
       for (player_idx = 0; player_idx < 2; player_idx = player_idx + 1) {
         for (target_idx = 0; target_idx < (int)(&g_DuelPlayerCreatureCount)[player_idx]; target_idx = target_idx + 1) {
           if ((*(int *)(&g_DuelCardSlot_CardId + target_idx * 0x120 + player_idx * 0x5b20) == g_DuelTargetCardId) &&
              (((&g_DuelCardSlot_Flags)[target_idx * 0x120 + player_idx * 0x5b20] & 2) != 0)) {
             if (((&g_DuelCardSlot_Flags)[target_idx * 0x120 + player_idx * 0x5b20] & 0x10) == 0) {
-              g_DuelPlayerManaPool = g_DuelPlayerManaPool | 2;
+              g_DuelModeFlags = g_DuelModeFlags | 2;
             }
             else {
               Duel_DrawCardSprite(player_idx,target_idx,1);
@@ -11567,7 +11567,7 @@ void Rules_ProcessDamagePrevention(void)
         }
       }
       FUN_0046d90d();
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool & 0xfffffffb;
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffffffb;
       if (((g_DuelDebugModeFlag != 1) || (!flag_1)) || (DAT_00666400 != 9)) {
         if (g_DuelDebugModeFlag == 1) {
           return;
@@ -11596,7 +11596,7 @@ void Rules_ProcessDamagePrevention(void)
         DAT_0066aae0 = -1;
         DAT_006663f8 = match_count;
       }
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool | 4;
+      g_DuelModeFlags = g_DuelModeFlags | 4;
     }
   } while( true );
 }
@@ -11661,7 +11661,7 @@ int FUN_0046da4a(int player,int card_slot)
   *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + player * 0x5b20) =
        *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x800;
   val_1 = Duel_CardIsTapped(player,card_slot);
-  if (((((val_1 == 0) || (g_DuelCombatPhaseState != 0x15)) || (g_DuelDefendingPlayer != player)) ||
+  if (((((val_1 == 0) || (g_DuelCombatPhaseState != 0x15)) || (g_TurnPlayer != player)) ||
       ((((&DAT_006826cd)[card_slot * 0x120 + player * 0x5b20] & 0x80) == 0 ||
        (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 4) != 0)))) ||
      (val_1 = FUN_0048ad82(player,card_slot), val_1 == 0)) {
@@ -11679,12 +11679,12 @@ int FUN_0046da4a(int player,int card_slot)
             if (((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 2) != 0) &&
                 (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0)) &&
                (((&g_DuelMasterCardTable)[val_1 * 0x34] & 2) != 0)) {
-              if (((g_DuelDefendingPlayer == player) && (val_1 = FUN_0048ad82(player,card_slot), val_1 != 0)) &&
+              if (((g_TurnPlayer == player) && (val_1 = FUN_0048ad82(player,card_slot), val_1 != 0)) &&
                  (((&g_DuelCardSlot_Subtypes)[card_slot * 0x120 + player * 0x5b20] & 1) == 0)) {
                 DAT_0068f100 = 0;
                 return 0x10;
               }
-              if ((g_DuelDefendingPlayer != player) && (DAT_006826b0 != 0)) {
+              if ((g_TurnPlayer != player) && (DAT_006826b0 != 0)) {
                 DAT_0068f100 = 0;
                 return 0x20;
               }
@@ -11705,7 +11705,7 @@ int FUN_0046da4a(int player,int card_slot)
               if ((DAT_0068edd4 == 0) || ((DAT_006826b4 & (uint8_t)(&g_DuelMasterCardTable)[val_1 * 0x34]) != 0)
                  ) {
                 if (((&g_DuelMasterCardTable)[val_1 * 0x34] & 1) != 0) {
-                  if (((g_DuelDefendingPlayer == player) && (((uint8_t)g_DuelPlayerManaPool & 1) == 0)) &&
+                  if (((g_TurnPlayer == player) && (((uint8_t)g_DuelModeFlags & 1) == 0)) &&
                      ((g_DuelCombatPhaseState == 0x14 || (g_DuelCombatPhaseState == 0x1e)))) {
                     DAT_0068f100 = 0;
                     return 4;
@@ -11715,12 +11715,12 @@ int FUN_0046da4a(int player,int card_slot)
                   DAT_0068f100 = 0;
                   return 0;
                 }
-                if (((g_DuelDefendingPlayer == g_DuelTargetPlayer) ||
-                    (((g_DuelDefendingPlayer != g_DuelTargetPlayer && (DAT_0068edd4 != 0)) &&
+                if (((g_TurnPlayer == g_DuelTargetPlayer) ||
+                    (((g_TurnPlayer != g_DuelTargetPlayer && (DAT_0068edd4 != 0)) &&
                      ((((&g_DuelMasterCardTable)[val_1 * 0x34] & 0x10) != 0 ||
                       (((&g_DuelMasterCardTable)[val_1 * 0x34] & 0x20) != 0)))))) &&
                    ((val_2 = FUN_004895b4(player,player,card_slot), val_2 != 0 &&
-                    (((((uint8_t)g_DuelPlayerManaPool & 4) == 0 ||
+                    (((((uint8_t)g_DuelModeFlags & 4) == 0 ||
                       ((*(uint32_t *)(&DAT_004ff5a8 + val_1 * 0x34) & 0x3004) != 0)) &&
                      ((((&g_DuelMasterCardTable)[val_1 * 0x34] & 0x42) != 0 ||
                       (val_1 = Duel_PlayCardSoundEffect(player,card_slot,0x74,1 - player,0xffffffff), val_1 != 0))))))))
@@ -11748,7 +11748,7 @@ int FUN_0046da4a(int player,int card_slot)
               }
               if (((((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0) &&
                     (((&g_DuelMasterCardTable)[val_1 * 0x34] & 2) != 0)) &&
-                   ((DAT_0068edd4 == 0 && ((g_DuelDefendingPlayer == player && (g_DuelCombatPhaseState < 0x1b)))))) &&
+                   ((DAT_0068edd4 == 0 && ((g_TurnPlayer == player && (g_DuelCombatPhaseState < 0x1b)))))) &&
                   (val_2 = FUN_0048ad82(player,card_slot), val_2 != 0)) &&
                  ((((&g_DuelCardSlot_Subtypes)[card_slot * 0x120 + player * 0x5b20] & 3) == 0 ||
                   (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) * 0x34] &
@@ -11762,7 +11762,7 @@ int FUN_0046da4a(int player,int card_slot)
                      & 2) == 0)))) ||
                   (((((&DAT_004ff5a8)[val_1 * 0x34] & 1) != 0 && ((DAT_006826b4 & 0x10) != 0)) ||
                    ((((&DAT_004ff5a8)[val_1 * 0x34] & 2) != 0 && ((DAT_006826b4 & 0x20) != 0))))))
-                 && ((((((uint8_t)g_DuelPlayerManaPool & 4) == 0 ||
+                 && ((((((uint8_t)g_DuelModeFlags & 4) == 0 ||
                        ((*(uint32_t *)(&DAT_004ff5a8 + val_1 * 0x34) & 0x5004) != 0)) &&
                       (DAT_00676500 = DAT_00676500 & 0xfffffffd,
                       ((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x20) == 0)) &&
@@ -11795,11 +11795,11 @@ int FUN_0046da4a(int player,int card_slot)
         }
       }
       else {
-        g_DuelActivePlayer = player;
-        g_DuelActiveCardSlot = card_slot;
-        g_DuelCurrentTurnPhase = 0;
+        g_EventSourcePlayer = player;
+        g_EventSourceSlot = card_slot;
+        g_CardEventResult = 0;
         Magic_ScanCards(0x7d);
-        match_count = g_DuelCurrentTurnPhase;
+        match_count = g_CardEventResult;
       }
     }
     else {
@@ -11858,13 +11858,13 @@ int32_t FUN_0046e4c9(int x,int y,int width,int32_t arg_4)
     uval_1 = 0;
   }
   else {
-    g_DuelCurrentTurnPhase = 0;
-    g_DuelActivePlayer = x;
-    g_DuelActiveCardSlot = y;
+    g_CardEventResult = 0;
+    g_EventSourcePlayer = x;
+    g_EventSourceSlot = y;
     _DAT_0068ee68 = arg_4;
     DAT_0068ecfc = 0xffffffff;
     Magic_ScanCards(width);
-    uval_1 = g_DuelCurrentTurnPhase;
+    uval_1 = g_CardEventResult;
   }
   return uval_1;
 }
@@ -11930,11 +11930,11 @@ int32_t Rules_SendCardsToGraveyard(void)
 {
   if ((DAT_00666760 != 0) && (DAT_004f965c == 0)) {
     DAT_004f965c = 1;
-    g_DuelPlayerManaPool = g_DuelPlayerManaPool | 0x200;
+    g_DuelModeFlags = g_DuelModeFlags | 0x200;
     FUN_0048e32b(-2,g_DuelCombatPhaseState,s_Use_Regeneration_Effects_004f970c,0x70);
-    g_DuelPlayerManaPool = g_DuelPlayerManaPool & 0xfffffdff;
-    FUN_0048e8a8(g_DuelDefendingPlayer,0xd6,s_Graveyard_order_004f9728,0);
-    FUN_0048e8a8(g_DuelDefendingPlayer,0xd5,s_Card_s__to_Graveyard_004f9738,0);
+    g_DuelModeFlags = g_DuelModeFlags & 0xfffffdff;
+    FUN_0048e8a8(g_TurnPlayer,0xd6,s_Graveyard_order_004f9728,0);
+    FUN_0048e8a8(g_TurnPlayer,0xd5,s_Card_s__to_Graveyard_004f9738,0);
     DAT_00666760 = 0;
     DAT_004f965c = 0;
     Duel_UpdateBoardState(0,0xff);
@@ -11971,13 +11971,13 @@ int32_t Rules_CardLeavingPlay(int player,int card_slot)
       }
       if (((&g_DuelMasterCardTable)[val_2 * 0x34] & 0x47) != 0) {
         FUN_0048cac9();
-        g_DuelCurrentTurnPhase = 0;
-        g_DuelActivePlayer = player;
-        g_DuelActiveCardSlot = card_slot;
+        g_CardEventResult = 0;
+        g_EventSourcePlayer = player;
+        g_EventSourceSlot = card_slot;
         DAT_00690310 = 1 - player;
         DAT_0068ecfc = 0xffffffff;
         Magic_ScanCards(0x77);
-        if (0 < g_DuelCurrentTurnPhase) {
+        if (0 < g_CardEventResult) {
           *(uint32_t *)(&g_DuelCardSlot_Abilities1 + card_slot * 0x120 + player * 0x5b20) =
                *(uint32_t *)(&g_DuelCardSlot_Abilities1 + card_slot * 0x120 + player * 0x5b20) & 0xffffff7f;
           FUN_0048cb7f();
@@ -12006,7 +12006,7 @@ int32_t Rules_CardLeavingPlay(int player,int card_slot)
           }
           FUN_0046f02d(player,card_slot);
           if (cVar1 == '\x03') {
-            FUN_0048e8a8(g_DuelDefendingPlayer,0xd5,s_Card_s__to_Graveyard_004f9750,0);
+            FUN_0048e8a8(g_TurnPlayer,0xd5,s_Card_s__to_Graveyard_004f9750,0);
           }
         }
       }
@@ -12017,7 +12017,7 @@ int32_t Rules_CardLeavingPlay(int player,int card_slot)
     DAT_00666754 = player;
     DAT_0068edd0 = card_slot;
     if (((&g_DuelMasterCardTable)[val_2 * 0x34] & 0x47) != 0) {
-      FUN_0048e8a8(g_DuelDefendingPlayer,0xd4,s_Card_leaving_play_004f9768,0);
+      FUN_0048e8a8(g_TurnPlayer,0xd4,s_Card_leaving_play_004f9768,0);
     }
     DAT_00666754 = uval_3;
     DAT_0068edd0 = uval_4;
@@ -15464,7 +15464,7 @@ void FUN_00476868(int player_id)
     *(int32_t *)(&DAT_00522620 + match_count * 4) = 0;
   }
   FUN_004769a5(hDIBSection,0);
-  if ((g_DuelDebugModeFlag == 1) || (g_DuelDefendingPlayer == g_DuelTargetPlayer)) {
+  if ((g_DuelDebugModeFlag == 1) || (g_TurnPlayer == g_DuelTargetPlayer)) {
     for (match_count = 0; match_count < DAT_00522a04; match_count = match_count + 1) {
       (&DAT_006826de)[DAT_00522908 * 0x5b20 + (&DAT_00522f38)[match_count] * 0x120] =
            (&DAT_005226a8)[match_count * 4];
@@ -16828,7 +16828,7 @@ int32_t Sound_PlaySpatialSound(int x, int y, int width, int height)
            *(uint32_t *)(&g_DuelCardSlot_Flags + y * 0x120 + x * 0x5b20) | 0x10;
       DAT_0068f0f4 = height;
     }
-    if (((width == 0x7f) && (g_DuelActiveCardSlot == y)) && (x == g_DuelActivePlayer)) {
+    if (((width == 0x7f) && (g_EventSourceSlot == y)) && (x == g_EventSourcePlayer)) {
       if (((((&g_DuelCardSlot_Subtypes)[y * 0x120 + x * 0x5b20] & 3) == 0) ||
           (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 2) == 0)) &&
          (((&g_DuelCardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) == 0)) {
@@ -17381,7 +17381,7 @@ int32_t CardScript_Oasis(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x73) {
-    player_idx = (uint32_t)(((uint8_t)g_DuelPlayerManaPool & 4) != 0);
+    player_idx = (uint32_t)(((uint8_t)g_DuelModeFlags & 4) != 0);
     if (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x10) != 0) {
       player_idx = 0;
     }
@@ -17406,7 +17406,7 @@ int32_t CardScript_Oasis(int spell_id,int target_id,int flags)
     uval_1 = 0;
   }
   else {
-    if ((flags == 0x6d) && (((uint8_t)g_DuelPlayerManaPool & 4) != 0)) {
+    if ((flags == 0x6d) && (((uint8_t)g_DuelModeFlags & 4) != 0)) {
       if (DAT_0068f220 == 0) {
         slot_idx = 0;
         while (slot_idx == 0) {
@@ -17489,7 +17489,7 @@ int32_t CardScript_ElephantsGraveyard(int player_id,int card_slot,int event_type
   }
   if (hBitmap != 0x73) {
     if (hBitmap == 0x6d) {
-      if ((((uint8_t)g_DuelPlayerManaPool & 4) == 0) ||
+      if ((((uint8_t)g_DuelModeFlags & 4) == 0) ||
          (val_2 = FUN_004512d1(hDIBSection,s_Elephant_s_Graveyard__004f9adc,1,s_Regenerate_004f9ad0,
                                &DAT_004f9ac8,(char *)0x0), val_2 != 0)) {
         FUN_0049b235(hDIBSection,0,1);
@@ -17520,16 +17520,16 @@ int32_t CardScript_ElephantsGraveyard(int player_id,int card_slot,int event_type
       *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) =
            *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) | 0x10;
     }
-    if (((uint8_t)g_DuelPlayerManaPool & 4) == 0) {
+    if (((uint8_t)g_DuelModeFlags & 4) == 0) {
       *(int32_t *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) = 0xffffffff;
       (&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] =
            (&g_DuelCardSlot_TargetSlot)[card_slot * 0x120 + hDIBSection * 0x5b20];
     }
     if ((((hBitmap == 0x34) &&
-         (*(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) == g_DuelActiveCardSlot)) &&
-        ((char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] == g_DuelActivePlayer)) &&
-       (g_DuelActiveCardSlot != -1)) {
-      g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase | 0x200;
+         (*(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + hDIBSection * 0x5b20) == g_EventSourceSlot)) &&
+        ((char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + hDIBSection * 0x5b20] == g_EventSourcePlayer)) &&
+       (g_EventSourceSlot != -1)) {
+      g_CardEventResult = g_CardEventResult | 0x200;
     }
     return 0;
   }
@@ -17994,10 +17994,10 @@ int32_t Mana_Init_00453fdb(int spell_id,int target_id,int flags)
       uval_2 = Sound_PlaySpatialSound(spell_id,target_id,0x7f,0);
       return uval_2;
     }
-    if (((((flags == 0x3c) && ((g_DuelPlayerManaPool._2_1_ & 2) == 0)) && (target_id == g_DuelActiveCardSlot)) &&
-        ((spell_id == g_DuelActivePlayer && (val_3 = Duel_CardIsTapped(spell_id,target_id), val_3 != 0)))) &&
+    if (((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) && (target_id == g_EventSourceSlot)) &&
+        ((spell_id == g_EventSourcePlayer && (val_3 = Duel_CardIsTapped(spell_id,target_id), val_3 != 0)))) &&
        (*(int *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20) != 0)) {
-      g_DuelCurrentTurnPhase = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
+      g_CardEventResult = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
     }
     if (flags == 199) {
       if (spell_id == g_DuelTargetCardSlot) {
@@ -18173,7 +18173,7 @@ int32_t Mana_Init_004555c8(int spell_id,int target_id,int flags)
     DAT_00692c68 = target_id;
     FUN_00467d65(FUN_0047d928,spell_id);
   }
-  if (((flags == 0x77) && (target_id == g_DuelActiveCardSlot)) && (spell_id == g_DuelActivePlayer)) {
+  if (((flags == 0x77) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
     uval_1 = Card_IsValidCardId(0x1fc);
     *(int32_t *)(&g_DuelCardSlot_CardId + spell_id * 0x5b20 + target_id * 0x120) = uval_1;
     return 0;
@@ -18443,7 +18443,7 @@ int32_t FUN_0047d9e8(int player_id,int card_slot,int event_type)
            *(uint32_t *)(&g_DuelCardSlot_Flags + card_slot * 0x120 + hDIBSection * 0x5b20) | 0x10;
       DAT_0068f0f4 = 6;
     }
-    if (((hBitmap == 0x7f) && (card_slot == g_DuelActiveCardSlot)) && (hDIBSection == g_DuelActivePlayer)) {
+    if (((hBitmap == 0x7f) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
       if (((((&g_DuelCardSlot_Subtypes)[card_slot * 0x120 + hDIBSection * 0x5b20] & 3) == 0) ||
           (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + hDIBSection * 0x5b20) * 0x34] & 2) ==
            0)) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + hDIBSection * 0x5b20] & 0x10) == 0)) {

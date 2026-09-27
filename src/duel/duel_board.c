@@ -79,15 +79,15 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
 extern int32_t g_DuelDebugModeFlag;
@@ -378,21 +378,21 @@ int Duel_PlayCardSoundEffect(int arg_1,int arg_2,int arg_3,undefined4 arg_4,unde
   else {
     FUN_0048cac9();
     uVar1 = DAT_00676500;
-    g_DuelCurrentTurnPhase = 0;
-    g_DuelActivePlayer = arg_1;
-    g_DuelActiveCardSlot = arg_2;
+    g_CardEventResult = 0;
+    g_EventSourcePlayer = arg_1;
+    g_EventSourceSlot = arg_2;
     DAT_00690310 = arg_4;
     DAT_0068ecfc = arg_5;
     iVar2 = (**(GhidraCall *)(&DAT_004ff5a0 +
                         *(int *)(&g_DuelCardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x34))
                       (arg_1,arg_2,arg_3);
-    if ((((iVar2 != 99) && ((g_DuelPlayerManaPool & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
+    if ((((iVar2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
        && (iVar3 = Magic_IsManaSource(arg_1,arg_2), iVar3 == 0)) {
       DAT_00676500 = uVar1;
       FUN_0048cb7f();
       return 0;
     }
-    DAT_0068edd8 = g_DuelCurrentTurnPhase;
+    DAT_0068edd8 = g_CardEventResult;
     FUN_0048cb7f();
   }
   return iVar2;

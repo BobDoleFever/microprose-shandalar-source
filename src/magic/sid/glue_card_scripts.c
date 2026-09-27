@@ -37,7 +37,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
   uint8_t slot_idx;
   
   if (((((g_CurrentStepCode == 0xc9) || (event_code == 199)) && (card_index == g_EventSourceSlot)) &&
-      ((player == g_EventSourcePlayer && (player == g_DefendingPlayer)))) &&
+      ((player == g_EventSourcePlayer && (player == g_TurnPlayer)))) &&
      (g_CurrentCardColorTarget == player)) {
     if (event_code == 0x7d) {
       g_CardEventResult = g_CardEventResult | 2;
@@ -95,7 +95,7 @@ int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code)
              *(uint32_t *)(&g_CardSlot_ConvertedManaCost +
                       *(int *)(&g_CardSlot_TapState + card_index * 0x120 + player * 0x5b20) * 0x5b20 +
                       *(int *)(&g_CardSlot_SicknessState + card_index * 0x120 + player * 0x5b20) * 0x120)
-             | 1 << ((uint8_t)g_DefendingPlayer & 0x1f);
+             | 1 << ((uint8_t)g_TurnPlayer & 0x1f);
       }
     }
     if ((card_index == g_EventSourceSlot) && (player == g_EventSourcePlayer)) {
@@ -1282,7 +1282,7 @@ int Card_TitaniasSong_RestoreAbilities(int player,int card_index,int event_code)
   if ((((event_code == 0x33) || (event_code == 0x32)) && (card_index == g_EventSourceSlot)) &&
      (((player == g_EventSourcePlayer &&
        (((&g_CardSlot_Flags)[player * 0x5b20 + card_index * 0x120] & 8) != 0)) &&
-      (player != g_DefendingPlayer)))) {
+      (player != g_TurnPlayer)))) {
     g_CardEventResult = g_CardEventResult + 2;
   }
   return 0;
@@ -1432,7 +1432,7 @@ int Card_PersonalIncarnation_RedirectDamage(int player,int card_index,int event_
   }
   if (event_code == 0x73) {
     if ((((&g_CardSlot_ConvertedManaCost)[card_index * 0x120 + player * 0x5b20] & 1) == 0) ||
-       (((uint8_t)g_PlayerHandCardCount & 4) == 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) == 0)) {
       u_res = 0;
     }
     else {
@@ -1446,7 +1446,7 @@ int Card_PersonalIncarnation_RedirectDamage(int player,int card_index,int event_
   else {
     if (((event_code == 0x6d) &&
         (((&g_CardSlot_ConvertedManaCost)[card_index * 0x120 + player * 0x5b20] & 1) != 0)) &&
-       (((uint8_t)g_PlayerHandCardCount & 4) != 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) != 0)) {
       if (((&DAT_006a5f3d)[card_index * 0x120 + player * 0x5b20] & 0x10) == 0) {
         target_idx = 0;
       }
@@ -1657,7 +1657,7 @@ int Card_AliFromCairo_PreventLethalDamage(int player,int card_index,int event_co
 int Card_AliFromCairo_ResetState(int player,int card_index,int event_code)
 
 {
-  if ((((event_code == 0x80) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) &&
+  if ((((event_code == 0x80) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
       ((char)(&g_CardSlot_Toughness)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20]
        == player)) &&
      ((*(int *)(&g_CardSlot_OriginalCardId +
@@ -1722,7 +1722,7 @@ int Card_ShivanDragon_PumpFirebreathing(int player,int card_index,int event_code
   }
   else {
     if ((event_code == 0x6d) && (val_result = Font_DrawString(player,7,1), val_result != 0)) {
-      if (g_DefendingPlayer == player) {
+      if (g_TurnPlayer == player) {
         Ai_CalcManaRequirement_004ba890(player,0,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -1861,7 +1861,7 @@ int Card_DragonWhelp_PumpFirebreathing(int player,int card_index,int event_code)
   }
   else {
     if ((event_code == 0x6d) && (val_result = Font_DrawString(player,4,1), val_result != 0)) {
-      if (player == g_DefendingPlayer) {
+      if (player == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(player,4,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -1993,7 +1993,7 @@ int Card_DragonWhelp_EndTurnCheck(int player,int card_index,int event_code)
     if ((event_code == 0x6d) &&
        (val_result = Font_DrawString(player,4,1), u_res = g_OverworldPlayerCoordY, val_result != 0)) {
       g_TurnCounter = 0;
-      if (player == g_DefendingPlayer) {
+      if (player == g_TurnPlayer) {
         if (((player == g_ActivePlayerPriority) ||
             ((*(uint32_t *)(&g_CardSlot_TargetSlot + card_index * 0x120 + player * 0x5b20) & 0xff0000) ==
              0x30000)) || (g_AiTemporaryCardState != 1)) {
@@ -2470,7 +2470,7 @@ int Card_ClockworkBeast_GetToughness(int player,int card_index,int event_code)
   }
   if ((((event_code == 0x32) || (event_code == 0x33)) && (card_index == g_EventSourceSlot)) &&
      (player == g_EventSourcePlayer)) {
-    if (player == g_DefendingPlayer) {
+    if (player == g_TurnPlayer) {
       *(uint32_t *)(&g_CardSlot_TargetSlot +
                *(int *)(&g_CardSlot_TypeFlags + card_index * 0x120 + player * 0x5b20) * 0x120 +
                (char)(&g_CardSlot_DamageReceived)[card_index * 0x120 + player * 0x5b20] * 0x5b20) =
@@ -2952,7 +2952,7 @@ int Card_GenericCreature_Regenerate(int player,int card_index,int event_code,uin
   int val_result;
   int uval_3;
   
-  if (((event_code == 0x73) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) &&
+  if (((event_code == 0x73) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
      (*(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) == 0)) {
     is_valid = (&g_CardSlot_CardTypeIndex)[card_index * 0x120 + player * 0x5b20] == '\x02' &&
             (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 2) != 0 &&
@@ -2972,13 +2972,13 @@ int Card_GenericCreature_Regenerate(int player,int card_index,int event_code,uin
     uval_3 = 0;
   }
   else {
-    if (((event_code == 0x6d) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) &&
+    if (((event_code == 0x6d) && ((g_DuelModeFlags._1_1_ & 2) != 0)) &&
        (Ai_CalcManaRequirement_004ba890(player,action_param,extra_flags), g_ActivePlayer != 1)) {
       DAT_00695df8 = 1;
       *(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) =
            *(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) + 1;
     }
-    if ((event_code == 0x72) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+    if ((event_code == 0x72) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
       *(int *)
        (&g_CardSlot_ConvertedManaCost +
        *(int *)(&g_CardSlot_SicknessState + card_index * 0x120 + player * 0x5b20) * 0x120 +
@@ -3098,7 +3098,7 @@ int Card_DrudgeSkeletons_Regenerate(int player,int card_index,int event_code)
     *(int *)(&DAT_006ff694 + player * 0x20) = *(int *)(&DAT_006ff694 + player * 0x20) + 1;
   }
   if (event_code == 0x73) {
-    if (((g_ActivePlayerPriority == player) && (g_DefendingPlayer == player)) &&
+    if (((g_ActivePlayerPriority == player) && (g_TurnPlayer == player)) &&
        ((*(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) != 0 &&
         (g_ScWillyScore < 0x1a)))) {
       u_res = 0;
@@ -3130,7 +3130,7 @@ int Card_DrudgeSkeletons_Regenerate(int player,int card_index,int event_code)
       else {
         g_OverworldPlayerCoordY = 1;
       }
-      if (g_DefendingPlayer == player) {
+      if (g_TurnPlayer == player) {
         Ai_CalcManaRequirement_004ba890(player,1,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -3246,7 +3246,7 @@ int Card_UthdenTroll_Regenerate(int player,int card_index,int event_code)
   }
   else {
     if ((event_code == 0x6d) && (val_result = Font_DrawString(player,1,1), val_result != 0)) {
-      if (player == g_DefendingPlayer) {
+      if (player == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(player,1,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -3374,7 +3374,7 @@ int Card_WillOTheWisp_Regenerate(int player,int card_index,int event_code)
   }
   else {
     if ((event_code == 0x6d) && (val_result = Font_DrawString(player,3,1), val_result != 0)) {
-      if (player == g_DefendingPlayer) {
+      if (player == g_TurnPlayer) {
         Ai_CalcManaRequirement_004ba890(player,3,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -3511,7 +3511,7 @@ int Card_MarrowThieves_Regenerate(int player,int card_index,int event_code)
   }
   else {
     if ((event_code == 0x6d) && (val_result = Font_DrawString(player,2,1), val_result != 0)) {
-      if (g_DefendingPlayer == player) {
+      if (g_TurnPlayer == player) {
         Ai_CalcManaRequirement_004ba890(player,2,-1);
         if (g_TurnCounter < 1) {
           g_ActivePlayer = 1;
@@ -4290,7 +4290,7 @@ int Card_NettlingImp_ForceAttack(int player,int card_index,int event_code)
   
   if (event_code == 0x73) {
     if ((*(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0) {
-      if ((player == g_DefendingPlayer) || (0x1a < g_ScWillyScore)) {
+      if ((player == g_TurnPlayer) || (0x1a < g_ScWillyScore)) {
         slot_idx = 0;
       }
       else {
@@ -4325,7 +4325,7 @@ int Card_NettlingImp_ForceAttack(int player,int card_index,int event_code)
     }
     if (((event_code == 0x15) &&
         (*(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20) != -1)) &&
-       (player != g_DefendingPlayer)) {
+       (player != g_TurnPlayer)) {
       *(uint32_t *)(&g_CardSlot_Flags +
                *(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20) * 0x120
                + (char)(&g_CardSlot_Toughness)[card_index * 0x120 + player * 0x5b20] * 0x5b20) =
@@ -4340,7 +4340,7 @@ int Card_NettlingImp_ForceAttack(int player,int card_index,int event_code)
     }
     if (((event_code == 0x1f) &&
         (*(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20) != -1)) &&
-       ((player != g_DefendingPlayer &&
+       ((player != g_TurnPlayer &&
         (((&g_CardSlot_Flags)
           [*(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20) * 0x120 +
            (char)(&g_CardSlot_Toughness)[card_index * 0x120 + player * 0x5b20] * 0x5b20] & 0x40) ==
@@ -4470,7 +4470,7 @@ int Card_NettlingImp_IsTargetEligible(int player,int card_index,int event_code)
   int temp_idx;
   int slot_idx;
   
-  if (((event_code == 0x1a) && (g_DefendingPlayer == player)) &&
+  if (((event_code == 0x1a) && (g_TurnPlayer == player)) &&
      (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 4) != 0)) {
     val_result = 1 - player;
     is_valid = true;
@@ -5382,7 +5382,7 @@ uint8_t Card_SamiteHealer_PreventDamage(int player,int card_index,int event_code
   if (event_code == 0x73) {
     u_res = 0;
     if ((*(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0 &&
-        ((uint8_t)g_PlayerHandCardCount & 4) != 0) {
+        ((uint8_t)g_DuelModeFlags & 4) != 0) {
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,0,0,0,0,0,0,g_PendingSpellTargetSlot,0xffffffff,
                            0xffffffff,0xffffffff,0,0,0);
       if (val_result == 0) {
@@ -5460,7 +5460,7 @@ int Card_SamiteHealer_CalculateHealAdvantage(int player,int card_index,int event
   
   if (event_code == 0x73) {
     if (((*(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0) &&
-       (((uint8_t)g_PlayerHandCardCount & 4) != 0)) {
+       (((uint8_t)g_DuelModeFlags & 4) != 0)) {
       u_res = 1;
     }
     else {
@@ -5540,7 +5540,7 @@ int Card_AlabasterPotion_HealOrPrevent(int player,int card_index,int event_code)
   
   if (((((g_CurrentStepCode == 0xd3) && (g_EventSourceSlot == card_index)) &&
        (g_EventSourcePlayer == player)) &&
-      ((g_CurrentCardColorTarget == player && (g_DefendingPlayer == player)))) &&
+      ((g_CurrentCardColorTarget == player && (g_TurnPlayer == player)))) &&
      ((g_EventSourcePlayer == player &&
       (((&g_MasterCardColorTable)
         [*(int *)(&g_CardSlot_CardId + DAT_006b2e14 * 0x120 + DAT_00695f08 * 0x5b20) * 0x34] & 4) !=
@@ -5634,7 +5634,7 @@ int Card_DamagePrevention_ReduceDamage(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 0x34) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     (player == g_DefendingPlayer)) {
+     (player == g_TurnPlayer)) {
     g_CardEventResult = g_CardEventResult & 0xffffffdf;
   }
   return 0;
@@ -5768,7 +5768,7 @@ int Card_ErgRaiders_UpkeepDamage(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 199) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     ((player == g_DefendingPlayer &&
+     ((player == g_TurnPlayer &&
       ((*(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_index * 0x120) & 0x30044) == 0)))) {
     if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
       Ai_Subsystem_004cc56d(player,player,card_index,-1,-1,s_Erg_Raiders_take_2_life__0052ec90,0);
@@ -5777,7 +5777,7 @@ int Card_ErgRaiders_UpkeepDamage(int player,int card_index,int event_code)
   }
   if (((g_CurrentStepCode == 0xcd) && (card_index == g_EventSourceSlot)) &&
      ((player == g_EventSourcePlayer &&
-      (((player == g_DefendingPlayer && (player == g_CurrentCardColorTarget)) &&
+      (((player == g_TurnPlayer && (player == g_CurrentCardColorTarget)) &&
        ((*(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_index * 0x120) & 0x30044) == 0)))))) {
     if (event_code == 0x7d) {
       g_CardEventResult = g_CardEventResult | 2;
@@ -5815,7 +5815,7 @@ int Card_ErgRaiders_MarkAttack(int player,int card_index,int event_code)
        * 0x34] == '\0')) {
     g_CardEventResult = 1;
   }
-  if ((event_code == 0x15) && (player == g_DefendingPlayer)) {
+  if ((event_code == 0x15) && (player == g_TurnPlayer)) {
     status = FUN_004726c5(player,card_index);
     if (status != 0) {
       *(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) =
@@ -5824,7 +5824,7 @@ int Card_ErgRaiders_MarkAttack(int player,int card_index,int event_code)
     }
   }
   if (((event_code == 0x22) || (event_code == 199)) &&
-     ((player == g_DefendingPlayer &&
+     ((player == g_TurnPlayer &&
       ((*(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20054) == 0)))) {
     Pic_Subsystem_0044867e(player,card_index,4);
   }
@@ -5931,7 +5931,7 @@ int Card_Leviathan_SacrificeLands(int player,int card_index,int event_code)
   if (((event_code == 0x84) && (g_EventSourceSlot == card_index)) &&
      ((player == g_EventSourcePlayer &&
       (((((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 0x10) != 0 &&
-        (player == g_DefendingPlayer)) && (player == g_CurrentTurnTargetPlayer)))))) {
+        (player == g_TurnPlayer)) && (player == g_CurrentTurnTargetPlayer)))))) {
     *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) | 0x10;
   }
@@ -5960,7 +5960,7 @@ int Card_Leviathan_SacrificeLands(int player,int card_index,int event_code)
     if ((((g_CurrentStepCode == 0xdc) &&
          ((((g_ScWillyScore == 0x15 && (g_EventSourceSlot == card_index)) &&
            (player == g_EventSourcePlayer)) &&
-          ((g_CurrentCardColorTarget == g_DefendingPlayer &&
+          ((g_CurrentCardColorTarget == g_TurnPlayer &&
            (*(int *)(&g_CardSlot_TargetSlot + card_index * 0x120 + player * 0x5b20) == 0)))))) &&
         (player == DAT_00695f08)) && (DAT_006b2e14 == card_index)) {
       status = Card_UntapCard(player,card_index,2);
@@ -6418,7 +6418,7 @@ bool Card_ProdigalSorcerer_PingTarget(int player,int card_index,int event_code)
       *(int *)(&DAT_00695eb8 + (1 - player) * 4) =
            *(int *)(&DAT_00695eb8 + (1 - player) * 4) + -1;
     }
-    if ((((event_code == 199) && (player == g_DefendingPlayer)) && (player == g_ActivePlayerPriority)
+    if ((((event_code == 199) && (player == g_TurnPlayer)) && (player == g_ActivePlayerPriority)
         ) && ((*(uint32_t *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0)
        ) {
       g_SpellStackDepth = g_SpellStackDepth + 0x18;
@@ -6774,7 +6774,7 @@ int Card_PirateShip_HasIsland(int player,int card_index,int event_code)
 int Card_PirateShip_AttackTrigger(int player,int card_index,int event_code)
 
 {
-  if (((event_code == 0x1a) && (player != g_DefendingPlayer)) &&
+  if (((event_code == 0x1a) && (player != g_TurnPlayer)) &&
      ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] != -1)) {
     *(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) = 1;
   }
@@ -6805,7 +6805,7 @@ int Card_IslandFishJasconius_PayToUntap(int player,int card_index,int event_code
   
   if (((((event_code == 0x84) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
       ((((&g_CardSlot_Flags)[player * 0x5b20 + card_index * 0x120] & 0x10) != 0 &&
-       (player == g_DefendingPlayer)))) && (player == g_CurrentTurnTargetPlayer)) {
+       (player == g_TurnPlayer)))) && (player == g_CurrentTurnTargetPlayer)) {
     *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) =
          *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) | 0x10;
     (&DAT_006a603e)[player * 0x5b20 + card_index * 0x120] =
@@ -6823,7 +6823,7 @@ int Card_IslandFishJasconius_PayToUntap(int player,int card_index,int event_code
     (&DAT_006a603e)[player * 0x5b20 + card_index * 0x120] =
          (&DAT_006a603e)[player * 0x5b20 + card_index * 0x120] + '\x03';
   }
-  if ((((g_CurrentStepCode == 0xca) && (player == g_DefendingPlayer)) &&
+  if ((((g_CurrentStepCode == 0xca) && (player == g_TurnPlayer)) &&
       ((card_index == g_EventSourceSlot &&
        ((player == g_EventSourcePlayer && (player == g_CurrentCardColorTarget)))))) &&
      (((&g_CardSlot_Flags)[player * 0x5b20 + card_index * 0x120] & 0x10) != 0)) {
@@ -7333,18 +7333,18 @@ int Card_KhabalGhoul_AddCounterOnDeath(int player,int card_index,int event_code)
   int status;
   int slot_idx;
   
-  if ((event_code == 0x73) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+  if ((event_code == 0x73) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = Card_GenericCreature_Regenerate(player,card_index,0x73,0,0);
     status = Card_GetCounters(player,card_index);
     if (status == 0) {
       slot_idx = 0;
     }
   }
-  else if ((event_code == 0x6d) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+  else if ((event_code == 0x6d) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = Card_GenericCreature_Regenerate(player,card_index,0x6d,0,0);
     Card_RemoveCounters(player,card_index,1);
   }
-  else if ((event_code == 0x72) && ((g_PlayerHandCardCount._1_1_ & 2) != 0)) {
+  else if ((event_code == 0x72) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     slot_idx = Card_GenericCreature_Regenerate(player,card_index,0x72,0,0);
   }
   else {
@@ -7487,7 +7487,7 @@ int Card_KhabalGhoul_ApplyCounterBonus(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 0x85) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     ((player == g_DefendingPlayer && (player == g_CurrentTurnTargetPlayer)))) {
+     ((player == g_TurnPlayer && (player == g_CurrentTurnTargetPlayer)))) {
     *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) =
          *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) | 1;
     (&DAT_006a6049)[player * 0x5b20 + card_index * 0x120] =
@@ -7518,7 +7518,7 @@ int Card_KhabalGhoul_ResetCounterBonus(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 0x85) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     ((player == g_DefendingPlayer && (g_CurrentTurnTargetPlayer == player)))) {
+     ((player == g_TurnPlayer && (g_CurrentTurnTargetPlayer == player)))) {
     *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) | 1;
     (&DAT_006a604a)[card_index * 0x120 + player * 0x5b20] =
@@ -7629,7 +7629,7 @@ int Card_LordOfAtlantis_RemoveMerfolkBuff(int player,int card_index,int event_co
 {
   int status;
   
-  if (((event_code == 0x1a) && (g_DefendingPlayer != player)) &&
+  if (((event_code == 0x1a) && (g_TurnPlayer != player)) &&
      ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] != -1)) {
     *(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) = 1;
     status = Util_GetRandomNumber(2);
@@ -7708,7 +7708,7 @@ int Card_ForceOfNature_PayUpkeep(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 0x85) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     ((player == g_DefendingPlayer && (g_CurrentTurnTargetPlayer == player)))) {
+     ((player == g_TurnPlayer && (g_CurrentTurnTargetPlayer == player)))) {
     *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) =
          *(uint32_t *)(&g_CardSlot_SpecialState + player * 0x5b20 + card_index * 0x120) | 1;
     (&DAT_006a604b)[player * 0x5b20 + card_index * 0x120] =
@@ -7882,7 +7882,7 @@ int Card_CosmicHorror_PayUpkeep(int player,int card_index,int event_code)
 
 {
   if ((((event_code == 0x85) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) &&
-     ((player == g_DefendingPlayer && (g_CurrentTurnTargetPlayer == player)))) {
+     ((player == g_TurnPlayer && (g_CurrentTurnTargetPlayer == player)))) {
     *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) | 1;
     (&DAT_006a6049)[card_index * 0x120 + player * 0x5b20] =
@@ -7934,7 +7934,7 @@ int Card_LordOfThePit_SacrificeOrDamage(int player,int card_index,int event_code
   if ((((event_code == 0x85) && (card_index == g_EventSourceSlot)) &&
       ((player == g_EventSourcePlayer &&
        ((*(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) == 0 &&
-        (player == g_DefendingPlayer)))))) && (g_CurrentTurnTargetPlayer == player)) {
+        (player == g_TurnPlayer)))))) && (g_CurrentTurnTargetPlayer == player)) {
     *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) | 0x101;
     status = Card_LordOfThePit_FindSacrificeCandidate(player,card_index);
@@ -8233,7 +8233,7 @@ int Card_NetherShadow_ReturnFromGrave(int player,int card_index,int event_code)
   int match_count;
   
   if (((((g_CurrentStepCode == 0xcb) || (event_code == 199)) && (card_index == g_EventSourceSlot)) &&
-      ((player == g_EventSourcePlayer && (player == g_DefendingPlayer)))) &&
+      ((player == g_EventSourcePlayer && (player == g_TurnPlayer)))) &&
      (g_CurrentCardColorTarget == player)) {
     status = Pic_Subsystem_0045268f(0xab);
     player_idx = 0;
@@ -9026,7 +9026,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
     }
     if (event_code == 0x1a) {
       temp_idx = 1 - (char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120];
-      if (((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] == g_DefendingPlayer
+      if (((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] == g_TurnPlayer
           ) && (((&g_CardSlot_Flags)
                  [*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_index * 0x120) *
                   0x120 + (char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] *
@@ -9055,7 +9055,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
           }
         }
       }
-      if (((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] != g_DefendingPlayer
+      if (((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] != g_TurnPlayer
           ) && ((&g_CardSlot_ColorMask)
                 [*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_index * 0x120) *
                  0x120 + (char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_index * 0x120] *
@@ -9118,7 +9118,7 @@ int Card_Venom_AttachToCreature(int player,int card_index,int event_code)
   }
   if (event_code == 0x1a) {
     player = 1 - player;
-    if ((player == g_DefendingPlayer) &&
+    if ((player == g_TurnPlayer) &&
        (((&g_CardSlot_Flags)[player * 0x5b20 + card_index * 0x120] & 0x44) != 0)) {
       if ((&g_CardSlot_ColorMask)[player * 0x5b20 + card_index * 0x120] == -1) {
         target_idx = card_index;
@@ -9137,7 +9137,7 @@ int Card_Venom_AttachToCreature(int player,int card_index,int event_code)
         }
       }
     }
-    if ((player != g_DefendingPlayer) &&
+    if ((player != g_TurnPlayer) &&
        ((&g_CardSlot_ColorMask)[player * 0x5b20 + card_index * 0x120] != -1)) {
       c_res = (&g_CardSlot_ColorMask)
               [player * 0x5b20 + (char)(&g_CardSlot_ColorMask)[player * 0x5b20 + card_index * 0x120] * 0x120
@@ -9196,7 +9196,7 @@ int Card_Venom_CombatDamageTrigger(int player,int card_index,int event_code)
   int val_result;
   int match_count;
   
-  if ((((event_code == 0x1a) && (player = 1 - player, player != g_DefendingPlayer)) &&
+  if ((((event_code == 0x1a) && (player = 1 - player, player != g_TurnPlayer)) &&
       ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] != -1)) &&
      (*(int *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) == 0)) {
     *(uint32_t *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) =
@@ -9252,7 +9252,7 @@ int Card_Venom_DestroyAtEndOfCombat(int player,int card_index,int event_code)
   
   player = 1 - player;
   if (((event_code == 0x77) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    if ((player == g_DefendingPlayer) &&
+    if ((player == g_TurnPlayer) &&
        (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 0x44) != 0)) {
       for (card_idx = 0; card_idx < 0x50; card_idx = card_idx + 1) {
         if (((char)(&g_CardSlot_ColorMask)[card_idx * 0x120 + player * 0x5b20] == card_index) &&
@@ -9262,7 +9262,7 @@ int Card_Venom_DestroyAtEndOfCombat(int player,int card_index,int event_code)
         }
       }
     }
-    if ((player != g_DefendingPlayer) &&
+    if ((player != g_TurnPlayer) &&
        ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] != -1)) {
       c_res = (&g_CardSlot_ColorMask)
               [player * 0x5b20 + (char)(&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] * 0x120
@@ -9399,7 +9399,7 @@ int Card_Venom_ClearAuraFlags(int player,int card_index,int event_code)
     bVar4 = Card_SetTapState(player,card_index,3);
     is_match = Card_SetTapState(player,card_index,5);
     uval_6 = 1 << (bVar4 & 0x1f) | 1 << (is_match & 0x1f);
-    if ((player == g_DefendingPlayer) &&
+    if ((player == g_TurnPlayer) &&
        (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 0x44) != 0)) {
       if ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] == -1) {
         color_idx = card_index;
@@ -9417,7 +9417,7 @@ int Card_Venom_ClearAuraFlags(int player,int card_index,int event_code)
         }
       }
     }
-    if ((player != g_DefendingPlayer) &&
+    if ((player != g_TurnPlayer) &&
        ((&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] != -1)) {
       c_res = (&g_CardSlot_ColorMask)
               [player * 0x5b20 + (char)(&g_CardSlot_ColorMask)[card_index * 0x120 + player * 0x5b20] * 0x120

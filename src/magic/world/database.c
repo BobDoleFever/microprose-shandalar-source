@@ -414,18 +414,18 @@ uint32_t Rules_ParseFilter_0040360b
           strcat(&local_d0,s__blocked_00516174);
         }
         if (((arg_19 & 0x10) != 0) &&
-           ((card_id == g_DefendingPlayer ||
+           ((card_id == g_TurnPlayer ||
             ((&g_CardSlot_ColorMask)[color_mask * 0x120 + card_id * 0x5b20] == -1)))) {
           bVar4 = true;
           strcat(&local_d0,s__blocking_00516180);
         }
         if ((arg_19 & 0x20) != 0) {
           bVar5 = false;
-          if (((g_ScWillyScore < 0x15) || (0x1d < g_ScWillyScore)) || (card_id == g_DefendingPlayer)
+          if (((g_ScWillyScore < 0x15) || (0x1d < g_ScWillyScore)) || (card_id == g_TurnPlayer)
              ) {
             bVar5 = true;
           }
-          else if ((card_id == g_DefendingPlayer) ||
+          else if ((card_id == g_TurnPlayer) ||
                   ((&g_CardSlot_ColorMask)[color_mask * 0x120 + card_id * 0x5b20] == -1)) {
             bVar5 = true;
           }
@@ -504,7 +504,7 @@ uint32_t Rules_ParseFilter_0040360b
         }
         if (((((arg_20 & 0x10) != 0) || ((arg_20 & 0x20) != 0)) &&
             ((&g_CardSlot_ColorMask)[color_mask * 0x120 + card_id * 0x5b20] != -1)) &&
-           (card_id != g_DefendingPlayer)) {
+           (card_id != g_TurnPlayer)) {
           bVar4 = true;
           strcat(&local_d0,s__blocking_00516214);
         }

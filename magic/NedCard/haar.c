@@ -3882,7 +3882,7 @@ undefined4 FUN_004f7869(int hDIBSection,int card_slot,int arg_3)
     }
     if (arg_3 == 0x71) {
       local_1c = 0;
-      local_14 = g_DefendingPlayer;
+      local_14 = g_TurnPlayer;
       while (local_1c < 2) {
         local_20 = 0;
         for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_14]; local_8 = local_8 + 1
@@ -3896,7 +3896,7 @@ undefined4 FUN_004f7869(int hDIBSection,int card_slot,int arg_3)
           Prompts_Load_0046fa40(local_14,1,0);
         }
         local_1c = local_1c + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           local_14 = local_14 + 1;
         }
         else {
@@ -4119,7 +4119,7 @@ undefined4 FUN_004f7eee(int hDIBSection,int card_slot,int arg_3)
   else {
     if (arg_3 == 0x71) {
       local_10 = 0;
-      local_8 = g_DefendingPlayer;
+      local_8 = g_TurnPlayer;
       while (local_10 < 2) {
         local_14 = 0;
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
@@ -4137,7 +4137,7 @@ undefined4 FUN_004f7eee(int hDIBSection,int card_slot,int arg_3)
         Pic_Subsystem_00452276(local_8);
         FUN_004f823a(local_8,local_14);
         local_10 = local_10 + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           local_8 = local_8 + 1;
         }
         else {
@@ -4178,7 +4178,7 @@ undefined4 FUN_004f8031(int hDIBSection,int card_slot,int arg_3)
     }
     if (arg_3 == 0x71) {
       local_10 = 0;
-      local_8 = g_DefendingPlayer;
+      local_8 = g_TurnPlayer;
       while (local_10 < 2) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
@@ -4203,7 +4203,7 @@ undefined4 FUN_004f8031(int hDIBSection,int card_slot,int arg_3)
         Pic_Subsystem_00452276(local_8);
         FUN_004f823a(local_8,7);
         local_10 = local_10 + 1;
-        if (g_DefendingPlayer == 0) {
+        if (g_TurnPlayer == 0) {
           local_8 = local_8 + 1;
         }
         else {
@@ -5481,7 +5481,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
                                             target_id * 0x120 + spell_id * 0x5b20));
       g_SpellStackDepth = g_SpellStackDepth - (int)(0x48 / (longlong)iVar1);
       if ((g_CurrentTurnPhase == spell_id) && (g_IsAiThinking != 1)) {
-        if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+        if ((g_DuelModeFlags._1_1_ & 4) == 0) {
           local_14 = Font_DrawString(spell_id,7,1);
           local_14 = local_14 + -1;
           arg_19 = 0;
@@ -5652,7 +5652,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
         *(int *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) =
              g_TurnCounter;
         if (g_IsAiThinking == 1) {
-          if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+          if ((g_DuelModeFlags._1_1_ & 4) == 0) {
             arg_3 = 5;
             iVar10 = 1;
             iVar1 = Math_RandomRange((g_TurnCounter + 1) / 2);
@@ -7424,7 +7424,7 @@ undefined4 Prompts_Load_004fe9b6(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
        (g_EventSourcePlayer == spell_id)) {
-      if ((g_PlayerHandCardCount._1_1_ & 4) == 0) {
+      if ((g_DuelModeFlags._1_1_ & 4) == 0) {
         g_TurnCounter = 0;
         Ai_CalcManaRequirement_004ba890(spell_id,1,-1);
         if (g_ActivePlayer == 1) {

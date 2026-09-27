@@ -77,15 +77,15 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
 extern int32_t g_DuelDebugModeFlag;
@@ -299,7 +299,7 @@ int Duel_ApplyCombatDamage(int attacker_player,int attacker_slot,int defender_pl
                iVar2 << 0x10 | *(uint *)(&DAT_004ff590 + local_10 * 0x34);
         }
       }
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool | 2;
+      g_DuelModeFlags = g_DuelModeFlags | 2;
     }
   }
   return iVar1;

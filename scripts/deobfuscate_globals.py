@@ -30,13 +30,13 @@ def main():
 
         # Player & Turn State
         "006a49fc": "g_ActivePlayer",
-        "0068a71c": "g_DefendingPlayer",
+        "0068a71c": "g_TurnPlayer",
         "006a49e0": "g_CurrentTurnPhase",
         "006a49f8": "g_TurnCounter",
         "006a492c": "g_ActivePlayerPriority",
         "006a285c": "g_IsAiThinking",
         "006a4a00": "g_PlayerCreatureCount",
-        "006a4a08": "g_PlayerHandCardCount",
+        "006a4a08": "g_DuelModeFlags",
         "00695e80": "g_PlayerLifeTotals",
         "006808b8": "g_PlayerActiveCardCount",
         "006ff558": "g_ScWillyScore",

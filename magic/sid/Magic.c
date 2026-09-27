@@ -72,7 +72,7 @@ void Magic_ScanCards(int color_mask)
         (**(code **)(&DAT_0051aec8 +
                     *(int *)(&g_CardSlot_CardId + local_8 * 0x5b20 + arg2 * 0x120) * 0x34))
                   (local_8,arg2,color_mask);
-        if ((((color_mask == 0x15) && (g_DefendingPlayer == local_8)) &&
+        if ((((color_mask == 0x15) && (g_TurnPlayer == local_8)) &&
             (((byte)*(int *)(&g_CardSlot_Flags + local_8 * 0x5b20 + arg2 * 0x120) & 0x14) ==
              4)) && (iVar2 = FUN_004728c3(local_8,arg2), iVar2 == 0)) {
           *(uint *)(&g_CardSlot_Flags + local_8 * 0x5b20 + arg2 * 0x120) =
@@ -83,7 +83,7 @@ void Magic_ScanCards(int color_mask)
       }
     }
   }
-  if ((color_mask == 0x15) && (g_DefendingPlayer == local_8)) {
+  if ((color_mask == 0x15) && (g_TurnPlayer == local_8)) {
     FUN_00472fae();
   }
   DAT_006fe3f8 = DAT_006fe3f8 + -1;
@@ -132,7 +132,7 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
     iVar2 = (**(code **)(&DAT_0051aec8 +
                         *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + color_mask * 0x5b20) * 0x34))
                       (color_mask,arg_2,arg_3);
-    if ((((iVar2 != 99) && ((g_PlayerHandCardCount & 0x224) != 0)) &&
+    if ((((iVar2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) &&
         ((arg_3 == 0x74 || (arg_3 == 0x73)))) &&
        (iVar3 = Magic_IsManaSource(color_mask,arg_2), iVar3 == 0)) {
       DAT_006a4920 = uVar1;
@@ -864,10 +864,10 @@ int Magic_ResolveTopSpell(void)
     }
     (&g_SpellStackObjects)[g_SpellStackCount * 2] = 0xffffffff;
     FUN_00472fae();
-    if (((((&DAT_0051aed1)[local_c * 0x34] & 0x10) == 0) || (((byte)g_PlayerHandCardCount & 2) != 0)
-        ) && ((DAT_006fd3f0 < 2 && (((g_PlayerHandCardCount._1_1_ & 2) == 0 || (g_SpellStackCount == 0)))
+    if (((((&DAT_0051aed1)[local_c * 0x34] & 0x10) == 0) || (((byte)g_DuelModeFlags & 2) != 0)
+        ) && ((DAT_006fd3f0 < 2 && (((g_DuelModeFlags._1_1_ & 2) == 0 || (g_SpellStackCount == 0)))
               ))) {
-      Pic_Subsystem_004475a4(g_DefendingPlayer);
+      Pic_Subsystem_004475a4(g_TurnPlayer);
       Pic_Subsystem_004488a0();
     }
   }
@@ -953,8 +953,8 @@ int FUN_00475c8a(int x,int arg_2,char *arg_3,int arg_4)
   DAT_0063ee1c = uVar1;
   if (g_SpellStackCount == 0) {
     DAT_0063ee1c = 0;
-    *(uint *)(&DAT_00696740 + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) =
-         *(uint *)(&DAT_00696740 + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) & 0xfffffffd;
+    *(uint *)(&DAT_00696740 + g_TurnPlayer * 0x98 + g_ScWillyScore * 4) =
+         *(uint *)(&DAT_00696740 + g_TurnPlayer * 0x98 + g_ScWillyScore * 4) & 0xfffffffd;
   }
   return uVar3;
 }
@@ -1008,8 +1008,8 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int arg_4)
   }
   iVar4 = FUN_00505c74();
   if ((iVar4 == 0) &&
-     ((*(int *)(&DAT_00696740 + g_DefendingPlayer * 0x98 + y * 4) != 0 ||
-      ((g_DefendingPlayer == DAT_00627a84 && (y == DAT_00627a88)))))) {
+     ((*(int *)(&DAT_00696740 + g_TurnPlayer * 0x98 + y * 4) != 0 ||
+      ((g_TurnPlayer == DAT_00627a84 && (y == DAT_00627a88)))))) {
     DAT_006808b0 = 1;
   }
   else {
@@ -1035,12 +1035,12 @@ LAB_0047615d:
   }
   strcpy(local_8c,str_3);
   if ((g_ScWillyScore == 4) && (DAT_006ff684 == 1)) {
-    DAT_0063edc0 = g_DefendingPlayer;
+    DAT_0063edc0 = g_TurnPlayer;
     FUN_00476b0e();
   }
   do {
     do {
-      if (g_DefendingPlayer == 0) {
+      if (g_TurnPlayer == 0) {
         DAT_0068a67c = 1;
       }
       else if (x < 0) {
@@ -1054,11 +1054,11 @@ LAB_0047615d:
       }
       g_ActivePlayer = 0;
       DAT_006a4920 = 0;
-      local_98 = Pic_Subsystem_004458b0(g_DefendingPlayer,local_8c);
+      local_98 = Pic_Subsystem_004458b0(g_TurnPlayer,local_8c);
       if (local_98 != 0) {
         DAT_006ff380 = 1;
       }
-      if (((g_DefendingPlayer == g_CurrentTurnPhase) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
+      if (((g_TurnPlayer == g_CurrentTurnPhase) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
         local_94 = 1;
       }
       if ((DAT_006ff684 < DAT_006b2d24) && (-1 < g_SpellStackCount)) {
@@ -1066,11 +1066,11 @@ LAB_0047615d:
       }
     } while ((local_98 != 0) || (((DAT_006a4920 & 1) != 0 && (DAT_006ff684 == 1))));
     if ((g_ScWillyScore == 4) && (DAT_006ff684 == 1)) {
-      DAT_0063edc0 = 1 - g_DefendingPlayer;
+      DAT_0063edc0 = 1 - g_TurnPlayer;
       FUN_00476b0e();
     }
     while( true ) {
-      if (g_DefendingPlayer == 0) {
+      if (g_TurnPlayer == 0) {
         if (x < 0) {
           DAT_0068a67c = 2;
         }
@@ -1087,11 +1087,11 @@ LAB_0047615d:
       g_ActivePlayer = 0;
       DAT_006a4920 = 0;
       if (((DAT_006ff684 < DAT_006b2d24) && (-1 < g_SpellStackCount)) ||
-         (iVar4 = Pic_Subsystem_004458b0(1 - g_DefendingPlayer,local_8c), iVar4 == 0))
+         (iVar4 = Pic_Subsystem_004458b0(1 - g_TurnPlayer,local_8c), iVar4 == 0))
       goto LAB_0047615d;
       DAT_006ff380 = 1;
       if (g_IsAiThinking != 1) break;
-      if ((g_DefendingPlayer != g_CurrentTurnPhase) &&
+      if ((g_TurnPlayer != g_CurrentTurnPhase) &&
          (((DAT_006a4920 & 1) == 0 || (DAT_006ff684 != 1)))) goto LAB_0047615d;
     }
   } while( true );

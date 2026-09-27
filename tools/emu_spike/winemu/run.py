@@ -128,6 +128,7 @@ def main(argv=None):
     ap.add_argument("--dump-bitmaps", action="store_true", help="save the game's large off-screen bitmaps as PNG")
     ap.add_argument("--break", dest="breaks", action="append", default=[],
                     help="trace a guest function: ADDR:label:nargs[:stringargs], e.g. 0x48e8f2:RunTurnStep:4:2")
+    ap.add_argument("--watch", action="append", default=[], help="log writes to a guest dword: ADDR:label")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
@@ -146,6 +147,9 @@ def main(argv=None):
         m.add_trace(int(parts[0], 16), parts[1], int(parts[2]),
                     tuple(int(x) for x in parts[3].split(",") if x) if len(parts) > 3 else (),
                     ret="ret" in flags, describe=(lambda a, mm=m: card_desc(mm, a)) if "card" in flags else None)
+    for spec in args.watch:
+        a, lab = spec.split(":", 1)
+        m.add_watch(int(a, 16), lab)
     m.trace = args.trace or bool(args.trace_only)
     if args.trace_only:
         rx = re.compile(args.trace_only)
