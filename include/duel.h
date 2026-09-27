@@ -3049,7 +3049,7 @@ void FUN_0048b5c9(int32_t player,int card_slot);;
 void FUN_0048b64f(void);;
 
 /* Function at 0048b81a (Size: 2824 bytes) */
-uint32_t Duel_TapCardForMana(int x,int y,int width,int32_t flags);;
+uint32_t Duel_QueryCardAttribute(int player, int slot, int event_code, int32_t target_slot);;
 
 /* Function at 0048c367 (Size: 121 bytes) */
 int32_t Duel_ColorMaskToIndex(uint8_t max_val);;
@@ -3070,7 +3070,7 @@ void Magic_ScanCards(int max_val);;
 int Duel_PlayCardSoundEffect(int max_val,int point,int hBitmap,int32_t flags,int32_t damage);;
 
 /* Function at 0048ca2a (Size: 159 bytes) */
-bool FUN_0048ca2a(int player,int card_slot);;
+bool Magic_IsManaSource(int player,int slot);;
 
 /* Function at 0048cac9 (Size: 182 bytes) */
 void FUN_0048cac9(void);;
@@ -3094,7 +3094,7 @@ void Duel_PreloadSoundEffects(void);;
 void FUN_0048d3af(void);;
 
 /* Function at 0048d3bf (Size: 44 bytes) */
-int32_t Mem_AllocOrFree_0048d3bf(void);;
+int32_t Magic_ClearSpellStack(void);;
 
 /* Function at 0048d3eb (Size: 51 bytes) */
 int32_t FUN_0048d3eb(void);;
@@ -3103,7 +3103,7 @@ int32_t FUN_0048d3eb(void);;
 int32_t FUN_0048d41e(int32_t max_val);;
 
 /* Function at 0048d878 (Size: 1062 bytes) */
-int32_t FUN_0048d878(int max_val,int point,int hBitmap,int flags,int32_t damage);;
+int32_t Magic_PushSpellStack(int player,int slot,int event_code,int target_slot,int32_t flags);;
 
 /* Function at 0048dc9e (Size: 165 bytes) */
 int32_t FUN_0048dc9e(void);;
@@ -3127,7 +3127,7 @@ int FUN_0048e405(int x,int y,uint32_t *hBitmap,int32_t flags);;
 int32_t FUN_0048e8a8(int x,int32_t point,int32_t hBitmap,int flags);;
 
 /* Function at 0048e8f2 (Size: 495 bytes) */
-int32_t FUN_0048e8f2(int x,int32_t point,int32_t hBitmap,int height);;
+int32_t Magic_RunTurnStep(int player,int32_t step_code,char *step_name,int repeat_while_active);;
 
 /* Function at 0048eae1 (Size: 68 bytes) */
 int32_t FUN_0048eae1(void);;

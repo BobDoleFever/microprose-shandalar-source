@@ -614,10 +614,11 @@ class Machine:
                 out(f"      {n:7d}  {body}")
             self.trace_total = {}
 
-    def add_trace(self, addr, label, nargs, strings=(), sink=None):
+    def add_trace(self, addr, label, nargs, strings=(), sink=None, ret=False, describe=None):
         """Log every entry to a guest function: virtual time, thread, its `nargs` stack arguments and the caller.
         `strings` lists argument positions that are C strings (shown as text). One hook per function, so it costs
-        nothing when the function is not running."""
+        nothing when the function is not running. With `ret`, the return value (eax) is logged when the call comes
+        back; `describe(args)` adds text to both lines (for example a card's name)."""
         sink = sink if sink is not None else self.log
 
         def hook(uc, address, size, user):
@@ -633,6 +634,17 @@ class Machine:
                         pass
                 shown.append(f"0x{a:x}" if a > 0xFFFF else str(S32(a)))
             body = f"{label}({', '.join(shown)}) <- 0x{self.r32(esp):08x}"
+            if describe:
+                try:
+                    body += "  " + describe(args)
+                except Exception:
+                    pass
+            if ret:
+                retaddr = self.r32(esp)
+                pending.setdefault(retaddr, []).append((esp + 4, body))   # cdecl: esp is entry+4 after the return
+                if retaddr not in ret_hooked:
+                    ret_hooked.add(retaddr)
+                    self.uc.hook_add(UC_HOOK_CODE, on_ret, begin=retaddr, end=retaddr)
             # A burst repeats the same few calls thousands of times in a few milliseconds (the spell-chain loop):
             # print each distinct call twice per 50 ms of virtual time, then only count the rest.
             key = (body, int(self.vt * 20))
@@ -645,6 +657,18 @@ class Machine:
             elif n == 3:
                 sink(f"   [trace {self.vt:8.3f}s ...] (further identical calls in this 50 ms are counted, not shown)")
             self.trace_total[body] = self.trace_total.get(body, 0) + 1
+        pending, ret_hooked = {}, set()
+
+        def on_ret(uc, address, size, user):
+            esp = uc.reg_read(UC_X86_REG_ESP)
+            calls = pending.get(address, [])
+            for i in range(len(calls) - 1, -1, -1):
+                if calls[i][0] == esp:
+                    body = calls[i][1]
+                    del calls[i]
+                    sink(f"   [ret   {self.vt:8.3f}s] {body} = {S32(uc.reg_read(UC_X86_REG_EAX))}")
+                    break
+
         self.uc.hook_add(UC_HOOK_CODE, hook, begin=addr, end=addr)
 
     def report_threads(self):

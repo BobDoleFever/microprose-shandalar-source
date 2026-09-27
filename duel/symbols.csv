@@ -12409,7 +12409,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048c9e2,"LAB_0048c9e2",Label,true,false
 0048ca0e,"LAB_0048ca0e",Label,true,false
 0048ca25,"LAB_0048ca25",Label,true,false
-0048ca2a,"FUN_0048ca2a",Function,true,true
+0048ca2a,"Magic_IsManaSource",Function,true,true
 0048caa9,"LAB_0048caa9",Label,true,false
 0048cab0,"LAB_0048cab0",Label,true,false
 0048cab5,"LAB_0048cab5",Label,true,false
@@ -12470,7 +12470,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048d344,"LAB_0048d344",Label,true,false
 0048d3aa,"LAB_0048d3aa",Label,true,false
 0048d3af,"FUN_0048d3af",Function,true,true
-0048d3bf,"Mem_AllocOrFree_0048d3bf",Function,true,true
+0048d3bf,"Magic_ClearSpellStack",Function,true,true
 0048d3e6,"LAB_0048d3e6",Label,true,false
 0048d3eb,"FUN_0048d3eb",Function,true,true
 0048d408,"LAB_0048d408",Label,true,false
@@ -12481,7 +12481,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048d7ff,"LAB_0048d7ff",Label,true,false
 0048d819,"LAB_0048d819",Label,true,false
 0048d873,"LAB_0048d873",Label,true,false
-0048d878,"FUN_0048d878",Function,true,true
+0048d878,"Magic_PushSpellStack",Function,true,true
 0048d895,"LAB_0048d895",Label,true,false
 0048da7f,"LAB_0048da7f",Label,true,false
 0048dabd,"LAB_0048dabd",Label,true,false
@@ -12558,7 +12558,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048e8a3,"LAB_0048e8a3",Label,true,false
 0048e8a8,"FUN_0048e8a8",Function,true,true
 0048e8ed,"LAB_0048e8ed",Label,true,false
-0048e8f2,"FUN_0048e8f2",Function,true,true
+0048e8f2,"Magic_RunTurnStep",Function,true,true
 0048e931,"LAB_0048e931",Label,true,false
 0048e944,"LAB_0048e944",Label,true,false
 0048e95d,"LAB_0048e95d",Label,true,false

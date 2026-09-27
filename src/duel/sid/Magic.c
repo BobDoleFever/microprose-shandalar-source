@@ -116,7 +116,7 @@ int Duel_PlayCardSoundEffect(int player_id,int card_slot,int event_type,int32_t 
                         *(int *)(&g_DuelCardSlot_CardId + arg_2 * 0x120 + color_mask * 0x5b20) * 0x34))
                       (color_mask,arg_2,arg_3);
     if ((((val_2 != 99) && ((g_DuelPlayerManaPool & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
-       && (val_3 = FUN_0048ca2a(color_mask,arg_2), val_3 == 0)) {
+       && (val_3 = Magic_IsManaSource(color_mask,arg_2), val_3 == 0)) {
       DAT_00676500 = uval_1;
       FUN_0048cb7f();
       return 0;
@@ -130,13 +130,13 @@ int Duel_PlayCardSoundEffect(int player_id,int card_slot,int event_type,int32_t 
 
 
 /*
- * Decompiled function: FUN_0048ca2a
+ * Decompiled function: Magic_IsManaSource
  * Entry Point: 0048ca2a
  * Size: 159 bytes
  */
 
 
-bool FUN_0048ca2a(int x,int arg2)
+bool Magic_IsManaSource(int x,int arg2)
 
 {
   bool flag_1;
@@ -256,8 +256,8 @@ void FUN_0048cc29(void)
         val_1 = *(int *)(&g_DuelCardSlot_CardId + match_count * 0x5b20 + card_idx * 0x120);
         color_mask = (&DAT_004ff596)[val_1 * 0x34];
         if (((&g_DuelMasterCardTable)[val_1 * 0x34] & 2) != 0) {
-          val_2 = Duel_TapCardForMana(match_count, card_idx, 0x32, 0xffffffff);
-          val_3 = Duel_TapCardForMana(match_count,card_idx,0x33,0xffffffff);
+          val_2 = Duel_QueryCardAttribute(match_count, card_idx, 0x32, 0xffffffff);
+          val_3 = Duel_QueryCardAttribute(match_count,card_idx,0x33,0xffffffff);
           val_4 = Duel_ColorMaskToIndex(color_mask);
           *(int *)(&DAT_0068ede0 + val_4 * 4 + match_count * 0x20) =
                *(int *)(&DAT_0068ede0 + val_4 * 4 + match_count * 0x20) + val_2;
@@ -465,13 +465,13 @@ void FUN_0048d3af(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_0048d3bf
+ * Decompiled function: Magic_ClearSpellStack
  * Entry Point: 0048d3bf
  * Size: 44 bytes
  */
 
 
-int32_t Mem_AllocOrFree_0048d3bf(void)
+int32_t Magic_ClearSpellStack(void)
 
 {
   DAT_006764b8 = 0;
@@ -572,13 +572,13 @@ int32_t FUN_0048d41e(int32_t color_mask)
 
 
 /*
- * Decompiled function: FUN_0048d878
+ * Decompiled function: Magic_PushSpellStack
  * Entry Point: 0048d878
  * Size: 1062 bytes
  */
 
 
-int32_t FUN_0048d878(int player_id,int card_slot,int event_type,int arg_4,int32_t arg_5)
+int32_t Magic_PushSpellStack(int player_id,int card_slot,int event_type,int arg_4,int32_t arg_5)
 
 {
   int32_t uval_1;
@@ -995,21 +995,21 @@ LAB_0048e800:
 int32_t FUN_0048e8a8(int x,int32_t arg_2,int32_t arg_3,int arg_4)
 
 {
-  FUN_0048e8f2(x,arg_2,arg_3,arg_4);
-  FUN_0048e8f2(1 - x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(1 - x,arg_2,arg_3,arg_4);
   return 1;
 }
 
 
 
 /*
- * Decompiled function: FUN_0048e8f2
+ * Decompiled function: Magic_RunTurnStep
  * Entry Point: 0048e8f2
  * Size: 495 bytes
  */
 
 
-int32_t FUN_0048e8f2(int x,int32_t arg_2,int32_t arg_3,int height)
+int32_t Magic_RunTurnStep(int x,int32_t arg_2,int32_t arg_3,int height)
 
 {
   int32_t uval_1;

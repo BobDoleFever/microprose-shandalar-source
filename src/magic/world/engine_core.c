@@ -4630,7 +4630,7 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
   if ((((g_EventSourceSlot == card_slot) && (g_EventSourcePlayer == player)) &&
       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) != -1)) &&
      (((uint8_t)g_PlayerHandCardCount & 4) != 0)) {
-    uval_2 = Magic_QueryCardValue((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+    uval_2 = Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x34,
                          0xffffffff);
     if ((uval_2 & 0x1ff800) != 0) {
@@ -5247,7 +5247,7 @@ int32_t FUN_00413869(int player_id,int card_slot,int event_type)
                   *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                   (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) |
          0x1000000;
-    Magic_QueryCardValue((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+    Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                  *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x3c,
                  0xffffffff);
     Ai_Subsystem_004cced8();
@@ -5431,7 +5431,7 @@ int32_t FUN_00413fb4(int player_id,int card_slot,int event_type)
                     *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                     (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) |
            0x1000000;
-      Magic_QueryCardValue((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+      Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                    *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x3c,
                    0xffffffff);
       Ai_Subsystem_004cced8();
@@ -11713,7 +11713,7 @@ void Magic_ExecuteDeclareBlockersPhase(uint32_t player)
     for (local_50 = 0; local_50 < (int)(&g_PlayerActiveCardCount)[player]; local_50 = local_50 + 1) {
       local_38 = *(int *)(&g_CardSlot_CardId + local_50 * 0x120 + player * 0x5b20);
       if ((local_38 != -1) && (((&g_CardSlot_Flags)[local_50 * 0x120 + player * 0x5b20] & 4) != 0)) {
-        local_64 = Magic_QueryCardValue(player,local_50,0x32,0xffffffff);
+        local_64 = Magic_QueryCardAttribute(player,local_50,0x32,0xffffffff);
         aiStack_100[local_30] = local_50;
         aiStack_c0[local_30] = local_64;
         local_30 = local_30 + 1;
@@ -11937,7 +11937,7 @@ int32_t FUN_00472a0a(int player_id)
     }
     if ((*(int *)(&g_CardSlot_CardId + x * 0x5b20 + match_count * 0x120) != -1) &&
        (((&g_CardSlot_Flags)[x * 0x5b20 + match_count * 0x120] & 4) != 0)) {
-      flags = Magic_QueryCardValue(x,match_count,0x34,0xffffffff);
+      flags = Magic_QueryCardAttribute(x,match_count,0x34,0xffffffff);
       for (target_idx = 0; target_idx < (int)(&g_PlayerActiveCardCount)[player]; target_idx = target_idx + 1)
       {
         if (((*(int *)(&g_CardSlot_CardId + x * 0x5b20 + match_count * 0x120) != -1) &&
@@ -11968,7 +11968,7 @@ int32_t FUN_00472b91(int x,int card_slot,int event_type,int target_slot)
   uint32_t match_count;
   uint32_t slot_idx;
   
-  flags = Magic_QueryCardValue(arg_3,target_slot,0x34,0xffffffff);
+  flags = Magic_QueryCardAttribute(arg_3,target_slot,0x34,0xffffffff);
   Ai_FilterValidBlockers(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
@@ -12008,7 +12008,7 @@ bool FUN_00472c0c(int player_id,int card_slot,int32_t arg_3,int32_t target_slot,
   else if ((((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 4) == 0) ||
           (val_3 = Rules_ValidateCardTargetSlot(player,card_slot), val_3 != 0)) {
     if (((flags & 0x20) == 0) ||
-       (uval_4 = Magic_QueryCardValue(player,card_slot,0x34,0xffffffff), (uval_4 & 0x420) != 0)) {
+       (uval_4 = Magic_QueryCardAttribute(player,card_slot,0x34,0xffffffff), (uval_4 & 0x420) != 0)) {
       if (((flags & 0x1ff800) == 0) ||
          (cVar1 = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]),
          (flags & 0x800 << (cVar1 - 1U & 0x1f)) == 0)) {
@@ -12123,7 +12123,7 @@ void Rules_ProcessCombatDamageStep(void)
          (*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) != -1)) {
         *(uint32_t *)(&g_CardSlot_Abilities2 + match_count * 0x120 + slot_idx * 0x5b20) =
              *(uint32_t *)(&g_CardSlot_Abilities2 + match_count * 0x120 + slot_idx * 0x5b20) | 0xf000000;
-        Magic_QueryCardValue(slot_idx,match_count,0x3c,0xffffffff);
+        Magic_QueryCardAttribute(slot_idx,match_count,0x3c,0xffffffff);
       }
     }
   }
@@ -12136,8 +12136,8 @@ void Rules_ProcessCombatDamageStep(void)
           (((&g_MasterCardColorTable)
             [*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 2) != 0))
          && (len_1 = *(short *)(&g_CardSlot_Power + match_count * 0x120 + slot_idx * 0x5b20),
-            val_2 = Magic_QueryCardValue(slot_idx,match_count,0x33,0xffffffff), len_1 < val_2)) {
-        Magic_QueryCardValue(slot_idx,match_count,0x32,0xffffffff);
+            val_2 = Magic_QueryCardAttribute(slot_idx,match_count,0x33,0xffffffff), len_1 < val_2)) {
+        Magic_QueryCardAttribute(slot_idx,match_count,0x32,0xffffffff);
       }
     }
   }
@@ -12145,13 +12145,13 @@ void Rules_ProcessCombatDamageStep(void)
 }
 
 /*
- * Decompiled function: Magic_QueryCardValue
+ * Decompiled function: Magic_QueryCardAttribute
  * Entry Point: 00473179
  * Size: 2823 bytes
  */
 
 
-uint32_t Magic_QueryCardValue(int player,int slot,int event_code,int32_t target_slot)
+uint32_t Magic_QueryCardAttribute(int player,int slot,int event_code,int32_t target_slot)
 
 {
   uint32_t uval_1;
@@ -13557,7 +13557,7 @@ int FUN_00484ecd(int x,int y,int width,int32_t target_slot)
     }
   }
   else {
-    slot_idx = Magic_QueryCardValue(x,y,width,target_slot);
+    slot_idx = Magic_QueryCardAttribute(x,y,width,target_slot);
   }
   return slot_idx;
 }

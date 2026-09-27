@@ -25,7 +25,7 @@ extern int DAT_004ff5a0;
 typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
-uint Duel_TapCardForMana(int x, int y, int width, undefined4 arg_4);
+uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Mana_GetCardColorRequirement(int player, int card_slot);
 bool Mana_CanAffordCost(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
@@ -213,7 +213,7 @@ uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
 int FUN_0048cb7f();
-int FUN_0048ca2a();
+int Magic_IsManaSource();
 int FUN_0048cac9();
 int FUN_0048caf4();
 int FUN_00432c2a();
@@ -261,7 +261,7 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(local_8, local_10, 0x3c, 0xffffffff);
+        Duel_QueryCardAttribute(local_8, local_10, 0x3c, 0xffffffff);
       }
     }
   }
@@ -271,9 +271,9 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(local_8,local_10,0x34,0xffffffff);
-        Duel_TapCardForMana(local_8,local_10,0x32,0xffffffff);
-        Duel_TapCardForMana(local_8,local_10,0x33,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x34,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x32,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x33,0xffffffff);
       }
     }
   }
@@ -387,7 +387,7 @@ int Duel_PlayCardSoundEffect(int arg_1,int arg_2,int arg_3,undefined4 arg_4,unde
                         *(int *)(&g_DuelCardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x34))
                       (arg_1,arg_2,arg_3);
     if ((((iVar2 != 99) && ((g_DuelPlayerManaPool & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
-       && (iVar3 = FUN_0048ca2a(arg_1,arg_2), iVar3 == 0)) {
+       && (iVar3 = Magic_IsManaSource(arg_1,arg_2), iVar3 == 0)) {
       DAT_00676500 = uVar1;
       FUN_0048cb7f();
       return 0;

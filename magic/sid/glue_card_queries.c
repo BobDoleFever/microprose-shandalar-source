@@ -369,8 +369,8 @@ int CardTarget_HasValidCreatureTarget(int player)
       if ((((local_c != -1) && (((&g_CardSlot_Flags)[local_10 * 0x120 + player * 0x5b20] & 2) != 0))
           && (((&g_MasterCardColorTable)[local_c * 0x34] & 2) != 0)) &&
          ((&DAT_006a5f50)[local_10 * 0x120 + player * 0x5b20] != '\x03')) {
-        status = Magic_QueryCardValue(player, local_10, 0x32, 0xffffffff);
-        val_result = Magic_QueryCardValue(player,local_10,0x33,0xffffffff);
+        status = Magic_QueryCardAttribute(player, local_10, 0x32, 0xffffffff);
+        val_result = Magic_QueryCardAttribute(player,local_10,0x33,0xffffffff);
         local_8 = (status + 2) * (val_result + 2);
         if (local_8 < local_14) {
           local_20 = local_10;

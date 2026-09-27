@@ -162,10 +162,11 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] Rename the spell stack: `Magic_CombatPhase`, `Magic_EndTurnPhase` and `Magic_DiscardToHandSize` were
       really push, resolve and drop; `g_AiSavedPlayerManaPool` was a copy of its entries (static evidence).
 - [x] Spell stack live: push, resolve, drop and clear all seen (the AI's save and restore are not).
-- [x] Combat steps live: `0xd9`, `0xda` and `0xdc` seen, plus `0xd4` to `0xd7` and `0xcc`. The defender step
-      was seen when the opponent attacked, not on my own attack.
-- [ ] Find what the codes `0x32`-`0x3c` measure in `Magic_QueryCardValue`, and what
-      `Magic_ResolveSpellStack` (a flag predicate) really is.
+- [x] Combat steps live: `0xd9`, `0xda` and `0xdc` seen, plus `0xd4` to `0xd7` and `0xcc`. `0xda` also runs on my own attack
+      (emulator).
+- [x] `Magic_QueryCardAttribute` codes `0x32`, `0x33`, `0x34`, `0x3c` = power, toughness, abilities, card id (emulator).
+- [x] `Magic_ResolveSpellStack` is really `Magic_IsManaSource`: true for cards that tap for mana (emulator).
+- [ ] Name `g_PlayerHandCardCount` (a bit set tested with `& 0x224`).
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

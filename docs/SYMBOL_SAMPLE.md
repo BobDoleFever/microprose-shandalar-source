@@ -35,7 +35,7 @@ game's own text, a matching API, a matching structure).
 | `Adventure_Audio_StopEffectChannel` `0x004ebe1a` | wrong (static) | Builds a volume/22050 Hz/pan struct and calls the play-sound function, the same callee the verified sound player uses to play |
 | `Color_QuantizeRGBToPalette` `0x00494310` | misleading | Splits RGB into bytes, looks each up in a table and ORs them into a 64-bit key (octree path); returns no palette index |
 | `Surface_GetPixelPtr` `0x0050da40` | misleading | Returns a pixel/palette index (GDI `GetPixel` plus a 256-entry palette search, or a byte read), never a pointer |
-| `Card_IslandSanctuary_CheckActive` `0x004d328c` | unsupported | Event-code handler; calls the card-value query (`Card_TapForMana`, now `Magic_QueryCardValue`) and sets a "cancel" flag named `g_ActivePalette` |
+| `Card_IslandSanctuary_CheckActive` `0x004d328c` | unsupported | Event-code handler; calls the card-value query (`Card_TapForMana`, now `Magic_QueryCardAttribute`) and sets a "cancel" flag named `g_ActivePalette` |
 | `Card_ClockworkBeast_ResetCounters` `0x004d683f` | unsupported | Calls `Card_RockHydra_UpdateStatsFromHeads`; several event codes; no counter reset visible |
 | `Card_GenericCreature_CanRegenerate` `0x004d7e90` | unsupported | Scans both players for a tapped card matching two values; nothing about regeneration |
 | `Card_PsionicEntity_EvaluateTarget` `0x004e0e60` | unsupported | Event-code branches on colour checks; no damage or self-damage logic |
@@ -84,7 +84,7 @@ generic engine code are the least.
    [SYMBOL_VERIFICATION.md](SYMBOL_VERIFICATION.md)). `g_PlayerManaPool` was really the current
    turn-step code and is now `g_CurrentStepCode`.
 2. **Callees inside plausible functions are mislabelled.** `Card_UntapCard` returns a table index,
-   `Card_TapForMana` (now `Magic_QueryCardValue`) computes a card's modified value and has nothing to do
+   `Card_TapForMana` (now `Magic_QueryCardAttribute`) computes a card's modified value and has nothing to do
    with mana, and `Card_RockHydra_UpdateStatsFromHeads` is called from a Clockwork Beast handler.
 3. **A later renaming pass made some names worse.** In `unified_engine_symbol_map.csv`, 92 rows have
    an earlier non-`FUN_` name, and in 76 of them a later pass replaced it. I first reported all 76

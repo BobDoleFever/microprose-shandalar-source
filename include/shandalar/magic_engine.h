@@ -71,7 +71,7 @@ void Magic_ScanCards(int phase_id);
 int Magic_TriggerCardEvent(int player, int slot, int event_code, int target_player, int target_slot);
 
 /*
- * Magic_ResolveSpellStack
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains any active entries.
@@ -79,7 +79,7 @@ int Magic_TriggerCardEvent(int player, int slot, int event_code, int target_play
  * 3. Move resolved spell card to the graveyard or battlefield.
  * 4. Decrement the stack depth counter.
  */
-void Magic_ResolveSpellStack(void);
+void Magic_IsManaSource(void);
 
 /*
  * Magic_PushEventContext

@@ -26,7 +26,7 @@ def analyze():
         elif addr == "00474266":
             sname = "Magic_TriggerCardEvent"
         elif addr == "00474389":
-            sname = "Magic_ResolveSpellStack"
+            sname = "Magic_IsManaSource"
         elif addr == "0047444b":
             sname = "Magic_PushEventContext"
         elif addr == "0047458f":

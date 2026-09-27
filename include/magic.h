@@ -2410,7 +2410,7 @@ void FUN_00472f0c(int32_t player,int card_slot);;
 void Rules_ProcessCombatDamageStep(void);;
 
 /* Function at 00473179 (Size: 2823 bytes) */
-uint32_t Magic_QueryCardValue(int player,int slot,int event_code,int32_t target_slot);;
+uint32_t Magic_QueryCardAttribute(int player,int slot,int event_code,int32_t target_slot);;
 
 /* Function at 00473cc5 (Size: 121 bytes) */
 int32_t Rules_CalculateManaCostReduction(uint8_t value);;
@@ -2431,7 +2431,7 @@ void Magic_ScanCards(int value);;
 int Magic_TriggerCardEvent(int player,int slot,int event_code,int32_t target_player,int32_t target_slot);;
 
 /* Function at 00474389 (Size: 159 bytes) */
-bool Magic_ResolveSpellStack(int player,int card_slot);;
+bool Magic_IsManaSource(int player,int slot);;
 
 /* Function at 00474428 (Size: 182 bytes) */
 void Magic_PushEventContext(void);;

@@ -450,7 +450,7 @@ int Card_Kudzu_LandDestruction(int player,int card_index,int event_code)
             local_10 = local_10 + 1) {
           status = Card_IsTapped(local_c, local_10);
           if (status != 0) {
-            uVar3 = Magic_QueryCardValue(local_c, local_10, 0x34, 0xffffffff);
+            uVar3 = Magic_QueryCardAttribute(local_c, local_10, 0x34, 0xffffffff);
             if ((uVar3 & 0x20) != 0) {
               Card_ApplyCombatDamage(local_c, local_10, *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_index * 0x120),
                            player,card_index);
@@ -940,7 +940,7 @@ int Card_IslandSanctuary_SkipDraw(int player,int card_index,int event_code)
   int status;
   
   if (((event_code == 0x78) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    status = Magic_QueryCardValue(g_EventTargetPlayer,g_EventTargetSlot,0x32,card_index);
+    status = Magic_QueryCardAttribute(g_EventTargetPlayer,g_EventTargetSlot,0x32,card_index);
     if (1 < status) {
       g_CardEventResult = 1;
     }
@@ -990,7 +990,7 @@ int Card_IslandSanctuary_Trigger(int player,int card_index,int event_code)
   int status;
   
   if (((event_code == 0x78) && (card_index == g_EventTargetSlot)) && (player == g_EventTargetPlayer)) {
-    status = Magic_QueryCardValue(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff);
+    status = Magic_QueryCardAttribute(g_EventSourcePlayer,g_EventSourceSlot,0x32,0xffffffff);
     if (2 < status) {
       g_CardEventResult = 1;
     }
@@ -1019,7 +1019,7 @@ int Card_IslandSanctuary_CheckActive(int player,int card_index,int event_code)
      ((&DAT_0051aebd)
       [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
        * 0x34] != '\0')) {
-    u_res = Magic_QueryCardValue(g_EventSourcePlayer,g_EventSourceSlot,0x34,0xffffffff);
+    u_res = Magic_QueryCardAttribute(g_EventSourcePlayer,g_EventSourceSlot,0x34,0xffffffff);
     if ((u_res & 0x20) == 0) {
       g_CardEventResult = 1;
     }
@@ -2670,8 +2670,8 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
       *(uint *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) =
            *(uint *)(&g_CardSlot_ConvertedManaCost + card_index * 0x120 + player * 0x5b20) &
            0xffffbfff;
-      Magic_QueryCardValue(player,card_index,0x32,0xffffffff);
-      Magic_QueryCardValue(player,card_index,0x33,0xffffffff);
+      Magic_QueryCardAttribute(player,card_index,0x32,0xffffffff);
+      Magic_QueryCardAttribute(player,card_index,0x33,0xffffffff);
     }
   }
   return 0;
@@ -4699,7 +4699,7 @@ void Card_SorceressQueen_ResetStats(int player,int card_index,int event_code)
                              (int)(char)(&g_CardSlot_Toughness)[card_index * 0x120 + player * 0x5b20],
                              *(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20));
         if (val_result != -1) {
-          s_res = Magic_QueryCardValue((int)(char)(&g_CardSlot_Toughness)[card_index * 0x120 + player * 0x5b20],
+          s_res = Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_index * 0x120 + player * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId + card_index * 0x120 + player * 0x5b20)
                                ,0x32,0xffffffff);
           *(short *)(&DAT_006a5f48 + val_result * 0x120 + player * 0x5b20) = -s_res;
@@ -4788,7 +4788,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
       uVar11 = 0;
       uVar10 = 0;
       uVar9 = 0;
-      temp_idx = Magic_QueryCardValue(player,card_index,0x32,0xffffffff);
+      temp_idx = Magic_QueryCardAttribute(player,card_index,0x32,0xffffffff);
       u_res = temp_idx - 1U | 0x2000;
       uVar8 = 0xffffffff;
       iVar7 = -1;
@@ -5878,7 +5878,7 @@ int Card_ErgRaiders_ClearTurnAttack(int player,int card_index,int event_code)
                   *(int *)(&g_CardSlot_TypeFlags + card_index * 0x120 + player * 0x5b20) * 0x120 +
                   (char)(&g_CardSlot_DamageReceived)[card_index * 0x120 + player * 0x5b20] * 0x5b20) != -1
          ) {
-        arg_3_00 = Magic_QueryCardValue((int)(char)(&g_CardSlot_Toughness)
+        arg_3_00 = Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)
                                            [*(int *)(&g_CardSlot_TypeFlags +
                                                     card_index * 0x120 + player * 0x5b20) * 0x120 +
                                             (char)(&g_CardSlot_DamageReceived)

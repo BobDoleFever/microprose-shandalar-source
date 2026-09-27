@@ -134,7 +134,7 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
                       (color_mask,arg_2,arg_3);
     if ((((iVar2 != 99) && ((g_PlayerHandCardCount & 0x224) != 0)) &&
         ((arg_3 == 0x74 || (arg_3 == 0x73)))) &&
-       (iVar3 = Magic_ResolveSpellStack(color_mask,arg_2), iVar3 == 0)) {
+       (iVar3 = Magic_IsManaSource(color_mask,arg_2), iVar3 == 0)) {
       DAT_006a4920 = uVar1;
       Magic_PopEventContext();
       return 0;
@@ -148,7 +148,7 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
 
 
 /*
- * Magic_ResolveSpellStack
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains active entries.
@@ -157,13 +157,13 @@ int Magic_TriggerCardEvent(int color_mask,int arg_2,int arg_3,int arg_4,int arg_
  * 4. Decrement the stack depth counter.
  */
 /*
- * Decompiled function: Magic_ResolveSpellStack
+ * Decompiled function: Magic_IsManaSource
  * Entry Point: 00474389
  * Size: 159 bytes
  */
 
 
-bool Magic_ResolveSpellStack(int x,int arg2)
+bool Magic_IsManaSource(int x,int arg2)
 
 {
   bool bVar1;
@@ -307,8 +307,8 @@ void Magic_UntapTurnPhase(void)
         iVar1 = *(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_c * 0x5b20);
         color_mask = (&DAT_0051aebe)[iVar1 * 0x34];
         if (((&g_MasterCardColorTable)[iVar1 * 0x34] & 2) != 0) {
-          iVar2 = Magic_QueryCardValue(local_c, local_10, 0x32, 0xffffffff);
-          iVar3 = Magic_QueryCardValue(local_c,local_10,0x33,0xffffffff);
+          iVar2 = Magic_QueryCardAttribute(local_c, local_10, 0x32, 0xffffffff);
+          iVar3 = Magic_QueryCardAttribute(local_c,local_10,0x33,0xffffffff);
           iVar4 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) =
                *(int *)(&DAT_006b2e40 + iVar4 * 4 + local_c * 0x20) + iVar2;

@@ -493,14 +493,14 @@ int FUN_00430911(int player_id)
         if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 0x80) == 0) {
           local_2c = 1;
           if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 2) != 0) {
-            uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
-            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x32,0xffffffff);
+            uval_2 = Duel_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
+            uval_3 = Duel_QueryCardAttribute(slot_idx,color_idx,0x32,0xffffffff);
             target_idx = (uval_3 & 0xffffbfff) * 2;
             if ((&DAT_004ff595)[player_idx * 0x34] == '\0') {
               target_idx = 0;
             }
             val_1 = target_idx;
-            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x33,0xffffffff);
+            uval_3 = Duel_QueryCardAttribute(slot_idx,color_idx,0x33,0xffffffff);
             uval_3 = uval_3 & 0xffffbfff;
             local_2c = (int)((val_1 + 3) * (uval_3 + 4)) / 2;
             if ((((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
@@ -525,15 +525,15 @@ int FUN_00430911(int player_id)
             if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_DuelDefendingPlayer == arg_1)) &&
                (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
-              uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
+              uval_2 = Duel_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
               for (local_24 = 0; local_24 < (int)(&g_DuelPlayerCreatureCount)[local_28]; local_24 = local_24 + 1)
               {
                 val_4 = FUN_0048b2c9(local_28,local_24,slot_idx,color_idx,uval_2,local_d4[slot_idx]);
                 if (val_4 != 0) {
                   local_e4 = 1;
-                  val_4 = Duel_TapCardForMana(local_28,local_24,0x33,color_idx);
+                  val_4 = Duel_QueryCardAttribute(local_28,local_24,0x33,color_idx);
                   if ((val_1 < val_4) ||
-                     (val_4 = Duel_TapCardForMana(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
+                     (val_4 = Duel_QueryCardAttribute(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
                     local_e4 = 3;
                     break;
                   }
@@ -675,9 +675,9 @@ int FUN_004313b9(int arg1,int arg2)
        (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) !=
         0)) {
       acStack_ac[local_1b0] = (char)card_idx;
-      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x32,0xffffffff);
+      val_1 = Duel_QueryCardAttribute(arg1,local_1b0,0x32,0xffffffff);
       aiStack_f0[card_idx] = val_1;
-      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x33,0xffffffff);
+      val_1 = Duel_QueryCardAttribute(arg1,local_1b0,0x33,0xffffffff);
       aiStack_194[card_idx] = val_1;
       aiStack_58[card_idx] = *(int *)(&DAT_00682700 + local_1b0 * 0x120 + arg1 * 0x5b20);
       card_idx = card_idx + 1;
@@ -689,8 +689,8 @@ int FUN_004313b9(int arg1,int arg2)
        ((((&g_DuelCardSlot_Flags)[local_1a0 * 0x120 + x * 0x5b20] & 2) != 0 &&
         (((&DAT_004ff595)[local_19c * 0x34] != '\0' ||
          (((&DAT_006826f9)[local_1a0 * 0x120 + x * 0x5b20] & 8) != 0)))))) {
-      local_1c0 = Duel_TapCardForMana(x,local_1a0,0x32,0xffffffff);
-      local_1bc = Duel_TapCardForMana(x,local_1a0,0x33,0xffffffff);
+      local_1c0 = Duel_QueryCardAttribute(x,local_1a0,0x32,0xffffffff);
+      local_1bc = Duel_QueryCardAttribute(x,local_1a0,0x33,0xffffffff);
       if (g_DuelTargetPlayer == x) {
         if (((&DAT_004ff5a8)[local_19c * 0x34] & 8) != 0) {
           val_1 = (**(code **)(&DAT_004ff5a0 + local_19c * 0x34))(x,local_1a0,0x39);
@@ -729,7 +729,7 @@ LAB_004317d2:
       return arg2;
     }
     local_1a0 = aiStack_154[player_idx * 3];
-    local_198 = Duel_TapCardForMana(x,local_1a0,0x34,0xffffffff);
+    local_198 = Duel_QueryCardAttribute(x,local_1a0,0x34,0xffffffff);
     val_1 = aiStack_154[player_idx * 3 + 1];
     val_3 = aiStack_154[player_idx * 3 + 2];
     local_1b4 = 0;

@@ -7,7 +7,7 @@ def align():
 
     # Align prototypes in magic.h with magic_engine.h
     replacements = {
-        r'bool\s+Magic_ResolveSpellStack\([^)]*\);;?': 'void Magic_ResolveSpellStack(void);',
+        r'bool\s+Magic_IsManaSource\([^)]*\);;?': 'void Magic_IsManaSource(void);',
         r'void\s+Magic_PushEventContext\([^)]*\);;?': 'void Magic_PushEventContext(void);',
         r'void\s+Magic_PopEventContext\([^)]*\);;?': 'void Magic_PopEventContext(void);',
         r'undefined4\s+Duel_PlaySoundById\([^)]*\);;?': 'int Duel_PlaySoundById(int sound_id);',

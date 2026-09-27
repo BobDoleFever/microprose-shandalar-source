@@ -2932,7 +2932,7 @@ void Duel_UpdateBoardState(int32_t arg1,int32_t arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + card_idx * 0x120 + slot_idx * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_idx * 0x120 + slot_idx * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(slot_idx, card_idx, 0x3c, 0xffffffff);
+        Duel_QueryCardAttribute(slot_idx, card_idx, 0x3c, 0xffffffff);
       }
     }
   }
@@ -2942,9 +2942,9 @@ void Duel_UpdateBoardState(int32_t arg1,int32_t arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + card_idx * 0x120 + slot_idx * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_idx * 0x120 + slot_idx * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(slot_idx,card_idx,0x34,0xffffffff);
-        Duel_TapCardForMana(slot_idx,card_idx,0x32,0xffffffff);
-        Duel_TapCardForMana(slot_idx,card_idx,0x33,0xffffffff);
+        Duel_QueryCardAttribute(slot_idx,card_idx,0x34,0xffffffff);
+        Duel_QueryCardAttribute(slot_idx,card_idx,0x32,0xffffffff);
+        Duel_QueryCardAttribute(slot_idx,card_idx,0x33,0xffffffff);
       }
     }
   }

@@ -1917,14 +1917,14 @@ bool FUN_00472c0c(int value,int min_val,undefined4 max_val,undefined4 flags,uint
 int FUN_00472e08(int x,int y,undefined4 max_val,undefined4 flags);
 void FUN_00472f0c(undefined4 player,int card_slot);
 void FUN_00472fae(void);
-uint Magic_QueryCardValue(int player,int slot,int event_code,undefined4 target_slot);
+uint Magic_QueryCardAttribute(int player,int slot,int event_code,undefined4 target_slot);
 undefined4 Card_ColorMaskToColorIndex(byte value);
 undefined * Mem_AllocOrFree_00473d7e(int value);
 int FUN_00473d98(int value);
 undefined4 Magic_BroadcastCardEvent(int player,undefined4 slot,int event_code);
 void Magic_ScanCards(int value);
 int Magic_TriggerCardEvent(int player,int slot,int event_code,undefined4 target_player,undefined4 target_slot);
-bool Magic_ResolveSpellStack(int player,int card_slot);
+bool Magic_IsManaSource(int player,int slot);
 void Magic_PushEventContext(void);
 void Magic_PopEventContext(void);
 void Magic_UntapTurnPhase(void);

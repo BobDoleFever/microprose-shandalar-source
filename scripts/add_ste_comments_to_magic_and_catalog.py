@@ -24,8 +24,8 @@ def process_magic_c():
  * 2. Execute the script event handler.
  * 3. Return the result code to the calling function.
  */""",
-        "Magic_ResolveSpellStack": """/*
- * Magic_ResolveSpellStack
+        "Magic_IsManaSource": """/*
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains active entries.

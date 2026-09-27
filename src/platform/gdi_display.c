@@ -49,7 +49,7 @@ int GetWindowThreadProcessId();
 typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
-uint Duel_TapCardForMana(int x, int y, int width, undefined4 arg_4);
+uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Mana_GetCardColorRequirement(int player, int card_slot);
 bool Mana_CanAffordCost(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
@@ -237,7 +237,7 @@ uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
 int FUN_0048cb7f();
-int FUN_0048ca2a();
+int Magic_IsManaSource();
 int FUN_0048cac9();
 int FUN_0048caf4();
 int FUN_00432c2a();

@@ -47,7 +47,7 @@ def main():
     magic_renames = {
         "00473f06": "Magic_ScanCards",
         "00474266": "Magic_TriggerCardEvent",
-        "00474389": "Magic_ResolveSpellStack",
+        "00474389": "Magic_IsManaSource",
         "00474428": "Magic_PushEventContext",
         "004744de": "Magic_PopEventContext",
         "00474588": "Magic_UntapTurnPhase",

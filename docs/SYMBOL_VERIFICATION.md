@@ -179,7 +179,7 @@ The event context is a **stack** of 7-value frames (0x28 bytes each, 32 deep, de
 |---|---|---|---|
 | `0x00474428` | `Magic_PayManaCost` -> `Magic_PushEventContext` | **push** the event context | copies the 7 globals into the next frame and increments the depth (guarded at 32) |
 | `0x004744de` | `Magic_TapCardForMana` -> `Magic_PopEventContext` | **pop** the event context | decrements the depth and restores the 7 globals from that frame |
-| `0x00473179` | `Card_TapForMana` -> `Magic_QueryCardValue` | computes a card's modified value (see the next section; an earlier revision of this table called it the dispatcher) | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
+| `0x00473179` | `Card_TapForMana` -> `Magic_QueryCardAttribute` | computes a card's modified value (see the next section; an earlier revision of this table called it the dispatcher) | live: writes the (player, slot) globals from its arguments 93/93 and 92/92 times |
 
 The dispatcher calls the push first (when the depth counter `DAT_0063ee18` is non-zero), sets the
 globals from its arguments and runs the handlers. The pop ran 98 times and always restored
@@ -201,7 +201,7 @@ names in this section rest on static evidence.
 | `0x0047624f` | `FUN_0047624f` | `Magic_RunTurnStep(player, step_code, step_name, repeat_while_active)` | saves the step context, sets `g_CurrentStepCode`, runs the step handler in a loop until nobody responds (`Pic_Subsystem_004458b0`), restores; every call site passes a step name string |
 | `0x00473e69` | `FUN_00473e69` (the maps say `Rules_ApplyContinuousDamage`) | `Magic_BroadcastCardEvent(player, slot, event_code)` | push context, set the source to `(player, slot)`, the target to `(1 - player, -1)`, clear the result, run `Magic_ScanCards(event_code)`, restore the step code, pop, return the result |
 | `0x004485d6` | `Pic_Subsystem_004485d6` | `Magic_BroadcastCardEventInStep(player, slot, event_code, event_arg)` | the same scan, but only while a step is running (`g_CurrentStepCode >= 200`); no push or pop; stores its fourth argument at `0x006b2fe8` |
-| `0x00473179` | `Magic_DispatchCardEvent` (my earlier name) | `Magic_QueryCardValue(player, slot, event_code, target_slot)` | a `switch` over six codes (`0x32` to `0x36`, `0x3c`) computes a value from the card's data, calls `Magic_ScanCards(event_code)` so other cards can adjust `g_CardEventResult`, and returns it; 90 call sites use the codes `0x32` (40), `0x33` (24), `0x34` (22) and `0x3c` (4). What each code measures is not established |
+| `0x00473179` | `Magic_DispatchCardEvent` (my earlier name) | `Magic_QueryCardAttribute(player, slot, event_code, target_slot)` | a `switch` over six codes (`0x32` to `0x36`, `0x3c`) computes a value from the card's data, calls `Magic_ScanCards(event_code)` so other cards can adjust `g_CardEventResult`, and returns it; 90 call sites use the codes `0x32` (40), `0x33` (24), `0x34` (22) and `0x3c` (4). What each code measures was established live on the emulator (section below) |
 | `0x006b2fe4` | `DAT_006b2fe4` | `g_EventCardColorMask` | a byte copied from offset 6 of the event card's master record. Over the 447 records the values are 1, 2, 4, 8, 16, 32 (63 to 112 cards each) plus a handful of odd ones, and the first five records hold 2, 4, 8, 16 and 32 in order: a colour mask (1 = colourless). Nothing compares it; it is only saved, restored and read from a save file |
 
 `Magic_TriggerCardEvent` keeps its name. It runs the card's own handler (the function pointer at
@@ -298,10 +298,9 @@ The AI saves and restores the count and entries around its lookahead (`Ai_SaveGa
 `Ai_RestoreGameState`, `Ai_PushBoardState`, `Ai_PopBoardState`), which fits a stack. Parallel arrays that
 hold the stack entry's toughness, original card id, step code and flags are still unnamed.
 
-`Magic_ResolveSpellStack` (`0x00474389`) is also a misnomer: it is a small predicate that tests two flag
-bits in a card's master record (bit `0x10` at offset `0x15`, bit `1` at offset `0x14`) and never touches
-the stack. It is called by `Magic_TriggerCardEvent` and the step handler. Not renamed; its meaning is
-unknown. `g_PlayerHandCardCount`, tested with `& 0x224` in `Magic_TriggerCardEvent`, looks misnamed too.
+`Magic_IsManaSource` (`0x00474389`, was `Magic_ResolveSpellStack`) is a small predicate that tests two flag
+bits in a card's master record and never touches the stack. It is called by `Magic_TriggerCardEvent` and the step
+handler. Its meaning was found on the emulator (section below): it answers "does this card tap for mana". `g_PlayerHandCardCount`, tested with `& 0x224` in `Magic_TriggerCardEvent`, looks misnamed too.
 
 
 ### Live result for the spell stack
@@ -356,9 +355,9 @@ see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md).
 ## Live results from the in-process emulator (`DUEL.EXE`, 2026-09-26)
 
 `tools/emu_spike` (`docs/PORT_STRATEGY.md`) runs `DUEL.EXE` deterministically and traces functions by address, so the
-checks above can be repeated without QEMU. Twin addresses in `DUEL.EXE`: `FUN_0048e8f2` = `Magic_RunTurnStep`,
-`FUN_0048d878` = `Magic_PushSpellStack`, `FUN_0048e251` = `Magic_DropTopSpell` (twin by size; not yet entered),
-`Mem_AllocOrFree_0048d3bf` = `Magic_ClearSpellStack`. A scripted game (both players a mono-green deck: Forest,
+checks above can be repeated without QEMU. Twin addresses in `DUEL.EXE`: `Magic_RunTurnStep` = `Magic_RunTurnStep`,
+`Magic_PushSpellStack` = `Magic_PushSpellStack`, `FUN_0048e251` = `Magic_DropTopSpell` (twin by size; not yet entered),
+`Magic_ClearSpellStack` = `Magic_ClearSpellStack`. A scripted game (both players a mono-green deck: Forest,
 Llanowar Elves, Durkwood Boars, Killer Bees) gave:
 
 | Action | What the trace showed |
@@ -379,3 +378,37 @@ indexes the name-pointer table at `0x618ac4` (`0x98` bytes per entry, pointer fi
 is the type (`0x01` land, `0x02` creature, `0x08` spell, `0x04` enchantment, `0x42` artifact creature). Slot flag bits
 seen: `0x800` = can be played now, `0x30882`/`0x882` = land or permanent in play untapped, `0x30092` = tapped land,
 `0x82` = permanent in play (base), `0x1` = in the hand after it was drawn.
+
+### `Magic_QueryCardAttribute` codes (emulator, 2026-09-26)
+
+`Duel_QueryCardAttribute` (`DUEL.EXE` `0x0048b81a`, twin of `Magic_QueryCardAttribute`, was `Duel_TapCardForMana`) was traced
+with its return value over the same scripted game (about 350,000 calls: `--break 0x48b81a:Query:4::ret,card`).
+Every card in the game agrees with its master record (record `+0xa` and `+0xc` are the printed power and toughness
+shorts, `+0x14` the ability dword, `+6` the colour byte, `8` = green):
+
+| `event_code` | Returns | Seen |
+|---|---|---|
+| `0x32` (50) | current **power** | Llanowar Elves 1, Durkwood Boars 4, Killer Bees 0, Whirling Dervish 1, Forest 0 |
+| `0x33` (51) | current **toughness** | Elves 1, Boars 4, Bees 1, Dervish 1, Forest 0 |
+| `0x34` (52) | **ability bitmask** (`0x20` on Killer Bees, the only card with a printed ability here) | 0 for the rest |
+| `0x3c` (60) | the card's **current card-table index** (a card that copies or transforms reports the new one) | Elves 56, Boars 61, Bees 323, Dervish 380, Forest 2 |
+
+Codes `0x35` (the slot's own power field) and `0x36` (the colour byte) were not called in this run and stay static-only.
+The function name `Magic_QueryCardAttribute` replaces `Magic_QueryCardValue`; it never had anything to do with mana.
+
+### `Magic_IsManaSource` (emulator, 2026-09-26)
+
+`DUEL.EXE` `0x0048ca2a` is the twin (now `Magic_IsManaSource` there too). It returns true when the master record's
+dword at `+0x18` has bit `0x1000` set and bit `1` clear. Traced with return values on the same scripted game:
+
+| Card | record `+0x18` | Returned |
+|---|---|---|
+| Forest | `0x1000` | 1 |
+| Llanowar Elves | `0x1000` | 1 |
+| Durkwood Boars, Desert Twister, Stream of Life, Tranquility, Whirling Dervish, Aspect of Wolf | `0x0` | 0 |
+| Killer Bees | `0x19` | 0 |
+
+So bit `0x1000` marks a card that taps for mana (a land and a mana creature), which fits its uses: the handler call
+for events `0x73`/`0x74` is undone when the card is not a mana source. What bit `1` excludes is not established (no card with
+`0x1000` and bit `1` together was seen). Also learned: the master record's dword at `+0x10` is the card's own
+event-handler function pointer, which `Magic_TriggerCardEvent` calls as `handler(player, slot, event_code)`.

@@ -1018,7 +1018,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048c50b	FUN_0048c50b			3	157
 0048c5a8	FUN_0048c5a8	++nScan<10 | D:\Newmagic\sources\sid\Magic.c | ScanCard error	__assert	5	863
 0048c907	FUN_0048c907			3	291
-0048ca2a	FUN_0048ca2a			0	159
+0048ca2a	Magic_IsManaSource			0	159
 0048cac9	FUN_0048cac9			0	182
 0048cb7f	FUN_0048cb7f			0	170
 0048cc29	FUN_0048cc29			3	945
@@ -1029,7 +1029,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048d3bf	FUN_0048d3bf			0	44
 0048d3eb	FUN_0048d3eb			0	51
 0048d41e	FUN_0048d41e		FID_conflict:_memcpy	1	1114
-0048d878	FUN_0048d878		FID_conflict:_memcpy	2	1062
+0048d878	Magic_PushSpellStack		FID_conflict:_memcpy	2	1062
 0048dc9e	FUN_0048dc9e			0	165
 0048dd43	FUN_0048dd43			6	1294
 0048e251	FUN_0048e251			0	177
@@ -1037,7 +1037,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048e32b	FUN_0048e32b			2	218
 0048e405	FUN_0048e405			4	1187
 0048e8a8	FUN_0048e8a8			1	74
-0048e8f2	FUN_0048e8f2			1	495
+0048e8f2	Magic_RunTurnStep			1	495
 0048eae1	FUN_0048eae1			0	68
 0048eb25	FUN_0048eb25			0	142
 0048ebb3	FUN_0048ebb3			0	357

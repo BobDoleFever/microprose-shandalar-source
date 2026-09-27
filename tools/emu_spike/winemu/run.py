@@ -99,6 +99,18 @@ def compose(m):
     return draw_dialogs(m, desk)
 
 
+def card_desc(m, args):
+    """For a call whose first two arguments are (player, slot) of DUEL.EXE: the card's name, its master-record stats
+    (colour byte at +6, power/toughness shorts at +0xa/+0xc, abilities dword at +0x14, flag dword at +0x18) and the slot's own fields."""
+    pl, sl = args[0], args[1]
+    cid = m.r32(0x6826C4 + sl * 0x120 + pl * 0x5B20)
+    rec = 0x4FF590 + cid * 0x34
+    nm = m.cstr(m.r32(0x618AC4 + m.r32(rec) * 0x98), 30).decode("latin-1")
+    sh = lambda a: (lambda v: v - 65536 if v & 0x8000 else v)(m.r32(a) & 0xFFFF)
+    return (f"[{nm!r} p{pl}s{sl} flags={m.r32(0x6826CC + sl * 0x120 + pl * 0x5B20):#x} "
+            f"rec: col={m.r32(rec + 4) >> 16 & 0xFF} p={sh(rec + 0xa)} t={sh(rec + 0xc)} ab={m.r32(rec + 0x14):#x} w18={m.r32(rec + 0x18):#x}]")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(ROOT, "sources", "installed", "Magic", "Program", "MAGIC.EXE"))
@@ -130,7 +142,10 @@ def main(argv=None):
     m.state["gdi_debug"] = os.environ.get("GDI_DEBUG") == "1"
     for spec in args.breaks:
         parts = spec.split(":")
-        m.add_trace(int(parts[0], 16), parts[1], int(parts[2]), tuple(int(x) for x in parts[3].split(",")) if len(parts) > 3 else ())
+        flags = parts[4].split(",") if len(parts) > 4 else []
+        m.add_trace(int(parts[0], 16), parts[1], int(parts[2]),
+                    tuple(int(x) for x in parts[3].split(",") if x) if len(parts) > 3 else (),
+                    ret="ret" in flags, describe=(lambda a, mm=m: card_desc(mm, a)) if "card" in flags else None)
     m.trace = args.trace or bool(args.trace_only)
     if args.trace_only:
         rx = re.compile(args.trace_only)

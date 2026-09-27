@@ -66,10 +66,10 @@ cost about 70 real ones. Still rough: the hand list rows draw at the wrong size.
 
 **The emulator is now a working oracle.** `--break ADDR:label:nargs` traces any guest function (its stack arguments,
 strings, caller and virtual time; identical bursts are collapsed and totalled). On `DUEL.EXE` it reproduces the
-QEMU findings from `SYMBOL_VERIFICATION.md` with no debugger: `FUN_0048e8f2` is `Magic_RunTurnStep` (step codes 201
+QEMU findings from `SYMBOL_VERIFICATION.md` with no debugger: `Magic_RunTurnStep` is `Magic_RunTurnStep` (step codes 201
 "Begin Upkeep", 203, 205 "End of Turn", 206 "Draw Phase", 207 "Draw a card Phase", 210 "Tapping", 211 "Casting"),
-`FUN_0048d878` is `Magic_PushSpellStack` (`(0, 0, 113, 0, 0)` for my land, `(1, 6, 113, 1, 0)` for the opponent's,
-`(0, 7, 114, 0, 0)` at my draw) and `Mem_AllocOrFree_0048d3bf` is `Magic_ClearSpellStack` (once at the start of every
+`Magic_PushSpellStack` is `Magic_PushSpellStack` (`(0, 0, 113, 0, 0)` for my land, `(1, 6, 113, 1, 0)` for the opponent's,
+`(0, 7, 114, 0, 0)` at my draw) and `Magic_ClearSpellStack` is `Magic_ClearSpellStack` (once at the start of every
 turn). The `DUEL.EXE` twin of `Magic_DropTopSpell` is `FUN_0048e251` (not entered yet: nothing has been cast). Runs
 are deterministic, so a trace can be diffed between two builds of a replacement.
 

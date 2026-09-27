@@ -691,7 +691,7 @@ Address,OldName,NewName
 00472b60,FUN_00472b60,GDI_RealizePaletteTree
 00472fae,FUN_00472fae,Rules_ProcessCombatDamageStep
 00473060,FUN_00473060,Rules_TriggerEndOfTurnPhase
-00473179,FUN_00473179,Magic_QueryCardValue
+00473179,FUN_00473179,Magic_QueryCardAttribute
 004738a0,FUN_004738a0,Rules_ResolveSpellEffect
 00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
 00473ce8,FUN_00473ce8,Rules_CalculateColorCost
@@ -699,7 +699,7 @@ Address,OldName,NewName
 00473e69,FUN_00473e69,Magic_BroadcastCardEvent
 00473f06,FUN_00473f06,Magic_ScanCards
 00474266,FUN_00474266,Magic_TriggerCardEvent
-00474389,FUN_00474389,Magic_ResolveSpellStack
+00474389,FUN_00474389,Magic_IsManaSource
 00474428,FUN_00474428,Magic_PushEventContext
 004744de,FUN_004744de,Magic_PopEventContext
 00474588,FUN_00474588,Magic_UntapTurnPhase
@@ -753,7 +753,7 @@ Address,OldName,NewName
 00488150,FUN_00488150,File_Load_Prompts
 00489188,FUN_00489188,Pic_Load_Advfac64
 0048a33f,FUN_0048a33f,Duel_CardIsTapped
-0048b81a,FUN_0048b81a,Duel_TapCardForMana
+0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
 0048c367,FUN_0048c367,Duel_ColorMaskToIndex
 0048c72a,FUN_0048c72a,SaveGame_LoadCampaignFile
 0048c907,FUN_0048c907,Duel_PlayCardSoundEffect

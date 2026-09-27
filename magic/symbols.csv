@@ -10184,7 +10184,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0047316a,"LAB_0047316a",Label,true,false
 0047316f,"LAB_0047316f",Label,true,false
 00473174,"LAB_00473174",Label,true,false
-00473179,"Magic_QueryCardValue",Function,true,true
+00473179,"Magic_QueryCardAttribute",Function,true,true
 004731a2,"LAB_004731a2",Label,true,false
 00473203,"caseD_32",Label,false,false
 0047324b,"LAB_0047324b",Label,true,false
@@ -10289,7 +10289,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00474341,"LAB_00474341",Label,true,false
 0047436d,"LAB_0047436d",Label,true,false
 00474384,"LAB_00474384",Label,true,false
-00474389,"Magic_ResolveSpellStack",Function,true,true
+00474389,"Magic_IsManaSource",Function,true,true
 00474408,"LAB_00474408",Label,true,false
 0047440f,"LAB_0047440f",Label,true,false
 00474414,"LAB_00474414",Label,true,false

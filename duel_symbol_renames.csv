@@ -276,12 +276,12 @@ Address,OldName,NewName
 0048794d,FUN_0048794d,UI_WndProc_0048794d
 00488150,FUN_00488150,Prompts_Load_00488150
 0048a33f,FUN_0048a33f,Duel_CardIsTapped
-0048b81a,FUN_0048b81a,Duel_TapCardForMana
+0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
 0048c367,FUN_0048c367,Duel_ColorMaskToIndex
 0048c420,FUN_0048c420,Mem_AllocOrFree_0048c420
 0048c907,FUN_0048c907,Duel_PlayCardSoundEffect
 0048d00c,FUN_0048d00c,Sound_PlayTrackById
-0048d3bf,FUN_0048d3bf,Mem_AllocOrFree_0048d3bf
+0048d3bf,FUN_0048d3bf,Magic_ClearSpellStack
 0048e01d,FUN_0048e01d,FileIo_ReadStream
 0048e302,FUN_0048e302,Mem_AllocOrFree_0048e302
 0048f500,FUN_0048f500,UI_Register_MAGICGAME_BigCardCardClass_0048f500
