@@ -8314,7 +8314,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((((flags == 0x6d) &&
@@ -8515,8 +8515,8 @@ undefined4 Palette_Subsystem_004a7814(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedSlot(1);
+    Ai_PeekPlannedChoice(0);
     uVar2 = 0;
   }
   else {
@@ -8724,7 +8724,7 @@ undefined4 Palette_Subsystem_004a7f2a(int player,int card_slot,int arg_3)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar2 = 0;
   }
   else {
@@ -9579,7 +9579,7 @@ uint Ai_ChooseCardToPlay(int player)
           if (local_14 < DAT_006a2840) {
             DAT_0052ce1c = 2;
             Ai_ReplayChoice();
-            Ai_Util_004ab525();
+            Ai_PlanCursorBack();
             if (local_1c <= (int)g_AiChoiceValue) {
               g_AiChoiceValue = local_1c - 1;
             }

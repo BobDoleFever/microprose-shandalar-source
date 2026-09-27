@@ -1635,7 +1635,7 @@ int32_t FUN_00456711(int player_id,int card_slot,int event_type)
     uval_1 = Duel_DrawString(hDIBSection,7,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -1766,7 +1766,7 @@ int32_t FUN_00456dc4(int player_id,int card_slot,int event_type)
     uval_1 = Duel_DrawString(hDIBSection,4,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -1887,7 +1887,7 @@ int FUN_004573bc(int player_id,int card_slot,int event_type)
     val_2 = Duel_DrawString(hDIBSection,4,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     val_2 = 0;
   }
   else {
@@ -2926,7 +2926,7 @@ int32_t FUN_00459918(int player_id,int card_slot,int event_type)
     }
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -3042,7 +3042,7 @@ int32_t FUN_00459f68(int player_id,int card_slot,int event_type)
     uval_1 = Duel_DrawString(hDIBSection,1,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -3165,7 +3165,7 @@ int32_t FUN_0045a5e9(int player_id,int card_slot,int event_type)
     uval_1 = Duel_DrawString(hDIBSection,3,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -3294,7 +3294,7 @@ int32_t FUN_0045ac7e(int player_id,int card_slot,int event_type)
     uval_1 = Duel_DrawString(hDIBSection,2,1);
   }
   else if (hBitmap == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -10099,7 +10099,7 @@ int32_t FUN_00469614(int player_id,int card_slot,int event_type)
   }
   else if (hBitmap == 0x90) {
     Card_DispatchRulesEvent(1);
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_2 = 0;
   }
   else {
@@ -14663,7 +14663,7 @@ void FUN_00473a32(int player_id)
   
   DAT_00522908 = 1 - hDIBSection;
   if (DAT_00522a00 == 0) {
-    FUN_00431f41(&slot_idx,&target_idx);
+    Ai_GetLandColorMasks(&slot_idx,&target_idx);
     if (DAT_00522908 == 1) {
       DAT_00522f7c = slot_idx;
     }
@@ -15256,7 +15256,7 @@ uint32_t FUN_00474d83(int player_id)
   }
   FUN_00430367();
   local_258 = 9999;
-  FUN_00431f41(&local_2b4,(uint32_t *)0x0);
+  Ai_GetLandColorMasks(&local_2b4,(uint32_t *)0x0);
   local_2c0 = 0;
   do {
     if (1 << ((uint8_t)local_254 & 0x1f) <= (int)local_2c0) {

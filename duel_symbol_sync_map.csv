@@ -78,7 +78,7 @@ Address,NewName
 0042ce51,Ai_Subsystem_004bc029
 0042e217,Ai_Subsystem_004bd6f9
 0042fbf0,Ai_SaveGameState
-00431d05,Ai_ChooseBlockers
+00431d05,Ai_FormatPlanDebugText
 004340f0,Catalog_Open
 00434a43,Palette_LoadTRFile
 00435cb5,Palette_AllocErrorDiffusionTable
@@ -219,7 +219,7 @@ Address,NewName
 00485887,Palette_Subsystem_0049c7c7
 00486e17,Ai_CalcManaRequirement_004b9284
 00488150,Palette_Color_0049ae00
-00489247,Ai_ChooseBlockers
+00489247,Ai_FormatPlanDebugText
 0048a423,Card_Setup_00467a68
 0048c5a8,Magic_ScanCards
 0048f500,Palette_Subsystem_0049608e

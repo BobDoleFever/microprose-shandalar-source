@@ -7856,7 +7856,7 @@ int32_t Pic_Subsystem_0043452e(int x,int card_slot,int event_type,int arg_4)
   uint32_t slot_idx;
   
   arg_5 = Magic_QueryCardAttribute(arg_3,arg_4,0x34,0xffffffff);
-  Ai_FilterValidBlockers(&slot_idx,&match_count);
+  Ai_GetLandColorMasks(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
   }
@@ -8520,7 +8520,7 @@ int32_t CardScript_HolyArmor(int spell_id,int target_id,int flags)
       if (spell_id == g_TurnPlayer) {
         val_2 = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[spell_id * 0x5b20 + target_id * 0x120]);
         if (*(int *)(&DAT_006330d0 + val_2 * 4) == 0) {
-          Ai_CalcLifeAdvantage(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_0062785c = 1;
@@ -8748,7 +8748,7 @@ int32_t CardScript_Blessing(int spell_id,int target_id,int flags)
       if (g_TurnPlayer == spell_id) {
         val_2 = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_006330d0 + val_2 * 4) == 0) {
-          Ai_CalcLifeAdvantage(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_0062785c = 1;
@@ -8991,7 +8991,7 @@ int32_t CardScript_Firebreathing(int spell_id,int target_id,int flags)
       if (spell_id == g_TurnPlayer) {
         val_2 = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_006330d0 + val_2 * 4) == 0) {
-          Ai_CalcLifeAdvantage(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_0062785c = 1;
@@ -12560,7 +12560,7 @@ int32_t CardScript_Regeneration(int spell_id,int target_id,int flags)
       }
     }
     else if (flags == 0x90) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       uval_3 = 0;
     }
     else {
@@ -12740,7 +12740,7 @@ int32_t CardScript_TheBrute(int spell_id,int target_id,int flags)
     *(int *)(&DAT_006ff6a0 + spell_id * 0x20) = *(int *)(&DAT_006ff6a0 + spell_id * 0x20) + 2;
   }
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -12811,7 +12811,7 @@ int32_t CardScript_TheBrute(int spell_id,int target_id,int flags)
       }
     }
     else if (flags == 0x90) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       uval_3 = 0;
     }
     else {
@@ -13542,7 +13542,7 @@ int32_t CardScript_Flight(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;

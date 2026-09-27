@@ -4171,10 +4171,10 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 004306ff,"LAB_004306ff",Label,true,false
 00430704,"LAB_00430704",Label,true,false
 0043070e,"LAB_0043070e",Label,true,false
-0043071d,"FUN_0043071d",Function,true,true
+0043071d,"Ai_PeekPlannedSlot",Function,true,true
 0043075c,"LAB_0043075c",Label,true,false
 00430763,"LAB_00430763",Label,true,false
-00430768,"FUN_00430768",Function,true,true
+00430768,"Ai_PeekPlannedChoice",Function,true,true
 004307a6,"LAB_004307a6",Label,true,false
 004307ad,"LAB_004307ad",Label,true,false
 004307b2,"Ai_ReplayChoice",Function,true,true
@@ -4187,7 +4187,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 004308c0,"LAB_004308c0",Label,true,false
 004308cf,"Ai_GetPlanCursor",Function,true,true
 004308df,"LAB_004308df",Label,true,false
-004308e4,"Mem_AllocOrFree_004308e4",Function,true,true
+004308e4,"Ai_PlanCursorBack",Function,true,true
 00430902,"LAB_00430902",Label,true,false
 0043090c,"LAB_0043090c",Label,true,false
 00430911,"Ai_EvaluateBoard",Function,true,true
@@ -4301,7 +4301,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00431cc5,"LAB_00431cc5",Label,true,false
 00431cf8,"LAB_00431cf8",Label,true,false
 00431d00,"LAB_00431d00",Label,true,false
-00431d05,"Ai_ChooseBlockers",Function,true,true
+00431d05,"Ai_FormatPlanDebugText",Function,true,true
 00431dc9,"LAB_00431dc9",Label,true,false
 00431dcc,"LAB_00431dcc",Label,true,false
 00431de3,"LAB_00431de3",Label,true,false
@@ -4319,7 +4319,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00431f17,"LAB_00431f17",Label,true,false
 00431f1c,"LAB_00431f1c",Label,true,false
 00431f3c,"LAB_00431f3c",Label,true,false
-00431f41,"FUN_00431f41",Function,true,true
+00431f41,"Ai_GetLandColorMasks",Function,true,true
 00431f63,"LAB_00431f63",Label,true,false
 00431f66,"LAB_00431f66",Label,true,false
 00431f8f,"LAB_00431f8f",Label,true,false
@@ -7452,7 +7452,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00451453,"LAB_00451453",Label,true,false
 00451471,"LAB_00451471",Label,true,false
 0045147d,"LAB_0045147d",Label,true,false
-00451482,"FUN_00451482",Function,true,true
+00451482,"Duel_UpdateBoardState",Function,true,true
 004514a1,"LAB_004514a1",Label,true,false
 004514c5,"LAB_004514c5",Label,true,false
 004514db,"LAB_004514db",Label,true,false
@@ -12120,7 +12120,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048920b,"LAB_0048920b",Label,true,false
 00489228,"LAB_00489228",Label,true,false
 00489242,"LAB_00489242",Label,true,false
-00489247,"Ai_ChooseBlockers",Function,true,true
+00489247,"Ai_FormatPlanDebugText",Function,true,true
 004892a7,"LAB_004892a7",Label,true,false
 004892fa,"LAB_004892fa",Label,true,false
 00489333,"LAB_00489333",Label,true,false

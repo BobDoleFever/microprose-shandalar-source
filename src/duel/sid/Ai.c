@@ -299,13 +299,13 @@ int32_t Card_DispatchRulesEvent(int player_id)
 
 
 /*
- * Decompiled function: FUN_00430768
+ * Decompiled function: Ai_PeekPlannedChoice
  * Entry Point: 00430768
  * Size: 74 bytes
  */
 
 
-int32_t FUN_00430768(int player_id)
+int32_t Ai_PeekPlannedChoice(int player_id)
 
 {
   if ((g_IsAiThinking != 1) &&
@@ -382,13 +382,13 @@ int32_t Ai_GetPlanCursor(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004308e4
+ * Decompiled function: Ai_PlanCursorBack
  * Entry Point: 004308e4
  * Size: 45 bytes
  */
 
 
-void Mem_AllocOrFree_004308e4(void)
+void Ai_PlanCursorBack(void)
 
 {
   if (DAT_0050b37c < 1) {
@@ -435,7 +435,7 @@ int Ai_EvaluateBoard(int player_id)
   DAT_005ef980 = 1;
   match_count = 0;
   local_28 = 1 - arg_1;
-  FUN_00431f41(local_d4,local_d4 + 1);
+  Ai_GetLandColorMasks(local_d4,local_d4 + 1);
   _memset(local_cc,0,0xa0);
   loop_idx = 0;
   for (color_idx = 1; color_idx <= (int)(&g_DuelPlayerLifeTotals)[arg_1]; color_idx = color_idx + 1) {
@@ -659,7 +659,7 @@ int Ai_PenalizeCounterattack(int arg1,int arg2)
   char acStack_c [8];
   
   x = 1 - arg1;
-  FUN_00431f41(&local_1a8,(uint32_t *)0x0);
+  Ai_GetLandColorMasks(&local_1a8,(uint32_t *)0x0);
   for (local_1a0 = 0; local_1a0 < 8; local_1a0 = local_1a0 + 1) {
     acStack_c[local_1a0] = (&DAT_0068ed10)[local_1a0 * 4 + x * 0x20];
     *(int32_t *)(&DAT_0068ed10 + local_1a0 * 4 + x * 0x20) =
@@ -790,13 +790,13 @@ LAB_004317cc:
 
 
 /*
- * Decompiled function: Ai_ChooseBlockers
+ * Decompiled function: Ai_FormatPlanDebugText
  * Entry Point: 00431d05
  * Size: 572 bytes
  */
 
 
-int32_t Ai_ChooseBlockers(int arg1,int arg2)
+int32_t Ai_FormatPlanDebugText(int arg1,int arg2)
 
 {
   uint32_t *u_ptr_1;
@@ -866,13 +866,13 @@ int32_t Ai_ChooseBlockers(int arg1,int arg2)
 
 
 /*
- * Decompiled function: FUN_00431f41
+ * Decompiled function: Ai_GetLandColorMasks
  * Entry Point: 00431f41
  * Size: 155 bytes
  */
 
 
-void FUN_00431f41(uint32_t *arg1,uint32_t *arg2)
+void Ai_GetLandColorMasks(uint32_t *arg1,uint32_t *arg2)
 
 {
   int card_idx;

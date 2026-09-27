@@ -6672,7 +6672,7 @@ int32_t CardScript_CandelabraOfTawnos(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    FUN_00430768(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -17396,7 +17396,7 @@ LAB_00429d78:
           DAT_006663f8 = DAT_006663f8 | 4;
         }
         if (DAT_005ef574 != 0) {
-          Ai_ChooseBlockers(0,slot_idx);
+          Ai_FormatPlanDebugText(0,slot_idx);
         }
         if ((DAT_00667990 < slot_idx) && (DAT_00690c44 == 0)) {
           DAT_00667990 = slot_idx;
@@ -17420,7 +17420,7 @@ LAB_00429d78:
                    DAT_0068ef94 / 2,DAT_006663e0);
           OutputDebugStringA(local_7c8);
           if (DAT_005ef574 != 0) {
-            Ai_ChooseBlockers(1,DAT_00667990);
+            Ai_FormatPlanDebugText(1,DAT_00667990);
           }
           DAT_005ef980 = 0xffffffff;
           g_IsAiThinking = 0;
@@ -17540,7 +17540,7 @@ LAB_00428569:
         val_1 = FUN_00488662(player,local_2dc,1);
         if (val_1 != 0) {
           local_158 = *(int *)(&g_DuelCardSlot_CardId + local_2dc * 0x120 + player * 0x5b20);
-          val_1 = Ai_ChooseBlockers(player,local_2dc);
+          val_1 = Ai_FormatPlanDebugText(player,local_2dc);
           if (val_1 != 0) {
             local_2a8 = 6;
             if (((&g_DuelMasterCardTable)[local_158 * 0x34] & 1) != 0) {
@@ -19892,7 +19892,7 @@ uint32_t Ai_ChooseCardToPlay(int player_id)
           if (player_idx < DAT_0066aae0) {
             DAT_004f3c6c = 2;
             Ai_ReplayChoice();
-            Mem_AllocOrFree_004308e4();
+            Ai_PlanCursorBack();
             if (color_idx <= (int)g_AiChoiceValue) {
               g_AiChoiceValue = color_idx - 1;
             }
@@ -21570,7 +21570,7 @@ int32_t FUN_00488598(int arg1,int arg2)
   }
   val_1 = FUN_00488662(arg1,arg2,0);
   if (((val_1 == 0) || (val_1 = FUN_00488662(arg1,arg2,1), val_1 == 0)) ||
-     (val_1 = Ai_ChooseBlockers(arg1,arg2), val_1 == 0)) {
+     (val_1 = Ai_FormatPlanDebugText(arg1,arg2), val_1 == 0)) {
     if (flag_3) {
       DAT_004fab48 = 0;
     }
@@ -21849,13 +21849,13 @@ int32_t FUN_00488662(int player_id,int card_slot,int event_type)
 
 
 /*
- * Decompiled function: Ai_ChooseBlockers
+ * Decompiled function: Ai_FormatPlanDebugText
  * Entry Point: 00489247
  * Size: 877 bytes
  */
 
 
-int32_t Ai_ChooseBlockers(int arg1,int arg2)
+int32_t Ai_FormatPlanDebugText(int arg1,int arg2)
 
 {
   int val_1;
@@ -22592,7 +22592,7 @@ int32_t FUN_0048b0c7(int player_id)
   uint32_t slot_idx;
   
   x = 1 - player;
-  FUN_00431f41(&slot_idx,&card_idx);
+  Ai_GetLandColorMasks(&slot_idx,&card_idx);
   if (player == 1) {
     player_idx = slot_idx;
   }
@@ -22638,7 +22638,7 @@ int32_t FUN_0048b24e(int x,int card_slot,int event_type,int arg_4)
   uint32_t slot_idx;
   
   arg_5 = Duel_QueryCardAttribute(arg_3,arg_4,0x34,0xffffffff);
-  FUN_00431f41(&slot_idx,&match_count);
+  Ai_GetLandColorMasks(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
   }
@@ -44938,7 +44938,7 @@ int32_t FUN_004c7337(int x,int y,int width,int height)
   uint32_t slot_idx;
   
   arg_5 = Duel_QueryCardAttribute(width,height,0x34,0xffffffff);
-  FUN_00431f41(&slot_idx,&match_count);
+  Ai_GetLandColorMasks(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
   }
@@ -45560,7 +45560,7 @@ int32_t CardScript_HolyArmor(int spell_id,int target_id,int flags)
       if (spell_id == g_TurnPlayer) {
         val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
-          FUN_00430768(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_00666410 = 1;
@@ -45773,7 +45773,7 @@ int32_t CardScript_Blessing(int spell_id,int target_id,int flags)
       if (g_TurnPlayer == spell_id) {
         val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
-          FUN_00430768(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_00666410 = 1;
@@ -45996,7 +45996,7 @@ int32_t CardScript_Firebreathing(int spell_id,int target_id,int flags)
       if (spell_id == g_TurnPlayer) {
         val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
-          FUN_00430768(0);
+          Ai_PeekPlannedChoice(0);
         }
         else {
           DAT_00666410 = 1;

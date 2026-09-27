@@ -32,10 +32,10 @@ Addresses in prose or in skipped tables that are a function start or a known glo
 | `0x00423980` | MAGIC: function, `Sound_Init` | 347 | Names restored (MAGIC.EXE) |
 | `0x00424165` | MAGIC: function, `GetLRUSnd` | 347 | Names restored (MAGIC.EXE) |
 | `0x00426c70` | DUEL: function, `FUN_00426c70` | 436, 480 | The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26) |
-| `0x0043071d` | DUEL: function, `FUN_0043071d` | 560 | Round 2: red-deck game (emulator, 2026-09-26) |
-| `0x00430768` | DUEL: function, `FUN_00430768` | 559 | Round 2: red-deck game (emulator, 2026-09-26) |
-| `0x00431d05` | DUEL: function, `Ai_ChooseBlockers` | 559 | Round 2: red-deck game (emulator, 2026-09-26) |
-| `0x00431f41` | DUEL: function, `FUN_00431f41` | 560 | Round 2: red-deck game (emulator, 2026-09-26) |
+| `0x0043071d` | DUEL: function, `Ai_PeekPlannedSlot` | 560 | Round 2: red-deck game (emulator, 2026-09-26) |
+| `0x00430768` | DUEL: function, `Ai_PeekPlannedChoice` | 559 | Round 2: red-deck game (emulator, 2026-09-26) |
+| `0x00431d05` | DUEL: function, `Ai_FormatPlanDebugText` | 559 | Round 2: red-deck game (emulator, 2026-09-26) |
+| `0x00431f41` | DUEL: function, `Ai_GetLandColorMasks` | 560 | Round 2: red-deck game (emulator, 2026-09-26) |
 | `0x0045102d` | DUEL: function, `Ai_Subsystem_004cc56d` | 559 | Round 2: red-deck game (emulator, 2026-09-26) |
 | `0x0046d497` | DUEL: function, `Pic_Subsystem_004475a4` | 435 | Globals checked with write watches (emulator, 2026-09-26) |
 | `0x00474389` | MAGIC: function, `Magic_IsManaSource` | 301 | The spell stack (MAGIC.EXE): push and resolve seen live, the rest static |
@@ -53,7 +53,7 @@ Addresses in prose or in skipped tables that are a function start or a known glo
 | `0x004a1bf7` | DUEL: function, `Palette_Subsystem_0049608e` | 466 | The spell-chain window family (emulator, 2026-09-26) |
 | `0x004a1f15` | DUEL: function, `Palette_Subsystem_0049608e` | 466 | The spell-chain window family (emulator, 2026-09-26) |
 | `0x004a26c6` | DUEL: function, `SpellChain_MinimizedWndProc` | 467 | The spell-chain window family (emulator, 2026-09-26) |
-| `0x004acb7f` | MAGIC: function, `Ai_FilterValidBlockers` | 518 | The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26) |
+| `0x004acb7f` | MAGIC: function, `Ai_GetLandColorMasks` | 518 | The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26) |
 | `0x004dea30` | DUEL: function, `entry` | 76, 80 | Both programs run the duel engine (verified on the live game) |
 | `0x004f3c6c` | DUEL: global, `DAT_004f3c6c` | 507 | The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26) |
 | `0x004ff590` | DUEL: global, `DAT_004ff590` | 376 | Live results from the in-process emulator (`DUEL.EXE`, 2026-09-26) |

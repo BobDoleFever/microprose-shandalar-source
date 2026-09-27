@@ -262,8 +262,8 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 004305ae	FUN_004305ae			0	37
 004305d3	Ai_BeginTrial			1	119
 0043064a	Ai_RecordChoice			0	211
-0043071d	FUN_0043071d			0	75
-00430768	FUN_00430768			0	74
+0043071d	Ai_PeekPlannedSlot			0	75
+00430768	Ai_PeekPlannedChoice			0	74
 004307b2	Ai_ReplayChoice			0	108
 0043081e	Ai_CommitBestPlan			0	177
 004308cf	FUN_004308cf			0	21
@@ -271,7 +271,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 00430911	Ai_EvaluateBoard		__itoa | _memset	9	2728
 004313b9	Ai_PenalizeCounterattack			5	2380
 00431d05	FUN_00431d05	... | ...target | Cast | Player	__itoa	4	572
-00431f41	FUN_00431f41			0	155
+00431f41	Ai_GetLandColorMasks			0	155
 00431fe0	FUN_00431fe0			0	21
 004327e0	FUN_004327e0		BringWindowToTop | SetFocus | ShowWindow	3	66
 00432822	FUN_00432822		SetFocus | ShowWindow	2	54

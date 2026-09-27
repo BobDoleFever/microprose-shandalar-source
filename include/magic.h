@@ -3370,10 +3370,10 @@ void Ai_BeginTrial(void);;
 void Ai_RecordChoice(void);;
 
 /* Function at 004ab35e (Size: 75 bytes) */
-int32_t Ai_GetOpponentPlayerScore(int value);;
+int32_t Ai_PeekPlannedSlot(int value);;
 
 /* Function at 004ab3a9 (Size: 74 bytes) */
-int32_t Ai_CalcLifeAdvantage(int value);;
+int32_t Ai_PeekPlannedChoice(int value);;
 
 /* Function at 004ab3f3 (Size: 108 bytes) */
 void Ai_ReplayChoice(void);;
@@ -3394,10 +3394,10 @@ int Ai_EvaluateBoard(int value);;
 int Ai_PenalizeCounterattack(int player,int card_slot);;
 
 /* Function at 004ac940 (Size: 575 bytes) */
-int32_t Ai_ChooseBlockers(int player,int card_slot);;
+int32_t Ai_FormatPlanDebugText(int player,int card_slot);;
 
 /* Function at 004acb7f (Size: 155 bytes) */
-void Ai_FilterValidBlockers(uint32_t *player,uint32_t *card_slot);;
+void Ai_GetLandColorMasks(uint32_t *player,uint32_t *card_slot);;
 
 /* Function at 004acc20 (Size: 538 bytes) */
 int32_t Duel_ShowStartOfDuelDialog(int32_t *value,uint32_t *min_val,uint32_t max_val,int flags,uint32_t flags,uint32_t arg_6,int32_t arg_7,int arg_8,int32_t arg_9);;

@@ -1400,7 +1400,7 @@ int32_t Prompts_Load_0041529a(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -1481,7 +1481,7 @@ int32_t Prompts_Load_00415517(int spell_id,int target_id,int flags)
   int val_3;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
@@ -1544,7 +1544,7 @@ int32_t Prompts_Load_004156c9(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x44,0,0,0,0,0,0xffffffff,0xffffffff,
                          0xffffffff,0xffffffff,0,0,0);
   }
@@ -1644,7 +1644,7 @@ int32_t Prompts_Load_00415920(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -1785,7 +1785,7 @@ int32_t Prompts_Load_00415df8(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 1;
@@ -1896,7 +1896,7 @@ int32_t Prompts_Load_00416222(int spell_id,int target_id,int flags)
       uval_2 = 0;
     }
     else {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       arg_19_00 = 0;
       arg_18_00 = 0;
       arg_17_00 = 0;
@@ -2002,7 +2002,7 @@ int32_t Prompts_Load_0041652b(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (g_ScWillyScore < 0x1e) {
       arg_19_00 = 0;
       arg_18_00 = 0;
@@ -2103,7 +2103,7 @@ int32_t Prompts_Load_004167ac(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0x10;
     arg_17 = 0;
@@ -2215,7 +2215,7 @@ int32_t Prompts_Load_00416a6a(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -2311,7 +2311,7 @@ int32_t Prompts_Load_00416d36(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -2384,7 +2384,7 @@ int32_t Prompts_Load_00416f1a(int spell_id,int target_id,int flags)
   
   if ((flags == 0x74) && ((g_DuelModeFlags._1_1_ & 2) != 0)) {
     flag_1 = false;
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     for (card_idx = 0; card_idx < 2; card_idx = card_idx + 1) {
       slot_idx = 0;
       while ((slot_idx < (int)(&g_PlayerActiveCardCount)[card_idx] && (!flag_1))) {
@@ -2586,7 +2586,7 @@ int32_t Prompts_Load_0041765d(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -2669,7 +2669,7 @@ int32_t Prompts_Load_00417f38(int spell_id,int target_id,int flags)
   int val_2;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     uval_1 = 1;
   }
   else {
@@ -2725,7 +2725,7 @@ int32_t Prompts_Load_00417ff5(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -2827,7 +2827,7 @@ int32_t Prompts_Load_00418254(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -2927,7 +2927,7 @@ int32_t Prompts_Load_004184e1(int spell_id,int target_id,int flags)
   uint32_t arg_20;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19_00 = 0;
     arg_18_00 = 0;
     arg_17_00 = 0;
@@ -3021,7 +3021,7 @@ int32_t Prompts_Load_00418785(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (g_SelectedTargetPlayer == -1) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -3175,7 +3175,7 @@ int32_t Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
   if (flags == 0x74) {
     if (spell_id == g_CurrentTurnPhase) {
       if (g_SelectedTargetPlayer == -1) {
-        Ai_GetOpponentPlayerScore(0);
+        Ai_PeekPlannedSlot(0);
         uval_2 = 1;
       }
       else {
@@ -3183,7 +3183,7 @@ int32_t Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
       }
     }
     else if ((g_SelectedTargetPlayer == -1) || (g_TurnPlayer != g_CurrentTurnPhase)) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       uval_2 = 1;
     }
     else {
@@ -3368,7 +3368,7 @@ int32_t Prompts_Load_004195a4(int spell_id,int target_id,int flags)
   if (flags == 0x74) {
     if (g_CurrentTurnPhase == spell_id) {
       if (g_SelectedTargetPlayer == -1) {
-        Ai_GetOpponentPlayerScore(0);
+        Ai_PeekPlannedSlot(0);
         uval_2 = 1;
       }
       else {
@@ -3376,7 +3376,7 @@ int32_t Prompts_Load_004195a4(int spell_id,int target_id,int flags)
       }
     }
     else if ((g_SelectedTargetPlayer == -1) || (g_TurnPlayer != g_CurrentTurnPhase)) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       uval_2 = 1;
     }
     else {
@@ -3565,7 +3565,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (g_SelectedTargetPlayer == -1) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -3741,7 +3741,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
   
   if (flags == 0x74) {
     if (g_SelectedTargetPlayer == -1) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       arg_19 = 0;
       arg_18_00 = 0;
       arg_17 = 0;
@@ -4091,7 +4091,7 @@ int32_t Prompts_Load_0041c22f(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (((uint8_t)g_DuelModeFlags & 4) == 0) {
       uval_2 = 1;
     }
@@ -4229,7 +4229,7 @@ int32_t Prompts_Load_0041c8e1(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if ((((uint8_t)g_DuelModeFlags & 4) == 0) ||
        (val_1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,0,0,0,g_PendingSpellTargetSlot,0xffffffff,
                              0xffffffff,0xffffffff,0x20,0,0), val_1 == 0)) {
@@ -4319,7 +4319,7 @@ int32_t Prompts_Load_0041d1ab(int spell_id,int target_id,int flags)
   int slot_idx;
   
   if (flags == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;

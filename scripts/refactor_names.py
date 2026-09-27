@@ -290,7 +290,7 @@ FUNCTION_RENAMES = {
     "Minit_Subsystem_004528c0": "UI_DrawManaSymbolBox",
     "Minit_Util_0045280c": "Ai_TriggerTurnPhaseEvaluation",
     "Pic_Subsystem_0044b8da": "UI_PrepareCombatViewport",
-    "Ai_Subsystem_004cc9c5": "Ai_EvaluateTacticalPosition",
+    "Duel_UpdateBoardState": "Ai_EvaluateTacticalPosition",
     "Assert_Handler_005019a0": "AssertOrLog",
 
     # Rules Engine & Phase Helpers (Magic.c)
@@ -312,7 +312,7 @@ FUNCTION_RENAMES = {
     "Ai_Subsystem_004af640": "Ai_EvaluateInstantSpells",
     "Ai_Subsystem_004af765": "Ai_ScoreAttackerCombination",
     "Ai_GetPlanCursor": "Ai_ClearCandidateScoreList",
-    "Ai_Util_004ab525": "Ai_SortCandidateScoreList",
+    "Ai_PlanCursorBack": "Ai_SortCandidateScoreList",
     "Ai_Util_004afa46": "Ai_GetHighestPriorityMove",
     "Ai_ScoreCardPlay_004afa69": "Ai_EvaluateCreatureCast",
     "Ai_ScoreCardPlay_004afc26": "Ai_EvaluateSpellCast",
