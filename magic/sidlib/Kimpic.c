@@ -17701,7 +17701,7 @@ void Pic_Subsystem_0044b460(void)
     FUN_0050f1e0(4,iVar3,pcVar4,pcVar5,iVar6,DVar1);
   }
   thunk_FUN_0050cef0(0);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523b08,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523b08,(char *)0x0);
   for (local_c = 0; local_c < 3; local_c = local_c + 1) {
     if ((local_c == 1) && (*(int *)(DAT_0070a850 + 0x20) < 0x401)) {
       local_10 = FUN_0050d0b0(1,0x400,800,8);
@@ -19496,7 +19496,7 @@ undefined4 Pic_Load_0044ef70(undefined4 arg1,LPVOID out_buffer)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_00523e18);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523e28,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523e28,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
   Glue_Sound_004ec32f();
@@ -20193,7 +20193,7 @@ int Pic_Load_004509e8(int player,int card_slot,int arg_3,undefined4 arg_4,int ar
   Mem_AllocOrFree_00513bd0();
   if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
     if (DAT_0063ee18 == 0) {
-      Catalog_LoadPaletteMap(s_todpal_tr_00523e50,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_00523e50,(char *)0x0);
       FUN_0050d560(0,0);
       SelectPalette(_hdcScreen,DAT_00626834,0);
       LoadPalNoPic(s_advfac64_pic_00523e5c);

@@ -2359,18 +2359,18 @@ void Adventure_Audio_PlayEffectLooped(int color_mask,int arg2,int arg3)
 }
 
 /*
- * Adventure_Audio_StopEffectChannel
+ * Adventure_Audio_PlayTrack
  * Purpose: Stop specific audio effect channel.
  * Procedure:
  * 1. Halt playback on audio channel.
  */
 /*
- * Decompiled function: Adventure_Audio_StopEffectChannel
+ * Decompiled function: Adventure_Audio_PlayTrack
  * Entry Point: 004ebe1a
  * Size: 71 bytes
  */
 
-void Adventure_Audio_StopEffectChannel(int color_mask,int arg2,int arg3)
+void Adventure_Audio_PlayTrack(int color_mask,int arg2,int arg3)
 
 {
   int local_24 [8];
@@ -2500,7 +2500,7 @@ void Adventure_Audio_PlayDuelIntro(int color_mask)
   DAT_0052f018 = 0x15;
   DAT_0052f064 = 0xffffffff;
   Adventure_Audio_SetPlaybackPosition((&PTR_s_x_sound_dueltune_wav_0052f070)[color_mask],0x10);
-  Adventure_Audio_StopEffectChannel(0x10,0x80,0);
+  Adventure_Audio_PlayTrack(0x10,0x80,0);
   DAT_0052f014 = 1;
   return;
 }
@@ -2589,18 +2589,18 @@ void Adventure_Audio_PlayTerrainAmbience(int color_mask)
 }
 
 /*
- * Adventure_Audio_PlayFootstep
+ * Adventure_Audio_LoadWalkAndBirdSounds
  * Purpose: Play footstep walking sound effects by terrain type.
  * Procedure:
  * 1. Play terrain-specific walking audio clip.
  */
 /*
- * Decompiled function: Adventure_Audio_PlayFootstep
+ * Decompiled function: Adventure_Audio_LoadWalkAndBirdSounds
  * Entry Point: 004ec32f
  * Size: 266 bytes
  */
 
-void Adventure_Audio_PlayFootstep(void)
+void Adventure_Audio_LoadWalkAndBirdSounds(void)
 
 {
   Adventure_Audio_InitSoundTrack(s_x_sound_kwalkl_wav_0052f9c8,0,0);
@@ -3015,7 +3015,7 @@ int Adventure_Map_UpdateLightingAndPalette(uint color_mask,uint arg2)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_0052fb20);
-  Catalog_LoadPaletteMap(s_todpal_tr_0052fb30,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_0052fb30,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
   return 0;

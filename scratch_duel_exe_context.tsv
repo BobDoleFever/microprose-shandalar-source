@@ -309,7 +309,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 00434d88	FUN_00434d88		FID_conflict:_memcpy | _malloc	4	319
 00434ec7	FUN_00434ec7		_atoi | _strcspn | _strspn	4	218
 00434fa1	FUN_00434fa1			2	172
-0043504d	FUN_0043504d			0	100
+0043504d	Color_RGBToOctreePath			0	100
 004350b1	FUN_004350b1			0	260
 004351b5	FUN_004351b5			1	393
 00435343	FUN_00435343			1	371

@@ -2977,7 +2977,7 @@ uint32_t Catalog_ComputeFilenameHash(uint8_t *value);;
 int32_t * ColorOctree_AllocNode(void);;
 
 /* Function at 00493e70 (Size: 519 bytes) */
-uint8_t * Catalog_LoadPaletteMap(char *str_1,char *str_2);;
+uint8_t * Palette_LoadTRFile(char *str_1,char *str_2);;
 
 /* Function at 00494080 (Size: 58 bytes) */
 int32_t Palette_InitSquareDistanceTable(void);;
@@ -2995,7 +2995,7 @@ int32_t ColorOctree_InsertColor(int32_t *value,char *str_2,int32_t max_val);;
 int ColorOctree_FreeTree(int *value);;
 
 /* Function at 00494310 (Size: 105 bytes) */
-void Color_QuantizeRGBToPalette(uint32_t player,uint32_t *card_slot);;
+void Color_RGBToOctreePath(uint32_t player,uint32_t *card_slot);;
 
 /* Function at 00494380 (Size: 98 bytes) */
 int32_t Palette_BuildFastColorLookup(void);;
@@ -4753,7 +4753,7 @@ void Adventure_Audio_PlayEffectAtVolume(int32_t value,int y,int width,int height
 void Adventure_Audio_PlayEffectLooped(int32_t value,int min_val,int max_val);;
 
 /* Function at 004ebe1a (Size: 71 bytes) */
-void Adventure_Audio_StopEffectChannel(int32_t value,int min_val,int max_val);;
+void Adventure_Audio_PlayTrack(int32_t value,int min_val,int max_val);;
 
 /* Function at 004ebe61 (Size: 94 bytes) */
 void Adventure_Audio_SetPlaybackPosition(char *player,int32_t card_slot);;
@@ -4771,7 +4771,7 @@ void Adventure_Audio_PlayDuelIntro(int value);;
 void Adventure_Audio_PlayTerrainAmbience(int value);;
 
 /* Function at 004ec32f (Size: 266 bytes) */
-void Adventure_Audio_PlayFootstep(void);;
+void Adventure_Audio_LoadWalkAndBirdSounds(void);;
 
 /* Function at 004ec439 (Size: 190 bytes) */
 uint32_t Adventure_Audio_FindSoundOnDrives(char *str_1);;
@@ -5470,7 +5470,7 @@ void FUN_0050d560(int player,int card_slot);;
 uint32_t Surface_GetPixel(int value,int min_val,int max_val);;
 
 /* Function at 0050da40 (Size: 199 bytes) */
-uint32_t Surface_GetPixelPtr(int *value,int min_val,int max_val);;
+uint32_t Surface_GetPixelValue(int *value,int min_val,int max_val);;
 
 /* Function at 0050db10 (Size: 157 bytes) */
 void Surface_DrawLine(int *value,int min_val,int max_val,int flags,int flags,int arg_6);;

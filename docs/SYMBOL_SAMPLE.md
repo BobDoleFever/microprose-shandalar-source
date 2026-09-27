@@ -32,15 +32,15 @@ game's own text, a matching API, a matching structure).
 | `Ai_RecordChoice` `0x004ab28b` | wrong | Appends the current candidate (id, card id, score) to a 256-entry list; evaluates no power |
 | `Magic_CombatPhase` `0x004751d7` | wrong | Queues an event (card id, event, slot) and clones a 0x120-byte card slot into a free slot; no combat logic |
 | `SpellChain_RemoveEntry` `0x004cf965` | wrong | Removes entry `y` from a table of 0x58-byte records, destroys its child windows, shifts the rest down |
-| `Adventure_Audio_StopEffectChannel` `0x004ebe1a` | wrong (static) | Builds a volume/22050 Hz/pan struct and calls the play-sound function, the same callee the verified sound player uses to play |
-| `Color_QuantizeRGBToPalette` `0x00494310` | misleading | Splits RGB into bytes, looks each up in a table and ORs them into a 64-bit key (octree path); returns no palette index |
-| `Surface_GetPixelPtr` `0x0050da40` | misleading | Returns a pixel/palette index (GDI `GetPixel` plus a 256-entry palette search, or a byte read), never a pointer |
+| `Adventure_Audio_PlayTrack` `0x004ebe1a` | wrong (static) | Builds a volume/22050 Hz/pan struct and calls the play-sound function, the same callee the verified sound player uses to play |
+| `Color_RGBToOctreePath` `0x00494310` | misleading | Splits RGB into bytes, looks each up in a table and ORs them into a 64-bit key (octree path); returns no palette index |
+| `Surface_GetPixelValue` `0x0050da40` | misleading | Returns a pixel/palette index (GDI `GetPixel` plus a 256-entry palette search, or a byte read), never a pointer |
 | `Card_IslandSanctuary_CheckActive` `0x004d328c` | unsupported | Event-code handler; calls the card-value query (`Card_TapForMana`, now `Magic_QueryCardAttribute`) and sets a "cancel" flag named `g_ActivePalette` |
 | `Card_ClockworkBeast_ResetCounters` `0x004d683f` | unsupported | Calls `Card_RockHydra_UpdateStatsFromHeads`; several event codes; no counter reset visible |
 | `Card_GenericCreature_CanRegenerate` `0x004d7e90` | unsupported | Scans both players for a tapped card matching two values; nothing about regeneration |
 | `Card_PsionicEntity_EvaluateTarget` `0x004e0e60` | unsupported | Event-code branches on colour checks; no damage or self-damage logic |
 | `Card_DragonWhelp_EndTurnCheck` `0x004d5c1e` | unsupported | Calls font drawing and life-advantage helpers; nothing card-specific |
-| `Catalog_LoadPaletteMap` `0x00493e70` | supported | `fopen`/`fgets`/`sscanf` feeding `ColorOctree_*` and palette lookup tables |
+| `Palette_LoadTRFile` `0x00493e70` | supported | `fopen`/`fgets`/`sscanf` feeding `ColorOctree_*` and palette lookup tables |
 | `Color_FindNearestPaletteIndex` `0x00494540` | supported | Uses the RGB key function and searches for the nearest entry (weak) |
 | `SpellChain_UpdateLayout` `0x004cffda` | supported | `MoveWindow`, `AdjustWindowRect`, `GetWindowRect`, `ShowWindow` |
 | `SpellChain_MinimizeIfShown` `0x004d0965` | supported | `IsWindowVisible` |
@@ -53,7 +53,7 @@ game's own text, a matching API, a matching structure).
 | `Card_CosmicHorror_PayUpkeep` `0x004e268e` | supported | String "Cosmic Horror deals 7 damage" |
 | `Card_Venom_DestroyCombatBlocker` `0x004e4807` | supported | `VENOM` prompt and filter |
 | `CardTarget_HasValidPermanentTarget` `0x004e701f` | supported | Validates a target and plays the error sound |
-| `Adventure_Audio_PlayFootstep` `0x004ec32f` | supported | Table of `*walkl/r.wav` names (the same walking sounds seen loading at startup) |
+| `Adventure_Audio_LoadWalkAndBirdSounds` `0x004ec32f` | supported | Table of `*walkl/r.wav` names (the same walking sounds seen loading at startup) |
 | `Adventure_PromptConfirmDialog` `0x004ecee0` | supported | "Yes, I'm sure" string, popup menu APIs |
 | `Duel_GetHoveredCardSlot` `0x004ef970` | supported | Window-data lookup by hover target (weak) |
 | `WinMain` `0x00500e80` | supported | `RegisterClassA`, `CreateWindowExA`, `timeSetEvent`, class name strings |

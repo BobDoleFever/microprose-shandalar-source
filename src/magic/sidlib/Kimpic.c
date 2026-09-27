@@ -17701,7 +17701,7 @@ void Font_LoadCustomFonts(void)
     FUN_0050f1e0(4,val_3,pcVar4,pcVar5,val_6,DVar1);
   }
   thunk_FUN_0050cef0(0);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523b08,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523b08,(char *)0x0);
   for (match_count = 0; match_count < 3; match_count = match_count + 1) {
     if ((match_count == 1) && (*(int *)(g_ScreenSurfaces + 0x20) < 0x401)) {
       card_idx = Memory_AllocateVirtualPage(1,0x400,800,8);
@@ -19496,7 +19496,7 @@ int32_t Deck_LoadOneDeckProfile(int32_t arg1,LPVOID out_buffer)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_00523e18);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523e28,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523e28,(char *)0x0);
   SelectPalette(*(HDC *)(g_ScreenSurfaces + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(g_ScreenSurfaces + 4));
   Glue_Sound_004ec32f();
@@ -20193,7 +20193,7 @@ int UI_DeckSelectionMenu(int player_id,int card_slot,int event_type,int32_t arg_
   Mem_AllocOrFree_00513bd0();
   if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
     if (g_AiCombatScore_Blocker == 0) {
-      Catalog_LoadPaletteMap(s_todpal_tr_00523e50,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_00523e50,(char *)0x0);
       FUN_0050d560(0,0);
       SelectPalette(_hdcScreen,DAT_00626834,0);
       LoadPalNoPic(s_advfac64_pic_00523e5c);

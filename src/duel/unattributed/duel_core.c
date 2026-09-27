@@ -51398,7 +51398,7 @@ int Palette_Subsystem_004a5722
   Mem_AllocOrFree_004ddee0();
   if ((g_DuelTargetPlayer == player) && (g_IsAiThinking != 1)) {
     if (DAT_0068eed8 == 0) {
-      Catalog_LoadPaletteMap(s_todpal_tr_005092a8,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_005092a8,(char *)0x0);
       Mem_AllocOrFree_0049f6b4();
       SelectPalette(DAT_005f2fa4,DAT_005f6290,0);
       Mem_AllocOrFree_0049f7d9();

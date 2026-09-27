@@ -1652,7 +1652,7 @@ undefined4 Pic_Load_advfac64_0040a4fc(void)
 {
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_005171e4);
-  Catalog_LoadPaletteMap(s_todpal_tr_005171f4,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_005171f4,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
   FUN_0040a566();
@@ -2617,7 +2617,7 @@ uint Surface_GetPixelColor(int x,int y)
   if ((0x3f < y) || (y < 0)) {
     y = 0;
   }
-  uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+  uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
   return uVar1 & 0xf;
 }
 
@@ -2635,7 +2635,7 @@ undefined4 FUN_0040c7c0(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
     }
     else {
       uVar1 = 0;
@@ -2660,7 +2660,7 @@ void FUN_0040c81c(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val,max_val,uVar1 | value);
   }
   return;
@@ -2679,7 +2679,7 @@ void FUN_0040c889(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val,max_val,uVar1 & ~value);
   }
   return;
@@ -2699,7 +2699,7 @@ undefined4 FUN_0040c8fa(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x + 0x40,y);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x + 0x40,y);
     }
     else {
       uVar1 = 0;
@@ -2724,7 +2724,7 @@ void FUN_0040c959(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val,uVar1 | value);
   }
   return;
@@ -2743,7 +2743,7 @@ void FUN_0040c9cc(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val,uVar1 & ~value);
   }
   return;
@@ -2764,13 +2764,13 @@ void FUN_0040ca43(int value,int min_val,int max_val)
   uint uVar1;
   
   if ((((value < 0x40) && (-1 < value)) && (min_val < 0x40)) && (-1 < min_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,value,min_val + 0x40,
                      uVar1 | 1 << ((char)max_val - 1U & 0x1f));
     FUN_0040c81c(0x20,value,min_val);
     arg_2_00 = value + *(int *)(&DAT_00522378 + max_val * 4);
     arg_3_00 = min_val + *(int *)(&DAT_005223e0 + max_val * 4);
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40,
                      uVar1 | 1 << ((char)max_val + 3U & 7));
     FUN_0040c81c(0x20,arg_2_00,arg_3_00);
@@ -2792,7 +2792,7 @@ uint FUN_0040cb4f(int value,int min_val,char max_val)
   
   if ((value < 0x40) && (-1 < value)) {
     if ((min_val < 0x40) && (-1 < min_val)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
       uVar1 = uVar1 & 1 << (max_val - 1U & 0x1f);
     }
     else {

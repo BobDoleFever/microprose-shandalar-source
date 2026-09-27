@@ -309,13 +309,13 @@ uint32_t Surface_GetPixel(int player_id,int card_slot,int event_type)
 
 
 /*
- * Decompiled function: Surface_GetPixelPtr
+ * Decompiled function: Surface_GetPixelValue
  * Entry Point: 0050da40
  * Size: 199 bytes
  */
 
 
-uint32_t Surface_GetPixelPtr(int *arg_1,int card_slot,int event_type)
+uint32_t Surface_GetPixelValue(int *arg_1,int card_slot,int event_type)
 
 {
   int val_1;

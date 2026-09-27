@@ -13065,7 +13065,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00493e2e,"LAB_00493e2e",Label,true,false
 00493e48,"LAB_00493e48",Label,true,false
 00493e50,"ColorOctree_AllocNode",Function,true,true
-00493e70,"Catalog_LoadPaletteMap",Function,true,true
+00493e70,"Palette_LoadTRFile",Function,true,true
 00493eb4,"LAB_00493eb4",Label,true,false
 00493ec6,"LAB_00493ec6",Label,true,false
 00493efd,"LAB_00493efd",Label,true,false
@@ -13097,7 +13097,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004942dc,"LAB_004942dc",Label,true,false
 004942f7,"LAB_004942f7",Label,true,false
 004942fd,"LAB_004942fd",Label,true,false
-00494310,"Color_QuantizeRGBToPalette",Function,true,true
+00494310,"Color_RGBToOctreePath",Function,true,true
 00494380,"Palette_BuildFastColorLookup",Function,true,true
 00494386,"LAB_00494386",Label,true,false
 0049438d,"LAB_0049438d",Label,true,false
@@ -20934,7 +20934,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004ebcdc,"Adventure_Audio_PlayEffect",Function,true,true
 004ebd62,"Adventure_Audio_PlayEffectAtVolume",Function,true,true
 004ebdca,"Adventure_Audio_PlayEffectLooped",Function,true,true
-004ebe1a,"Adventure_Audio_StopEffectChannel",Function,true,true
+004ebe1a,"Adventure_Audio_PlayTrack",Function,true,true
 004ebe61,"Adventure_Audio_SetPlaybackPosition",Function,true,true
 004ebebf,"Adventure_Audio_StopAllTracks",Function,true,true
 004ebedc,"LAB_004ebedc",Label,true,false
@@ -20984,7 +20984,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004ec30f,"switchD",Label,false,false
 004ec316,"switchdataD_004ec316",Label,false,false
 004ec32a,"default",Label,false,false
-004ec32f,"Adventure_Audio_PlayFootstep",Function,true,true
+004ec32f,"Adventure_Audio_LoadWalkAndBirdSounds",Function,true,true
 004ec439,"Adventure_Audio_FindSoundOnDrives",Function,true,true
 004ec464,"LAB_004ec464",Label,true,false
 004ec46a,"LAB_004ec46a",Label,true,false
@@ -24301,7 +24301,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0050d77d,"LAB_0050d77d",Label,true,false
 0050d794,"LAB_0050d794",Label,true,false
 0050d7af,"LAB_0050d7af",Label,true,false
-0050da40,"Surface_GetPixelPtr",Function,true,true
+0050da40,"Surface_GetPixelValue",Function,true,true
 0050daa6,"LAB_0050daa6",Label,true,false
 0050dace,"LAB_0050dace",Label,true,false
 0050dae5,"LAB_0050dae5",Label,true,false

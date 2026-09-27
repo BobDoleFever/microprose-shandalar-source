@@ -4343,7 +4343,7 @@ undefined4 Pic_Load_advfac64_0040a4fc(void)
 {
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_005171e4);
-  Catalog_LoadPaletteMap(s_todpal_tr_005171f4,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_005171f4,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
   FUN_0040a566();
@@ -5427,7 +5427,7 @@ uint Surface_GetPixelColor(int x,int y)
   if ((0x3f < y) || (y < 0)) {
     y = 0;
   }
-  uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+  uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
   return uVar1 & 0xf;
 }
 
@@ -5444,7 +5444,7 @@ undefined4 FUN_0040c7c0(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
     }
     else {
       uVar1 = 0;
@@ -5468,7 +5468,7 @@ void FUN_0040c81c(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val,max_val,uVar1 | value);
   }
   return;
@@ -5486,7 +5486,7 @@ void FUN_0040c889(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val,max_val,uVar1 & ~value);
   }
   return;
@@ -5505,7 +5505,7 @@ undefined4 FUN_0040c8fa(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x + 0x40,y);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x + 0x40,y);
     }
     else {
       uVar1 = 0;
@@ -5529,7 +5529,7 @@ void FUN_0040c959(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val,uVar1 | value);
   }
   return;
@@ -5547,7 +5547,7 @@ void FUN_0040c9cc(uint value,int min_val,int max_val)
   uint uVar1;
   
   if ((((min_val < 0x40) && (-1 < min_val)) && (max_val < 0x40)) && (-1 < max_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,min_val + 0x40,max_val,uVar1 & ~value);
   }
   return;
@@ -5567,13 +5567,13 @@ void FUN_0040ca43(int value,int min_val,int max_val)
   uint uVar1;
   
   if ((((value < 0x40) && (-1 < value)) && (min_val < 0x40)) && (-1 < min_val)) {
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,value,min_val + 0x40,
                      uVar1 | 1 << ((char)max_val - 1U & 0x1f));
     FUN_0040c81c(0x20,value,min_val);
     arg_2_00 = value + *(int *)(&DAT_00522378 + max_val * 4);
     arg_3_00 = min_val + *(int *)(&DAT_005223e0 + max_val * 4);
-    uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
+    uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40,
                      uVar1 | 1 << ((char)max_val + 3U & 7));
     FUN_0040c81c(0x20,arg_2_00,arg_3_00);
@@ -5594,7 +5594,7 @@ uint FUN_0040cb4f(int value,int min_val,char max_val)
   
   if ((value < 0x40) && (-1 < value)) {
     if ((min_val < 0x40) && (-1 < min_val)) {
-      uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
+      uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,value,min_val + 0x40);
       uVar1 = uVar1 & 1 << (max_val - 1U & 0x1f);
     }
     else {
@@ -33051,7 +33051,7 @@ void Pic_Subsystem_0044b460(void)
     FUN_0050f1e0(4,iVar3,pcVar4,pcVar5,iVar6,DVar1);
   }
   thunk_FUN_0050cef0(0);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523b08,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523b08,(char *)0x0);
   for (local_c = 0; local_c < 3; local_c = local_c + 1) {
     if ((local_c == 1) && (*(int *)(DAT_0070a850 + 0x20) < 0x401)) {
       local_10 = FUN_0050d0b0(1,0x400,800,8);
@@ -34756,10 +34756,10 @@ undefined4 Pic_Load_0044ef70(undefined4 x,LPVOID out_buffer)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_00523e18);
-  Catalog_LoadPaletteMap(s_todpal_tr_00523e28,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_00523e28,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
-  Adventure_Audio_PlayFootstep();
+  Adventure_Audio_LoadWalkAndBirdSounds();
   DAT_00627a7c = 0;
   DAT_00522454 = 0xffffffff;
   return DAT_00627a80;
@@ -35435,7 +35435,7 @@ int Pic_Load_004509e8(int value,int min_val,int max_val,undefined4 target_slot,i
   Mem_AllocOrFree_00513bd0();
   if ((g_CurrentTurnPhase == value) && (g_IsAiThinking != 1)) {
     if (DAT_0063ee18 == 0) {
-      Catalog_LoadPaletteMap(s_todpal_tr_00523e50,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_00523e50,(char *)0x0);
       FUN_0050d560(0,0);
       SelectPalette(_hdcScreen,DAT_00626834,0);
       LoadPalNoPic(s_advfac64_pic_00523e5c);
@@ -62337,7 +62337,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       BringWindowToTop(_hwndScreen);
       SetFocus(_hwndScreen);
       LoadPalNoPic(s_advfac64_pic_00528940);
-      Catalog_LoadPaletteMap(s_todpal_tr_00528950,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_00528950,(char *)0x0);
       SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
       RealizePalette(*(HDC *)(DAT_0070a850 + 4));
       Adventure_Audio_PlayCastleVictory(6);
@@ -62924,12 +62924,12 @@ undefined4 * ColorOctree_AllocNode(void)
 
 
 /* ==========================================================================
- * Function: Catalog_LoadPaletteMap @ 00493e70
+ * Function: Palette_LoadTRFile @ 00493e70
  * ========================================================================== */
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-undefined * Catalog_LoadPaletteMap(char *str_1,char *str_2)
+undefined * Palette_LoadTRFile(char *str_1,char *str_2)
 
 {
   uint uVar1;
@@ -63196,10 +63196,10 @@ int ColorOctree_FreeTree(int *value)
 
 
 /* ==========================================================================
- * Function: Color_QuantizeRGBToPalette @ 00494310
+ * Function: Color_RGBToOctreePath @ 00494310
  * ========================================================================== */
 
-void Color_QuantizeRGBToPalette(uint x,uint *y)
+void Color_RGBToOctreePath(uint x,uint *y)
 
 {
   uint uVar1;
@@ -63270,7 +63270,7 @@ undefined4 Color_FindNearestRGB(uint value)
   int local_14;
   uint local_10;
   
-  Color_QuantizeRGBToPalette(value,(uint *)&DAT_0054b318);
+  Color_RGBToOctreePath(value,(uint *)&DAT_0054b318);
   pbVar4 = &DAT_0054b318;
   piVar3 = DAT_0054aefc;
   do {
@@ -63321,7 +63321,7 @@ uint Color_FindNearestPaletteIndex(uint value)
   int local_18;
   uint local_14;
   
-  Color_QuantizeRGBToPalette(value,(uint *)&DAT_0054af08);
+  Color_RGBToOctreePath(value,(uint *)&DAT_0054af08);
   pbVar4 = &DAT_0054af08;
   piVar3 = DAT_0054aefc;
   while( true ) {
@@ -83723,7 +83723,7 @@ void Ai_CastleEncounter_004c0efe
           local_44 = 0;
         }
         else {
-          local_44 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,local_14,local_1c + 0x40);
+          local_44 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,local_14,local_1c + 0x40);
         }
         if (local_44 != 0) {
           for (local_3c = 0; (int)local_3c < 8; local_3c = local_3c + 1) {
@@ -101231,10 +101231,10 @@ void Adventure_Audio_PlayEffectLooped(undefined4 value,int min_val,int max_val)
 
 
 /* ==========================================================================
- * Function: Adventure_Audio_StopEffectChannel @ 004ebe1a
+ * Function: Adventure_Audio_PlayTrack @ 004ebe1a
  * ========================================================================== */
 
-void Adventure_Audio_StopEffectChannel(undefined4 value,int min_val,int max_val)
+void Adventure_Audio_PlayTrack(undefined4 value,int min_val,int max_val)
 
 {
   int local_24 [8];
@@ -101340,7 +101340,7 @@ void Adventure_Audio_PlayDuelIntro(int value)
   DAT_0052f018 = 0x15;
   DAT_0052f064 = 0xffffffff;
   Adventure_Audio_SetPlaybackPosition((&PTR_s_x_sound_dueltune_wav_0052f070)[value],0x10);
-  Adventure_Audio_StopEffectChannel(0x10,0x80,0);
+  Adventure_Audio_PlayTrack(0x10,0x80,0);
   DAT_0052f014 = 1;
   return;
 }
@@ -101425,10 +101425,10 @@ void Adventure_Audio_PlayTerrainAmbience(int value)
 
 
 /* ==========================================================================
- * Function: Adventure_Audio_PlayFootstep @ 004ec32f
+ * Function: Adventure_Audio_LoadWalkAndBirdSounds @ 004ec32f
  * ========================================================================== */
 
-void Adventure_Audio_PlayFootstep(void)
+void Adventure_Audio_LoadWalkAndBirdSounds(void)
 
 {
   Adventure_Audio_InitSoundTrack(s_x_sound_kwalkl_wav_0052f9c8,0,0);
@@ -101795,7 +101795,7 @@ undefined4 Adventure_Map_UpdateLightingAndPalette(uint x,uint y)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_0052fb20);
-  Catalog_LoadPaletteMap(s_todpal_tr_0052fb30,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_0052fb30,(char *)0x0);
   SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(DAT_0070a850 + 4));
   return 0;
@@ -106195,7 +106195,7 @@ undefined4 FUN_004f45da(void)
   strcat(local_624,s__DUELPALall_TR_00530234);
   strcpy(local_510,&DAT_006807a0);
   strcat(local_510,s__DUEL_plogpal_00530244);
-  local_408 = (LOGPALETTE *)Catalog_LoadPaletteMap(local_624,local_510);
+  local_408 = (LOGPALETTE *)Palette_LoadTRFile(local_624,local_510);
   if (local_408 == (LOGPALETTE *)0x0) {
     local_51c = 0;
   }
@@ -112369,7 +112369,7 @@ LAB_005011f5:
       Sound_LoadWav_sound_locmus1_005017a6();
       Sound_Init((int)local_c,0,1);
       if (DAT_0052f008 == 0) {
-        Adventure_Audio_PlayFootstep();
+        Adventure_Audio_LoadWalkAndBirdSounds();
       }
       timeBeginPeriod(DAT_00626838);
       DAT_00626818 = timeSetEvent(DAT_00530d94,DAT_00626838,FUN_00501671,0,1);
@@ -117509,10 +117509,10 @@ uint Surface_GetPixel(int value,int min_val,int max_val)
 
 
 /* ==========================================================================
- * Function: Surface_GetPixelPtr @ 0050da40
+ * Function: Surface_GetPixelValue @ 0050da40
  * ========================================================================== */
 
-uint Surface_GetPixelPtr(int *value,int min_val,int max_val)
+uint Surface_GetPixelValue(int *value,int min_val,int max_val)
 
 {
   int iVar1;

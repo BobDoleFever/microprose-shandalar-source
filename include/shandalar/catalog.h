@@ -110,13 +110,13 @@ int Catalog_CompareEntryHash(const int *a, const int *b);
  */
 
 /*
- * Catalog_LoadPaletteMap
+ * Palette_LoadTRFile
  * Purpose: Load a palette mapping file and initialize the color reduction tables.
  * Parameter palette_csv: Path to the palette color definitions CSV file.
  * Parameter image_path: Path to the reference image file (optional, can be NULL).
  * Returns: Pointer to the loaded palette buffer.
  */
-void* Catalog_LoadPaletteMap(const char *palette_csv, const char *image_path);
+void* Palette_LoadTRFile(const char *palette_csv, const char *image_path);
 
 /*
  * Palette_InitSquareDistanceTable

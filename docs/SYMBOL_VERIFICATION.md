@@ -517,3 +517,22 @@ like a planned-slot peek; medium), `Ai_EvalAttackCandidate_004c864d` (runs the c
 on most `Ai_Subsystem_*` after `0x4acb7f` in MAGIC.EXE is unsupported: the real `sid\Ai.c` assert string appears only in
 `Ai_SaveGameState`. `Ai_SaveGameState`, `Ai_RestoreGameState` and the board-state push and pop (a one-deep snapshot, not a
 stack) held up.
+
+### Colour, palette and sound helpers (emulator, 2026-09-26)
+
+Grades as above; **injected** means the real function was called on real emulator state from a driver, because the game did not
+reach it (the scripted `MAGIC.EXE` run never left the title screen).
+
+| MAGIC.EXE / DUEL.EXE | Old name | New name | Evidence |
+|---|---|---|---|
+| `0x494310` / `0x43504d` | `Color_QuantizeRGBToPalette` | `Color_RGBToOctreePath` | returns nothing; fills 8 bytes, one per bit plane from the top, each a 3-bit octree child index (high, middle, low colour byte = 1, 2, 4): `0xffffff` gives `[7,7,7,7,7,7,7,7]`. Identical output on both programs (injected); natural in the duel, about 14,000 calls from the dither routine |
+| `0x493e70` / `0x434a43` | `Catalog_LoadPaletteMap` | `Palette_LoadTRFile` | natural: `('todpal.tr', 0)` at 1.357 s in `MAGIC.EXE` and `('...DUELPALall.TR', '...DUEL.plogpal')` in the duel; returns a Win32 `LOGPALETTE` (version `0x300`, 256 entries, entry 197 = 14 8 8, matching the `.TR` line `197 - 14 8 8`); a second path overlays a binary palette. Nothing in it is a catalog |
+| `0x50da40` / none | `Surface_GetPixelPtr` | `Surface_GetPixelValue` | injected on real surfaces: returns the palette index (`0xec`, `0xc3`, `0x58`, matching a direct read of the 8-bit DIB), never a pointer. Not `Surface_GetPixel` because a 198-byte sibling at `0x50d6f0` already has that name |
+| `0x4ebe1a` / none | `Adventure_Audio_StopEffectChannel` | `Adventure_Audio_PlayTrack` | injected: builds volume, 22050 Hz and pan words and calls the play-sound function (`PlaySnd(track=16, ...)`); the real stop is `StopSnd`. That flag bit 0 means "loop" (so flags 0 is play once) is static only |
+| `0x4ec32f` / none | `Adventure_Audio_PlayFootstep` | `Adventure_Audio_LoadWalkAndBirdSounds` | natural: at 1.357 s, right after `Sound_Init`, it makes 15 sound-track loads (`kwalkl.wav` to `wwalkr.wav` on tracks 0 to 9, `kbird1.wav` to `wbird1.wav` on tracks 10 to 14) and plays nothing |
+
+`Color_FindNearestPaletteIndex` (`0x494540`) held up on behaviour (injected: colour `0x0e0808` gives index 197, whose table entry is exactly that
+colour), but it was never entered naturally and nothing appears to call it (a scan for calls and pointers found none), so it
+looks like dead code in both programs. Its distance metric swaps two colour channels compared with the other nearest-colour search
+(a latent bug in dead code). Live in the duel, `PlaySnd(11|18|17|5)` play GREEN.wav, tap.wav, summon.wav and endturn.wav, the tracks
+`InitSndTrack` loaded in that order.

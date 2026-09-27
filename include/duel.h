@@ -925,7 +925,7 @@ uint32_t FUN_004348b2(int32_t player,int32_t card_slot);;
 void * FUN_00434a10(void);;
 
 /* Function at 00434a43 (Size: 596 bytes) */
-int16_t * Catalog_LoadPaletteMap(char *str_1,char *str_2);;
+int16_t * Palette_LoadTRFile(char *str_1,char *str_2);;
 
 /* Function at 00434c97 (Size: 114 bytes) */
 int32_t FUN_00434c97(void);;
@@ -943,7 +943,7 @@ int32_t FUN_00434ec7(int32_t *max_val,char *str_2,int32_t hBitmap);;
 int FUN_00434fa1(int *max_val);;
 
 /* Function at 0043504d (Size: 100 bytes) */
-void FUN_0043504d(uint32_t player,uint32_t *card_slot);;
+void Color_RGBToOctreePath(uint32_t player,uint32_t *card_slot);;
 
 /* Function at 004350b1 (Size: 260 bytes) */
 int32_t FUN_004350b1(void);;

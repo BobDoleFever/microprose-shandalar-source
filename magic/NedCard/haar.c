@@ -2192,7 +2192,7 @@ undefined4 FUN_004f45da(void)
   strcat(local_624,s__DUELPALall_TR_00530234);
   strcpy(local_510,&DAT_006807a0);
   strcat(local_510,s__DUEL_plogpal_00530244);
-  local_408 = (LOGPALETTE *)Catalog_LoadPaletteMap(local_624,local_510);
+  local_408 = (LOGPALETTE *)Palette_LoadTRFile(local_624,local_510);
   if (local_408 == (LOGPALETTE *)0x0) {
     local_51c = 0;
   }

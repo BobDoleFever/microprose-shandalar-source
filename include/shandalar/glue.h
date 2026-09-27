@@ -224,13 +224,13 @@ void Adventure_NewsFlash_DominionSpell(void);
 void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5);
 void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height);
 void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3);
-void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3);
+void Adventure_Audio_PlayTrack(int arg1,int arg2,int arg3);
 void Adventure_Audio_SetPlaybackPosition(char *arg1,int arg2);
 void Adventure_Audio_StopAllTracks(void);
 void Adventure_Audio_PlayCastleVictory(int arg1);
 void Adventure_Audio_PlayDuelIntro(int arg1);
 void Adventure_Audio_PlayTerrainAmbience(int arg1);
-void Adventure_Audio_PlayFootstep(void);
+void Adventure_Audio_LoadWalkAndBirdSounds(void);
 uint32_t Adventure_Audio_FindSoundOnDrives(char *name_or_path);
 char Adventure_Audio_GetMusicDrivePath(void);
 void Adventure_Audio_FreeSoundTrack(void *arg1);
@@ -483,13 +483,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define FUN_004ebcdc Adventure_Audio_PlayEffect
 #define FUN_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define FUN_004ebdca Adventure_Audio_PlayEffectLooped
-#define FUN_004ebe1a Adventure_Audio_StopEffectChannel
+#define FUN_004ebe1a Adventure_Audio_PlayTrack
 #define FUN_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define FUN_004ebebf Adventure_Audio_StopAllTracks
 #define Sound_Play_Bcastle_Victory Adventure_Audio_PlayCastleVictory
 #define FUN_004ebfef Adventure_Audio_PlayDuelIntro
 #define Sound_Play_Bbird1_Ambience Adventure_Audio_PlayTerrainAmbience
-#define Sound_Play_Bbird1_Step Adventure_Audio_PlayFootstep
+#define Sound_Play_Bbird1_Step Adventure_Audio_LoadWalkAndBirdSounds
 #define FUN_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Sound_Play_Locmus1 Adventure_Audio_GetMusicDrivePath
 #define FUN_004ec572 Adventure_Audio_FreeSoundTrack
@@ -734,13 +734,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_004ec572 Adventure_Audio_FreeSoundTrack
@@ -985,13 +985,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Render_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Render_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Render_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Render_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Render_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Render_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Render_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Render_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Render_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Render_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Render_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Render_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Render_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Render_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Render_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1236,13 +1236,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Sound_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Sound_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Sound_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Sound_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Sound_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Sound_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Sound_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Sound_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Sound_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Sound_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Sound_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Sound_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Sound_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Sound_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Sound_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1487,13 +1487,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Subsystem_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Subsystem_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Subsystem_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Subsystem_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Subsystem_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Subsystem_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Subsystem_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Subsystem_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Subsystem_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Subsystem_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Subsystem_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Subsystem_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Subsystem_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Subsystem_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Subsystem_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1738,13 +1738,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Timer_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Timer_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Timer_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Timer_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Timer_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Timer_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Timer_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Timer_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Timer_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Timer_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Timer_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Timer_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Timer_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Timer_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Timer_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1989,13 +1989,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_UI_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_UI_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_UI_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_UI_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_UI_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_UI_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_UI_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_UI_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_UI_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_UI_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_UI_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_UI_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_UI_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_UI_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_UI_004ec572 Adventure_Audio_FreeSoundTrack
@@ -2240,13 +2240,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Util_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Util_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Util_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Util_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Util_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Util_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Util_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Util_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Util_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Util_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Util_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Util_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Util_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Util_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Util_004ec572 Adventure_Audio_FreeSoundTrack

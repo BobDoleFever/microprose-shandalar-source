@@ -13451,7 +13451,7 @@ int32_t FUN_00471426(void)
   Str_CopyFast(local_624,(uint32_t *)s__DUELPALall_TR_004f9834);
   Mem_AllocOrFree_004d9630(local_510,(uint32_t *)&DAT_005f76e0);
   Str_CopyFast(local_510,(uint32_t *)s__DUEL_plogpal_004f9844);
-  local_408 = (LOGPALETTE *)Catalog_LoadPaletteMap((char *)local_624,(char *)local_510);
+  local_408 = (LOGPALETTE *)Palette_LoadTRFile((char *)local_624,(char *)local_510);
   if (local_408 == (LOGPALETTE *)0x0) {
     local_51c = 0;
   }

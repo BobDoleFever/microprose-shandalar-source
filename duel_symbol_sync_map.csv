@@ -80,7 +80,7 @@ Address,NewName
 0042fbf0,Ai_SaveGameState
 00431d05,Ai_ChooseBlockers
 004340f0,Catalog_Open
-00434a43,Catalog_LoadPaletteMap
+00434a43,Palette_LoadTRFile
 00435cb5,Palette_AllocErrorDiffusionTable
 00436af6,Ai_CalcManaRequirement_004b9284
 00437710,Palette_Color_00495430

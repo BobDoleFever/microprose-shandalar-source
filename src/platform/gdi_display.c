@@ -22,7 +22,7 @@ extern int DAT_00532550;
 extern int DAT_0070a890;
 extern int g_DisplaySurfaceWork;
 extern int PTR_DAT_00532560;
-int Surface_GetPixelPtr();
+int Surface_GetPixelValue();
 extern int DAT_00617580;
 extern int DAT_0062314c;
 extern int FUN_00472d0a;
@@ -670,7 +670,7 @@ uint Surface_GetPixelColor(int x,int y)
   if ((0x3f < y) || (y < 0)) {
     y = 0;
   }
-  uVar1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+  uVar1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
   return uVar1 & 0xf;
 }
 

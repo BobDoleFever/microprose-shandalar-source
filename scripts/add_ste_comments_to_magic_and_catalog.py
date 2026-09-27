@@ -180,8 +180,8 @@ def process_catalog_c():
  * ColorOctree_AllocNode
  * Purpose: Allocate and clear a new 8-child color octree node.
  */""",
-        "Catalog_LoadPaletteMap": """/*
- * Catalog_LoadPaletteMap
+        "Palette_LoadTRFile": """/*
+ * Palette_LoadTRFile
  * Purpose: Load a palette mapping CSV file and build color octree clusters.
  */""",
         "Palette_InitSquareDistanceTable": """/*
@@ -204,8 +204,8 @@ def process_catalog_c():
  * ColorOctree_FreeTree
  * Purpose: Recursively free all nodes and cluster buffers in a color octree.
  */""",
-        "Color_QuantizeRGBToPalette": """/*
- * Color_QuantizeRGBToPalette
+        "Color_RGBToOctreePath": """/*
+ * Color_RGBToOctreePath
  * Purpose: Convert a 24-bit RGB color to the best matching palette entry.
  */""",
         "Palette_BuildFastColorLookup": """/*

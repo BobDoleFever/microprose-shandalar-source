@@ -11952,7 +11952,7 @@ void Ai_Subsystem_004c0efe(uint x, uint arg2, int arg3, int arg4, uint arg5, int
           local_44 = 0;
         }
         else {
-          local_44 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,local_14,local_1c + 0x40);
+          local_44 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,local_14,local_1c + 0x40);
         }
         if (local_44 != 0) {
           for (local_3c = 0; (int)local_3c < 8; local_3c = local_3c + 1) {

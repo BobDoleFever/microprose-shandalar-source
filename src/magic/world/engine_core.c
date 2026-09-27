@@ -1652,7 +1652,7 @@ int32_t Pic_Load_advfac64_0040a4fc(void)
 {
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_005171e4);
-  Catalog_LoadPaletteMap(s_todpal_tr_005171f4,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_005171f4,(char *)0x0);
   SelectPalette(*(HDC *)(g_ScreenSurfaces + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(g_ScreenSurfaces + 4));
   FUN_0040a566();
@@ -2617,7 +2617,7 @@ uint32_t Surface_GetPixelColor(int x,int y)
   if ((0x3f < y) || (y < 0)) {
     y = 0;
   }
-  uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+  uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
   return uval_1 & 0xf;
 }
 
@@ -2635,7 +2635,7 @@ int32_t FUN_0040c7c0(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
     }
     else {
       uval_1 = 0;
@@ -2660,7 +2660,7 @@ void FUN_0040c81c(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot,arg_3,uval_1 | player);
   }
   return;
@@ -2679,7 +2679,7 @@ void FUN_0040c889(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot,arg_3,uval_1 & ~player);
   }
   return;
@@ -2699,7 +2699,7 @@ int32_t FUN_0040c8fa(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x + 0x40,y);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x + 0x40,y);
     }
     else {
       uval_1 = 0;
@@ -2724,7 +2724,7 @@ void FUN_0040c959(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3,uval_1 | player);
   }
   return;
@@ -2743,7 +2743,7 @@ void FUN_0040c9cc(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3,uval_1 & ~player);
   }
   return;
@@ -2764,13 +2764,13 @@ void FUN_0040ca43(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((player < 0x40) && (-1 < player)) && (card_slot < 0x40)) && (-1 < card_slot)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,player,card_slot + 0x40,
                      uval_1 | 1 << ((char)arg_3 - 1U & 0x1f));
     FUN_0040c81c(0x20,player,card_slot);
     arg_2_00 = player + *(int *)(&DAT_00522378 + arg_3 * 4);
     arg_3_00 = card_slot + *(int *)(&DAT_005223e0 + arg_3 * 4);
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40,
                      uval_1 | 1 << ((char)arg_3 + 3U & 7));
     FUN_0040c81c(0x20,arg_2_00,arg_3_00);
@@ -2792,7 +2792,7 @@ uint32_t FUN_0040cb4f(int player_id,int card_slot,char arg_3)
   
   if ((player < 0x40) && (-1 < player)) {
     if ((card_slot < 0x40) && (-1 < card_slot)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
       uval_1 = uval_1 & 1 << (arg_3 - 1U & 0x1f);
     }
     else {

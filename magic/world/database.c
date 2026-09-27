@@ -1721,7 +1721,7 @@ void Action_PromptTarget_0049239e(int spell_id)
       BringWindowToTop(_hwndScreen);
       SetFocus(_hwndScreen);
       LoadPalNoPic(s_advfac64_pic_00528940);
-      Catalog_LoadPaletteMap(s_todpal_tr_00528950,(char *)0x0);
+      Palette_LoadTRFile(s_todpal_tr_00528950,(char *)0x0);
       SelectPalette(*(HDC *)(DAT_0070a850 + 4),_hLibPal,0);
       RealizePalette(*(HDC *)(DAT_0070a850 + 4));
       Glue_Sound_004ebeeb(6);
