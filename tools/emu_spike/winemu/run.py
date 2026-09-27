@@ -144,9 +144,11 @@ def main(argv=None):
     for spec in args.breaks:
         parts = spec.split(":")
         flags = parts[4].split(",") if len(parts) > 4 else []
+        mems = [int(x, 16) for f in flags if f.startswith("mem=") for x in f[4:].split("+")]    # dwords shown on entry
         m.add_trace(int(parts[0], 16), parts[1], int(parts[2]),
                     tuple(int(x) for x in parts[3].split(",") if x) if len(parts) > 3 else (),
-                    ret="ret" in flags, describe=(lambda a, mm=m: card_desc(mm, a)) if "card" in flags else None)
+                    ret="ret" in flags, describe=(lambda a, mm=m, ms=mems, cd=("card" in flags): (card_desc(mm, a) if cd else "")
+                                   + (" mem[" + " ".join(f"{x:#x}={mm.r32(x):#x}" for x in ms) + "]" if ms else "")))
     for spec in args.watch:
         a, lab = spec.split(":", 1)
         m.add_watch(int(a, 16), lab)
