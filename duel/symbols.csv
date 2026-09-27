@@ -13756,7 +13756,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00493d6d,"LAB_00493d6d",Label,true,false
 00493d86,"LAB_00493d86",Label,true,false
 00493d9f,"LAB_00493d9f",Label,true,false
-00493e30,"SpellChain_WndProc",Function,true,true
+00493e30,"Glue_Subsystem_004cdb4f",Function,true,true
 00493e97,"LAB_00493e97",Label,true,false
 00493e9a,"LAB_00493e9a",Label,true,false
 00493ef0,"LAB_00493ef0",Label,true,false
@@ -14245,7 +14245,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00499128,"FUN_00499128",Function,true,true
 0049915f,"LAB_0049915f",Label,true,false
 0049917c,"LAB_0049917c",Label,true,false
-0049918f,"SpellChain_MinimizedWndProc",Function,true,true
+0049918f,"Glue_Subsystem_004d0602",Function,true,true
 004991a9,"LAB_004991a9",Label,true,false
 004991c4,"LAB_004991c4",Label,true,false
 004991e5,"LAB_004991e5",Label,true,false

@@ -23801,13 +23801,13 @@ void FUN_00499128(HWND hwnd)
 
 
 /*
- * Decompiled function: SpellChain_MinimizedWndProc
+ * Decompiled function: Glue_Subsystem_004d0602
  * Entry Point: 0049918f
  * Size: 861 bytes
  */
 
 
-LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
+LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
 
 {
   HBRUSH hbr;

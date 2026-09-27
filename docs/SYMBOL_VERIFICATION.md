@@ -464,6 +464,7 @@ only cast Elves and the window was up for 18 ms of virtual time per cast; **stat
 Names that held up (twins renamed to match): `SpellChain_RegisterClass` (natural), `SpellChain_WndProc` (natural),
 `SpellChain_UpdateLayout` (natural), `SpellChain_MinimizedWndProc` (synthetic), `SpellChain_CleanupUI` (static).
 Two `DUEL.EXE` twins (`0x4a1bf7`, `0x4a1f15`) share one generic name (`Palette_Subsystem_0049608e`) and are not renamed.
+In `DUEL.EXE` two *different* functions each carried the names `Glue_Subsystem_004cdb4f` (`0x493e30`, 14,669 bytes, and `0x49fc0f`, 7,410 bytes) and `Glue_Subsystem_004d0602` (`0x49918f` and `0x4a26c6`), because the twin-copying script matched by resemblance. Only `0x49fc0f` and `0x4a26c6` were verified as the spell-chain window procedures and carry the `SpellChain_` names; `0x493e30` and `0x49918f` keep the old generic names until someone checks them.
 
 Structures: a table record is `0x58` bytes (`+0` HWND of the card window, whose window longs 0 and 4 are (player, slot);
 `+4` to `+0x50` up to 20 target HWNDs; `+0x54` target count), 100 records at most. A snapshot entry is `0xAC` bytes

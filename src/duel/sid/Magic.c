@@ -3408,7 +3408,7 @@ int32_t UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
   
   local_30 = 1;
   local_2c.style = 0x800;
-  local_2c.lpfnWndProc = SpellChain_WndProc;
+  local_2c.lpfnWndProc = Glue_Subsystem_004cdb4f;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -3436,7 +3436,7 @@ int32_t UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
     local_30 = 0;
   }
   local_2c.style = 3;
-  local_2c.lpfnWndProc = SpellChain_MinimizedWndProc;
+  local_2c.lpfnWndProc = Glue_Subsystem_004d0602;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -3566,13 +3566,13 @@ void FUN_00493c0c(void)
 
 
 /*
- * Decompiled function: SpellChain_WndProc
+ * Decompiled function: Glue_Subsystem_004cdb4f
  * Entry Point: 00493e30
  * Size: 14669 bytes
  */
 
 
-uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,HWND param_4)
+uint32_t Glue_Subsystem_004cdb4f(HWND hwnd,uint32_t y,HWND param_3,HWND param_4)
 
 {
   int *i_ptr_1;

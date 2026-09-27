@@ -3247,7 +3247,7 @@ int32_t UI_Register_WINBK_Attack_00493810(LPCSTR str_1);;
 void FUN_00493c0c(void);;
 
 /* Function at 00493e30 (Size: 14669 bytes) */
-uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,HWND param_4);;
+uint32_t Glue_Subsystem_004cdb4f(HWND hwnd,uint32_t y,HWND param_3,HWND param_4);;
 
 /* Function at 00497849 (Size: 245 bytes) */
 int32_t FUN_00497849(int max_val,int point,int hBitmap);;
@@ -3268,7 +3268,7 @@ uint32_t UI_WndProc_0049866e(HWND hwnd,uint32_t uMsg,HWND wParam,int lParam);;
 void FUN_00499128(HWND hwnd);;
 
 /* Function at 0049918f (Size: 861 bytes) */
-LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
+LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
 
 /* Function at 004994f8 (Size: 688 bytes) */
 int FUN_004994f8(HWND hwnd,int *point,int32_t *hBitmap,int32_t *flags,int32_t *damage);;

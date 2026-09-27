@@ -63871,7 +63871,7 @@ undefined4 UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
   
   local_30 = 1;
   local_2c.style = 0x800;
-  local_2c.lpfnWndProc = SpellChain_WndProc;
+  local_2c.lpfnWndProc = Glue_Subsystem_004cdb4f;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -63899,7 +63899,7 @@ undefined4 UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
     local_30 = 0;
   }
   local_2c.style = 3;
-  local_2c.lpfnWndProc = SpellChain_MinimizedWndProc;
+  local_2c.lpfnWndProc = Glue_Subsystem_004d0602;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -64026,10 +64026,10 @@ void FUN_00493c0c(void)
 
 
 /* ==========================================================================
- * Function: SpellChain_WndProc @ 00493e30
+ * Function: Glue_Subsystem_004cdb4f @ 00493e30
  * ========================================================================== */
 
-uint SpellChain_WndProc(HWND hwnd,uint y,HWND param_3,HWND param_4)
+uint Glue_Subsystem_004cdb4f(HWND hwnd,uint y,HWND param_3,HWND param_4)
 
 {
   int *piVar1;
@@ -65847,10 +65847,10 @@ void FUN_00499128(HWND hwnd)
 
 
 /* ==========================================================================
- * Function: SpellChain_MinimizedWndProc @ 0049918f
+ * Function: Glue_Subsystem_004d0602 @ 0049918f
  * ========================================================================== */
 
-LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
+LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 
 {
   HBRUSH hbr;
