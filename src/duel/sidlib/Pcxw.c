@@ -3232,7 +3232,7 @@ void FUN_00451e58(void)
   DAT_0066aaf8 = uval_1 - 0x1d;
   DAT_0066aafc = uval_1 - 0x1c;
   DAT_0068f2d0 = uval_1 - 0x1b;
-  DAT_0068eee0 = uval_1 - 0x1a;
+  g_StackObjectCardId = uval_1 - 0x1a;
   DAT_00666414 = uval_1 - 0x19;
   DAT_0066675c = uval_1 - 0x18;
   DAT_00666750 = uval_1 - 0x17;

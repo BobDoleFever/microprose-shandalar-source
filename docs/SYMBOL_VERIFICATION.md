@@ -356,7 +356,7 @@ see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md).
 
 `tools/emu_spike` (`docs/PORT_STRATEGY.md`) runs `DUEL.EXE` deterministically and traces functions by address, so the
 checks above can be repeated without QEMU. Twin addresses in `DUEL.EXE`: `Magic_RunTurnStep` = `Magic_RunTurnStep`,
-`Magic_PushSpellStack` = `Magic_PushSpellStack`, `FUN_0048e251` = `Magic_DropTopSpell` (twin by size; not yet entered),
+`Magic_PushSpellStack` = `Magic_PushSpellStack`, `Magic_DropTopSpell` = `Magic_DropTopSpell` (twin by size; not yet entered),
 `Magic_ClearSpellStack` = `Magic_ClearSpellStack`. A scripted game (both players a mono-green deck: Forest,
 Llanowar Elves, Durkwood Boars, Killer Bees) gave:
 
@@ -513,7 +513,7 @@ replay cursor are one variable (`0x50b37c`).
 Reported but **not applied** (static only or medium confidence; nothing above rests on them): `Ai_CalcLifeAdvantage` (never
 entered), `Ai_ChooseBlockers` (only runs with a debug flag; looks like a plan-to-text dump), `Ai_FilterValidBlockers`
 (reads per-colour land counts; medium), `Ai_Util_004ab525` (cursor step back; medium), `Ai_GetOpponentPlayerScore` (looks
-like a planned-slot peek; medium), `Ai_EvalAttackCandidate_004c864d` (runs the combat damage step; medium),
+like a planned-slot peek; medium), `Combat_ResolveBlocksAndDamage` (runs the combat damage step; medium),
 `Ai_Subsystem_004cc9c5` (a board-refresh routine in DUEL's own domain). The `Ai_` prefix on the start-of-duel dialog code and
 on most `Ai_Subsystem_*` after `0x4acb7f` in MAGIC.EXE is unsupported: the real `sid\Ai.c` assert string appears only in
 `Ai_SaveGameState`. `Ai_SaveGameState`, `Ai_RestoreGameState` and the board-state push and pop (a one-deep snapshot, not a
@@ -537,3 +537,25 @@ colour), but it was never entered naturally and nothing appears to call it (a sc
 looks like dead code in both programs. Its distance metric swaps two colour channels compared with the other nearest-colour search
 (a latent bug in dead code). Live in the duel, `PlaySnd(11|18|17|5)` play GREEN.wav, tap.wav, summon.wav and endturn.wav, the tracks
 `InitSndTrack` loaded in that order.
+
+### Round 2: red-deck game (emulator, 2026-09-26)
+
+Me (mono-green) against the red AI deck (index 46: Lightning Bolt, Goblin Balloon Brigade, Sisters of the Flame) for 560 virtual
+seconds, about 750,000 traced lines.
+
+- **`Magic_DropTopSpell`** (`FUN_0048e251` in `DUEL.EXE`, exact body twin: decrement the stack count, free the stack object's card
+  slot if it still holds the object's card, clear the entry) was entered 213 times, always from `0x0048921a` inside the card-casting
+  routine, and always while `g_IsAiThinking` was 1: a `PushSpellStack(.., 113, ..)` announce right after a "Trying to cast ..." prompt,
+  then the drop. It undoes an announced cast that the AI's search then abandons. Not seen in a real, non-AI play. The `DUEL.EXE`
+  twin is now named `Magic_DropTopSpell`, and its globals `g_SpellStackCount`, `g_SpellStackObjects` and `g_StackObjectCardId` (DUEL-side files only).
+- **Attribute query codes `0x35` and `0x36`:** still never called, over about 650,000 calls (codes seen: `0x32` 169,078; `0x33` 170,709;
+  `0x34` 140,893; `0x3c` 167,961). They stay static-only, and are probably not reached in ordinary play.
+- **`Combat_ResolveBlocksAndDamage`** (was `Ai_EvalAttackCandidate_004c864d`; `DUEL.EXE` `0x0047740d`): entered 20 times, every time
+  from `0x004297c7` in the turn loop, right after the `Assign Blockers` phase prompt and before `Damage prevention` and the
+  `Damage Dealing` step, in every combat of the game (mine and the AI's). Its argument was always 1. It does the blocker assignment
+  and hands over to damage; the exact split with the damage step is not established.
+- **AI search stages** (`0x666400`, set by `0x0048b5c9(stage, budget)` and cleared at `0x0043063b`): stage 1 (budget 45 or 90, eight searches),
+  3 (30, four), 4 (30, two), 2 (30, one), 8 (30, one). Stages 5 to 7 did not occur. The budget is not the search length: every search lasted 2.0 s.
+- **Still not entered:** the plan-to-text dump (`0x431d05`), the planned-choice peek (`0x430768`) and the log-message function (`0x45102d`), so
+  their names stay static-only. The planned-slot peek (`0x43071d`, 54 entries) and the colour-mask function (`0x431f41`, 498 entries)
+  behaved as reported before, but their names stay unapplied.

@@ -115,7 +115,7 @@ extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
-extern int DAT_0068eee0;
+extern int g_StackObjectCardId;
 extern int DAT_0068eed8;
 extern int DAT_006826c0;
 extern int DAT_006826ec;
@@ -274,7 +274,7 @@ int Duel_ApplyCombatDamage(int attacker_player,int attacker_slot,int defender_pl
       }
       else {
         if ((*(int *)(&g_DuelCardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_DuelCardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == DAT_0068eee0)) {
+           (*(int *)(&g_DuelCardSlot_CardId + damage * 0x120 + defender_slot * 0x5b20) == g_StackObjectCardId)) {
           local_10 = *(int *)(&DAT_006826c0 + damage * 0x120 + defender_slot * 0x5b20);
         }
         else {

@@ -2428,7 +2428,7 @@ uint Ai_Subsystem_004c5fc9(int value);
 void Ai_Subsystem_004c7aa8(int value);
 void Ai_Subsystem_004c7be5(undefined4 player,int card_slot);
 int Ai_Subsystem_004c7d69(void);
-void Ai_EvalAttackCandidate_004c864d(uint spell_id);
+void Combat_ResolveBlocksAndDamage(uint spell_id);
 undefined4 Ai_Subsystem_004c9f3a(int player,uint card_slot);
 undefined4 Ai_Subsystem_004c9f88(int value);
 void Ai_Subsystem_004ca07b(void);

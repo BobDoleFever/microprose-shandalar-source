@@ -86111,10 +86111,10 @@ LAB_004c8311:
 
 
 /* ==========================================================================
- * Function: Ai_EvalAttackCandidate_004c864d @ 004c864d
+ * Function: Combat_ResolveBlocksAndDamage @ 004c864d
  * ========================================================================== */
 
-void Ai_EvalAttackCandidate_004c864d(uint spell_id)
+void Combat_ResolveBlocksAndDamage(uint spell_id)
 
 {
   undefined4 uVar1;
@@ -113995,7 +113995,7 @@ LAB_005049db:
               FUN_00472f0c(2,0x1e);
             }
           }
-          Ai_EvalAttackCandidate_004c864d(value);
+          Combat_ResolveBlocksAndDamage(value);
           g_DuelModeFlags = g_DuelModeFlags | 8;
 LAB_00504ac9:
           DAT_0068a67c = 1;

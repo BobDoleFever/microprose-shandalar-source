@@ -10486,7 +10486,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00477372,"LAB_00477372",Label,true,false
 00477400,"LAB_00477400",Label,true,false
 00477408,"LAB_00477408",Label,true,false
-0047740d,"Ai_EvalAttackCandidate_004c864d",Function,true,true
+0047740d,"Combat_ResolveBlocksAndDamage",Function,true,true
 0047743a,"LAB_0047743a",Label,true,false
 0047743d,"LAB_0047743d",Label,true,false
 00477460,"LAB_00477460",Label,true,false
@@ -12513,7 +12513,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048e232,"LAB_0048e232",Label,true,false
 0048e245,"LAB_0048e245",Label,true,false
 0048e24c,"LAB_0048e24c",Label,true,false
-0048e251,"FUN_0048e251",Function,true,true
+0048e251,"Magic_DropTopSpell",Function,true,true
 0048e26e,"LAB_0048e26e",Label,true,false
 0048e2e6,"LAB_0048e2e6",Label,true,false
 0048e2fd,"LAB_0048e2fd",Label,true,false
@@ -27124,7 +27124,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 00676170,"DAT_00676170",Label,true,false
 006764b0,"DAT_006764b0",Label,true,false
 006764b4,"DAT_006764b4",Label,true,false
-006764b8,"DAT_006764b8",Label,true,false
+006764b8,"g_SpellStackCount",Label,true,false
 006764bc,"DAT_006764bc",Label,true,false
 006764c0,"DAT_006764c0",Label,true,false
 006764d0,"DAT_006764d0",Label,true,false
@@ -27301,7 +27301,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0068eed4,"DAT_0068eed4",Label,true,false
 0068eed8,"DAT_0068eed8",Label,true,false
 0068eedc,"DAT_0068eedc",Label,true,false
-0068eee0,"DAT_0068eee0",Label,true,false
+0068eee0,"g_StackObjectCardId",Label,true,false
 0068eee4,"DAT_0068eee4",Label,true,false
 0068eee8,"DAT_0068eee8",Label,true,false
 0068eeec,"DAT_0068eeec",Label,true,false
@@ -27328,7 +27328,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0068efa0,"DAT_0068efa0",Label,true,false
 0068efa8,"DAT_0068efa8",Label,true,false
 0068efac,"DAT_0068efac",Label,true,false
-0068efb0,"DAT_0068efb0",Label,true,false
+0068efb0,"g_SpellStackObjects",Label,true,false
 0068efb4,"DAT_0068efb4",Label,true,false
 0068f0b0,"DAT_0068f0b0",Label,true,false
 0068f0b4,"DAT_0068f0b4",Label,true,false

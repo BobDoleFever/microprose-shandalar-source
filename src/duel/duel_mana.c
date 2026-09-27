@@ -132,7 +132,7 @@ extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
-extern int DAT_0068eee0;
+extern int g_StackObjectCardId;
 extern int DAT_0068eed8;
 extern int DAT_006826c0;
 extern int DAT_006826ec;
@@ -266,7 +266,7 @@ uint Mana_GetCardColorRequirement(int player,int card_slot)
   uint uVar3;
   int local_8;
   
-  if (*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == DAT_0068eee0) {
+  if (*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == g_StackObjectCardId) {
     local_8 = *(int *)(&DAT_006826c0 + card_slot * 0x120 + player * 0x5b20);
   }
   else {

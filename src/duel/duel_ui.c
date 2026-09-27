@@ -119,7 +119,7 @@ extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
-extern int DAT_0068eee0;
+extern int g_StackObjectCardId;
 extern int DAT_0068eed8;
 extern int DAT_006826c0;
 extern int DAT_006826ec;
@@ -263,7 +263,7 @@ void Duel_DrawCardSprite(int arg_1,int arg_2,int arg_3)
          ((arg_3 != 4 &&
           ((((&g_DuelMasterCardTable)[iVar1 * 0x34] & 3) != 0 && ((&g_DuelMasterCardTable)[iVar1 * 0x34] != -0x80)))))
          ) {
-        (&DAT_0068eee0)[arg_1 * 0x5b20 + arg_2 * 0x120] = (undefined1)arg_3;
+        (&g_StackObjectCardId)[arg_1 * 0x5b20 + arg_2 * 0x120] = (undefined1)arg_3;
         *(uint *)(&g_DuelCardSlot_Flags + arg_1 * 0x5b20 + arg_2 * 0x120) =
              *(uint *)(&g_DuelCardSlot_Flags + arg_1 * 0x5b20 + arg_2 * 0x120) | 2;
         if (((&g_DuelMasterCardTable)[iVar1 * 0x34] & 2) == 0) {
@@ -275,7 +275,7 @@ void Duel_DrawCardSprite(int arg_1,int arg_2,int arg_3)
         DAT_00666760 = Pic_Subsystem_0044895f;
       }
       else {
-        (&DAT_0068eee0)[arg_1 * 0x5b20 + arg_2 * 0x120] = (undefined1)arg_3;
+        (&g_StackObjectCardId)[arg_1 * 0x5b20 + arg_2 * 0x120] = (undefined1)arg_3;
         Pic_Subsystem_0044895f(arg_1,arg_2);
       }
     }

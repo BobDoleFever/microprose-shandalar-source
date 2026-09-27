@@ -1032,7 +1032,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048d878	Magic_PushSpellStack		FID_conflict:_memcpy	2	1062
 0048dc9e	FUN_0048dc9e			0	165
 0048dd43	FUN_0048dd43			6	1294
-0048e251	FUN_0048e251			0	177
+0048e251	Magic_DropTopSpell			0	177
 0048e302	FUN_0048e302			0	41
 0048e32b	FUN_0048e32b			2	218
 0048e405	FUN_0048e405			4	1187

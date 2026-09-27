@@ -201,7 +201,7 @@ Address,NewName
 0046d497,Pic_Subsystem_004475a4
 0046e793,Pic_Subsystem_004488a0
 0046e852,Pic_Subsystem_0044895f
-0047740d,Ai_EvalAttackCandidate_004c864d
+0047740d,Combat_ResolveBlocksAndDamage
 0047a341,Mana_Init_00452b71
 0047aac1,Mana_Init_004532f1
 0047acdd,Ai_Subsystem_004b8e4d

@@ -2644,7 +2644,7 @@ void FUN_004769a5(int32_t player,int card_slot);;
 int FUN_00476b29(void);;
 
 /* Function at 0047740d (Size: 6381 bytes) */
-void Ai_EvalAttackCandidate_004c864d(uint32_t spell_id);;
+void Combat_ResolveBlocksAndDamage(uint32_t spell_id);;
 
 /* Function at 00478cfa (Size: 78 bytes) */
 int32_t FUN_00478cfa(int player,uint32_t card_slot);;
@@ -3112,7 +3112,7 @@ int32_t FUN_0048dc9e(void);;
 int32_t FUN_0048dd43(void);;
 
 /* Function at 0048e251 (Size: 177 bytes) */
-int32_t FUN_0048e251(void);;
+int32_t Magic_DropTopSpell(void);;
 
 /* Function at 0048e302 (Size: 41 bytes) */
 void Mem_AllocOrFree_0048e302(void);;
