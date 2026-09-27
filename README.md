@@ -62,6 +62,7 @@ tools/verification_harness/oracle_ctl.py shot    # screenshot; also: click X Y, 
 | `scripts/` | the Ghidra and Python pipeline that produced the tree |
 | `tools/verification_harness/` | drive and inspect the emulated original, plus tests |
 | `tools/emu_spike/` | spike: run `MAGIC.EXE` in a CPU emulator with our own imports |
+| `tools/twins/` | pair each `MAGIC.EXE` function with its `DUEL.EXE` twin by normalised body (`twins.csv`) |
 | `docs/` | see below |
 | `sources/` | local only, ignored by git: installers, disc images, extracted game files |
 
