@@ -590,7 +590,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_CastleEncounter_004c0efe Ai_Subsystem_004c0efe
 #define Ai_CastleEncounter_004c24b3 Overworld_LoadMapScreenPics
 #define Duel_RefreshAllWindows Ai_EvalAttackCandidate_CombatTrade
-#define Ai_EvalAttackCandidate_004c864d Ai_EvalAttackCandidate_General
+#define Combat_ResolveBlocksAndDamage Ai_EvalAttackCandidate_General
 #define Ai_EvaluateCreatureCast Ai_ScoreCardPlay_Creature
 #define Ai_EvaluateSpellCast Ai_ScoreCardPlay_Spell
 #define Ai_SaveGameState Ai_SaveGameState

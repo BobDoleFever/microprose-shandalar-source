@@ -3943,7 +3943,7 @@ void Ai_Subsystem_004c7be5(int32_t player,int card_slot);;
 int Ai_Subsystem_004c7d69(void);;
 
 /* Function at 004c864d (Size: 6381 bytes) */
-void Ai_EvalAttackCandidate_004c864d(uint32_t spell_id);;
+void Combat_ResolveBlocksAndDamage(uint32_t spell_id);;
 
 /* Function at 004c9f3a (Size: 78 bytes) */
 int32_t Ai_Subsystem_004c9f3a(int player,uint32_t card_slot);;

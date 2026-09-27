@@ -17919,7 +17919,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004c85b2,"LAB_004c85b2",Label,true,false
 004c8640,"LAB_004c8640",Label,true,false
 004c8648,"LAB_004c8648",Label,true,false
-004c864d,"Ai_EvalAttackCandidate_004c864d",Function,true,true
+004c864d,"Combat_ResolveBlocksAndDamage",Function,true,true
 004c867a,"LAB_004c867a",Label,true,false
 004c867d,"LAB_004c867d",Label,true,false
 004c86a0,"LAB_004c86a0",Label,true,false

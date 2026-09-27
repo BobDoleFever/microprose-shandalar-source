@@ -4756,10 +4756,10 @@ uint32_t FUN_004457a2(void)
     DAT_00618980 = DAT_00618980 + 1;
   }
   DAT_00618984 = 0;
-  for (match_count = 0; ((&DAT_0068efb0)[match_count * 2] != -1 && (match_count < 0x20)); match_count = match_count + 1)
+  for (match_count = 0; ((&g_SpellStackObjects)[match_count * 2] != -1 && (match_count < 0x20)); match_count = match_count + 1)
   {
     if (*(int *)(&DAT_00666460 + match_count * 4) != 0) {
-      val_1 = (&DAT_0068efb0)[match_count * 2];
+      val_1 = (&g_SpellStackObjects)[match_count * 2];
       val_2 = *(int *)(&DAT_0068efb4 + match_count * 8);
       (&DAT_00615470)[DAT_00618984 * 0x2b] = val_1;
       (&DAT_00615474)[DAT_00618984 * 0x2b] = val_2;
@@ -4891,7 +4891,7 @@ void Duel_RefreshAllWindows(int32_t arg1,uint32_t arg2)
             SendMessageA(DAT_00617378,0x40b,(WPARAM)&local_30,0);
             SendMessageA(DAT_00618988,0x40b,(WPARAM)&local_30,0);
           }
-          else if (DAT_0068eee0 != color_idx) {
+          else if (g_StackObjectCardId != color_idx) {
             if (loop_idx == 1) {
               SendMessageA(DAT_006152b0,0x40b,(WPARAM)&local_30,0);
               SendMessageA(DAT_00663df4,0x40b,(WPARAM)&local_30,0);

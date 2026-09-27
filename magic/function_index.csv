@@ -1308,7 +1308,7 @@ Address,FunctionName,ReturnType,ParameterCount,BodySize,Status,Filename
 004c7aa8,"Ai_Subsystem_004c7aa8","undefined",1,317,SUCCESS,"Ai_Subsystem_004c7aa8_004c7aa8.c"
 004c7be5,"Ai_Subsystem_004c7be5","undefined",2,388,SUCCESS,"Ai_Subsystem_004c7be5_004c7be5.c"
 004c7d69,"Ai_Subsystem_004c7d69","undefined",0,2276,SUCCESS,"Ai_Subsystem_004c7d69_004c7d69.c"
-004c864d,"Ai_EvalAttackCandidate_004c864d","undefined",1,6381,SUCCESS,"Ai_EvalAttackCandidate_004c864d_004c864d.c"
+004c864d,"Combat_ResolveBlocksAndDamage","undefined",1,6381,SUCCESS,"Ai_EvalAttackCandidate_004c864d_004c864d.c"
 004c9f3a,"Ai_Subsystem_004c9f3a","undefined",2,78,SUCCESS,"Ai_Subsystem_004c9f3a_004c9f3a.c"
 004c9f88,"Ai_Subsystem_004c9f88","undefined",1,243,SUCCESS,"Ai_Subsystem_004c9f88_004c9f88.c"
 004ca07b,"Ai_Subsystem_004ca07b","undefined",0,94,SUCCESS,"Ai_Subsystem_004ca07b_004ca07b.c"

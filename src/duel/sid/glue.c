@@ -125,7 +125,7 @@ uint32_t Mana_GetCardColorRequirement(int player,int card_slot)
   uint32_t uval_3;
   int slot_idx;
   
-  if (*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == DAT_0068eee0) {
+  if (*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) == g_StackObjectCardId) {
     slot_idx = *(int *)(&DAT_006826c0 + card_slot * 0x120 + player * 0x5b20);
   }
   else {
@@ -10919,7 +10919,7 @@ uint32_t UI_PromptFastEffectsDialog(int player,uint32_t *card_slot)
     _DAT_0052243c = 0xf;
     _DAT_00522440 = 0xfffffff0;
   }
-  if ((g_DuelTargetCardSlot == player) && (DAT_0068efb0 == g_DuelTargetPlayer)) {
+  if ((g_DuelTargetCardSlot == player) && (g_SpellStackObjects == g_DuelTargetPlayer)) {
     _DAT_0052243c = 0xf;
     _DAT_00522440 = 0xfffffff0;
   }
@@ -15735,13 +15735,13 @@ LAB_004770d1:
 
 
 /*
- * Decompiled function: Ai_EvalAttackCandidate_004c864d
+ * Decompiled function: Combat_ResolveBlocksAndDamage
  * Entry Point: 0047740d
  * Size: 6381 bytes
  */
 
 
-void Ai_EvalAttackCandidate_004c864d(uint32_t spell_id)
+void Combat_ResolveBlocksAndDamage(uint32_t spell_id)
 
 {
   int32_t uval_1;

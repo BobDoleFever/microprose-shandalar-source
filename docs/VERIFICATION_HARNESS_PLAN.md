@@ -168,6 +168,7 @@ At each checkpoint, dump known global state from both sides and compare:
 - [x] `Magic_ResolveSpellStack` is really `Magic_IsManaSource`: true for cards that tap for mana (emulator).
 - [x] `g_PlayerHandCardCount` is `g_DuelModeFlags`; `g_DefendingPlayer` is `g_TurnPlayer` (write watches, emulator).
 - [ ] Name `g_CurrentTurnPhase` (MAGIC.EXE `0x6a49e0`): a player index that did not change in the scripted game.
+- [x] `Magic_DropTopSpell` confirmed live (only inside the AI's search); `Combat_ResolveBlocksAndDamage` named (round 2).
 - [ ] Extend verification to the other duel-engine functions: turn phases, combat, AI choices.
 - [ ] Make probes process-aware: every program loads at `0x00400000`, and duels run in `DUEL.EXE`.
 

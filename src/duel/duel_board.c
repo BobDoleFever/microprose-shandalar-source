@@ -117,7 +117,7 @@ extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
-extern int DAT_0068eee0;
+extern int g_StackObjectCardId;
 extern int DAT_0068eed8;
 extern int DAT_006826c0;
 extern int DAT_006826ec;

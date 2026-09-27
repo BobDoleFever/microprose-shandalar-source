@@ -47,13 +47,13 @@ void Ai_SaveGameState(void)
   DAT_005126d4 = DAT_006826b0;
   DAT_0050b378 = g_DuelHumanPlayerIndex;
   FID_conflict__memcpy(&DAT_00511e70,&DAT_0068f240,0x80);
-  FID_conflict__memcpy(&DAT_00514530,&DAT_0068efb0,0x100);
+  FID_conflict__memcpy(&DAT_00514530,&g_SpellStackObjects,0x100);
   FID_conflict__memcpy(&DAT_0050f840,&DAT_0068f120,0x100);
   FID_conflict__memcpy(&DAT_00514e30,&g_DuelPlayerCreatureCount,8);
-  if (DAT_006764b8 < 0) {
+  if (g_SpellStackCount < 0) {
     __assert((uint32_t *)s_ScWilly>_0_004f3c94,(uint32_t *)s_D__Newmagic_sources_sid_Ai_c_004f3c74,0x176);
   }
-  DAT_0050db20 = DAT_006764b8;
+  DAT_0050db20 = g_SpellStackCount;
   DAT_0050f6b0 = DAT_00666760;
   DAT_00511e04 = DAT_00690318;
   FID_conflict__memcpy(&DAT_0050f570,&DAT_00690b00,0x140);
@@ -98,10 +98,10 @@ void FUN_0042fea9(void)
   DAT_006826b0 = DAT_005126d4;
   g_DuelHumanPlayerIndex = DAT_0050b378;
   FID_conflict__memcpy(&DAT_0068f240,&DAT_00511e70,0x80);
-  FID_conflict__memcpy(&DAT_0068efb0,&DAT_00514530,0x100);
+  FID_conflict__memcpy(&g_SpellStackObjects,&DAT_00514530,0x100);
   FID_conflict__memcpy(&DAT_0068f120,&DAT_0050f840,0x100);
   FID_conflict__memcpy(&g_DuelPlayerCreatureCount,&DAT_00514e30,8);
-  DAT_006764b8 = DAT_0050db20;
+  g_SpellStackCount = DAT_0050db20;
   DAT_00666760 = DAT_0050f6b0;
   DAT_00690318 = DAT_00511e04;
   FID_conflict__memcpy(&DAT_00690b00,&DAT_0050f570,0x140);
@@ -146,10 +146,10 @@ void FUN_00430120(void)
   DAT_0050f9c8 = DAT_006826b0;
   DAT_00511e68 = g_DuelHumanPlayerIndex;
   FID_conflict__memcpy(&DAT_0050caf8,&DAT_0068f240,0x80);
-  FID_conflict__memcpy(&DAT_005126d8,&DAT_0068efb0,0x100);
+  FID_conflict__memcpy(&DAT_005126d8,&g_SpellStackObjects,0x100);
   FID_conflict__memcpy(&DAT_0050f738,&DAT_0068f120,0x100);
   FID_conflict__memcpy(&DAT_0050f9c0,&g_DuelPlayerCreatureCount,8);
-  DAT_005126c0 = DAT_006764b8;
+  DAT_005126c0 = g_SpellStackCount;
   DAT_0050dd08 = DAT_00666760;
   DAT_0050dcc0 = g_DuelDamageAccumulator;
   FID_conflict__memcpy(&DAT_00514e10,&DAT_0068ece0,0x1c);
@@ -191,10 +191,10 @@ void FUN_00430367(void)
   DAT_006826b0 = DAT_0050f9c8;
   g_DuelHumanPlayerIndex = DAT_00511e68;
   FID_conflict__memcpy(&DAT_0068f240,&DAT_0050caf8,0x80);
-  FID_conflict__memcpy(&DAT_0068efb0,&DAT_005126d8,0x100);
+  FID_conflict__memcpy(&g_SpellStackObjects,&DAT_005126d8,0x100);
   FID_conflict__memcpy(&DAT_0068f120,&DAT_0050f738,0x100);
   FID_conflict__memcpy(&g_DuelPlayerCreatureCount,&DAT_0050f9c0,8);
-  DAT_006764b8 = DAT_005126c0;
+  g_SpellStackCount = DAT_005126c0;
   DAT_00666760 = DAT_0050dd08;
   g_DuelDamageAccumulator = DAT_0050dcc0;
   FID_conflict__memcpy(&DAT_0068ece0,&DAT_00514e10,0x1c);
@@ -1580,11 +1580,11 @@ uint32_t FUN_00432e04(void)
   uVar125 = FileIo_ReadDataBlock(&DAT_0066aaf0,4);
   uVar126 = FileIo_ReadDataBlock(&DAT_006663e8,8);
   uVar127 = FileIo_ReadDataBlock(&DAT_0068f240,0x80);
-  uVar128 = FileIo_ReadDataBlock(&DAT_0068efb0,0x100);
+  uVar128 = FileIo_ReadDataBlock(&g_SpellStackObjects,0x100);
   uVar129 = FileIo_ReadDataBlock(&DAT_0068f120,0x100);
   uVar130 = FileIo_ReadDataBlock(&DAT_00666960,0x80);
   uVar131 = FileIo_ReadDataBlock(&DAT_00666460,0x80);
-  uVar132 = FileIo_ReadDataBlock(&DAT_006764b8,4);
+  uVar132 = FileIo_ReadDataBlock(&g_SpellStackCount,4);
   uVar133 = FileIo_ReadDataBlock(&DAT_00676500,4);
   uVar134 = FileIo_ReadDataBlock(&DAT_0068dd04,4);
   uVar135 = FileIo_ReadDataBlock(&DAT_00666448,4);
