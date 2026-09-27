@@ -267,8 +267,8 @@ New step codes seen in the same run, all with player 0 and 1 back to back from t
 `0xcc` "End of Combat". So a combat runs `Pay for attacker`, `Choose Defenders`, `Damage Dealing`, then
 `Graveyard order`, `Card(s) to Graveyard` and `End of Combat` when creatures die.
 
-What is not shown: on my own attack the `0xda` call site was not hit (the blockers were assigned all the
-same), so `0xda` there is not confirmed; and the argument meanings beyond the step code are unchanged.
+What is not shown in the QEMU run: on my own attack the `0xda` call site was not hit (the blockers were assigned all
+the same). **The emulator run closes that gap** (see "Live results from the in-process emulator" below).
 
 Probing note: a breakpoint on `Magic_RunTurnStep` itself is too heavy once a spell chain is open, because
 the chain calls it dozens of times a second; use the call sites (`probe_combat_sites.py`) for combat.
@@ -351,3 +351,31 @@ of the driver function table, in the order of the old names), `CardTypeFromID` a
 `UI_Register_WINBK_ManaPool_004b9120`. `InitSndTrack` (called with `.wav` paths) and `PlaySnd` (called
 by the verified sound player) were also seen running. 46 other changed names were left as they were;
 see [SYMBOL_SAMPLE.md](SYMBOL_SAMPLE.md).
+
+
+## Live results from the in-process emulator (`DUEL.EXE`, 2026-09-26)
+
+`tools/emu_spike` (`docs/PORT_STRATEGY.md`) runs `DUEL.EXE` deterministically and traces functions by address, so the
+checks above can be repeated without QEMU. Twin addresses in `DUEL.EXE`: `FUN_0048e8f2` = `Magic_RunTurnStep`,
+`FUN_0048d878` = `Magic_PushSpellStack`, `FUN_0048e251` = `Magic_DropTopSpell` (twin by size; not yet entered),
+`Mem_AllocOrFree_0048d3bf` = `Magic_ClearSpellStack`. A scripted game (both players a mono-green deck: Forest,
+Llanowar Elves, Durkwood Boars, Killer Bees) gave:
+
+| Action | What the trace showed |
+|---|---|
+| Play a Forest | `PushSpellStack(0, 2, 113, 0, 0)`: player 0, slot 2, event `0x71` |
+| Cast Llanowar Elves, pay with the Forest | `PushSpellStack(0, 0, 113, 0, 0)` when announced, then `PushSpellStack(0, 2, 114, 0, 0)` (event `0x72`, slot of the Forest that paid) |
+| Start of each turn | `ClearSpellStack()` once |
+| Select the Elves as an attacker (my turn 2) | `RunTurnStep(0, 220, "Pay for attacker", 1)` |
+| Press Done on the attack prompt | `RunTurnStep(0, 217, "Choose Attackers", 0)` then `RunTurnStep(0, 218, "Choose Defenders", 0)` for both players, then 212 "Card leaving play", 215 "Damage Dealing", 204 "End of Combat", 205 "End of Turn" |
+
+(Decimal codes: 217 = `0xd9`, 218 = `0xda`, 220 = `0xdc`, 215 = `0xd7`, 212 = `0xd4`, 204 = `0xcc`.) So `0xda` "Choose Defenders" **is**
+run on my own attack, for both players back to back, right after "Choose Attackers". Event `0x71` is for announcing a
+land or spell, `0x72` when it is paid.
+
+Card slots (verified by printing the hand and matching what was played): a slot's card value is an **index into the
+master card table** (base `0x4ff590`, `0x34` bytes per record); the record's first dword is the card id, which
+indexes the name-pointer table at `0x618ac4` (`0x98` bytes per entry, pointer first); the record's second dword low byte
+is the type (`0x01` land, `0x02` creature, `0x08` spell, `0x04` enchantment, `0x42` artifact creature). Slot flag bits
+seen: `0x800` = can be played now, `0x30882`/`0x882` = land or permanent in play untapped, `0x30092` = tapped land,
+`0x82` = permanent in play (base), `0x1` = in the hand after it was drawn.

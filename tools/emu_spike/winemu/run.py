@@ -171,6 +171,63 @@ def main(argv=None):
                 actions.sort(key=lambda a: a[0])
         elif op == "dlgsel":                                   # dlgsel ID INDEX
             user32.select_dialog_item(mm, int(cmd[1]), int(cmd[2]))
+        elif op in ("hand", "cast", "tap", "pick", "board"):
+            # card windows carry (player, slot) in their window longs 0 and 4; find them, name them, click them
+            wins = mm.state.get("u32", {}).get("windows", {})
+            cards = []
+            for h, w in wins.items():
+                if w["cls"] == "MAGICGAME_CardClass" and w["visible"] and w["w"] > 0:
+                    pl, sl = w["extra"].get(0, -1), w["extra"].get(4, -1)
+                    if pl in (0, 1) and 0 <= sl < 80:
+                        cid = mm.r32(0x6826C4 + sl * 0x120 + pl * 0x5B20)
+                        try:
+                            ident = mm.r32(0x4FF590 + cid * 0x34)
+                            nm = mm.cstr(mm.r32(0x618AC4 + ident * 0x98), 30).decode("latin-1")
+                            mtype = mm.r32(0x4FF590 + cid * 0x34 + 4) & 0xFF
+                        except Exception:
+                            nm, mtype = "?", 0
+                        par = wins.get(w["parent"], {})
+                        cards.append(dict(h=h, player=pl, slot=sl, name=nm, mtype=mtype,
+                                          flags=mm.r32(0x6826CC + sl * 0x120 + pl * 0x5B20), parent=par.get("title", "")))
+            if op == "cast" and len(cmd) >= 2:
+                want = " ".join(cmd[1:]).lower()
+                hand = [c for c in cards if c["player"] == 0 and c["parent"].lower().startswith("your hand")]
+                pick = [c for c in hand if (want == "land" and c["mtype"] & 1) or (want != "land" and want in c["name"].lower())]
+                if not pick:
+                    print(f"   [script] cast {want!r}: nothing in hand matches; hand = {[c['name'] for c in hand]}")
+                else:
+                    x0, y0, x1, y1 = user32.abs_rect(mm, wins[pick[0]["h"]])
+                    print(f"   [script] cast {pick[0]['name']} (slot {pick[0]['slot']}) at {now:.0f}s")
+                    run_action(mm, ["click", str(x0 + 40), str(y0 + 4), "0.05"], now)
+            elif op == "pick" and len(cmd) >= 2:                # click any permanent of mine by name
+                want = " ".join(cmd[1:]).lower()
+                mine = [c for c in cards if c["player"] == 0 and c["parent"].lower().startswith("player territory")
+                        and want in c["name"].lower()]
+                if not mine:
+                    print(f"   [script] pick {want!r}: nothing of mine matches")
+                else:
+                    x0, y0, x1, y1 = user32.abs_rect(mm, wins[mine[0]["h"]])
+                    print(f"   [script] pick {mine[0]['name']} (slot {mine[0]['slot']}) at {now:.0f}s rect {(x0, y0, x1, y1)}")
+                    run_action(mm, ["click", str((x0 + x1) // 2), str((y0 + y1) // 2), "0.05"], now)
+            elif op == "tap" and len(cmd) >= 2:
+                want = " ".join(cmd[1:]).lower()
+                mine = [c for c in cards if c["player"] == 0 and c["parent"].lower().startswith("player territory")
+                        and (want == "land" and c["mtype"] & 1 or want != "land" and want in c["name"].lower()) and not c["flags"] & 0x1]
+                if not mine:
+                    print(f"   [script] tap {want!r}: no untapped match on my side")
+                else:
+                    x0, y0, x1, y1 = user32.abs_rect(mm, wins[mine[0]["h"]])
+                    print(f"   [script] tap {mine[0]['name']} (slot {mine[0]['slot']}) at {now:.0f}s rect {(x0, y0, x1, y1)}")
+                    run_action(mm, ["click", str((x0 + x1) // 2), str((y0 + y1) // 2), "0.05"], now)
+            else:
+                for c in cards:
+                    print(f"   [script {now:.0f}s] p{c['player']} slot {c['slot']:2d} {c['name']!r} type=0x{c['mtype']:x} flags=0x{c['flags']:x} in {c['parent']!r}")
+        elif op == "dlgitems":                                 # dlgitems ID: list a combo/list box of the open dialog
+            st = mm.state.get("u32", {})
+            if st.get("dialogs"):
+                h = user32.dlg_item(mm, st["dialogs"][-1], int(cmd[1]))
+                w = user32.window(mm, h)
+                print(f"   [script] items of {cmd[1]}: " + " | ".join(f"{i}:{it[0]}" for i, it in enumerate((w or {}).get("items", []))))
         elif op == "passto":                                   # passto PROMPT-PREFIX...: press Done until it shows
             want = " ".join(cmd[1:])
             tu = [w for w in mm.state.get("u32", {}).get("windows", {}).values() if w["cls"] == "MAGIC_TellUserClass"]
@@ -197,7 +254,15 @@ def main(argv=None):
                     a = 0x6826C4 + slot * 0x120 + pl * 0x5B20
                     cid, flags = mm.r32(a), mm.r32(a + 8)
                     if cid not in (0xFFFFFFFF, 0):
-                        rows.append(f"{slot}:{cid}/0x{flags:x}")
+                        name = ""
+                        try:      # the slot holds a master-table index; its record's field 4 is the card id, which indexes the names
+                            rec = 0x4FF590 + cid * 0x34
+                            ident = mm.r32(rec)
+                            name = mm.cstr(mm.r32(0x618AC4 + ident * 0x98), 30).decode("latin-1")
+                            name = f"{name}#{ident},m=0x{mm.r32(rec + 4):x}"
+                        except Exception as e:
+                            name = f"?{e}"
+                        rows.append(f"{slot}:{cid}({name})/0x{flags:x}")
                 print(f"   [state {now:.0f}s] player {pl}: " + " ".join(rows))
         elif op == "shot":
             Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"{cmd[1]}.png"))
