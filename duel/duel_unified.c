@@ -2462,7 +2462,7 @@ undefined DAT_006826df;
 undefined DAT_00522a68;
 undefined DAT_00522800;
 undefined DAT_005228c8;
-undefined Mem_AllocOrFree_004521d0;
+undefined Card_DefaultEventHandler;
 undefined DAT_004ff5a5;
 undefined DAT_004ff5b0;
 int DAT_00666748;
@@ -3008,12 +3008,12 @@ undefined4 DAT_005dc2c8;
 undefined4 DAT_005dc308;
 string s_AttackSwordShield_00505554;
 string s_AttackMinimized_00505568;
-undefined Glue_Subsystem_004cdb4f;
+undefined SpellChain_WndProc;
 string s_\WINBK_Attack.pic_00505578;
 string s_\WINBK_AttackSword.pic_0050558c;
 undefined UI_WndProc_0049866e;
 string s_\WINBK_AttackShield.pic_005055a4;
-undefined Glue_Subsystem_004d0602;
+undefined SpellChain_MinimizedWndProc;
 string s_\WINBK_AttackBones.pic_005055bc;
 string s_\WINBK_AttackRats.pic_005055d4;
 string s_\WINBK_AttackMin.pic_005055ec;
@@ -15431,7 +15431,7 @@ int Action_ValidateTarget_0041e2a2
       local_8 = 0;
       local_14 = 0;
     }
-    local_c = FUN_004a2a2f();
+    local_c = SpellChain_MinimizeIfShown();
     local_218 = 1;
     while (local_218 != 0) {
       if (arg_18 == (undefined *)0x0) {
@@ -15489,7 +15489,7 @@ int Action_ValidateTarget_0041e2a2
       }
     }
     if (local_c == 0) {
-      FUN_004a2a87();
+      SpellChain_RestoreIfMinimized();
     }
     if (local_10 != 0) {
       DAT_0067650c = 0;
@@ -26059,7 +26059,7 @@ undefined4 Palette_Subsystem_0049608e(void)
   UI_CreateWindow_00486c90(s_MAGICGAME_LibraryClass_004f6e4c);
   Pic_Subsystem_00449340(s_MAGICGAME_GraveyardClass_004f6e64);
   UI_Register_WINBK_Attack_00493810(s_MAGICGAME_AttackClass_004f6e80);
-  Glue_Subsystem_004cd760(s_MAGICGAME_SpellChainClass_004f6e98);
+  SpellChain_RegisterClass(s_MAGICGAME_SpellChainClass_004f6e98);
   UI_Register_FACE_BLACK_00436820(s_MAGICGAME_FaceClass_004f6eb4);
   UI_CreateWindow_0046f240(s_MAGICGAME_ScrollbarClass_004f6ec8);
   UI_CreateWindow_0042b2a0(s_MAGICTHEME_IconButtonClass_004f6ee4);
@@ -26089,7 +26089,7 @@ void Palette_Subsystem_0049608e(void)
   FUN_00486dc6(s_MAGICGAME_LibraryClass_004f7074);
   FUN_0043a531(s_MAGICGAME_GraveyardClass_004f708c);
   FUN_00493c0c(s_MAGICGAME_AttackClass_004f70a8);
-  FUN_0049fac1(s_MAGICGAME_SpellChainClass_004f70c0);
+  SpellChain_CleanupUI(s_MAGICGAME_SpellChainClass_004f70c0);
   FUN_00436a52(s_MAGICGAME_FaceClass_004f70dc);
   FUN_0046f2f5(s_MAGICGAME_ScrollbarClass_004f70f0);
   Mem_AllocOrFree_00490448(s_MAGICGAME_BigCardChoiceClass_004f710c);
@@ -32628,7 +32628,7 @@ uint FUN_004457a2(void)
 
 
 
-void Ai_EvalAttackCandidate_004b4a3f(undefined4 arg1,uint arg2)
+void Duel_RefreshAllWindows(undefined4 arg1,uint arg2)
 
 {
   HBRUSH pHVar1;
@@ -38582,7 +38582,7 @@ int FUN_0045219a(void)
 
 
 
-undefined4 Mem_AllocOrFree_004521d0(void)
+undefined4 Card_DefaultEventHandler(void)
 
 {
   return 0;
@@ -53351,7 +53351,7 @@ int FUN_00479c07(int arg1,int arg2)
   if (((&DAT_004ff5a8)[iVar1 * 0x34] & 3) != 0) {
     local_8 = local_8 / 2;
   }
-  if (*(code **)(&DAT_004ff5a0 + iVar1 * 0x34) != Mem_AllocOrFree_004521d0) {
+  if (*(code **)(&DAT_004ff5a0 + iVar1 * 0x34) != Card_DefaultEventHandler) {
     local_8 = (local_8 * 3) / 2;
   }
   if ((*(uint *)(&DAT_004ff5a4 + iVar1 * 0x34) & 0x1c0) != 0) {
@@ -57312,7 +57312,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,HWND wParam,int *lParam)
             iVar5 = Mem_AllocOrFree_004d9810((int)(char)(&DAT_004ff598)[local_40c * 0x34]);
             FUN_0049b235(local_c,0,iVar5);
             FUN_00446d17();
-            Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+            Duel_RefreshAllWindows(0,0xff);
           }
         }
         else {
@@ -57595,7 +57595,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,HWND wParam,int *lParam)
         if (DAT_00601618 != 0) {
           *(uint *)(&g_DuelCardSlot_Flags + local_c * 0x5b20 + local_10 * 0x120) =
                *(uint *)(&g_DuelCardSlot_Flags + local_c * 0x5b20 + local_10 * 0x120) ^ 0x10;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if (uVar6 == 0x264) {
@@ -57607,13 +57607,13 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,HWND wParam,int *lParam)
                *(uint *)(&g_DuelCardSlot_Abilities1 + local_c * 0x5b20 + local_10 * 0x120) | 8;
           Duel_DrawCardSprite(local_c,local_10,2);
           *(undefined4 *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) = local_80c;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if ((uVar6 == 0x266) && (DAT_00601618 != 0)) {
         *(int *)(&DAT_0068270c + local_c * 0x5b20 + local_10 * 0x120) =
              *(int *)(&DAT_0068270c + local_c * 0x5b20 + local_10 * 0x120) + 1;
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
       }
       return 0;
     }
@@ -63792,7 +63792,7 @@ undefined4 UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
   
   local_30 = 1;
   local_2c.style = 0x800;
-  local_2c.lpfnWndProc = Glue_Subsystem_004cdb4f;
+  local_2c.lpfnWndProc = SpellChain_WndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -63820,7 +63820,7 @@ undefined4 UI_Register_WINBK_Attack_00493810(LPCSTR str_1)
     local_30 = 0;
   }
   local_2c.style = 3;
-  local_2c.lpfnWndProc = Glue_Subsystem_004d0602;
+  local_2c.lpfnWndProc = SpellChain_MinimizedWndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -63942,7 +63942,7 @@ void FUN_00493c0c(void)
 
 
 
-uint Glue_Subsystem_004cdb4f(HWND hwnd,uint y,HWND param_3,HWND param_4)
+uint SpellChain_WndProc(HWND hwnd,uint y,HWND param_3,HWND param_4)
 
 {
   int *piVar1;
@@ -65735,7 +65735,7 @@ void FUN_00499128(HWND hwnd)
 
 
 
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 
 {
   HBRUSH hbr;
@@ -69320,7 +69320,7 @@ undefined2 Mem_AllocOrFree_0049f801(void)
 
 
 
-undefined4 Glue_Subsystem_004cd760(LPCSTR str_1)
+undefined4 SpellChain_RegisterClass(LPCSTR str_1)
 
 {
   ATOM AVar1;
@@ -69330,7 +69330,7 @@ undefined4 Glue_Subsystem_004cd760(LPCSTR str_1)
   
   local_30 = 1;
   local_2c.style = 0x800;
-  local_2c.lpfnWndProc = Glue_Subsystem_004cdb4f;
+  local_2c.lpfnWndProc = SpellChain_WndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -69344,7 +69344,7 @@ undefined4 Glue_Subsystem_004cd760(LPCSTR str_1)
     local_30 = 0;
   }
   local_2c.style = 3;
-  local_2c.lpfnWndProc = Glue_Subsystem_004d0602;
+  local_2c.lpfnWndProc = SpellChain_MinimizedWndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -69386,7 +69386,7 @@ undefined4 Glue_Subsystem_004cd760(LPCSTR str_1)
 
 
 
-void FUN_0049fac1(void)
+void SpellChain_CleanupUI(void)
 
 {
   if (DAT_005dcd1c != (HMENU)0x0) {
@@ -69430,7 +69430,7 @@ void FUN_0049fac1(void)
 
 
 
-uint Glue_Subsystem_004cdb4f(HWND hwnd,uint y,HWND param_3,uint height)
+uint SpellChain_WndProc(HWND hwnd,uint y,HWND param_3,uint height)
 
 {
   int iVar1;
@@ -69893,7 +69893,7 @@ LAB_004a15e3:
       Msg = 0xe0;
       pHVar6 = GetDlgItem(hwnd,0);
       SendMessageA(pHVar6,Msg,wParam,lParam);
-      FUN_004a20a2(hwnd,(LPRECT)&DAT_005dcd38);
+      SpellChain_UpdateLayout(hwnd,(LPRECT)&DAT_005dcd38);
       return 0;
     }
     if ((0x30e < y) && (y < 0x312)) {
@@ -69917,7 +69917,7 @@ LAB_004a15e3:
           puVar9 = puVar9 + 1;
         }
         uStackY_c8 = 0x4a012d;
-        local_15d0 = FUN_004a197e(hwnd);
+        local_15d0 = SpellChain_FindEntryIndex(hwnd);
         if (local_15d0 == local_15c8) {
           puVar8 = local_15c0 + local_15d0 * 0x2b;
           puVar9 = (undefined4 *)&stack0xffffff44;
@@ -69934,9 +69934,9 @@ LAB_004a15e3:
             puVar9 = puVar9 + 1;
           }
           uStackY_118 = 0x4a019b;
-          iVar10 = FUN_004a1b7a();
+          iVar10 = SpellChain_EntryTargetsMatch();
           if (iVar10 == 0) {
-            FUN_004a1e30(hwnd,local_15d0);
+            SpellChain_ClearEntryTargets(hwnd,local_15d0);
             puVar8 = local_15c0 + local_15d0 * 0x2b;
             puVar9 = (undefined4 *)&stack0xffffff40;
             for (iVar10 = 0x2b; iVar10 != 0; iVar10 = iVar10 + -1) {
@@ -69963,18 +69963,18 @@ LAB_004a15e3:
         }
         else if (local_15c8 < local_15d0) {
           for (local_15cc = local_15c8; local_15cc < local_15d0; local_15cc = local_15cc + 1) {
-            FUN_004a1a2d(hwnd,local_15cc);
+            SpellChain_RemoveEntry(hwnd,local_15cc);
           }
           local_15c4 = 1;
         }
       }
       LVar3 = GetWindowLongA(hwnd,4);
       for (local_15cc = local_15c8; local_15cc < LVar3; local_15cc = local_15cc + 1) {
-        FUN_004a1a2d(hwnd,local_15cc);
+        SpellChain_RemoveEntry(hwnd,local_15cc);
         local_15c4 = 1;
       }
       if (local_15c4 != 0) {
-        FUN_004a20a2(hwnd,(LPRECT)&DAT_005dcd38);
+        SpellChain_UpdateLayout(hwnd,(LPRECT)&DAT_005dcd38);
       }
       return 0;
     case 0x432:
@@ -70072,7 +70072,7 @@ LAB_004a15e3:
 
 
 
-int FUN_004a197e(HWND hwnd)
+int SpellChain_FindEntryIndex(HWND hwnd)
 
 {
   LONG LVar1;
@@ -70103,7 +70103,7 @@ int FUN_004a197e(HWND hwnd)
 
 
 
-void FUN_004a1a2d(HWND hwnd,int arg2)
+void SpellChain_RemoveEntry(HWND hwnd,int arg2)
 
 {
   LONG LVar1;
@@ -70131,7 +70131,7 @@ void FUN_004a1a2d(HWND hwnd,int arg2)
 
 
 
-bool FUN_004a1b7a(void)
+bool SpellChain_EntryTargetsMatch(void)
 
 {
   int iVar1;
@@ -70231,7 +70231,7 @@ int Palette_Subsystem_0049608e(HWND hwnd,undefined4 card_slot,undefined4 arg_3)
 
 
 
-void FUN_004a1e30(HWND hwnd,int arg2)
+void SpellChain_ClearEntryTargets(HWND hwnd,int arg2)
 
 {
   LONG LVar1;
@@ -70309,7 +70309,7 @@ int Palette_Subsystem_0049608e(HWND hwnd)
 
 
 
-void FUN_004a20a2(HWND hwnd,LPRECT arg2)
+void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
 
 {
   LONG LVar1;
@@ -70478,7 +70478,7 @@ void FUN_004a20a2(HWND hwnd,LPRECT arg2)
 
 
 
-void FUN_004a26ac(undefined4 arg1,LPRECT arg2)
+void SpellChain_GetContentRect(undefined4 arg1,LPRECT arg2)
 
 {
   CopyRect(arg2,(RECT *)&DAT_005dcd38);
@@ -70487,7 +70487,7 @@ void FUN_004a26ac(undefined4 arg1,LPRECT arg2)
 
 
 
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 
 {
   HBRUSH hbr;
@@ -70572,7 +70572,7 @@ LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 
 
 
-BOOL FUN_004a2a2f(void)
+BOOL SpellChain_MinimizeIfShown(void)
 
 {
   BOOL BVar1;
@@ -70590,7 +70590,7 @@ BOOL FUN_004a2a2f(void)
 
 
 
-bool FUN_004a2a87(void)
+bool SpellChain_RestoreIfMinimized(void)
 
 {
   BOOL BVar1;
@@ -77517,7 +77517,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
         if (DAT_00601618 != 0) {
           local_2ec = (uint)(((uint)param_3 & 0xffff) != 0x269);
           Magic_ExecuteDrawPhase(local_2ec);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26b:
@@ -77533,7 +77533,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
             Pic_Subsystem_0042ac1f(local_2ec,local_2f4);
           }
           *(undefined4 *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) = local_2f8;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26d:
@@ -77542,7 +77542,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
           local_2ec = (uint)(((uint)param_3 & 0xffff) != 0x26d);
           local_2f0 = FUN_004b8160(s_Pick_a_card_to_put_into_hand_005069ac,-1,-1);
           local_2f4 = Pic_Subsystem_00451291(local_2ec,local_2f0);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26f:
@@ -77552,7 +77552,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
           uVar1 = FUN_00443000(0,s_Set_player_lives_to__005069cc + ((local_2ec == 0) - 1 & 0x18),
                                (&g_DuelPlayerLifeTotals)[local_2ec]);
           (&g_DuelPlayerLifeTotals)[local_2ec] = uVar1;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x271:
@@ -77624,7 +77624,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
         break;
       case 0x27a:
         DAT_00663e1c = (uint)(DAT_00663e1c == 0);
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
         break;
       case 0x27b:
         _DAT_00615304 = g_DuelMainHwnd;
@@ -77938,7 +77938,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,HWND param_3,int *height)
   }
   else {
     if (y == 0x464) {
-      Ai_EvalAttackCandidate_004b4a3f(0,(uint)param_3);
+      Duel_RefreshAllWindows(0,(uint)param_3);
       return 0;
     }
     if (y == 0x501) {
@@ -78343,7 +78343,7 @@ void FUN_004b5565(HWND hwnd,int arg2)
   FUN_004b1bba(DAT_00617378);
   FUN_004b1bba(DAT_00618988);
   FUN_0049793e(DAT_00618ab0);
-  FUN_004a20a2(DAT_00663df0,(LPRECT)0x0);
+  SpellChain_UpdateLayout(DAT_00663df0,(LPRECT)0x0);
   UpdateWindow(DAT_006152e0);
   UpdateWindow(hwnd);
   return;
@@ -81321,7 +81321,7 @@ undefined4 FUN_004be3f6(int player,int card_slot,int arg_3)
                                        ) * 0x34];
             *(undefined2 *)(&DAT_004ff59a + iVar3 * 0x34) =
                  *(undefined2 *)(&DAT_004ff59c + iVar3 * 0x34);
-            *(code **)(&DAT_004ff5a0 + iVar3 * 0x34) = Mem_AllocOrFree_004521d0;
+            *(code **)(&DAT_004ff5a0 + iVar3 * 0x34) = Card_DefaultEventHandler;
             *(undefined4 *)(&DAT_004ff5a8 + iVar3 * 0x34) = 0x8000;
             (&DAT_004ff596)[iVar3 * 0x34] = 1;
           }

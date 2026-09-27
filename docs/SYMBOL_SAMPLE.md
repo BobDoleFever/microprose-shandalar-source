@@ -31,7 +31,7 @@ game's own text, a matching API, a matching structure).
 |---|---|---|
 | `Ai_EvaluateCreaturePower` `0x004ab28b` | wrong | Appends the current candidate (id, card id, score) to a 256-entry list; evaluates no power |
 | `Magic_CombatPhase` `0x004751d7` | wrong | Queues an event (card id, event, slot) and clones a 0x120-byte card slot into a free slot; no combat logic |
-| `SpellChain_UpdateTargetPositions` `0x004cf965` | wrong | Removes entry `y` from a table of 0x58-byte records, destroys its child windows, shifts the rest down |
+| `SpellChain_RemoveEntry` `0x004cf965` | wrong | Removes entry `y` from a table of 0x58-byte records, destroys its child windows, shifts the rest down |
 | `Adventure_Audio_StopEffectChannel` `0x004ebe1a` | wrong (static) | Builds a volume/22050 Hz/pan struct and calls the play-sound function, the same callee the verified sound player uses to play |
 | `Color_QuantizeRGBToPalette` `0x00494310` | misleading | Splits RGB into bytes, looks each up in a table and ORs them into a 64-bit key (octree path); returns no palette index |
 | `Surface_GetPixelPtr` `0x0050da40` | misleading | Returns a pixel/palette index (GDI `GetPixel` plus a 256-entry palette search, or a byte read), never a pointer |
@@ -43,7 +43,7 @@ game's own text, a matching API, a matching structure).
 | `Catalog_LoadPaletteMap` `0x00493e70` | supported | `fopen`/`fgets`/`sscanf` feeding `ColorOctree_*` and palette lookup tables |
 | `Color_FindNearestPaletteIndex` `0x00494540` | supported | Uses the RGB key function and searches for the nearest entry (weak) |
 | `SpellChain_UpdateLayout` `0x004cffda` | supported | `MoveWindow`, `AdjustWindowRect`, `GetWindowRect`, `ShowWindow` |
-| `SpellChain_IsVisible` `0x004d0965` | supported | `IsWindowVisible` |
+| `SpellChain_MinimizeIfShown` `0x004d0965` | supported | `IsWindowVisible` |
 | `Card_AliFromCairo_PreventLethalDamage` `0x004d4762` | supported | Strings `ALI_FROM_CAIRO`, "Illegal target, prevent damage" |
 | `Card_LivingWall_Regenerate` `0x004d7bb5` | supported | String "Regenerate Living Wall?" |
 | `Card_RoyalAssassin_DestroyTapped` `0x004da858` | supported | `ROYAL_ASSASSIN` prompt, creature targeting |

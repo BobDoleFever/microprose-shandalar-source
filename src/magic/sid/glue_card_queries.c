@@ -266,7 +266,7 @@ bool CardTarget_PromptTargetCreature(int player,uint32_t arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
   status = Action_ValidateTarget_00405802
                     (player,2,arg2,0x200,2,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -431,7 +431,7 @@ bool CardTarget_PromptTargetPermanent(int player,uint32_t arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
   status = Action_ValidateTarget_00405802
                     (player,2,arg2,0x200,1,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -572,7 +572,7 @@ bool CardTarget_PromptTargetPlayerOrCreature(int player,uint32_t arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
   status = Action_ValidateTarget_00405802
                     (player,2,arg2,0x200,0x40,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);

@@ -437,3 +437,36 @@ Bits of `g_DuelModeFlags`, from the set and clear sites seen (function addresses
 
 `g_CurrentTurnPhase` (MAGIC.EXE `0x006a49e0`, DUEL.EXE `g_DuelTargetPlayer` `0x00676510`) is used as a player index too, but
 it did not change in this game (it stayed the same value), so it is not renamed yet.
+
+### The spell-chain window family (emulator, 2026-09-26)
+
+"Spell Chain" is a popup window of class `MAGICGAME_SpellChainClass` that shows the spell stack as card windows (one
+`Spell Card` window per stack object, one `Spell Target Card` window per target), with a small minimized tab of class
+`SpellMinimized`. Evidence grades: **natural** = seen in the scripted game; **synthetic** = the original function run in
+the emulator on an injected input (a snapshot with targets, or a guest thread calling it), because the scripted game
+only cast Elves and the window was up for 18 ms of virtual time per cast; **static** = code reading only.
+
+| MAGIC.EXE / DUEL.EXE | Old name | New name | Evidence |
+|---|---|---|---|
+| `0x4cf8b6` / `0x4a197e` | `SpellChain_GetCardCount` | `SpellChain_FindEntryIndex` | natural: returns an index (`-1` on an empty chain, `0` for the first entry), never a count |
+| `0x4cf965` / `0x4a1a2d` | `SpellChain_UpdateTargetPositions` | `SpellChain_RemoveEntry` | natural: called when the chain empties (52.756 s, 80.019 s); synthetic: count 2 to 1, window gone |
+| `0x4cfab2` / `0x4a1b7a` | `SpellChain_HasActiveSpells` | `SpellChain_EntryTargetsMatch` | natural: equal records return 1; synthetic: 2 targets against 1 returns 0 |
+| `0x4cfb2f` / (twin shares a name) | `SpellChain_CreateCardSlot` | `SpellChain_InsertEntry` | natural: creates the card window and inserts the record; synthetic: with two targets |
+| `0x4cfd68` / `0x4a1e30` | `SpellChain_RemoveCardSlot` | `SpellChain_ClearEntryTargets` | synthetic: destroys only the target windows, the record stays with 0 targets |
+| `0x4cfe4d` / (twin shares a name) | `SpellChain_CreateTargetSlot` | `SpellChain_RebuildEntryTargets` | synthetic: 0 targets to 1 |
+| `0x4d05e8` / `0x4a26ac` | `SpellChain_SetWindowRect` | `SpellChain_GetContentRect` | synthetic: copies a global rectangle out; no callers in either program (dead code, static) |
+| `0x4d0965` / `0x4a2a2f` | `SpellChain_IsVisible` | `SpellChain_MinimizeIfShown` | synthetic: with the chain shown it sends the minimize command and swaps to the tab |
+| `0x4d09bd` / `0x4a2a87` | `SpellChain_IsMinimized` | `SpellChain_RestoreIfMinimized` | synthetic: sends the restore command |
+| `0x4d0a30` / `0x4521d0` | `SpellChain_GetActiveCount` | `Card_DefaultEventHandler` | `xor eax,eax; ret`; its address is the event-handler pointer (record `+0x10`) of 53 of 447 cards, Durkwood Boars among them (natural); never called |
+| `0x4d0a42` / `0x4521e2` | `SpellChain_ProcessTriggerEvent` | `Card_GetColorAndTypeFlags` | synthetic: green creatures return `0x2000`, Forest 0, sorceries `0x102000`, Aspect of Wolf `0x22000`; about 300 static callers, all card handlers |
+| `0x4b4a3f` / `0x445f05` | `Ai_EvalAttackCandidate_004b4a3f` | `Duel_RefreshAllWindows` | natural: sends `0x412`, `0x432` and `0x40c` to every game window after each play |
+
+Names that held up (twins renamed to match): `SpellChain_RegisterClass` (natural), `SpellChain_WndProc` (natural),
+`SpellChain_UpdateLayout` (natural), `SpellChain_MinimizedWndProc` (synthetic), `SpellChain_CleanupUI` (static).
+Two `DUEL.EXE` twins (`0x4a1bf7`, `0x4a1f15`) share one generic name (`Palette_Subsystem_0049608e`) and are not renamed.
+
+Structures: a table record is `0x58` bytes (`+0` HWND of the card window, whose window longs 0 and 4 are (player, slot);
+`+4` to `+0x50` up to 20 target HWNDs; `+0x54` target count), 100 records at most. A snapshot entry is `0xAC` bytes
+(player, slot, 20 target (player, slot) pairs, count), passed by value. Message ids: `0x40c` clear all, `0x412` sync to the
+snapshot, `0x432` repaint; `WM_COMMAND` `0x65` minimize, `0x66` restore. Also from the report, static only: the slot byte
+called `g_CardSlot_TapState` looks like a target count, not a tap state.

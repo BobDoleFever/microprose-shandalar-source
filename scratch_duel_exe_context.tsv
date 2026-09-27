@@ -627,7 +627,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 00452185	FUN_00452185			1	21
 0045219a	FUN_0045219a			1	53
 004521d0	FUN_004521d0			0	18
-004521e2	FUN_004521e2			2	645
+004521e2	Card_GetColorAndTypeFlags			2	645
 0045247b	FUN_0045247b	changes color to		8	959
 0045283a	FUN_0045283a	Add random power. | Cancel. | Gain first strike. | Power increased by | _Add random power. | _Gain first strike.	__itoa	11	3108
 00453463	FUN_00453463	Sinbad draws...		4	332
@@ -1184,19 +1184,19 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0049f7ee	FUN_0049f7ee			0	19
 0049f801	FUN_0049f801			0	19
 0049f820	FUN_0049f820	SpellMinimized | \WINBK_SpellChain.pic | \WINBK_SpellMin.pic | \WINBK_SpellMushrooms.pic | \WINBK_SpellSnails.pic	CreatePen | CreatePopupMenu | CreateSolidBrush | LoadCursorA | RegisterClassA | SetRect	9	673
-0049fac1	FUN_0049fac1		DeleteObject | DestroyMenu	3	334
+0049fac1	SpellChain_CleanupUI		DeleteObject | DestroyMenu	3	334
 0049fc0f	FUN_0049fc0f	&Minimize | Help... | MAGICGAME_ScrollbarClass | SpellMinimized | \WINBK_SpellChain.pic | \duel.hlp	AppendMenuA | BringWindowToTop | ClientToScreen | CopyRect | CreateWindowExA | DefWindowProcA | DeleteMenu | DeleteObject | DestroyWindow | DrawTextA | FillRect | GetClientRect | GetDlgItem | GetMenuItemCount | GetObjectA | GetStockObject | GetSystemMetrics | GetWindowDC | GetWindowLongA | GetWindowRect | GetWindowTextA | InvalidateRect | LineTo | LoadBitmapA | MapWindowPoints | MoveToEx | MoveWindow | OffsetRect | PostMessageA | ReleaseDC | ScrollWindow | SelectObject | SendDlgItemMessageA | SendMessageA | SetBkMode | SetRect | SetTextColor | SetWindowLongA | ShowWindow | TrackPopupMenu | UpdateWindow | WinHelpA | _malloc	64	7410
-004a197e	FUN_004a197e		GetWindowLongA	2	175
-004a1a2d	FUN_004a1a2d		DestroyWindow | FID_conflict:_memcpy | GetWindowLongA | SetWindowLongA	4	333
-004a1b7a	FUN_004a1b7a			1	125
+004a197e	SpellChain_FindEntryIndex		GetWindowLongA	2	175
+004a1a2d	SpellChain_RemoveEntry		DestroyWindow | FID_conflict:_memcpy | GetWindowLongA | SetWindowLongA	4	333
+004a1b7a	SpellChain_EntryTargetsMatch			1	125
 004a1bf7	FUN_004a1bf7	MAGICGAME_CardClass | Spell Card | Spell Target Card	CreateWindowExA | DestroyWindow | FID_conflict:_memcpy | GetWindowLongA | SetWindowLongA	5	569
-004a1e30	FUN_004a1e30		DestroyWindow | GetWindowLongA	2	229
+004a1e30	SpellChain_ClearEntryTargets		DestroyWindow | GetWindowLongA	2	229
 004a1f15	FUN_004a1f15	MAGICGAME_CardClass | Spell Target Card	CreateWindowExA | DestroyWindow | FID_conflict:_memcpy | GetWindowLongA	4	397
-004a20a2	FUN_004a20a2		AdjustWindowRect | CopyRect | GetDlgItem | GetWindowLongA | GetWindowRect | IsWindowVisible | MoveWindow | SendMessageA | SetRect | ShowWindow | UpdateWindow	12	1546
-004a26ac	FUN_004a26ac		CopyRect	1	26
+004a20a2	SpellChain_UpdateLayout		AdjustWindowRect | CopyRect | GetDlgItem | GetWindowLongA | GetWindowRect | IsWindowVisible | MoveWindow | SendMessageA | SetRect | ShowWindow | UpdateWindow	12	1546
+004a26ac	SpellChain_GetContentRect		CopyRect	1	26
 004a26c6	FUN_004a26c6	&Restore | Help... | Minimized spell chain | \WINBK_SpellMin.pic	AppendMenuA | ClientToScreen | DefWindowProcA | DeleteMenu | FillRect | GetClientRect | GetMenuItemCount | GetStockObject | IntersectClipRect | SendMessageA | SetRect | ShowWindow | TrackPopupMenu	19	861
-004a2a2f	FUN_004a2a2f		IsWindowVisible | SendMessageA	2	88
-004a2a87	FUN_004a2a87		IsWindowVisible | SendMessageA	2	112
+004a2a2f	SpellChain_MinimizeIfShown		IsWindowVisible | SendMessageA	2	88
+004a2a87	SpellChain_RestoreIfMinimized		IsWindowVisible | SendMessageA	2	112
 004a2b00	FUN_004a2b00			2	561
 004a2d31	FUN_004a2d31			1	622
 004a2f9f	FUN_004a2f9f			1	162

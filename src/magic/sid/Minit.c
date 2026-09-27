@@ -9554,7 +9554,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,LONG *wParam,int *lParam)
             val_5 = abs((int)(char)(&g_MasterCardManaCostTable)[local_40c * 0x34]);
             FUN_0040d875(match_count,0,val_5);
             Ai_Subsystem_004b584e();
-            Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+            Duel_RefreshAllWindows(0,0xff);
           }
         }
         else {
@@ -9842,7 +9842,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,LONG *wParam,int *lParam)
         if (DAT_0068a718 != 0) {
           *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x5b20 + card_idx * 0x120) =
                *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x5b20 + card_idx * 0x120) ^ 0x10;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if (uval_6 == 0x264) {
@@ -9856,13 +9856,13 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,LONG *wParam,int *lParam)
           Pic_Subsystem_0044867e(match_count,card_idx,2);
           *(int32_t *)(&g_PlayerManaPoolAvailable + g_ScWillyScore * 4 + g_TurnPlayer * 0x98) = local_80c
           ;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if ((uval_6 == 0x266) && (DAT_0068a718 != 0)) {
         *(int *)(&DAT_006a5f7c + match_count * 0x5b20 + card_idx * 0x120) =
              *(int *)(&DAT_006a5f7c + match_count * 0x5b20 + card_idx * 0x120) + 1;
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
       }
       return 0;
     }

@@ -704,7 +704,7 @@ undefined4 Palette_Subsystem_0049608e(void)
   UI_CreateWindow_0050bba0(s_MAGICGAME_LibraryClass_0052b3e4);
   Pic_Subsystem_00449340(s_MAGICGAME_GraveyardClass_0052b3fc);
   UI_Register_WINBK_Attack_0047d460(s_MAGICGAME_AttackClass_0052b418);
-  Glue_Subsystem_004cd760(s_MAGICGAME_SpellChainClass_0052b430);
+  SpellChain_RegisterClass(s_MAGICGAME_SpellChainClass_0052b430);
   UI_Register_FACE_BLACK_00408e20(s_MAGICGAME_FaceClass_0052b44c);
   UI_CreateWindow_00478b20(s_MAGICGAME_ScrollbarClass_0052b460);
   UI_CreateWindow_0041df60(s_MAGICTHEME_IconButtonClass_0052b47c);

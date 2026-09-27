@@ -12441,7 +12441,7 @@ int Action_ValidateTarget_0041e2a2
       slot_idx = 0;
       player_idx = 0;
     }
-    match_count = FUN_004a2a2f();
+    match_count = SpellChain_MinimizeIfShown();
     local_218 = 1;
     while (local_218 != 0) {
       if (arg_18 == (uint8_t *)0x0) {
@@ -12499,7 +12499,7 @@ int Action_ValidateTarget_0041e2a2
       }
     }
     if (match_count == 0) {
-      FUN_004a2a87();
+      SpellChain_RestoreIfMinimized();
     }
     if (card_idx != 0) {
       DAT_0067650c = 0;
@@ -23801,13 +23801,13 @@ void FUN_00499128(HWND hwnd)
 
 
 /*
- * Decompiled function: Glue_Subsystem_004d0602
+ * Decompiled function: SpellChain_MinimizedWndProc
  * Entry Point: 0049918f
  * Size: 861 bytes
  */
 
 
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
 
 {
   HBRUSH hbr;
@@ -28079,13 +28079,13 @@ int16_t Mem_AllocOrFree_0049f801(void)
 
 
 /*
- * Decompiled function: Glue_Subsystem_004cd760
+ * Decompiled function: SpellChain_RegisterClass
  * Entry Point: 0049f820
  * Size: 673 bytes
  */
 
 
-int32_t Glue_Subsystem_004cd760(LPCSTR str_1)
+int32_t SpellChain_RegisterClass(LPCSTR str_1)
 
 {
   ATOM AVar1;
@@ -28095,7 +28095,7 @@ int32_t Glue_Subsystem_004cd760(LPCSTR str_1)
   
   local_30 = 1;
   local_2c.style = 0x800;
-  local_2c.lpfnWndProc = Glue_Subsystem_004cdb4f;
+  local_2c.lpfnWndProc = SpellChain_WndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 8;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -28109,7 +28109,7 @@ int32_t Glue_Subsystem_004cd760(LPCSTR str_1)
     local_30 = 0;
   }
   local_2c.style = 3;
-  local_2c.lpfnWndProc = Glue_Subsystem_004d0602;
+  local_2c.lpfnWndProc = SpellChain_MinimizedWndProc;
   local_2c.cbClsExtra = 0;
   local_2c.cbWndExtra = 0;
   local_2c.hInstance = g_DuelInstanceHandle;
@@ -28152,13 +28152,13 @@ int32_t Glue_Subsystem_004cd760(LPCSTR str_1)
 
 
 /*
- * Decompiled function: FUN_0049fac1
+ * Decompiled function: SpellChain_CleanupUI
  * Entry Point: 0049fac1
  * Size: 334 bytes
  */
 
 
-void FUN_0049fac1(void)
+void SpellChain_CleanupUI(void)
 
 {
   if (DAT_005dcd1c != (HMENU)0x0) {
@@ -28203,13 +28203,13 @@ void FUN_0049fac1(void)
 
 
 /*
- * Decompiled function: Glue_Subsystem_004cdb4f
+ * Decompiled function: SpellChain_WndProc
  * Entry Point: 0049fc0f
  * Size: 7410 bytes
  */
 
 
-uint32_t Glue_Subsystem_004cdb4f(HWND hwnd,uint32_t y,HWND param_3,uint32_t height)
+uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,uint32_t height)
 
 {
   int val_1;
@@ -28672,7 +28672,7 @@ LAB_004a15e3:
       Msg = 0xe0;
       pHVar6 = GetDlgItem(hwnd,0);
       SendMessageA(pHVar6,Msg,wParam,lParam);
-      FUN_004a20a2(hwnd,(LPRECT)&DAT_005dcd38);
+      SpellChain_UpdateLayout(hwnd,(LPRECT)&DAT_005dcd38);
       return 0;
     }
     if ((0x30e < y) && (y < 0x312)) {
@@ -28696,7 +28696,7 @@ LAB_004a15e3:
           puVar9 = puVar9 + 1;
         }
         uStackY_c8 = 0x4a012d;
-        local_15d0 = FUN_004a197e(hwnd);
+        local_15d0 = SpellChain_FindEntryIndex(hwnd);
         if (local_15d0 == local_15c8) {
           puVar8 = local_15c0 + local_15d0 * 0x2b;
           puVar9 = (int32_t *)&stack0xffffff44;
@@ -28713,9 +28713,9 @@ LAB_004a15e3:
             puVar9 = puVar9 + 1;
           }
           uStackY_118 = 0x4a019b;
-          iVar10 = FUN_004a1b7a();
+          iVar10 = SpellChain_EntryTargetsMatch();
           if (iVar10 == 0) {
-            FUN_004a1e30(hwnd,local_15d0);
+            SpellChain_ClearEntryTargets(hwnd,local_15d0);
             puVar8 = local_15c0 + local_15d0 * 0x2b;
             puVar9 = (int32_t *)&stack0xffffff40;
             for (iVar10 = 0x2b; iVar10 != 0; iVar10 = iVar10 + -1) {
@@ -28742,18 +28742,18 @@ LAB_004a15e3:
         }
         else if (local_15c8 < local_15d0) {
           for (local_15cc = local_15c8; local_15cc < local_15d0; local_15cc = local_15cc + 1) {
-            FUN_004a1a2d(hwnd,local_15cc);
+            SpellChain_RemoveEntry(hwnd,local_15cc);
           }
           local_15c4 = 1;
         }
       }
       LVar3 = GetWindowLongA(hwnd,4);
       for (local_15cc = local_15c8; local_15cc < LVar3; local_15cc = local_15cc + 1) {
-        FUN_004a1a2d(hwnd,local_15cc);
+        SpellChain_RemoveEntry(hwnd,local_15cc);
         local_15c4 = 1;
       }
       if (local_15c4 != 0) {
-        FUN_004a20a2(hwnd,(LPRECT)&DAT_005dcd38);
+        SpellChain_UpdateLayout(hwnd,(LPRECT)&DAT_005dcd38);
       }
       return 0;
     case 0x432:
@@ -28852,13 +28852,13 @@ LAB_004a15e3:
 
 
 /*
- * Decompiled function: FUN_004a197e
+ * Decompiled function: SpellChain_FindEntryIndex
  * Entry Point: 004a197e
  * Size: 175 bytes
  */
 
 
-int FUN_004a197e(HWND hwnd)
+int SpellChain_FindEntryIndex(HWND hwnd)
 
 {
   LONG LVar1;
@@ -28890,13 +28890,13 @@ int FUN_004a197e(HWND hwnd)
 
 
 /*
- * Decompiled function: FUN_004a1a2d
+ * Decompiled function: SpellChain_RemoveEntry
  * Entry Point: 004a1a2d
  * Size: 333 bytes
  */
 
 
-void FUN_004a1a2d(HWND hwnd,int arg2)
+void SpellChain_RemoveEntry(HWND hwnd,int arg2)
 
 {
   LONG LVar1;
@@ -28925,13 +28925,13 @@ void FUN_004a1a2d(HWND hwnd,int arg2)
 
 
 /*
- * Decompiled function: FUN_004a1b7a
+ * Decompiled function: SpellChain_EntryTargetsMatch
  * Entry Point: 004a1b7a
  * Size: 125 bytes
  */
 
 
-bool FUN_004a1b7a(void)
+bool SpellChain_EntryTargetsMatch(void)
 
 {
   int val_1;
@@ -29039,13 +29039,13 @@ int Palette_Subsystem_0049608e(HWND hwnd,int32_t card_slot,int32_t arg_3)
 
 
 /*
- * Decompiled function: FUN_004a1e30
+ * Decompiled function: SpellChain_ClearEntryTargets
  * Entry Point: 004a1e30
  * Size: 229 bytes
  */
 
 
-void FUN_004a1e30(HWND hwnd,int arg2)
+void SpellChain_ClearEntryTargets(HWND hwnd,int arg2)
 
 {
   LONG LVar1;
@@ -29131,13 +29131,13 @@ int Palette_Subsystem_0049608e(HWND hwnd)
 
 
 /*
- * Decompiled function: FUN_004a20a2
+ * Decompiled function: SpellChain_UpdateLayout
  * Entry Point: 004a20a2
  * Size: 1546 bytes
  */
 
 
-void FUN_004a20a2(HWND hwnd,LPRECT arg2)
+void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2)
 
 {
   LONG LVar1;
@@ -29307,13 +29307,13 @@ void FUN_004a20a2(HWND hwnd,LPRECT arg2)
 
 
 /*
- * Decompiled function: FUN_004a26ac
+ * Decompiled function: SpellChain_GetContentRect
  * Entry Point: 004a26ac
  * Size: 26 bytes
  */
 
 
-void FUN_004a26ac(int32_t arg1,LPRECT arg2)
+void SpellChain_GetContentRect(int32_t arg1,LPRECT arg2)
 
 {
   CopyRect(arg2,(RECT *)&DAT_005dcd38);
@@ -29323,13 +29323,13 @@ void FUN_004a26ac(int32_t arg1,LPRECT arg2)
 
 
 /*
- * Decompiled function: Glue_Subsystem_004d0602
+ * Decompiled function: SpellChain_MinimizedWndProc
  * Entry Point: 004a26c6
  * Size: 861 bytes
  */
 
 
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam)
 
 {
   HBRUSH hbr;
@@ -29415,13 +29415,13 @@ LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lPar
 
 
 /*
- * Decompiled function: FUN_004a2a2f
+ * Decompiled function: SpellChain_MinimizeIfShown
  * Entry Point: 004a2a2f
  * Size: 88 bytes
  */
 
 
-BOOL FUN_004a2a2f(void)
+BOOL SpellChain_MinimizeIfShown(void)
 
 {
   BOOL BVar1;
@@ -29440,13 +29440,13 @@ BOOL FUN_004a2a2f(void)
 
 
 /*
- * Decompiled function: FUN_004a2a87
+ * Decompiled function: SpellChain_RestoreIfMinimized
  * Entry Point: 004a2a87
  * Size: 112 bytes
  */
 
 
-bool FUN_004a2a87(void)
+bool SpellChain_RestoreIfMinimized(void)
 
 {
   BOOL BVar1;
@@ -37129,7 +37129,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
         if (DAT_00601618 != 0) {
           local_2ec = (uint32_t)(((uint32_t)param_3 & 0xffff) != 0x269);
           Magic_ExecuteDrawPhase(local_2ec);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26b:
@@ -37145,7 +37145,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
             Pic_Subsystem_0042ac1f(local_2ec,local_2f4);
           }
           *(int32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) = local_2f8;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26d:
@@ -37154,7 +37154,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
           local_2ec = (uint32_t)(((uint32_t)param_3 & 0xffff) != 0x26d);
           local_2f0 = FUN_004b8160(s_Pick_a_card_to_put_into_hand_005069ac,-1,-1);
           local_2f4 = Deck_AddCardToDeck(local_2ec,local_2f0);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26f:
@@ -37164,7 +37164,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
           uval_1 = FUN_00443000(0,s_Set_player_lives_to__005069cc + ((local_2ec == 0) - 1 & 0x18),
                                (&g_DuelPlayerLifeTotals)[local_2ec]);
           (&g_DuelPlayerLifeTotals)[local_2ec] = uval_1;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x271:
@@ -37236,7 +37236,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
         break;
       case 0x27a:
         DAT_00663e1c = (uint32_t)(DAT_00663e1c == 0);
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
         break;
       case 0x27b:
         _DAT_00615304 = g_DuelMainHwnd;
@@ -37550,7 +37550,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,HWND param_3,int *he
   }
   else {
     if (y == 0x464) {
-      Ai_EvalAttackCandidate_004b4a3f(0,(uint32_t)param_3);
+      Duel_RefreshAllWindows(0,(uint32_t)param_3);
       return 0;
     }
     if (y == 0x501) {
@@ -37976,7 +37976,7 @@ void FUN_004b5565(HWND hwnd,int arg2)
   FUN_004b1bba(DAT_00617378);
   FUN_004b1bba(DAT_00618988);
   FUN_0049793e(DAT_00618ab0);
-  FUN_004a20a2(DAT_00663df0,(LPRECT)0x0);
+  SpellChain_UpdateLayout(DAT_00663df0,(LPRECT)0x0);
   UpdateWindow(DAT_006152e0);
   UpdateWindow(hwnd);
   return;
@@ -41227,7 +41227,7 @@ int32_t FUN_004be3f6(int player_id,int card_slot,int event_type)
                                        ) * 0x34];
             *(int16_t *)(&DAT_004ff59a + val_3 * 0x34) =
                  *(int16_t *)(&DAT_004ff59c + val_3 * 0x34);
-            *(code **)(&DAT_004ff5a0 + val_3 * 0x34) = Mem_AllocOrFree_004521d0;
+            *(code **)(&DAT_004ff5a0 + val_3 * 0x34) = Card_DefaultEventHandler;
             *(int32_t *)(&DAT_004ff5a8 + val_3 * 0x34) = 0x8000;
             (&DAT_004ff596)[val_3 * 0x34] = 1;
           }

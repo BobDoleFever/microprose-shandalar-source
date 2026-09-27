@@ -191,8 +191,8 @@ Address,OldName,NewName
 00450fa1,FUN_00450fa1,Mem_AllocOrFree_00450fa1
 00451482,FUN_00451482,Duel_UpdateBoardState
 00452185,FUN_00452185,Mem_AllocOrFree_00452185
-004521d0,FUN_004521d0,Mem_AllocOrFree_004521d0
-004521e2,FUN_004521e2,Mana_GetCardColorRequirement
+004521d0,FUN_004521d0,Card_DefaultEventHandler
+004521e2,Card_GetColorAndTypeFlags,Mana_GetCardColorRequirement
 00453daf,FUN_00453daf,Prompts_Load_00453daf
 00454179,FUN_00454179,Prompts_Load_00454179
 004559ad,FUN_004559ad,Prompts_Load_004559ad

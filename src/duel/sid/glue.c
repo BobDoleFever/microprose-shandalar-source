@@ -96,13 +96,13 @@ int FUN_0045219a(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004521d0
+ * Decompiled function: Card_DefaultEventHandler
  * Entry Point: 004521d0
  * Size: 18 bytes
  */
 
 
-int32_t Mem_AllocOrFree_004521d0(void)
+int32_t Card_DefaultEventHandler(void)
 
 {
   return 0;
@@ -16691,7 +16691,7 @@ int FUN_00479c07(int player,int card_slot)
   if (((&DAT_004ff5a8)[val_1 * 0x34] & 3) != 0) {
     slot_idx = slot_idx / 2;
   }
-  if (*(code **)(&DAT_004ff5a0 + val_1 * 0x34) != Mem_AllocOrFree_004521d0) {
+  if (*(code **)(&DAT_004ff5a0 + val_1 * 0x34) != Card_DefaultEventHandler) {
     slot_idx = (slot_idx * 3) / 2;
   }
   if ((*(uint32_t *)(&DAT_004ff5a4 + val_1 * 0x34) & 0x1c0) != 0) {

@@ -469,7 +469,7 @@ Address,OldName,NewName
 00452065,FUN_00452065,Pic_Subsystem_00452065
 004520b2,FUN_004520b2,Pic_Subsystem_004520b2
 004521a6,FUN_004521a6,Pic_Subsystem_004521a6
-004521e2,FUN_004521e2,Mana_GetCardColorRequirement
+004521e2,Card_GetColorAndTypeFlags,Mana_GetCardColorRequirement
 00452276,FUN_00452276,Pic_Subsystem_00452276
 004523fd,FUN_004523fd,Pic_Subsystem_004523fd
 0045245e,FUN_0045245e,Pic_Subsystem_0045245e
@@ -1030,7 +1030,7 @@ Address,OldName,NewName
 004b4274,FUN_004b4274,Ai_Subsystem_004b4274
 004b42d1,Mem_AllocOrFree_004b42d1,Ai_Util_004b42d1
 004b42dc,FUN_004b42dc,Ai_Subsystem_004b42dc
-004b4a3f,FUN_004b4a3f,Ai_EvalAttackCandidate_004b4a3f
+004b4a3f,FUN_004b4a3f,Duel_RefreshAllWindows
 004b53a1,Mem_AllocOrFree_004b53a1,Ai_Util_004b53a1
 004b53c6,FUN_004b53c6,Ai_Util_004b53c6
 004b53ed,FUN_004b53ed,Ai_Subsystem_004b53ed

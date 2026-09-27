@@ -649,7 +649,7 @@ LAB_004cf521:
           puVar10 = puVar10 + 1;
         }
         uStackY_c8 = 0x4ce06d;
-        local_15d0 = SpellChain_GetCardCount(hwnd);
+        local_15d0 = SpellChain_FindEntryIndex(hwnd);
         if (local_15d0 == local_15c8) {
           puVar9 = local_15c0 + local_15d0 * 0x2b;
           puVar10 = (int *)&stack0xffffff44;
@@ -666,9 +666,9 @@ LAB_004cf521:
             puVar10 = puVar10 + 1;
           }
           uStackY_118 = 0x4ce0db;
-          iVar11 = SpellChain_HasActiveSpells();
+          iVar11 = SpellChain_EntryTargetsMatch();
           if (iVar11 == 0) {
-            SpellChain_RemoveCardSlot(hwnd,local_15d0);
+            SpellChain_ClearEntryTargets(hwnd,local_15d0);
             puVar9 = local_15c0 + local_15d0 * 0x2b;
             puVar10 = (int *)&stack0xffffff40;
             for (iVar11 = 0x2b; iVar11 != 0; iVar11 = iVar11 + -1) {
@@ -677,7 +677,7 @@ LAB_004cf521:
               puVar10 = puVar10 + 1;
             }
             uStackY_c8 = 0x4ce135;
-            SpellChain_CreateTargetSlot(hwnd);
+            SpellChain_RebuildEntryTargets(hwnd);
             local_15c4 = 1;
           }
         }
@@ -690,19 +690,19 @@ LAB_004cf521:
             puVar10 = puVar10 + 1;
           }
           uStackY_c8 = 0x4ce190;
-          SpellChain_CreateCardSlot(hwnd,in_stack_ffffff40,in_stack_ffffff44);
+          SpellChain_InsertEntry(hwnd,in_stack_ffffff40,in_stack_ffffff44);
           local_15c4 = 1;
         }
         else if (local_15c8 < local_15d0) {
           for (local_15cc = local_15c8; local_15cc < local_15d0; local_15cc = local_15cc + 1) {
-            SpellChain_UpdateTargetPositions(hwnd,local_15cc);
+            SpellChain_RemoveEntry(hwnd,local_15cc);
           }
           local_15c4 = 1;
         }
       }
       LVar2 = GetWindowLongA(hwnd,4);
       for (local_15cc = local_15c8; local_15cc < LVar2; local_15cc = local_15cc + 1) {
-        SpellChain_UpdateTargetPositions(hwnd,local_15cc);
+        SpellChain_RemoveEntry(hwnd,local_15cc);
         local_15c4 = 1;
       }
       if (local_15c4 != 0) {
@@ -803,19 +803,19 @@ LAB_004cf521:
 }
 
 /*
- * SpellChain_GetCardCount
+ * SpellChain_FindEntryIndex
  * Purpose: Get number of active spell cards currently on resolution stack.
  * Procedure:
  * 1. Query window extra bytes for spell stack count.
  * 2. Return active spell count.
  */
 /*
- * Decompiled function: SpellChain_GetCardCount
+ * Decompiled function: SpellChain_FindEntryIndex
  * Entry Point: 004cf8b6
  * Size: 175 bytes
  */
 
-int SpellChain_GetCardCount(HWND hwnd)
+int SpellChain_FindEntryIndex(HWND hwnd)
 
 {
   LONG LVar1;
@@ -845,7 +845,7 @@ int SpellChain_GetCardCount(HWND hwnd)
 }
 
 /*
- * SpellChain_UpdateTargetPositions
+ * SpellChain_RemoveEntry
  * Purpose: Update target coordinates and scroll offsets for cards in spell stack.
  * Procedure:
  * 1. Iterate through all cards on resolution stack.
@@ -853,12 +853,12 @@ int SpellChain_GetCardCount(HWND hwnd)
  * 3. Refresh scroll range if stack exceeds visible bounds.
  */
 /*
- * Decompiled function: SpellChain_UpdateTargetPositions
+ * Decompiled function: SpellChain_RemoveEntry
  * Entry Point: 004cf965
  * Size: 333 bytes
  */
 
-void SpellChain_UpdateTargetPositions(HWND hwnd,int card_slot)
+void SpellChain_RemoveEntry(HWND hwnd,int card_slot)
 
 {
   LONG LVar1;
@@ -884,19 +884,19 @@ void SpellChain_UpdateTargetPositions(HWND hwnd,int card_slot)
 }
 
 /*
- * SpellChain_HasActiveSpells
+ * SpellChain_EntryTargetsMatch
  * Purpose: Check if spell resolution stack has pending spells.
  * Procedure:
  * 1. Read active spell counter.
  * 2. Return true if count is greater than zero.
  */
 /*
- * Decompiled function: SpellChain_HasActiveSpells
+ * Decompiled function: SpellChain_EntryTargetsMatch
  * Entry Point: 004cfab2
  * Size: 125 bytes
  */
 
-bool SpellChain_HasActiveSpells(void)
+bool SpellChain_EntryTargetsMatch(void)
 
 {
   int status;
@@ -917,7 +917,7 @@ bool SpellChain_HasActiveSpells(void)
 }
 
 /*
- * SpellChain_CreateCardSlot
+ * SpellChain_InsertEntry
  * Purpose: Allocate and attach card window slot to spell stack chain.
  * Procedure:
  * 1. Create child card window control.
@@ -925,12 +925,12 @@ bool SpellChain_HasActiveSpells(void)
  * 3. Trigger layout recalculation.
  */
 /*
- * Decompiled function: SpellChain_CreateCardSlot
+ * Decompiled function: SpellChain_InsertEntry
  * Entry Point: 004cfb2f
  * Size: 569 bytes
  */
 
-int SpellChain_CreateCardSlot(HWND hwnd,int card_slot,int arg3)
+int SpellChain_InsertEntry(HWND hwnd,int card_slot,int arg3)
 
 {
   LONG LVar1;
@@ -1005,7 +1005,7 @@ int SpellChain_CreateCardSlot(HWND hwnd,int card_slot,int arg3)
 }
 
 /*
- * SpellChain_RemoveCardSlot
+ * SpellChain_ClearEntryTargets
  * Purpose: Remove card window slot from spell stack chain and destroy handle.
  * Procedure:
  * 1. Destroy child window control.
@@ -1013,12 +1013,12 @@ int SpellChain_CreateCardSlot(HWND hwnd,int card_slot,int arg3)
  * 3. Invalidate window client area.
  */
 /*
- * Decompiled function: SpellChain_RemoveCardSlot
+ * Decompiled function: SpellChain_ClearEntryTargets
  * Entry Point: 004cfd68
  * Size: 229 bytes
  */
 
-void SpellChain_RemoveCardSlot(HWND hwnd,int card_slot)
+void SpellChain_ClearEntryTargets(HWND hwnd,int card_slot)
 
 {
   LONG LVar1;
@@ -1038,19 +1038,19 @@ void SpellChain_RemoveCardSlot(HWND hwnd,int card_slot)
 }
 
 /*
- * SpellChain_CreateTargetSlot
+ * SpellChain_RebuildEntryTargets
  * Purpose: Create target line link between spell card and targeted permanent.
  * Procedure:
  * 1. Create child target window control.
  * 2. Store targeting relationship coordinates in slot buffer.
  */
 /*
- * Decompiled function: SpellChain_CreateTargetSlot
+ * Decompiled function: SpellChain_RebuildEntryTargets
  * Entry Point: 004cfe4d
  * Size: 397 bytes
  */
 
-int SpellChain_CreateTargetSlot(HWND hwnd)
+int SpellChain_RebuildEntryTargets(HWND hwnd)
 
 {
   LONG LVar1;
@@ -1287,18 +1287,18 @@ void SpellChain_UpdateLayout(HWND hwnd,LPRECT card_slot)
 }
 
 /*
- * SpellChain_SetWindowRect
+ * SpellChain_GetContentRect
  * Purpose: Copy and apply rectangle bounds to spell chain window.
  * Procedure:
  * 1. Copy rectangle structure to internal bounds cache.
  */
 /*
- * Decompiled function: SpellChain_SetWindowRect
+ * Decompiled function: SpellChain_GetContentRect
  * Entry Point: 004d05e8
  * Size: 26 bytes
  */
 
-void SpellChain_SetWindowRect(int player,LPRECT card_slot)
+void SpellChain_GetContentRect(int player,LPRECT card_slot)
 
 {
   CopyRect(card_slot,(RECT *)&DAT_00565968);
@@ -1403,18 +1403,18 @@ LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 }
 
 /*
- * SpellChain_IsVisible
+ * SpellChain_MinimizeIfShown
  * Purpose: Query visibility status of spell chain window.
  * Procedure:
  * 1. Test window visibility flag and return boolean status.
  */
 /*
- * Decompiled function: SpellChain_IsVisible
+ * Decompiled function: SpellChain_MinimizeIfShown
  * Entry Point: 004d0965
  * Size: 88 bytes
  */
 
-BOOL SpellChain_IsVisible(void)
+BOOL SpellChain_MinimizeIfShown(void)
 
 {
   BOOL BVar1;
@@ -1431,18 +1431,18 @@ BOOL SpellChain_IsVisible(void)
 }
 
 /*
- * SpellChain_IsMinimized
+ * SpellChain_RestoreIfMinimized
  * Purpose: Query minimized status of spell chain window.
  * Procedure:
  * 1. Test minimized window visibility and return boolean status.
  */
 /*
- * Decompiled function: SpellChain_IsMinimized
+ * Decompiled function: SpellChain_RestoreIfMinimized
  * Entry Point: 004d09bd
  * Size: 112 bytes
  */
 
-bool SpellChain_IsMinimized(void)
+bool SpellChain_RestoreIfMinimized(void)
 
 {
   BOOL BVar1;
@@ -1456,37 +1456,37 @@ bool SpellChain_IsMinimized(void)
 }
 
 /*
- * SpellChain_GetActiveCount
+ * Card_DefaultEventHandler
  * Purpose: Get active spell counter.
  * Procedure:
  * 1. Return active spell counter register.
  */
 /*
- * Decompiled function: SpellChain_GetActiveCount
+ * Decompiled function: Card_DefaultEventHandler
  * Entry Point: 004d0a30
  * Size: 18 bytes
  */
 
-int SpellChain_GetActiveCount(void)
+int Card_DefaultEventHandler(void)
 
 {
   return 0;
 }
 
 /*
- * SpellChain_ProcessTriggerEvent
+ * Card_GetColorAndTypeFlags
  * Purpose: Dispatch spell chain resolution trigger event to active permanents.
  * Procedure:
  * 1. Format trigger event parameters.
  * 2. Notify card scripts of pending resolution.
  */
 /*
- * Decompiled function: SpellChain_ProcessTriggerEvent
+ * Decompiled function: Card_GetColorAndTypeFlags
  * Entry Point: 004d0a42
  * Size: 645 bytes
  */
 
-uint SpellChain_ProcessTriggerEvent(int player,int card_slot)
+uint Card_GetColorAndTypeFlags(int player,int card_slot)
 
 {
   char c_res;

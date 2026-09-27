@@ -621,7 +621,7 @@ int Card_XenicPoltergeist_AnimateArtifact(int player,int card_index,int event_co
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,0x40,2,0,u_res,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (val_result != 0) {
@@ -647,7 +647,7 @@ int Card_XenicPoltergeist_AnimateArtifact(int player,int card_index,int event_co
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,player,0x200,0x40,2,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -674,7 +674,7 @@ int Card_XenicPoltergeist_AnimateArtifact(int player,int card_index,int event_co
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_14,local_10,(char *)0x0,player,2,2,0x200,0x40,2,0,uVar3,uVar4,uVar5
                          ,val_result,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -2588,7 +2588,7 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,1,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (val_result != 0) {
@@ -2614,7 +2614,7 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,1,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -2641,7 +2641,7 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,2,2,0x200,1,0,0,uVar3,uVar4,uVar5,
                          val_result,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -3763,7 +3763,7 @@ int Card_TimeElemental_BouncePermanent(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       u_temp = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,0x1047,0,0,u_temp,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -3791,7 +3791,7 @@ int Card_TimeElemental_BouncePermanent(int player,int card_index,int event_code)
         status = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+        uVar3 = Card_GetColorAndTypeFlags(player,card_index);
         status = Action_ValidateTarget_00405802
                           (player,2,1 - player,0x200,0x1047,0,0,uVar3,uVar5,uVar6,status,iVar7,
                            uVar8,uVar9,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
@@ -3819,7 +3819,7 @@ int Card_TimeElemental_BouncePermanent(int player,int card_index,int event_code)
       status = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,0x1047,0,0,uVar3,uVar5,uVar6
                          ,status,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -3920,7 +3920,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       arg_12 = 0;
       is_valid = Card_SetTapState(player, card_index, 1);
       val_result = 1 << (is_valid & 0x1f);
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,0x1047,0,0,uVar3,val_result,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -3947,7 +3947,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       uVar7 = 0;
       is_valid = Card_SetTapState(player, card_index, 1);
       uVar5 = 1 << (is_valid & 0x1f);
-      uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7,val_result,iVar8,uVar9,uVar10,
                          uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -3975,7 +3975,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       uVar7 = 0;
       is_valid = Card_SetTapState(player, card_index, 1);
       uVar5 = 1 << (is_valid & 0x1f);
-      uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7
                          ,val_result,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -4045,7 +4045,7 @@ int Card_RoyalAssassin_DestroyTapped(int player,int card_index,int event_code)
       status = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(player,card_index);
+      arg_11 = Card_GetColorAndTypeFlags(player,card_index);
       status = Rules_ParseFilter_0040360b
                         (card_id,color_mask,(char *)0x0,player,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,status,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -4231,7 +4231,7 @@ int Card_Targeting_PromptCreature(int x,int y,int width,uint height)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(x,y);
+      u_res = Card_GetColorAndTypeFlags(x,y);
       u_res = UI_PaintBigCardInfo((int *)0x0,0,x,2,2,0x200,2,0,0,u_res,arg_11,arg_12_00,arg_13_00,arg_14_00
                            ,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19);
     }
@@ -4250,7 +4250,7 @@ int Card_Targeting_PromptCreature(int x,int y,int width,uint height)
       val_result = -1;
       arg_10 = 0;
       arg_9 = 0;
-      arg_8 = SpellChain_ProcessTriggerEvent(x,y);
+      arg_8 = Card_GetColorAndTypeFlags(x,y);
       val_result = Action_ValidateTarget_00405802
                         (x,2,height,0x200,2,0,0,arg_8,arg_9,arg_10,val_result,arg_12,arg_13,arg_14,arg_15
                          ,arg_16,arg_17,arg_18,u_res,arg_20);
@@ -4548,7 +4548,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       u_res = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -4576,7 +4576,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       iVar5 = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,2,0,0,u_temp,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -4605,7 +4605,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_14,local_10,(char *)0x0,player,2,2,0x200,2,0,0,u_temp,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -4769,7 +4769,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       u_temp = UI_PaintBigCardInfo((int *)0x0,0,player,player,player,0x200,2,0,0,u_temp,arg_11,arg_12,
                            arg_13,arg_14,u_res,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -4795,7 +4795,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
       temp_idx = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       temp_idx = Action_ValidateTarget_00405802
                         (player,player,player,0x200,2,0,0,uVar4,uVar5,uVar6,temp_idx,iVar7,uVar8,
                          u_res,uVar9,uVar10,uVar11,arg_18,u_temp,arg_20);
@@ -4823,7 +4823,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
       temp_idx = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       temp_idx = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,(byte)player,(byte)player,0x200,2
                          ,0,0,uVar4,uVar5,uVar6,temp_idx,iVar7,uVar8,u_res,uVar9,uVar10,uVar11);
@@ -4900,7 +4900,7 @@ int Card_DwarvenWarriors_MakeUnblockable(int player,int card_index,int event_cod
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       u_res = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -4925,7 +4925,7 @@ int Card_DwarvenWarriors_MakeUnblockable(int player,int card_index,int event_cod
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       iVar5 = Action_ValidateTarget_00405802
                         (player,2,player,0x200,2,0,0,u_temp,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -4952,7 +4952,7 @@ int Card_DwarvenWarriors_MakeUnblockable(int player,int card_index,int event_cod
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,2,0,0,u_temp,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -5034,7 +5034,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,uVar3,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -5071,7 +5071,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
         val_result = -1;
         uVar7 = 0;
         uVar6 = 0;
-        uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+        uVar4 = Card_GetColorAndTypeFlags(player,card_index);
         val_result = Action_ValidateTarget_00405802
                           (player,2,player,0x200,2,0,0,uVar4,uVar6,uVar7,val_result,iVar8,uVar9,
                            uVar10,uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -5099,7 +5099,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
       val_result = -1;
       uVar7 = 0;
       uVar6 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,2,2,0x200,2,0,0,uVar4,uVar6,uVar7,
                          val_result,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -5186,7 +5186,7 @@ int Card_PradeshGypsies_PreventAttack(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       u_temp = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_temp,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -5214,7 +5214,7 @@ int Card_PradeshGypsies_PreventAttack(int player,int card_index,int event_code)
         status = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+        uVar3 = Card_GetColorAndTypeFlags(player,card_index);
         status = Action_ValidateTarget_00405802
                           (player,2,player,0x200,2,0,0,uVar3,uVar5,uVar6,status,iVar7,uVar8,uVar9
                            ,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
@@ -5242,7 +5242,7 @@ int Card_PradeshGypsies_PreventAttack(int player,int card_index,int event_code)
       status = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,2,2,0x200,2,0,0,uVar3,uVar5,uVar6,
                          status,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -6301,7 +6301,7 @@ int Card_CrimsonManticore_DamageTarget(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       u_temp = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_temp,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -6327,7 +6327,7 @@ int Card_CrimsonManticore_DamageTarget(int player,int card_index,int event_code)
       status = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar5,uVar6,status,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,u_temp,arg_20);
@@ -6354,7 +6354,7 @@ int Card_CrimsonManticore_DamageTarget(int player,int card_index,int event_code)
       status = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,2,0,0,uVar3,uVar5,uVar6,
                          status,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -6492,7 +6492,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       iVar5 = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x1200,2,0,0,u_res,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,puVar12,uVar13,piVar14);
@@ -6529,7 +6529,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int player,int card_index)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       Action_ValidateTarget_00405802
                 (player,2,1 - player,0x1200,2,0,0,u_res,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10
                  ,uVar11,puVar12,uVar13,piVar14);
@@ -6614,7 +6614,7 @@ int Card_DirectDamage_PromptAndDealDamage(int x,int y,int width,int height)
       val_result = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(x,y);
+      arg_11 = Card_GetColorAndTypeFlags(x,y);
       val_result = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + y * 0x120 + x * 0x5b20),(char *)0x0,x,2
@@ -8535,7 +8535,7 @@ int Card_AliBaba_TapWall(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_temp = Card_GetColorAndTypeFlags(player,card_index);
       status = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_temp,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (status != 0) {
@@ -8562,7 +8562,7 @@ int Card_AliBaba_TapWall(int player,int card_index,int event_code)
       status = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,status,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_temp,arg_20);
@@ -8587,7 +8587,7 @@ int Card_AliBaba_TapWall(int player,int card_index,int event_code)
       status = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       status = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          status,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -8658,7 +8658,7 @@ int Card_LeyDruid_UntapLand(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,1,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (val_result != 0) {
@@ -8684,7 +8684,7 @@ int Card_LeyDruid_UntapLand(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,player,0x200,1,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -8711,7 +8711,7 @@ int Card_LeyDruid_UntapLand(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,player,2,2,0x200,1,0,0,uVar3,uVar4,uVar5,
                          val_result,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -8980,7 +8980,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    u_temp = SpellChain_ProcessTriggerEvent(player,card_index);
+    u_temp = Card_GetColorAndTypeFlags(player,card_index);
     u_temp = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_temp,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -9007,7 +9007,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
       temp_idx = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(player,card_index);
+      arg_11 = Card_GetColorAndTypeFlags(player,card_index);
       temp_idx = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + player * 0x5b20 + card_index * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + player * 0x5b20 + card_index * 0x120),
@@ -9498,7 +9498,7 @@ int Card_RadjanSpirit_RemoveFlying(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (val_result != 0) {
@@ -9525,7 +9525,7 @@ int Card_RadjanSpirit_RemoveFlying(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -9552,7 +9552,7 @@ int Card_RadjanSpirit_RemoveFlying(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          val_result,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -9626,7 +9626,7 @@ int Card_HurrJackal_GrantCombatAbility(int player,int card_index,int event_code)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      u_res = SpellChain_ProcessTriggerEvent(player,card_index);
+      u_res = Card_GetColorAndTypeFlags(player,card_index);
       val_result = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,2,0,0,u_res,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (val_result != 0) {
@@ -9653,7 +9653,7 @@ int Card_HurrJackal_GrantCombatAbility(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Action_ValidateTarget_00405802
                         (player,2,1 - player,0x200,2,0,0,uVar3,uVar4,uVar5,val_result,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,u_res,arg_20);
@@ -9686,7 +9686,7 @@ int Card_HurrJackal_GrantCombatAbility(int player,int card_index,int event_code)
       val_result = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(player,card_index);
+      uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,player,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          val_result,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);

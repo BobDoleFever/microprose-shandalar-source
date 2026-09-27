@@ -14181,7 +14181,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
         if (DAT_0068a718 != 0) {
           local_2ec = (uint32_t)(((uint32_t)arg_3 & 0xffff) != 0x269);
           Magic_ExecuteDrawPhase(local_2ec);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26b:
@@ -14199,7 +14199,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
           }
           *(int32_t *)(&g_PlayerManaPoolAvailable + g_ScWillyScore * 4 + g_TurnPlayer * 0x98) = local_2f8
           ;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26d:
@@ -14208,7 +14208,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
           local_2ec = (uint32_t)(((uint32_t)arg_3 & 0xffff) != 0x26d);
           local_2f0 = Palette_Subsystem_004a62a0(s_Pick_a_card_to_put_into_hand_00521a80,-1,-1);
           local_2f4 = Deck_AddCardToDeck(local_2ec,local_2f0);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26f:
@@ -14219,7 +14219,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
                             (0,s_Set_player_lives_to__00521aa0 + ((local_2ec == 0) - 1 & 0x18),
                              (&g_PlayerCreatureCount)[local_2ec]);
           (&g_PlayerCreatureCount)[local_2ec] = uval_1;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x271:
@@ -14290,7 +14290,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
         break;
       case 0x27a:
         DAT_006fe43c = (uint32_t)(DAT_006fe43c == 0);
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
         break;
       case 0x27b:
         _DAT_006a2864 = g_MainAppHwnd;
@@ -14593,7 +14593,7 @@ uint32_t Catalog_LoadAllBigCardArtPics(HWND hwnd,uint32_t y,void *arg_3,int *hei
   }
   else {
     if (y == 0x464) {
-      Ai_EvalAttackCandidate_004b4a3f(0,(uint32_t)arg_3);
+      Duel_RefreshAllWindows(0,(uint32_t)arg_3);
       return 0;
     }
     if (y == 0x501) {

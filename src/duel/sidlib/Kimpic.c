@@ -4806,13 +4806,13 @@ uint32_t FUN_004457a2(void)
 
 
 /*
- * Decompiled function: Ai_EvalAttackCandidate_004b4a3f
+ * Decompiled function: Duel_RefreshAllWindows
  * Entry Point: 00445f05
  * Size: 2404 bytes
  */
 
 
-void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
+void Duel_RefreshAllWindows(int32_t arg1,uint32_t arg2)
 
 {
   HBRUSH pHVar1;

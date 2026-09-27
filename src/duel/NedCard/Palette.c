@@ -1273,7 +1273,7 @@ int32_t Palette_Subsystem_0049608e(void)
   UI_RegisterClass_00486c90(s_MAGICGAME_LibraryClass_004f6e4c);
   UI_RegisterExpandedGraveyardClass(s_MAGICGAME_GraveyardClass_004f6e64);
   UI_Register_WINBK_Attack_00493810(s_MAGICGAME_AttackClass_004f6e80);
-  Glue_Subsystem_004cd760(s_MAGICGAME_SpellChainClass_004f6e98);
+  SpellChain_RegisterClass(s_MAGICGAME_SpellChainClass_004f6e98);
   UI_Register_FACE_BLACK_00436820(s_MAGICGAME_FaceClass_004f6eb4);
   UI_RegisterClass_0046f240(s_MAGICGAME_ScrollbarClass_004f6ec8);
   UI_RegisterClass_0042b2a0(s_MAGICTHEME_IconButtonClass_004f6ee4);
@@ -1310,7 +1310,7 @@ void Palette_Subsystem_0049608e(void)
   FUN_00486dc6(s_MAGICGAME_LibraryClass_004f7074);
   FUN_0043a531(s_MAGICGAME_GraveyardClass_004f708c);
   FUN_00493c0c(s_MAGICGAME_AttackClass_004f70a8);
-  FUN_0049fac1(s_MAGICGAME_SpellChainClass_004f70c0);
+  SpellChain_CleanupUI(s_MAGICGAME_SpellChainClass_004f70c0);
   FUN_00436a52(s_MAGICGAME_FaceClass_004f70dc);
   FUN_0046f2f5(s_MAGICGAME_ScrollbarClass_004f70f0);
   Mem_AllocOrFree_00490448(s_MAGICGAME_BigCardChoiceClass_004f710c);

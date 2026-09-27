@@ -1402,7 +1402,7 @@ void Mem_AllocOrFree_00445797(void);;
 uint32_t FUN_004457a2(void);;
 
 /* Function at 00445f05 (Size: 2404 bytes) */
-void Ai_EvalAttackCandidate_004b4a3f(int32_t player,uint32_t card_slot);;
+void Duel_RefreshAllWindows(int32_t player,uint32_t card_slot);;
 
 /* Function at 00446869 (Size: 37 bytes) */
 void Mem_AllocOrFree_00446869(void);;
@@ -1894,7 +1894,7 @@ void Mem_AllocOrFree_00452185(void);;
 int FUN_0045219a(void);;
 
 /* Function at 004521d0 (Size: 18 bytes) */
-int32_t Mem_AllocOrFree_004521d0(void);;
+int32_t Card_DefaultEventHandler(void);;
 
 /* Function at 004521e2 (Size: 645 bytes) */
 uint32_t Mana_GetCardColorRequirement(int player, int card_slot);;
@@ -3247,7 +3247,7 @@ int32_t UI_Register_WINBK_Attack_00493810(LPCSTR str_1);;
 void FUN_00493c0c(void);;
 
 /* Function at 00493e30 (Size: 14669 bytes) */
-uint32_t Glue_Subsystem_004cdb4f(HWND hwnd,uint32_t y,HWND param_3,HWND param_4);;
+uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,HWND param_4);;
 
 /* Function at 00497849 (Size: 245 bytes) */
 int32_t FUN_00497849(int max_val,int point,int hBitmap);;
@@ -3268,7 +3268,7 @@ uint32_t UI_WndProc_0049866e(HWND hwnd,uint32_t uMsg,HWND wParam,int lParam);;
 void FUN_00499128(HWND hwnd);;
 
 /* Function at 0049918f (Size: 861 bytes) */
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
 
 /* Function at 004994f8 (Size: 688 bytes) */
 int FUN_004994f8(HWND hwnd,int *point,int32_t *hBitmap,int32_t *flags,int32_t *damage);;
@@ -3565,46 +3565,46 @@ int16_t Mem_AllocOrFree_0049f7ee(void);;
 int16_t Mem_AllocOrFree_0049f801(void);;
 
 /* Function at 0049f820 (Size: 673 bytes) */
-int32_t Glue_Subsystem_004cd760(LPCSTR str_1);;
+int32_t SpellChain_RegisterClass(LPCSTR str_1);;
 
 /* Function at 0049fac1 (Size: 334 bytes) */
-void FUN_0049fac1(void);;
+void SpellChain_CleanupUI(void);;
 
 /* Function at 0049fc0f (Size: 7410 bytes) */
-uint32_t Glue_Subsystem_004cdb4f(HWND hwnd,uint32_t y,HWND param_3,uint32_t height);;
+uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,uint32_t height);;
 
 /* Function at 004a197e (Size: 175 bytes) */
-int FUN_004a197e(HWND hwnd);;
+int SpellChain_FindEntryIndex(HWND hwnd);;
 
 /* Function at 004a1a2d (Size: 333 bytes) */
-void FUN_004a1a2d(HWND hwnd,int card_slot);;
+void SpellChain_RemoveEntry(HWND hwnd,int card_slot);;
 
 /* Function at 004a1b7a (Size: 125 bytes) */
-bool FUN_004a1b7a(void);;
+bool SpellChain_EntryTargetsMatch(void);;
 
 /* Function at 004a1bf7 (Size: 569 bytes) */
 int Palette_Subsystem_0049608e(HWND hwnd,int32_t point,int32_t hBitmap);;
 
 /* Function at 004a1e30 (Size: 229 bytes) */
-void FUN_004a1e30(HWND hwnd,int card_slot);;
+void SpellChain_ClearEntryTargets(HWND hwnd,int card_slot);;
 
 /* Function at 004a1f15 (Size: 397 bytes) */
 int Palette_Subsystem_0049608e(HWND hwnd);;
 
 /* Function at 004a20a2 (Size: 1546 bytes) */
-void FUN_004a20a2(HWND hwnd,LPRECT card_slot);;
+void SpellChain_UpdateLayout(HWND hwnd,LPRECT card_slot);;
 
 /* Function at 004a26ac (Size: 26 bytes) */
-void FUN_004a26ac(int32_t player,LPRECT card_slot);;
+void SpellChain_GetContentRect(int32_t player,LPRECT card_slot);;
 
 /* Function at 004a26c6 (Size: 861 bytes) */
-LRESULT Glue_Subsystem_004d0602(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
+LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
 
 /* Function at 004a2a2f (Size: 88 bytes) */
-BOOL FUN_004a2a2f(void);;
+BOOL SpellChain_MinimizeIfShown(void);;
 
 /* Function at 004a2a87 (Size: 112 bytes) */
-bool FUN_004a2a87(void);;
+bool SpellChain_RestoreIfMinimized(void);;
 
 /* Function at 004a2b00 (Size: 561 bytes) */
 int Duel_TriggerCardEvent(int max_val,int point,int hBitmap,int flags,int damage);;

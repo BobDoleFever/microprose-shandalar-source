@@ -3529,7 +3529,7 @@ void Ai_Util_004b42d1(void);;
 uint32_t Ai_Subsystem_004b42dc(void);;
 
 /* Function at 004b4a3f (Size: 2402 bytes) */
-void Ai_EvalAttackCandidate_004b4a3f(int32_t player,uint32_t card_slot);;
+void Duel_RefreshAllWindows(int32_t player,uint32_t card_slot);;
 
 /* Function at 004b53a1 (Size: 37 bytes) */
 void Ai_Util_004b53a1(void);;
@@ -4150,43 +4150,43 @@ void SpellChain_CleanupUI(void);;
 uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,uint32_t height);;
 
 /* Function at 004cf8b6 (Size: 175 bytes) */
-int SpellChain_GetCardCount(HWND hwnd);;
+int SpellChain_FindEntryIndex(HWND hwnd);;
 
 /* Function at 004cf965 (Size: 333 bytes) */
-void SpellChain_UpdateTargetPositions(HWND hwnd,int card_slot);;
+void SpellChain_RemoveEntry(HWND hwnd,int card_slot);;
 
 /* Function at 004cfab2 (Size: 125 bytes) */
-bool SpellChain_HasActiveSpells(void);;
+bool SpellChain_EntryTargetsMatch(void);;
 
 /* Function at 004cfb2f (Size: 569 bytes) */
-int SpellChain_CreateCardSlot(HWND hwnd,int32_t min_val,int32_t max_val);;
+int SpellChain_InsertEntry(HWND hwnd,int32_t min_val,int32_t max_val);;
 
 /* Function at 004cfd68 (Size: 229 bytes) */
-void SpellChain_RemoveCardSlot(HWND hwnd,int card_slot);;
+void SpellChain_ClearEntryTargets(HWND hwnd,int card_slot);;
 
 /* Function at 004cfe4d (Size: 397 bytes) */
-int SpellChain_CreateTargetSlot(HWND hwnd);;
+int SpellChain_RebuildEntryTargets(HWND hwnd);;
 
 /* Function at 004cffda (Size: 1550 bytes) */
 void SpellChain_UpdateLayout(HWND hwnd,LPRECT card_slot);;
 
 /* Function at 004d05e8 (Size: 26 bytes) */
-void SpellChain_SetWindowRect(int32_t player,LPRECT card_slot);;
+void SpellChain_GetContentRect(int32_t player,LPRECT card_slot);;
 
 /* Function at 004d0602 (Size: 855 bytes) */
 LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
 
 /* Function at 004d0965 (Size: 88 bytes) */
-BOOL SpellChain_IsVisible(void);;
+BOOL SpellChain_MinimizeIfShown(void);;
 
 /* Function at 004d09bd (Size: 112 bytes) */
-bool SpellChain_IsMinimized(void);;
+bool SpellChain_RestoreIfMinimized(void);;
 
 /* Function at 004d0a30 (Size: 18 bytes) */
-int32_t SpellChain_GetActiveCount(void);;
+int32_t Card_DefaultEventHandler(void);;
 
 /* Function at 004d0a42 (Size: 645 bytes) */
-uint32_t SpellChain_ProcessTriggerEvent(int player,int card_slot);;
+uint32_t Card_GetColorAndTypeFlags(int player,int card_slot);;
 
 /* Function at 004d0cdb (Size: 959 bytes) */
 int32_t Card_ColorWard_ChangeColor(int value,int min_val,int max_val);;

@@ -1102,7 +1102,7 @@ undefined DAT_006b3020;
 string s_ANIMATE_ARTIFACT_00521258;
 string s_prompts.txt_0052126c;
 int DAT_00695edc;
-undefined SpellChain_GetActiveCount;
+undefined Card_DefaultEventHandler;
 undefined Pic_Subsystem_0042baae;
 undefined Pic_Subsystem_0042baee;
 string s_ANIMATE_WALL_00521278;
@@ -7734,7 +7734,7 @@ int Action_ValidateTarget_00405802
       local_8 = 0;
       local_14 = 0;
     }
-    local_c = SpellChain_IsVisible();
+    local_c = SpellChain_MinimizeIfShown();
     local_218 = 1;
     while (local_218 != 0) {
       if (arg_18 == (undefined1 *)0x0) {
@@ -7793,7 +7793,7 @@ int Action_ValidateTarget_00405802
       }
     }
     if (local_c == 0) {
-      SpellChain_IsMinimized();
+      SpellChain_RestoreIfMinimized();
     }
     if (local_10 != 0) {
       DAT_00633434 = 0;
@@ -14298,7 +14298,7 @@ undefined4 Prompts_Load_0041529a(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar1,arg_11_00,
                          arg_12_00,arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,
                          arg_19_00);
@@ -14328,7 +14328,7 @@ undefined4 Prompts_Load_0041529a(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,(byte)spell_id,(byte)spell_id,0x200,2
                          ,0,0,arg_11,arg_12,arg_13,iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -14444,7 +14444,7 @@ undefined4 Prompts_Load_004156c9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,0x44,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -14469,7 +14469,7 @@ undefined4 Prompts_Load_004156c9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x44,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -14528,7 +14528,7 @@ undefined4 Prompts_Load_00415920(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x43,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -14549,7 +14549,7 @@ undefined4 Prompts_Load_00415920(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,0x43,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -14600,7 +14600,7 @@ undefined4 Prompts_Load_00415920(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x43,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -14681,7 +14681,7 @@ undefined4 Prompts_Load_00415df8(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -14701,7 +14701,7 @@ undefined4 Prompts_Load_00415df8(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -14726,7 +14726,7 @@ undefined4 Prompts_Load_00415df8(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -14849,7 +14849,7 @@ undefined4 Prompts_Load_00416222(int spell_id,int target_id,int flags)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,spell_id,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
     }
@@ -14888,7 +14888,7 @@ undefined4 Prompts_Load_00416222(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar1,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -14951,7 +14951,7 @@ undefined4 Prompts_Load_0041652b(int spell_id,int target_id,int flags)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      arg_10 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_10 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,
                            arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
       if (iVar1 != 0) {
@@ -14980,7 +14980,7 @@ undefined4 Prompts_Load_0041652b(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (iVar1,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar2,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -15046,7 +15046,7 @@ undefined4 Prompts_Load_004167ac(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -15066,7 +15066,7 @@ undefined4 Prompts_Load_004167ac(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -15091,7 +15091,7 @@ undefined4 Prompts_Load_004167ac(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -15153,7 +15153,7 @@ undefined4 Prompts_Load_00416a6a(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -15181,7 +15181,7 @@ undefined4 Prompts_Load_00416a6a(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (iVar3,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar4,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -15264,7 +15264,7 @@ undefined4 Prompts_Load_00416d36(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -15289,7 +15289,7 @@ undefined4 Prompts_Load_00416d36(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -15524,7 +15524,7 @@ undefined4 Prompts_Load_0041765d(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -15561,7 +15561,7 @@ undefined4 Prompts_Load_0041765d(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -15749,7 +15749,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
     bVar1 = Card_SetTapState(value, min_val, 1);
     iVar4 = 1 << (bVar1 & 0x1f);
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(value,min_val);
+    uVar2 = Card_GetColorAndTypeFlags(value,min_val);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,value,2,2,0x200,2,0x40,0,uVar2,arg_11,iVar4,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -15768,7 +15768,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       bVar1 = Card_SetTapState(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar3 = Card_GetColorAndTypeFlags(value,min_val);
       iVar4 = Action_ValidateTarget_00405802
                         (value,2,1 - value,0x200,2,0x40,0,uVar3,uVar6,uVar5,iVar4,iVar7,uVar8,uVar9,
                          uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -15794,7 +15794,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       bVar1 = Card_SetTapState(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar3 = Card_GetColorAndTypeFlags(value,min_val);
       iVar4 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,value,2,2,0x200,2,0x40,0,uVar3,uVar6,uVar5,
                          iVar4,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -15882,7 +15882,7 @@ undefined4 Prompts_Load_00417ff5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11_00,arg_12_00,
                          arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -15907,7 +15907,7 @@ undefined4 Prompts_Load_00417ff5(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (iVar3,color_mask,(char *)0x0,spell_id,2,2,0x200,0x40,0,0,arg_11,arg_12,
                          arg_13,iVar4,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -15979,7 +15979,7 @@ undefined4 Prompts_Load_00418254(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -16009,7 +16009,7 @@ undefined4 Prompts_Load_00418254(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -16074,7 +16074,7 @@ undefined4 Prompts_Load_004184e1(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -16100,7 +16100,7 @@ undefined4 Prompts_Load_004184e1(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -16199,7 +16199,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0xff,0,0,uVar2,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -16232,7 +16232,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
         iVar3 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar3 = Action_ValidateTarget_00405802
                           (spell_id,2,2,0x200,0xff,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,uVar9,
                            uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -16263,7 +16263,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
         iVar3 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar3 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120
                                    ),
@@ -16388,7 +16388,7 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
         iVar3 = -1;
         arg_10 = 0;
         arg_9 = 0;
-        arg_8 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        arg_8 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar3 = Action_ValidateTarget_00405802
                           (spell_id,2,2,0x200,0x7f,0,0,arg_8,arg_9,arg_10,iVar3,iVar4,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18,uVar2,arg_20);
@@ -16594,7 +16594,7 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
         iVar3 = -1;
         arg_10 = 0;
         arg_9 = 0;
-        arg_8 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        arg_8 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar3 = Action_ValidateTarget_00405802
                           (spell_id,2,2,0x200,0x7f,0,0,arg_8,arg_9,arg_10,iVar3,iVar4,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18,uVar2,arg_20);
@@ -16765,7 +16765,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       arg_12 = 0;
       bVar2 = Card_SetTapState(spell_id,target_id,4);
       iVar4 = 1 << (bVar2 & 0x1f);
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -16808,7 +16808,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Card_SetTapState(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar5,uVar7,uVar8,iVar4,iVar6,
                            uVar9,uVar10,uVar12,uVar11,uVar13,arg_18,uVar3,arg_20);
@@ -16840,7 +16840,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Card_SetTapState(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -17269,7 +17269,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       arg_12 = 0;
       bVar2 = Card_SetTapState(spell_id,target_id,2);
       iVar4 = 1 << (bVar2 & 0x1f);
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -17312,7 +17312,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Card_SetTapState(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar5,uVar7,uVar8,iVar4,iVar6,
                            uVar9,uVar10,uVar12,uVar11,uVar13,arg_18,uVar3,arg_20);
@@ -17344,7 +17344,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         uVar8 = 0;
         bVar2 = Card_SetTapState(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
-        uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -18066,7 +18066,7 @@ undefined4 Prompts_Load_0041d1ab(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,3,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -18086,7 +18086,7 @@ undefined4 Prompts_Load_0041d1ab(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,3,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -18111,7 +18111,7 @@ undefined4 Prompts_Load_0041d1ab(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,3,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -18171,7 +18171,7 @@ undefined4 FUN_0041d411(int value,int min_val,int max_val)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11_00 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar2 = Card_GetColorAndTypeFlags(value,min_val);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,value,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                            arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
     }
@@ -18212,7 +18212,7 @@ undefined4 FUN_0041d411(int value,int min_val,int max_val)
         iVar1 = -1;
         arg_13 = 0;
         arg_12 = 0;
-        arg_11 = SpellChain_ProcessTriggerEvent(value,min_val);
+        arg_11 = Card_GetColorAndTypeFlags(value,min_val);
         iVar1 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget +
                                    min_val * 0x120 +
@@ -23939,7 +23939,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -23959,7 +23959,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,0x40,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9
                          ,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -23983,7 +23983,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -24163,7 +24163,7 @@ undefined4 Pic_Subsystem_0042b5f5(int value,int min_val,int max_val)
                                        ) * 0x34];
             *(undefined2 *)(&DAT_0051aec2 + iVar3 * 0x34) =
                  *(undefined2 *)(&DAT_0051aec4 + iVar3 * 0x34);
-            *(code **)(&DAT_0051aec8 + iVar3 * 0x34) = SpellChain_GetActiveCount;
+            *(code **)(&DAT_0051aec8 + iVar3 * 0x34) = Card_DefaultEventHandler;
             *(undefined4 *)(&DAT_0051aed0 + iVar3 * 0x34) = 0x8000;
             (&DAT_0051aebe)[iVar3 * 0x34] = 1;
           }
@@ -24242,7 +24242,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -24262,7 +24262,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -24285,7 +24285,7 @@ undefined4 Pic_Subsystem_0042bb2e(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -24395,7 +24395,7 @@ undefined4 Pic_Subsystem_0042bfa5(int x,int y,int width,uint height)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(x,y);
+    uVar1 = Card_GetColorAndTypeFlags(x,y);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,x,2,2,0x200,height,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -24413,7 +24413,7 @@ undefined4 Pic_Subsystem_0042bfa5(int x,int y,int width,uint height)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(x,y);
+      uVar2 = Card_GetColorAndTypeFlags(x,y);
       iVar5 = Action_ValidateTarget_00405802
                         (x,2,1 - x,0x200,height,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,
                          uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -24436,7 +24436,7 @@ undefined4 Pic_Subsystem_0042bfa5(int x,int y,int width,uint height)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(x,y);
+      uVar2 = Card_GetColorAndTypeFlags(x,y);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + y * 0x120 + x * 0x5b20),(char *)0x0,x,2
@@ -24938,7 +24938,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,4,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -24958,7 +24958,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -24989,7 +24989,7 @@ undefined4 Pic_Subsystem_0042dd1f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -25085,7 +25085,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -25105,7 +25105,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -25136,7 +25136,7 @@ undefined4 Pic_Subsystem_0042e2d9(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -25259,7 +25259,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -25279,7 +25279,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -25309,7 +25309,7 @@ undefined4 Pic_Subsystem_0042e8c0(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -25411,7 +25411,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,1 - spell_id,1 - spell_id,0x200,0x40,0,0,uVar1,arg_11
                          ,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -25431,7 +25431,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,1 - spell_id,1 - spell_id,0x200,0x40,0,0,uVar2,uVar3,uVar4,iVar5,
                          iVar6,uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -25463,7 +25463,7 @@ undefined4 Pic_Subsystem_0042ed9f(uint spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -25674,7 +25674,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,4,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -25694,7 +25694,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,4,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -25719,7 +25719,7 @@ undefined4 Pic_Subsystem_0042f87b(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -25969,7 +25969,7 @@ uint Pic_Subsystem_00430252(int value,int min_val,int max_val)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar1 = Card_GetColorAndTypeFlags(value,min_val);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20),
@@ -26068,7 +26068,7 @@ undefined4 Pic_Subsystem_0043070c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar2,arg_11,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -26108,7 +26108,7 @@ undefined4 Pic_Subsystem_0043070c(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -26294,7 +26294,7 @@ undefined4 Pic_Subsystem_00430f0a(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -26325,7 +26325,7 @@ undefined4 Pic_Subsystem_00430f0a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -26559,7 +26559,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -26598,7 +26598,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -26712,7 +26712,7 @@ undefined4 Pic_Subsystem_00431ed3(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11_00,arg_12_00,
                          arg_13_00,arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -26757,7 +26757,7 @@ undefined4 Pic_Subsystem_00431ed3(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -26861,7 +26861,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -26881,7 +26881,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,
                          uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -26916,7 +26916,7 @@ undefined4 Pic_Subsystem_004325fe(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -27008,7 +27008,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -27028,7 +27028,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -27063,7 +27063,7 @@ undefined4 Pic_Subsystem_00432b12(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -27500,7 +27500,7 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -27526,7 +27526,7 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -27603,7 +27603,7 @@ undefined4 Pic_Subsystem_00433fb5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -27629,7 +27629,7 @@ undefined4 Pic_Subsystem_00433fb5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -27762,7 +27762,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -27790,7 +27790,7 @@ undefined4 Pic_Subsystem_004345a9(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -27894,7 +27894,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -27925,7 +27925,7 @@ undefined4 Pic_Subsystem_00434b1f(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -28002,7 +28002,7 @@ undefined4 Pic_Subsystem_00434f32(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -28028,7 +28028,7 @@ undefined4 Pic_Subsystem_00434f32(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -28117,7 +28117,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -28152,7 +28152,7 @@ undefined4 Pic_Subsystem_004353b3(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -28280,7 +28280,7 @@ undefined4 Pic_Subsystem_00435abf(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -28310,7 +28310,7 @@ undefined4 Pic_Subsystem_00435abf(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -28510,7 +28510,7 @@ undefined4 Pic_Subsystem_00436500(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -28539,7 +28539,7 @@ undefined4 Pic_Subsystem_00436500(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -28745,7 +28745,7 @@ undefined4 Pic_Subsystem_00436f60(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -28775,7 +28775,7 @@ undefined4 Pic_Subsystem_00436f60(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -29001,7 +29001,7 @@ undefined4 Pic_Subsystem_00437ac2(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -29027,7 +29027,7 @@ undefined4 Pic_Subsystem_00437ac2(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -29103,7 +29103,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -29129,7 +29129,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -29203,7 +29203,7 @@ undefined4 Pic_Subsystem_0043812a(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -29227,7 +29227,7 @@ undefined4 Pic_Subsystem_0043812a(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -29496,7 +29496,7 @@ undefined4 Pic_Subsystem_00438ced(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -29556,7 +29556,7 @@ undefined4 Pic_Subsystem_00438ced(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -29910,7 +29910,7 @@ undefined4 Pic_Subsystem_00439e06(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -29939,7 +29939,7 @@ undefined4 Pic_Subsystem_00439e06(int spell_id,int target_id,int flags)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -30031,7 +30031,7 @@ undefined4 Pic_Subsystem_0043a32c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -30076,7 +30076,7 @@ undefined4 Pic_Subsystem_0043a32c(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -30245,7 +30245,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         arg_13 = 0xffffffff;
         arg_12 = 0;
         uVar1 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3 | 0x20,uVar1,arg_12,arg_13,
                              arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
         if (iVar2 != 0) {
@@ -30269,7 +30269,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3 | 0x20,uVar4,uVar5,iVar2,iVar6,
                            uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -30293,7 +30293,7 @@ undefined4 Pic_Subsystem_0043ac68(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -30610,7 +30610,7 @@ void Pic_Subsystem_0043b7c9(int x,int y,int width,uint height)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    arg_10 = SpellChain_ProcessTriggerEvent(x,y);
+    arg_10 = Card_GetColorAndTypeFlags(x,y);
     UI_PaintBigCardInfo((int *)0x0,0,x,2,2,0x200,2,0,0,arg_10,arg_11_00,arg_12_00,arg_13_00,arg_14,
                  arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -30634,7 +30634,7 @@ void Pic_Subsystem_0043b7c9(int x,int y,int width,uint height)
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(x,y);
+      arg_11 = Card_GetColorAndTypeFlags(x,y);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + y * 0x120 + x * 0x5b20),(char *)0x0,x,2
@@ -30778,7 +30778,7 @@ undefined4 Pic_Subsystem_0043bcba(int value,int min_val,int max_val,int target_s
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar1 = Card_GetColorAndTypeFlags(value,min_val);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,value,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -30792,7 +30792,7 @@ undefined4 Pic_Subsystem_0043bcba(int value,int min_val,int max_val,int target_s
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar1 = Card_GetColorAndTypeFlags(value,min_val);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,value,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -30806,7 +30806,7 @@ undefined4 Pic_Subsystem_0043bcba(int value,int min_val,int max_val,int target_s
       uVar5 = 0xffffffff;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+      uVar1 = Card_GetColorAndTypeFlags(value,min_val);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,value,2,2,0x200,2,0,0,uVar1,uVar3,uVar4,uVar5,uVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11);
     }
@@ -30837,7 +30837,7 @@ undefined4 Pic_Subsystem_0043bcba(int value,int min_val,int max_val,int target_s
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(value,min_val);
+      arg_11 = Card_GetColorAndTypeFlags(value,min_val);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20),
@@ -30998,7 +30998,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -31036,7 +31036,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -31137,7 +31137,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -31165,7 +31165,7 @@ undefined4 Pic_Subsystem_0043c8f5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -31345,7 +31345,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -31366,7 +31366,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
         iVar6 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar6 = Action_ValidateTarget_00405802
                           (spell_id,2,2,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,uVar9,
                            uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -31410,7 +31410,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar6 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -31573,7 +31573,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -31593,7 +31593,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -31626,7 +31626,7 @@ undefined4 Pic_Subsystem_0043da0f(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -31780,7 +31780,7 @@ undefined4 Pic_Subsystem_0043e0f6(int value,int min_val,int max_val)
                ((((&g_MasterCardColorTable)
                   [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + local_290 * 0x5b20) * 0x34] &
                  0x43) != 0 &&
-                (iVar4 = local_8 * 0x120, uVar2 = SpellChain_ProcessTriggerEvent(value,min_val),
+                (iVar4 = local_8 * 0x120, uVar2 = Card_GetColorAndTypeFlags(value,min_val),
                 (*(uint *)(&g_CardSlot_Abilities2 + iVar4 + local_290 * 0x5b20) & uVar2) == 0)))) {
               aiStack_288[local_294 + local_290 * 0x50] = local_8;
               local_294 = local_294 + 1;
@@ -31996,7 +31996,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32026,7 +32026,7 @@ undefined4 Pic_Subsystem_0043ebbf(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -32130,7 +32130,7 @@ undefined4 Pic_Subsystem_0043f19e(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32160,7 +32160,7 @@ undefined4 Pic_Subsystem_0043f19e(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -32237,7 +32237,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32263,7 +32263,7 @@ undefined4 Pic_Subsystem_0043f51d(int spell_id,int target_id,int flags)
       iVar4 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar4 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -32657,7 +32657,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32710,7 +32710,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -32850,7 +32850,7 @@ undefined4 Pic_Subsystem_00440db5(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32878,7 +32878,7 @@ undefined4 Pic_Subsystem_00440db5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -32955,7 +32955,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -32990,7 +32990,7 @@ undefined4 Pic_Subsystem_00441167(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -33549,7 +33549,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
         if (DAT_0068a718 != 0) {
           local_2ec = (uint)(((uint)max_val & 0xffff) != 0x269);
           Magic_ExecuteDrawPhase(local_2ec);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26b:
@@ -33567,7 +33567,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
           }
           *(undefined4 *)(&DAT_00696740 + g_ScWillyScore * 4 + g_TurnPlayer * 0x98) = local_2f8
           ;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26d:
@@ -33576,7 +33576,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
           local_2ec = (uint)(((uint)max_val & 0xffff) != 0x26d);
           local_2f0 = Palette_Subsystem_004a62a0(s_Pick_a_card_to_put_into_hand_00521a80,-1,-1);
           local_2f4 = Pic_Subsystem_00451291(local_2ec,local_2f0);
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x26f:
@@ -33587,7 +33587,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
                             (0,s_Set_player_lives_to__00521aa0 + ((local_2ec == 0) - 1 & 0x18),
                              (&g_PlayerCreatureCount)[local_2ec]);
           (&g_PlayerCreatureCount)[local_2ec] = uVar1;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
         break;
       case 0x271:
@@ -33658,7 +33658,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
         break;
       case 0x27a:
         DAT_006fe43c = (uint)(DAT_006fe43c == 0);
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
         break;
       case 0x27b:
         _DAT_006a2864 = g_MainAppHwnd;
@@ -33961,7 +33961,7 @@ uint Pic_Load_004420a1(HWND hwnd,uint y,void *max_val,int *height)
   }
   else {
     if (y == 0x464) {
-      Ai_EvalAttackCandidate_004b4a3f(0,(uint)max_val);
+      Duel_RefreshAllWindows(0,(uint)max_val);
       return 0;
     }
     if (y == 0x501) {
@@ -40536,7 +40536,7 @@ undefined4 Mana_Init_00453fdb(int spell_id,int target_id,int flags)
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (iVar1,color_mask,(char *)0x0,spell_id,2,2,0x200,1,0,0,arg_11,arg_12,arg_13,
                          iVar2,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -40844,7 +40844,7 @@ undefined4 Mana_Init_004549ea(int spell_id,int target_id,int flags)
           iVar3 = Pic_Subsystem_0045268f(0x38e);
           uVar7 = 0;
           uVar6 = 0;
-          uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar3 = Rules_ParseFilter_0040360b
                             (local_14,local_10,(char *)0x0,spell_id,2,2,0x200,0,0,0,uVar5,uVar6,
                              uVar7,iVar3,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -40928,7 +40928,7 @@ undefined4 Mana_Init_004549ea(int spell_id,int target_id,int flags)
     uVar4 = Pic_Subsystem_0045268f(0x38e);
     arg_12 = 0;
     arg_11 = 0;
-    arg_10 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    arg_10 = Card_GetColorAndTypeFlags(spell_id,target_id);
     iVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,arg_10,arg_11,arg_12,uVar4,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar3 != 0) {
@@ -40980,7 +40980,7 @@ LAB_00454d93:
     iVar3 = Pic_Subsystem_0045268f(0x38e);
     uVar7 = 0;
     uVar6 = 0;
-    uVar5 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
     iVar3 = Action_ValidateTarget_00405802
                       (spell_id,2,spell_id,0x200,0,0,0,uVar5,uVar6,uVar7,iVar3,iVar8,uVar9,uVar10,
                        uVar11,uVar12,uVar13,arg_18,uVar4,arg_20);
@@ -41137,7 +41137,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
           iVar2 = Pic_Subsystem_0045268f(0x38e);
           uVar5 = 0;
           uVar4 = 0;
-          uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar2 = Rules_ParseFilter_0040360b
                             (local_14,local_10,(char *)0x0,spell_id,2,2,0x200,0,0,0,uVar3,uVar4,
                              uVar5,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -41202,7 +41202,7 @@ undefined4 Mana_Init_004555c8(int spell_id,int target_id,int flags)
     uVar1 = Pic_Subsystem_0045268f(0x38e);
     arg_12 = 0;
     arg_11 = 0;
-    arg_10 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    arg_10 = Card_GetColorAndTypeFlags(spell_id,target_id);
     iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0,0,0,arg_10,arg_11,arg_12,uVar1,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar2 != 0) {
@@ -41254,7 +41254,7 @@ LAB_004559f9:
     iVar2 = Pic_Subsystem_0045268f(0x38e);
     uVar5 = 0;
     uVar4 = 0;
-    uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
     iVar2 = Action_ValidateTarget_00405802
                       (spell_id,2,spell_id,0x200,0,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,uVar8,
                        uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -41489,7 +41489,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
             iVar5 = -1;
             uVar7 = 0;
             uVar4 = 0;
-            uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+            uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
             iVar5 = Action_ValidateTarget_00405802
                               (spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,uVar4,uVar7,iVar5,iVar6,
                                uVar8,uVar9,uVar10,uVar11,arg_17,arg_18,uVar3,arg_20);
@@ -41531,7 +41531,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,1,1,1,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6
                          ,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -41544,7 +41544,7 @@ undefined4 Minit_Subsystem_0045672f(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar6 = Rules_ParseFilter_0040360b
                         (local_14[0],local_14[1],(char *)0x0,0,0,0,0x200,2,0,0,uVar2,uVar3,uVar4,
                          iVar6,arg_15,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -43472,7 +43472,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -43506,7 +43506,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -43536,7 +43536,7 @@ undefined4 Minit_Subsystem_0045bd50(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,(byte)spell_id,(byte)spell_id,0x200,2
                          ,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -43659,7 +43659,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -43688,7 +43688,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -43718,7 +43718,7 @@ undefined4 Minit_Subsystem_0045c59a(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -43861,7 +43861,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
     uVar10 = 0xffffffff;
     uVar8 = 0;
     uVar6 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     UI_PaintBigCardInfo((int *)(-(uint)(DAT_0063ee88 == 0) & 0x6b2d68),0,spell_id,2,2,0x200,1,0,0,uVar1,
                  uVar6,uVar8,uVar10,uVar12,uVar14,uVar16,uVar18,uVar19,uVar20);
     if (((((&DAT_006a5f3e)[target_id * 0x120 + spell_id * 0x5b20] & 3) == 0) ||
@@ -43895,7 +43895,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
       uVar12 = 0xffffffff;
       uVar10 = 0;
       uVar8 = 0;
-      uVar6 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar6 = Card_GetColorAndTypeFlags(spell_id,target_id);
       UI_PaintBigCardInfo(&g_OverworldPlayerCoordY,0,spell_id,2,2,0x200,1,0,0,uVar6,uVar8,uVar10,uVar12,
                    uVar14,uVar16,uVar18,uVar19,uVar20,arg_19);
       DAT_006b2d40 = 0xffffffff;
@@ -43920,7 +43920,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar5 = Action_ValidateTarget_00405802
                             (spell_id,2,spell_id,0x200,1,0,0,uVar2,uVar3,uVar4,iVar5,iVar7,uVar9,
                              uVar11,uVar13,uVar15,uVar17,arg_18,uVar1,arg_20);
@@ -43991,7 +43991,7 @@ undefined4 Minit_Subsystem_0045d1f0(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar5 = Rules_ParseFilter_0040360b
                           (local_14,local_10,(char *)0x0,spell_id,2,2,0x200,1,0,0,uVar2,uVar3,uVar4,
                            iVar5,iVar7,uVar9,uVar11,uVar13,uVar15,uVar17);
@@ -45128,7 +45128,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -45158,7 +45158,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -45188,7 +45188,7 @@ undefined4 Minit_Subsystem_004605e4(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,(byte)spell_id,(byte)spell_id,0x200,2,
                          0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -45526,7 +45526,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -45555,7 +45555,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -45585,7 +45585,7 @@ undefined4 Minit_Subsystem_004617ad(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -45913,7 +45913,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0x20,uVar1,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -45940,7 +45940,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0x20,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -45970,7 +45970,7 @@ undefined4 Minit_Subsystem_00462a0a(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0x20,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -46087,7 +46087,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,1 - spell_id,1 - spell_id,0x200,0,0,0,uVar2,arg_11,
                            arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -46114,7 +46114,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,1 - spell_id,1 - spell_id,0x200,0x7f,0,0,uVar3,uVar4,uVar5,iVar1,
                          iVar6,uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -46141,7 +46141,7 @@ undefined4 Minit_Subsystem_00462f7e(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,1 - (char)spell_id,1 - (char)spell_id,
                          0x200,0x7f,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,
@@ -46812,7 +46812,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -46841,7 +46841,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -46866,7 +46866,7 @@ undefined4 Minit_Subsystem_00465165(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -47044,7 +47044,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -47071,7 +47071,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -47101,7 +47101,7 @@ undefined4 Minit_Subsystem_00465a75(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -47170,7 +47170,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -47199,7 +47199,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -47227,7 +47227,7 @@ undefined4 Minit_Subsystem_00465e9c(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -47346,7 +47346,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -47375,7 +47375,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -47405,7 +47405,7 @@ undefined4 Minit_Subsystem_00466541(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -48259,7 +48259,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,LONG *wParam,int *lParam)
             iVar5 = abs((int)(char)(&DAT_0051aec0)[local_40c * 0x34]);
             FUN_0040d875(local_c,0,iVar5);
             Ai_Subsystem_004b584e();
-            Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+            Duel_RefreshAllWindows(0,0xff);
           }
         }
         else {
@@ -48547,7 +48547,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,LONG *wParam,int *lParam)
         if (DAT_0068a718 != 0) {
           *(uint *)(&g_CardSlot_Flags + local_c * 0x5b20 + local_10 * 0x120) =
                *(uint *)(&g_CardSlot_Flags + local_c * 0x5b20 + local_10 * 0x120) ^ 0x10;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if (uVar6 == 0x264) {
@@ -48561,13 +48561,13 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint uMsg,LONG *wParam,int *lParam)
           Pic_Subsystem_0044867e(local_c,local_10,2);
           *(undefined4 *)(&DAT_00696740 + g_ScWillyScore * 4 + g_TurnPlayer * 0x98) = local_80c
           ;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if ((uVar6 == 0x266) && (DAT_0068a718 != 0)) {
         *(int *)(&DAT_006a5f7c + local_c * 0x5b20 + local_10 * 0x120) =
              *(int *)(&DAT_006a5f7c + local_c * 0x5b20 + local_10 * 0x120) + 1;
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
       }
       return 0;
     }
@@ -72909,7 +72909,7 @@ int Palette_Subsystem_004a6d20(int value,int min_val,int max_val)
         if (((&g_MasterCardColorTable)
              [*(int *)(&g_CardSlot_CardId + local_14 * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
         {
-          uVar2 = SpellChain_ProcessTriggerEvent(value,min_val);
+          uVar2 = Card_GetColorAndTypeFlags(value,min_val);
           if ((*(uint *)(&g_CardSlot_Abilities2 + local_14 * 0x120 + local_8 * 0x5b20) & uVar2) == 0
              ) {
             local_10 = 1;
@@ -73138,7 +73138,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      arg_10 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_10 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,arg_10,arg_11,arg_12,arg_13,uVar1,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -73176,7 +73176,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar2,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -73209,7 +73209,7 @@ undefined4 Palette_Subsystem_004a6fef(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20),
@@ -73409,7 +73409,7 @@ int Palette_Subsystem_004a7bcd(int value,int min_val,int max_val)
           (((&g_CardSlot_Flags)[local_8 * 0x5b20 + local_10 * 0x120] & 2) != 0)) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34] & 2) != 0)) {
-        uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+        uVar1 = Card_GetColorAndTypeFlags(value,min_val);
         if ((*(uint *)(&g_CardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0)
         {
           *(int *)(max_val + local_c * 8) = local_8;
@@ -73441,7 +73441,7 @@ int Palette_Subsystem_004a7d05(int x,int y)
           (((&g_CardSlot_Flags)[local_10 * 0x120 + local_8 * 0x5b20] & 2) != 0)) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)) {
-        uVar1 = SpellChain_ProcessTriggerEvent(x,y);
+        uVar1 = Card_GetColorAndTypeFlags(x,y);
         if ((*(uint *)(&g_CardSlot_Abilities2 + local_10 * 0x120 + local_8 * 0x5b20) & uVar1) == 0)
         {
           local_c = 1;
@@ -73553,7 +73553,7 @@ undefined4 Palette_Subsystem_004a8111(int value,int min_val,int max_val)
   iVar4 = -1;
   arg_13 = 0;
   arg_12 = 0;
-  arg_11 = SpellChain_ProcessTriggerEvent(value,min_val);
+  arg_11 = Card_GetColorAndTypeFlags(value,min_val);
   iVar4 = Rules_ParseFilter_0040360b
                     (*(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20),
                      *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20),(char *)0x0
@@ -73835,7 +73835,7 @@ int Palette_Subsystem_004a8fd8(int value,int min_val,int width,uint height)
          ((height & (byte)(&g_MasterCardColorTable)
                           [*(int *)(&g_CardSlot_CardId + local_8 * 0x5b20 + local_10 * 0x120) * 0x34
                           ]) != 0)) {
-        uVar1 = SpellChain_ProcessTriggerEvent(value,min_val);
+        uVar1 = Card_GetColorAndTypeFlags(value,min_val);
         if ((*(uint *)(&g_CardSlot_Abilities2 + local_8 * 0x5b20 + local_10 * 0x120) & uVar1) == 0)
         {
           *(int *)(width + local_c * 8) = local_8;
@@ -78727,7 +78727,7 @@ uint Ai_Subsystem_004b42dc(void)
 
 
 
-void Ai_EvalAttackCandidate_004b4a3f(undefined4 x,uint y)
+void Duel_RefreshAllWindows(undefined4 x,uint y)
 
 {
   HBRUSH pHVar1;
@@ -87686,7 +87686,7 @@ int Ai_Subsystem_004cae47(int x,int y)
   if (((&DAT_0051aed0)[iVar1 * 0x34] & 3) != 0) {
     local_8 = local_8 / 2;
   }
-  if (*(code **)(&DAT_0051aec8 + iVar1 * 0x34) != SpellChain_GetActiveCount) {
+  if (*(code **)(&DAT_0051aec8 + iVar1 * 0x34) != Card_DefaultEventHandler) {
     local_8 = (local_8 * 3) / 2;
   }
   if ((*(uint *)(&DAT_0051aecc + iVar1 * 0x34) & 0x1c0) != 0) {
@@ -89351,7 +89351,7 @@ LAB_004cf521:
           puVar10 = puVar10 + 1;
         }
         uStackY_c8 = 0x4ce06d;
-        local_15d0 = SpellChain_GetCardCount(hwnd);
+        local_15d0 = SpellChain_FindEntryIndex(hwnd);
         if (local_15d0 == local_15c8) {
           puVar9 = local_15c0 + local_15d0 * 0x2b;
           puVar10 = (undefined4 *)&stack0xffffff44;
@@ -89368,9 +89368,9 @@ LAB_004cf521:
             puVar10 = puVar10 + 1;
           }
           uStackY_118 = 0x4ce0db;
-          iVar11 = SpellChain_HasActiveSpells();
+          iVar11 = SpellChain_EntryTargetsMatch();
           if (iVar11 == 0) {
-            SpellChain_RemoveCardSlot(hwnd,local_15d0);
+            SpellChain_ClearEntryTargets(hwnd,local_15d0);
             puVar9 = local_15c0 + local_15d0 * 0x2b;
             puVar10 = (undefined4 *)&stack0xffffff40;
             for (iVar11 = 0x2b; iVar11 != 0; iVar11 = iVar11 + -1) {
@@ -89379,7 +89379,7 @@ LAB_004cf521:
               puVar10 = puVar10 + 1;
             }
             uStackY_c8 = 0x4ce135;
-            SpellChain_CreateTargetSlot(hwnd);
+            SpellChain_RebuildEntryTargets(hwnd);
             local_15c4 = 1;
           }
         }
@@ -89392,19 +89392,19 @@ LAB_004cf521:
             puVar10 = puVar10 + 1;
           }
           uStackY_c8 = 0x4ce190;
-          SpellChain_CreateCardSlot(hwnd,in_stack_ffffff40,in_stack_ffffff44);
+          SpellChain_InsertEntry(hwnd,in_stack_ffffff40,in_stack_ffffff44);
           local_15c4 = 1;
         }
         else if (local_15c8 < local_15d0) {
           for (local_15cc = local_15c8; local_15cc < local_15d0; local_15cc = local_15cc + 1) {
-            SpellChain_UpdateTargetPositions(hwnd,local_15cc);
+            SpellChain_RemoveEntry(hwnd,local_15cc);
           }
           local_15c4 = 1;
         }
       }
       LVar2 = GetWindowLongA(hwnd,4);
       for (local_15cc = local_15c8; local_15cc < LVar2; local_15cc = local_15cc + 1) {
-        SpellChain_UpdateTargetPositions(hwnd,local_15cc);
+        SpellChain_RemoveEntry(hwnd,local_15cc);
         local_15c4 = 1;
       }
       if (local_15c4 != 0) {
@@ -89506,7 +89506,7 @@ LAB_004cf521:
 
 
 
-int SpellChain_GetCardCount(HWND hwnd)
+int SpellChain_FindEntryIndex(HWND hwnd)
 
 {
   LONG LVar1;
@@ -89537,7 +89537,7 @@ int SpellChain_GetCardCount(HWND hwnd)
 
 
 
-void SpellChain_UpdateTargetPositions(HWND hwnd,int y)
+void SpellChain_RemoveEntry(HWND hwnd,int y)
 
 {
   LONG LVar1;
@@ -89564,7 +89564,7 @@ void SpellChain_UpdateTargetPositions(HWND hwnd,int y)
 
 
 
-bool SpellChain_HasActiveSpells(void)
+bool SpellChain_EntryTargetsMatch(void)
 
 {
   int iVar1;
@@ -89586,7 +89586,7 @@ bool SpellChain_HasActiveSpells(void)
 
 
 
-int SpellChain_CreateCardSlot(HWND hwnd,undefined4 min_val,undefined4 max_val)
+int SpellChain_InsertEntry(HWND hwnd,undefined4 min_val,undefined4 max_val)
 
 {
   LONG LVar1;
@@ -89662,7 +89662,7 @@ int SpellChain_CreateCardSlot(HWND hwnd,undefined4 min_val,undefined4 max_val)
 
 
 
-void SpellChain_RemoveCardSlot(HWND hwnd,int y)
+void SpellChain_ClearEntryTargets(HWND hwnd,int y)
 
 {
   LONG LVar1;
@@ -89683,7 +89683,7 @@ void SpellChain_RemoveCardSlot(HWND hwnd,int y)
 
 
 
-int SpellChain_CreateTargetSlot(HWND hwnd)
+int SpellChain_RebuildEntryTargets(HWND hwnd)
 
 {
   LONG LVar1;
@@ -89909,7 +89909,7 @@ void SpellChain_UpdateLayout(HWND hwnd,LPRECT y)
 
 
 
-void SpellChain_SetWindowRect(undefined4 x,LPRECT y)
+void SpellChain_GetContentRect(undefined4 x,LPRECT y)
 
 {
   CopyRect(y,(RECT *)&DAT_00565968);
@@ -90003,7 +90003,7 @@ LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint uMsg,HDC wParam,uint lParam)
 
 
 
-BOOL SpellChain_IsVisible(void)
+BOOL SpellChain_MinimizeIfShown(void)
 
 {
   BOOL BVar1;
@@ -90021,7 +90021,7 @@ BOOL SpellChain_IsVisible(void)
 
 
 
-bool SpellChain_IsMinimized(void)
+bool SpellChain_RestoreIfMinimized(void)
 
 {
   BOOL BVar1;
@@ -90036,7 +90036,7 @@ bool SpellChain_IsMinimized(void)
 
 
 
-undefined4 SpellChain_GetActiveCount(void)
+undefined4 Card_DefaultEventHandler(void)
 
 {
   return 0;
@@ -90044,7 +90044,7 @@ undefined4 SpellChain_GetActiveCount(void)
 
 
 
-uint SpellChain_ProcessTriggerEvent(int x,int y)
+uint Card_GetColorAndTypeFlags(int x,int y)
 
 {
   char cVar1;
@@ -90631,7 +90631,7 @@ undefined4 Card_XenicPoltergeist_AnimateArtifact(int spell_id,int target_id,int 
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,2,0,uVar1,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -90657,7 +90657,7 @@ undefined4 Card_XenicPoltergeist_AnimateArtifact(int spell_id,int target_id,int 
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,0x40,2,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -90684,7 +90684,7 @@ undefined4 Card_XenicPoltergeist_AnimateArtifact(int spell_id,int target_id,int 
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_14,local_10,(char *)0x0,spell_id,2,2,0x200,0x40,2,0,uVar3,uVar4,uVar5
                          ,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -92244,7 +92244,7 @@ undefined4 Card_GaeasLiege_TransformLand(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -92270,7 +92270,7 @@ undefined4 Card_GaeasLiege_TransformLand(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,1,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -92297,7 +92297,7 @@ undefined4 Card_GaeasLiege_TransformLand(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,1,0,0,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -93243,7 +93243,7 @@ undefined4 Card_TimeElemental_BouncePermanent(int spell_id,int target_id,int fla
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar2,arg_11,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -93271,7 +93271,7 @@ undefined4 Card_TimeElemental_BouncePermanent(int spell_id,int target_id,int fla
         iVar1 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar1 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,
                            uVar8,uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -93299,7 +93299,7 @@ undefined4 Card_TimeElemental_BouncePermanent(int spell_id,int target_id,int fla
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar3,uVar5,uVar6
                          ,iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -93389,7 +93389,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       arg_12 = 0;
       bVar1 = Card_SetTapState(spell_id,target_id,1);
       iVar2 = 1 << (bVar1 & 0x1f);
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar2,arg_12,arg_13,
                            arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -93416,7 +93416,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       uVar7 = 0;
       bVar1 = Card_SetTapState(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7,iVar2,iVar8,uVar9,uVar10,
                          uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -93444,7 +93444,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       uVar7 = 0;
       bVar1 = Card_SetTapState(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar4,uVar5,uVar7
                          ,iVar2,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -93503,7 +93503,7 @@ undefined4 Card_RoyalAssassin_DestroyTapped(int spell_id,int target_id,int flags
       iVar1 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (card_id,color_mask,(char *)0x0,spell_id,2,2,0x200,2,0,0,arg_11,arg_12,
                          arg_13,iVar1,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -93656,7 +93656,7 @@ undefined4 Card_Targeting_PromptCreature(int x,int y,int width,uint height)
       arg_13_00 = 0xffffffff;
       arg_12_00 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(x,y);
+      uVar1 = Card_GetColorAndTypeFlags(x,y);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,x,2,2,0x200,2,0,0,uVar1,arg_11,arg_12_00,arg_13_00,arg_14_00
                            ,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19);
     }
@@ -93675,7 +93675,7 @@ undefined4 Card_Targeting_PromptCreature(int x,int y,int width,uint height)
       iVar2 = -1;
       arg_10 = 0;
       arg_9 = 0;
-      arg_8 = SpellChain_ProcessTriggerEvent(x,y);
+      arg_8 = Card_GetColorAndTypeFlags(x,y);
       iVar2 = Action_ValidateTarget_00405802
                         (x,2,height,0x200,2,0,0,arg_8,arg_9,arg_10,iVar2,arg_12,arg_13,arg_14,arg_15
                          ,arg_16,arg_17,arg_18,uVar1,arg_20);
@@ -93931,7 +93931,7 @@ undefined4 Card_SorceressQueen_SetStats02(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -93959,7 +93959,7 @@ undefined4 Card_SorceressQueen_SetStats02(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -93988,7 +93988,7 @@ undefined4 Card_SorceressQueen_SetStats02(int spell_id,int target_id,int flags)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_14,local_10,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -94130,7 +94130,7 @@ undefined4 Card_StoneGiant_Fling(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                            arg_13,arg_14,uVar1,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -94156,7 +94156,7 @@ undefined4 Card_StoneGiant_Fling(int spell_id,int target_id,int flags)
       iVar3 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Action_ValidateTarget_00405802
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,
                          uVar1,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -94184,7 +94184,7 @@ undefined4 Card_StoneGiant_Fling(int spell_id,int target_id,int flags)
       iVar3 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,(byte)spell_id,(byte)spell_id,0x200,2
                          ,0,0,uVar4,uVar5,uVar6,iVar3,iVar7,uVar8,uVar1,uVar9,uVar10,uVar11);
@@ -94250,7 +94250,7 @@ undefined4 Card_DwarvenWarriors_MakeUnblockable(int spell_id,int target_id,int f
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -94275,7 +94275,7 @@ undefined4 Card_DwarvenWarriors_MakeUnblockable(int spell_id,int target_id,int f
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -94302,7 +94302,7 @@ undefined4 Card_DwarvenWarriors_MakeUnblockable(int spell_id,int target_id,int f
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar5 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar2,uVar3,uVar4,
                          iVar5,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -94373,7 +94373,7 @@ undefined4 Card_CavePeople_Mountainwalk(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar3,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -94410,7 +94410,7 @@ undefined4 Card_CavePeople_Mountainwalk(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar7 = 0;
         uVar6 = 0;
-        uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = Action_ValidateTarget_00405802
                           (spell_id,2,spell_id,0x200,2,0,0,uVar4,uVar6,uVar7,iVar2,iVar8,uVar9,
                            uVar10,uVar11,uVar12,uVar13,arg_18,uVar3,arg_20);
@@ -94438,7 +94438,7 @@ undefined4 Card_CavePeople_Mountainwalk(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar7 = 0;
       uVar6 = 0;
-      uVar4 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar4,uVar6,uVar7,
                          iVar2,iVar8,uVar9,uVar10,uVar11,uVar12,uVar13);
@@ -94514,7 +94514,7 @@ undefined4 Card_PradeshGypsies_PreventAttack(int spell_id,int target_id,int flag
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -94542,7 +94542,7 @@ undefined4 Card_PradeshGypsies_PreventAttack(int spell_id,int target_id,int flag
         iVar1 = -1;
         uVar6 = 0;
         uVar5 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar1 = Action_ValidateTarget_00405802
                           (spell_id,2,spell_id,0x200,2,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,uVar8,uVar9
                            ,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -94570,7 +94570,7 @@ undefined4 Card_PradeshGypsies_PreventAttack(int spell_id,int target_id,int flag
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar5,uVar6,
                          iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -95412,7 +95412,7 @@ undefined4 Card_CrimsonManticore_DamageTarget(int spell_id,int target_id,int fla
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
     }
@@ -95438,7 +95438,7 @@ undefined4 Card_CrimsonManticore_DamageTarget(int spell_id,int target_id,int fla
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar5,uVar6,iVar1,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -95465,7 +95465,7 @@ undefined4 Card_CrimsonManticore_DamageTarget(int spell_id,int target_id,int fla
       iVar1 = -1;
       uVar6 = 0;
       uVar5 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar5,uVar6,
                          iVar1,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -95581,7 +95581,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int x,int y)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(x,y);
+      uVar1 = Card_GetColorAndTypeFlags(x,y);
       iVar5 = Action_ValidateTarget_00405802
                         (x,2,1 - x,0x1200,2,0,0,uVar1,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,puVar12,uVar13,piVar14);
@@ -95618,7 +95618,7 @@ bool Card_DirectDamage_EvaluateBestTarget(int x,int y)
       iVar5 = -1;
       uVar4 = 0;
       uVar3 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(x,y);
+      uVar1 = Card_GetColorAndTypeFlags(x,y);
       Action_ValidateTarget_00405802
                 (x,2,1 - x,0x1200,2,0,0,uVar1,uVar3,uVar4,iVar5,iVar6,uVar7,uVar8,uVar9,uVar10
                  ,uVar11,puVar12,uVar13,piVar14);
@@ -95692,7 +95692,7 @@ undefined4 Card_DirectDamage_PromptAndDealDamage(int x,int y,int width,int heigh
       iVar2 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(x,y);
+      arg_11 = Card_GetColorAndTypeFlags(x,y);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + y * 0x120 + x * 0x5b20),
                          *(int *)(&g_CardSlot_AttachedAura + y * 0x120 + x * 0x5b20),(char *)0x0,x,2
@@ -97187,7 +97187,7 @@ undefined4 Card_AliBaba_TapWall(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar1 != 0) {
@@ -97214,7 +97214,7 @@ undefined4 Card_AliBaba_TapWall(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar2,arg_20);
@@ -97239,7 +97239,7 @@ undefined4 Card_AliBaba_TapWall(int spell_id,int target_id,int flags)
       iVar1 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar1 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar1,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -97299,7 +97299,7 @@ undefined4 Card_LeyDruid_UntapLand(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -97325,7 +97325,7 @@ undefined4 Card_LeyDruid_UntapLand(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,spell_id,0x200,1,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,uVar8,
                          uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -97352,7 +97352,7 @@ undefined4 Card_LeyDruid_UntapLand(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,1,0,0,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -97569,7 +97569,7 @@ undefined4 Card_Venom_DestroyCombatBlocker(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -97596,7 +97596,7 @@ undefined4 Card_Venom_DestroyCombatBlocker(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget + spell_id * 0x5b20 + target_id * 0x120),
                          *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120),
@@ -98016,7 +98016,7 @@ undefined4 Card_RadjanSpirit_RemoveFlying(int spell_id,int target_id,int flags)
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -98043,7 +98043,7 @@ undefined4 Card_RadjanSpirit_RemoveFlying(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -98070,7 +98070,7 @@ undefined4 Card_RadjanSpirit_RemoveFlying(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -98133,7 +98133,7 @@ undefined4 Card_HurrJackal_GrantCombatAbility(int spell_id,int target_id,int fla
       arg_13 = 0xffffffff;
       arg_12 = 0;
       arg_11 = 0;
-      uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,2,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                            arg_15,arg_16,arg_17,arg_18_00,arg_19);
       if (iVar2 != 0) {
@@ -98160,7 +98160,7 @@ undefined4 Card_HurrJackal_GrantCombatAbility(int spell_id,int target_id,int fla
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -98193,7 +98193,7 @@ undefined4 Card_HurrJackal_GrantCombatAbility(int spell_id,int target_id,int fla
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_10,local_c,(char *)0x0,spell_id,2,2,0x200,2,0,0,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -98372,7 +98372,7 @@ bool CardTarget_PromptTargetCreature(int value,uint min_val,int max_val)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(value,max_val);
+  arg_8 = Card_GetColorAndTypeFlags(value,max_val);
   iVar1 = Action_ValidateTarget_00405802
                     (value,2,min_val,0x200,2,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -98507,7 +98507,7 @@ bool CardTarget_PromptTargetPermanent(int value,uint min_val,int max_val)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(value,max_val);
+  arg_8 = Card_GetColorAndTypeFlags(value,max_val);
   iVar1 = Action_ValidateTarget_00405802
                     (value,2,min_val,0x200,1,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -98618,7 +98618,7 @@ bool CardTarget_PromptTargetPlayerOrCreature(int value,uint min_val,int max_val)
   iVar1 = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(value,max_val);
+  arg_8 = Card_GetColorAndTypeFlags(value,max_val);
   iVar1 = Action_ValidateTarget_00405802
                     (value,2,min_val,0x200,0x40,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -107320,7 +107320,7 @@ undefined4 Prompts_Load_004f8321(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,spell_id,spell_id,0x200,2,0,0,uVar2,arg_11,arg_12,
                          arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -107340,7 +107340,7 @@ undefined4 Prompts_Load_004f8321(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar6 = Action_ValidateTarget_00405802
                         (spell_id,spell_id,spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,
                          uVar9,uVar10,uVar11,uVar12,arg_18,uVar2,arg_20);
@@ -107365,7 +107365,7 @@ undefined4 Prompts_Load_004f8321(int spell_id,int target_id,int flags)
       iVar6 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar6 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,(byte)spell_id,(byte)spell_id,0x200,2,
                          0,0,uVar3,uVar4,uVar5,iVar6,iVar7,uVar8,uVar9,uVar10,uVar11,uVar12);
@@ -107529,7 +107529,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     arg_13 = 3;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     UI_PaintBigCardInfo((int *)(-(uint)(DAT_0063ee88 == 0) & 0x6b2d68),0,spell_id,2,2,0x200,0,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((spell_id == g_ActivePlayerPriority) &&
@@ -107578,7 +107578,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
       uVar5 = 0;
       uVar4 = 0;
       iVar2 = local_14;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,0,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -107644,7 +107644,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
       uVar5 = 0;
       uVar4 = 0;
       iVar2 = local_14;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget +
                                  local_18 * 8 + target_id * 0x120 + spell_id * 0x5b20),
@@ -107896,7 +107896,7 @@ undefined4 Prompts_Load_004f9737(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     UI_PaintBigCardInfo(&local_10,0,spell_id,2,2,0x200,2,0x40,0,uVar1,arg_11,arg_12,arg_13,arg_14,arg_15,
                  arg_16,arg_17,arg_18_00,arg_19);
     if (local_10 < 2) {
@@ -107925,7 +107925,7 @@ undefined4 Prompts_Load_004f9737(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar5 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,2,0x40,0,uVar2,uVar3,uVar4,iVar5,iVar6,
                            uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -107982,7 +107982,7 @@ undefined4 Prompts_Load_004f9737(int spell_id,int target_id,int flags)
         iVar5 = -1;
         uVar4 = 0;
         uVar3 = 0;
-        uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar5 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget +
                                    local_c * 8 + target_id * 0x120 + spell_id * 0x5b20),
@@ -108055,7 +108055,7 @@ undefined4 Prompts_Load_004f9bbd(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar1,arg_11,arg_12,arg_13,
                          arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
@@ -108078,7 +108078,7 @@ undefined4 Prompts_Load_004f9bbd(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,0x1047,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,
                          uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -108103,7 +108103,7 @@ undefined4 Prompts_Load_004f9bbd(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x1047,0,0,uVar3,uVar4,uVar5
                          ,iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -108163,7 +108163,7 @@ undefined4 Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     UI_PaintBigCardInfo((int *)(-(uint)(DAT_0063ee88 == 0) & 0x6b2d68),0,spell_id,2,2,0x200,2,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((g_ActivePlayerPriority == spell_id) &&
@@ -108195,7 +108195,7 @@ undefined4 Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = Action_ValidateTarget_00405802
                           (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                            uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -108258,7 +108258,7 @@ undefined4 Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
         iVar2 = -1;
         uVar5 = 0;
         uVar4 = 0;
-        uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+        uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar2 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget +
                                    target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
@@ -108406,7 +108406,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
           arg_13 = 0xffffffff;
           arg_12 = 0;
           arg_11 = 0;
-          uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
           UI_PaintBigCardInfo(&local_18,0,spell_id,2,2,0x200,2,0,0,uVar2,arg_11,arg_12,arg_13,arg_14,arg_15
                        ,arg_16,arg_17,arg_18,arg_19);
           local_18 = local_18 + 2;
@@ -108444,7 +108444,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
                 iVar1 = -1;
                 uVar5 = 0;
                 uVar4 = 0;
-                uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+                uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
                 iVar1 = Action_ValidateTarget_00405802
                                   (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar3,uVar4,uVar5,iVar1,
                                    iVar10,uVar6,uVar7,uVar9,uVar11,uVar13,puVar8,uVar2,piVar12);
@@ -108515,7 +108515,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
             iVar1 = -1;
             uVar5 = 0;
             uVar4 = 0;
-            uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+            uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
             iVar1 = Action_ValidateTarget_00405802
                               (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar3,uVar4,uVar5,iVar1,iVar10,
                                uVar6,uVar7,uVar9,uVar11,uVar13,puVar8,uVar2,piVar12);
@@ -108616,7 +108616,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
           iVar1 = -1;
           uVar5 = 0;
           uVar4 = 0;
-          uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar1 = Rules_ParseFilter_0040360b
                             (*(int *)(&g_CardSlot_CombatTarget +
                                      target_id * 0x120 + spell_id * 0x5b20 + local_20 * 8),
@@ -108702,7 +108702,7 @@ undefined4 Prompts_Load_004fb1e4(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     iVar2 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x40,0,0,uVar1,arg_11,arg_12,arg_13,arg_14,
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if (iVar2 == 0) {
@@ -108732,7 +108732,7 @@ undefined4 Prompts_Load_004fb1e4(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,0x40,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -108759,7 +108759,7 @@ undefined4 Prompts_Load_004fb1e4(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (local_c,local_8,(char *)0x0,spell_id,2,2,0x200,0x40,0,0,uVar3,uVar4,uVar5,
                          iVar2,iVar6,uVar7,uVar8,uVar9,uVar10,uVar11);
@@ -108870,7 +108870,7 @@ undefined4 Prompts_Load_004fb6b5(int spell_id,int target_id,int flags)
     arg_13 = 0xffffffff;
     arg_12 = 0;
     arg_11 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     UI_PaintBigCardInfo((int *)(-(uint)(DAT_0063ee88 == 0) & 0x6b2d68),0,spell_id,2,2,0x200,2,0,0,uVar1,
                  arg_11,arg_12,arg_13,arg_14,arg_15,arg_16,arg_17,arg_18_00,arg_19);
     if ((spell_id == g_ActivePlayerPriority) &&
@@ -108903,7 +108903,7 @@ undefined4 Prompts_Load_004fb6b5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Action_ValidateTarget_00405802
                         (spell_id,2,1 - spell_id,0x200,2,0,0,uVar3,uVar4,uVar5,iVar2,iVar6,uVar7,
                          uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -108966,7 +108966,7 @@ undefined4 Prompts_Load_004fb6b5(int spell_id,int target_id,int flags)
       iVar2 = -1;
       uVar5 = 0;
       uVar4 = 0;
-      uVar3 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
                         (*(int *)(&g_CardSlot_CombatTarget +
                                  local_c * 8 + target_id * 0x120 + spell_id * 0x5b20),
@@ -109953,7 +109953,7 @@ undefined4 Prompts_Load_004fe05f(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar5 = Action_ValidateTarget_00405802
                             (spell_id,2,1 - spell_id,0x1200,2,0,0,uVar2,uVar3,uVar4,iVar5,iVar6,
                              uVar7,uVar8,uVar9,uVar10,uVar11,arg_18,uVar1,arg_20);
@@ -110020,7 +110020,7 @@ undefined4 Prompts_Load_004fe05f(int spell_id,int target_id,int flags)
           iVar5 = -1;
           uVar4 = 0;
           uVar3 = 0;
-          uVar2 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+          uVar2 = Card_GetColorAndTypeFlags(spell_id,target_id);
           iVar5 = Rules_ParseFilter_0040360b
                             (*(int *)(&g_CardSlot_CombatTarget +
                                      target_id * 0x120 + spell_id * 0x5b20 + local_c * 8),
@@ -110294,7 +110294,7 @@ undefined4 Prompts_Load_004fef61(int spell_id,int target_id,int flags)
     arg_13_00 = 0xffffffff;
     arg_12_00 = 0;
     arg_11_00 = 0;
-    uVar1 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+    uVar1 = Card_GetColorAndTypeFlags(spell_id,target_id);
     uVar1 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,1,0,0,uVar1,arg_11_00,arg_12_00,arg_13_00,
                          arg_14,arg_15_00,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
@@ -110328,7 +110328,7 @@ undefined4 Prompts_Load_004fef61(int spell_id,int target_id,int flags)
       iVar3 = -1;
       arg_13 = 0;
       arg_12 = 0;
-      arg_11 = SpellChain_ProcessTriggerEvent(spell_id,target_id);
+      arg_11 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar3 = Rules_ParseFilter_0040360b
                         (iVar2,color_mask,(char *)0x0,spell_id,2,2,0x200,1,0,0,arg_11,arg_12,arg_13,
                          iVar3,arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
@@ -114865,7 +114865,7 @@ int FUN_0050a9bf(int value)
     if (((&DAT_0051aecd)[value * 0x34] & 2) != 0) {
       local_8 = (local_8 * 3) / 2;
     }
-    if (*(code **)(&DAT_0051aec8 + value * 0x34) != SpellChain_GetActiveCount) {
+    if (*(code **)(&DAT_0051aec8 + value * 0x34) != Card_DefaultEventHandler) {
       local_8 = (local_8 * 3) / 2;
     }
     if ((*(uint *)(&DAT_0051aecc + value * 0x34) & 0x1c0) != 0) {

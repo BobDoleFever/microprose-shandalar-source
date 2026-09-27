@@ -15463,7 +15463,7 @@ int Ai_Subsystem_004cae47(int x, int arg2)
   if (((&g_MasterCardSubtypeTable)[status * 0x34] & 3) != 0) {
     slot_idx = slot_idx / 2;
   }
-  if (*(code **)(&g_MasterCardManaCostTable + status * 0x34) != SpellChain_GetActiveCount) {
+  if (*(code **)(&g_MasterCardManaCostTable + status * 0x34) != Card_DefaultEventHandler) {
     slot_idx = (slot_idx * 3) / 2;
   }
   if ((*(uint32_t *)(&DAT_0051aecc + status * 0x34) & 0x1c0) != 0) {
