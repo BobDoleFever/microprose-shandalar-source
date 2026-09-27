@@ -23,19 +23,19 @@ int Timer_GetElapsedFraction(void);
 int SpellChain_RegisterClass(LPCSTR name_or_path);
 void SpellChain_CleanupUI(void);
 uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND wParam,uint32_t height);
-int SpellChain_GetCardCount(HWND hwnd);
-void SpellChain_UpdateTargetPositions(HWND hwnd,int arg2);
-bool SpellChain_HasActiveSpells(void);
-int SpellChain_CreateCardSlot(HWND hwnd,int arg2,int arg3);
-void SpellChain_RemoveCardSlot(HWND hwnd,int arg2);
-int SpellChain_CreateTargetSlot(HWND hwnd);
+int SpellChain_FindEntryIndex(HWND hwnd);
+void SpellChain_RemoveEntry(HWND hwnd,int arg2);
+bool SpellChain_EntryTargetsMatch(void);
+int SpellChain_InsertEntry(HWND hwnd,int arg2,int arg3);
+void SpellChain_ClearEntryTargets(HWND hwnd,int arg2);
+int SpellChain_RebuildEntryTargets(HWND hwnd);
 void SpellChain_UpdateLayout(HWND hwnd,LPRECT arg2);
-void SpellChain_SetWindowRect(int arg1,LPRECT arg2);
+void SpellChain_GetContentRect(int arg1,LPRECT arg2);
 LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);
-BOOL SpellChain_IsVisible(void);
-bool SpellChain_IsMinimized(void);
-int SpellChain_GetActiveCount(void);
-uint32_t SpellChain_ProcessTriggerEvent(int arg1,int arg2);
+BOOL SpellChain_MinimizeIfShown(void);
+bool SpellChain_RestoreIfMinimized(void);
+int Card_DefaultEventHandler(void);
+uint32_t Card_GetColorAndTypeFlags(int arg1,int arg2);
 int Card_PrismaticDragon_ColorChange(int player,int card_index,int event_code);
 int Card_RainbowKnights_ActivatedAbility(int player,int card_index,int event_code);
 bool Card_Sinbad_Draw(int player,int card_index,int event_code);
@@ -224,13 +224,13 @@ void Adventure_NewsFlash_DominionSpell(void);
 void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5);
 void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height);
 void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3);
-void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3);
+void Adventure_Audio_PlayTrack(int arg1,int arg2,int arg3);
 void Adventure_Audio_SetPlaybackPosition(char *arg1,int arg2);
 void Adventure_Audio_StopAllTracks(void);
 void Adventure_Audio_PlayCastleVictory(int arg1);
 void Adventure_Audio_PlayDuelIntro(int arg1);
 void Adventure_Audio_PlayTerrainAmbience(int arg1);
-void Adventure_Audio_PlayFootstep(void);
+void Adventure_Audio_LoadWalkAndBirdSounds(void);
 uint32_t Adventure_Audio_FindSoundOnDrives(char *name_or_path);
 char Adventure_Audio_GetMusicDrivePath(void);
 void Adventure_Audio_FreeSoundTrack(void *arg1);
@@ -282,19 +282,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define UI_RegisterSpellChainWindowClasses SpellChain_RegisterClass
 #define FUN_004cda01 SpellChain_CleanupUI
 #define UI_SpellChainWndProc SpellChain_WndProc
-#define FUN_004cf8b6 SpellChain_GetCardCount
-#define FUN_004cf965 SpellChain_UpdateTargetPositions
-#define FUN_004cfab2 SpellChain_HasActiveSpells
-#define UI_SpellCardWndProc SpellChain_CreateCardSlot
-#define FUN_004cfd68 SpellChain_RemoveCardSlot
-#define UI_SpellTargetCardWndProc SpellChain_CreateTargetSlot
+#define FUN_004cf8b6 SpellChain_FindEntryIndex
+#define FUN_004cf965 SpellChain_RemoveEntry
+#define FUN_004cfab2 SpellChain_EntryTargetsMatch
+#define UI_SpellCardWndProc SpellChain_InsertEntry
+#define FUN_004cfd68 SpellChain_ClearEntryTargets
+#define UI_SpellTargetCardWndProc SpellChain_RebuildEntryTargets
 #define FUN_004cffda SpellChain_UpdateLayout
-#define FUN_004d05e8 SpellChain_SetWindowRect
+#define FUN_004d05e8 SpellChain_GetContentRect
 #define UI_MinimizedSpellChainWndProc SpellChain_MinimizedWndProc
-#define FUN_004d0965 SpellChain_IsVisible
-#define FUN_004d09bd SpellChain_IsMinimized
-#define FUN_004d0a30 SpellChain_GetActiveCount
-#define FUN_004d0a42 SpellChain_ProcessTriggerEvent
+#define FUN_004d0965 SpellChain_MinimizeIfShown
+#define FUN_004d09bd SpellChain_RestoreIfMinimized
+#define FUN_004d0a30 Card_DefaultEventHandler
+#define FUN_004d0a42 Card_GetColorAndTypeFlags
 #define FUN_004d0cdb Card_PrismaticDragon_ColorChange
 #define FUN_004d109a Card_RainbowKnights_ActivatedAbility
 #define CardScript_Sinbad Card_Sinbad_Draw
@@ -483,13 +483,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define FUN_004ebcdc Adventure_Audio_PlayEffect
 #define FUN_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define FUN_004ebdca Adventure_Audio_PlayEffectLooped
-#define FUN_004ebe1a Adventure_Audio_StopEffectChannel
+#define FUN_004ebe1a Adventure_Audio_PlayTrack
 #define FUN_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define FUN_004ebebf Adventure_Audio_StopAllTracks
 #define Sound_Play_Bcastle_Victory Adventure_Audio_PlayCastleVictory
 #define FUN_004ebfef Adventure_Audio_PlayDuelIntro
 #define Sound_Play_Bbird1_Ambience Adventure_Audio_PlayTerrainAmbience
-#define Sound_Play_Bbird1_Step Adventure_Audio_PlayFootstep
+#define Sound_Play_Bbird1_Step Adventure_Audio_LoadWalkAndBirdSounds
 #define FUN_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Sound_Play_Locmus1 Adventure_Audio_GetMusicDrivePath
 #define FUN_004ec572 Adventure_Audio_FreeSoundTrack
@@ -533,19 +533,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_004cd760 SpellChain_RegisterClass
 #define Glue_004cda01 SpellChain_CleanupUI
 #define Glue_004cdb4f SpellChain_WndProc
-#define Glue_004cf8b6 SpellChain_GetCardCount
-#define Glue_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_004cfab2 SpellChain_HasActiveSpells
-#define Glue_004cfb2f SpellChain_CreateCardSlot
-#define Glue_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_004cf965 SpellChain_RemoveEntry
+#define Glue_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_004cfb2f SpellChain_InsertEntry
+#define Glue_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_004cffda SpellChain_UpdateLayout
-#define Glue_004d05e8 SpellChain_SetWindowRect
+#define Glue_004d05e8 SpellChain_GetContentRect
 #define Glue_004d0602 SpellChain_MinimizedWndProc
-#define Glue_004d0965 SpellChain_IsVisible
-#define Glue_004d09bd SpellChain_IsMinimized
-#define Glue_004d0a30 SpellChain_GetActiveCount
-#define Glue_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_004d0965 SpellChain_MinimizeIfShown
+#define Glue_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_004d0a30 Card_DefaultEventHandler
+#define Glue_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_004d1cc4 Card_Sinbad_Draw
@@ -734,13 +734,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_004ec572 Adventure_Audio_FreeSoundTrack
@@ -784,19 +784,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Render_004cd760 SpellChain_RegisterClass
 #define Glue_Render_004cda01 SpellChain_CleanupUI
 #define Glue_Render_004cdb4f SpellChain_WndProc
-#define Glue_Render_004cf8b6 SpellChain_GetCardCount
-#define Glue_Render_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_Render_004cfab2 SpellChain_HasActiveSpells
-#define Glue_Render_004cfb2f SpellChain_CreateCardSlot
-#define Glue_Render_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_Render_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_Render_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_Render_004cf965 SpellChain_RemoveEntry
+#define Glue_Render_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_Render_004cfb2f SpellChain_InsertEntry
+#define Glue_Render_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_Render_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_Render_004cffda SpellChain_UpdateLayout
-#define Glue_Render_004d05e8 SpellChain_SetWindowRect
+#define Glue_Render_004d05e8 SpellChain_GetContentRect
 #define Glue_Render_004d0602 SpellChain_MinimizedWndProc
-#define Glue_Render_004d0965 SpellChain_IsVisible
-#define Glue_Render_004d09bd SpellChain_IsMinimized
-#define Glue_Render_004d0a30 SpellChain_GetActiveCount
-#define Glue_Render_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_Render_004d0965 SpellChain_MinimizeIfShown
+#define Glue_Render_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_Render_004d0a30 Card_DefaultEventHandler
+#define Glue_Render_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_Render_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_Render_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_Render_004d1cc4 Card_Sinbad_Draw
@@ -985,13 +985,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Render_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Render_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Render_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Render_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Render_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Render_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Render_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Render_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Render_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Render_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Render_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Render_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Render_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Render_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Render_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1035,19 +1035,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Sound_004cd760 SpellChain_RegisterClass
 #define Glue_Sound_004cda01 SpellChain_CleanupUI
 #define Glue_Sound_004cdb4f SpellChain_WndProc
-#define Glue_Sound_004cf8b6 SpellChain_GetCardCount
-#define Glue_Sound_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_Sound_004cfab2 SpellChain_HasActiveSpells
-#define Glue_Sound_004cfb2f SpellChain_CreateCardSlot
-#define Glue_Sound_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_Sound_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_Sound_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_Sound_004cf965 SpellChain_RemoveEntry
+#define Glue_Sound_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_Sound_004cfb2f SpellChain_InsertEntry
+#define Glue_Sound_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_Sound_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_Sound_004cffda SpellChain_UpdateLayout
-#define Glue_Sound_004d05e8 SpellChain_SetWindowRect
+#define Glue_Sound_004d05e8 SpellChain_GetContentRect
 #define Glue_Sound_004d0602 SpellChain_MinimizedWndProc
-#define Glue_Sound_004d0965 SpellChain_IsVisible
-#define Glue_Sound_004d09bd SpellChain_IsMinimized
-#define Glue_Sound_004d0a30 SpellChain_GetActiveCount
-#define Glue_Sound_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_Sound_004d0965 SpellChain_MinimizeIfShown
+#define Glue_Sound_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_Sound_004d0a30 Card_DefaultEventHandler
+#define Glue_Sound_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_Sound_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_Sound_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_Sound_004d1cc4 Card_Sinbad_Draw
@@ -1236,13 +1236,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Sound_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Sound_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Sound_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Sound_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Sound_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Sound_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Sound_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Sound_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Sound_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Sound_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Sound_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Sound_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Sound_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Sound_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Sound_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1283,22 +1283,22 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Subsystem_004cd6e3 Timer_GetTicks
 #define Glue_Subsystem_004cd715 Timer_MarkStart
 #define Glue_Subsystem_004cd72a Timer_GetElapsedFraction
-#define Glue_Subsystem_004cd760 SpellChain_RegisterClass
+#define SpellChain_RegisterClass SpellChain_RegisterClass
 #define Glue_Subsystem_004cda01 SpellChain_CleanupUI
-#define Glue_Subsystem_004cdb4f SpellChain_WndProc
-#define Glue_Subsystem_004cf8b6 SpellChain_GetCardCount
-#define Glue_Subsystem_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_Subsystem_004cfab2 SpellChain_HasActiveSpells
-#define Glue_Subsystem_004cfb2f SpellChain_CreateCardSlot
-#define Glue_Subsystem_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_Subsystem_004cfe4d SpellChain_CreateTargetSlot
+#define SpellChain_WndProc SpellChain_WndProc
+#define Glue_Subsystem_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_Subsystem_004cf965 SpellChain_RemoveEntry
+#define Glue_Subsystem_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_Subsystem_004cfb2f SpellChain_InsertEntry
+#define Glue_Subsystem_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_Subsystem_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_Subsystem_004cffda SpellChain_UpdateLayout
-#define Glue_Subsystem_004d05e8 SpellChain_SetWindowRect
-#define Glue_Subsystem_004d0602 SpellChain_MinimizedWndProc
-#define Glue_Subsystem_004d0965 SpellChain_IsVisible
-#define Glue_Subsystem_004d09bd SpellChain_IsMinimized
-#define Glue_Subsystem_004d0a30 SpellChain_GetActiveCount
-#define Glue_Subsystem_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_Subsystem_004d05e8 SpellChain_GetContentRect
+#define SpellChain_MinimizedWndProc SpellChain_MinimizedWndProc
+#define Glue_Subsystem_004d0965 SpellChain_MinimizeIfShown
+#define Glue_Subsystem_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_Subsystem_004d0a30 Card_DefaultEventHandler
+#define Glue_Subsystem_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_Subsystem_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_Subsystem_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_Subsystem_004d1cc4 Card_Sinbad_Draw
@@ -1487,13 +1487,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Subsystem_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Subsystem_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Subsystem_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Subsystem_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Subsystem_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Subsystem_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Subsystem_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Subsystem_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Subsystem_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Subsystem_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Subsystem_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Subsystem_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Subsystem_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Subsystem_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Subsystem_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1537,19 +1537,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Timer_004cd760 SpellChain_RegisterClass
 #define Glue_Timer_004cda01 SpellChain_CleanupUI
 #define Glue_Timer_004cdb4f SpellChain_WndProc
-#define Glue_Timer_004cf8b6 SpellChain_GetCardCount
-#define Glue_Timer_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_Timer_004cfab2 SpellChain_HasActiveSpells
-#define Glue_Timer_004cfb2f SpellChain_CreateCardSlot
-#define Glue_Timer_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_Timer_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_Timer_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_Timer_004cf965 SpellChain_RemoveEntry
+#define Glue_Timer_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_Timer_004cfb2f SpellChain_InsertEntry
+#define Glue_Timer_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_Timer_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_Timer_004cffda SpellChain_UpdateLayout
-#define Glue_Timer_004d05e8 SpellChain_SetWindowRect
+#define Glue_Timer_004d05e8 SpellChain_GetContentRect
 #define Glue_Timer_004d0602 SpellChain_MinimizedWndProc
-#define Glue_Timer_004d0965 SpellChain_IsVisible
-#define Glue_Timer_004d09bd SpellChain_IsMinimized
-#define Glue_Timer_004d0a30 SpellChain_GetActiveCount
-#define Glue_Timer_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_Timer_004d0965 SpellChain_MinimizeIfShown
+#define Glue_Timer_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_Timer_004d0a30 Card_DefaultEventHandler
+#define Glue_Timer_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_Timer_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_Timer_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_Timer_004d1cc4 Card_Sinbad_Draw
@@ -1738,13 +1738,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Timer_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Timer_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Timer_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Timer_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Timer_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Timer_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Timer_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Timer_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Timer_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Timer_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Timer_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Timer_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Timer_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Timer_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Timer_004ec572 Adventure_Audio_FreeSoundTrack
@@ -1788,19 +1788,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_UI_004cd760 SpellChain_RegisterClass
 #define Glue_UI_004cda01 SpellChain_CleanupUI
 #define Glue_UI_004cdb4f SpellChain_WndProc
-#define Glue_UI_004cf8b6 SpellChain_GetCardCount
-#define Glue_UI_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_UI_004cfab2 SpellChain_HasActiveSpells
-#define Glue_UI_004cfb2f SpellChain_CreateCardSlot
-#define Glue_UI_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_UI_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_UI_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_UI_004cf965 SpellChain_RemoveEntry
+#define Glue_UI_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_UI_004cfb2f SpellChain_InsertEntry
+#define Glue_UI_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_UI_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_UI_004cffda SpellChain_UpdateLayout
-#define Glue_UI_004d05e8 SpellChain_SetWindowRect
+#define Glue_UI_004d05e8 SpellChain_GetContentRect
 #define Glue_UI_004d0602 SpellChain_MinimizedWndProc
-#define Glue_UI_004d0965 SpellChain_IsVisible
-#define Glue_UI_004d09bd SpellChain_IsMinimized
-#define Glue_UI_004d0a30 SpellChain_GetActiveCount
-#define Glue_UI_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_UI_004d0965 SpellChain_MinimizeIfShown
+#define Glue_UI_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_UI_004d0a30 Card_DefaultEventHandler
+#define Glue_UI_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_UI_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_UI_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_UI_004d1cc4 Card_Sinbad_Draw
@@ -1989,13 +1989,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_UI_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_UI_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_UI_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_UI_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_UI_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_UI_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_UI_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_UI_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_UI_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_UI_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_UI_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_UI_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_UI_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_UI_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_UI_004ec572 Adventure_Audio_FreeSoundTrack
@@ -2039,19 +2039,19 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Util_004cd760 SpellChain_RegisterClass
 #define Glue_Util_004cda01 SpellChain_CleanupUI
 #define Glue_Util_004cdb4f SpellChain_WndProc
-#define Glue_Util_004cf8b6 SpellChain_GetCardCount
-#define Glue_Util_004cf965 SpellChain_UpdateTargetPositions
-#define Glue_Util_004cfab2 SpellChain_HasActiveSpells
-#define Glue_Util_004cfb2f SpellChain_CreateCardSlot
-#define Glue_Util_004cfd68 SpellChain_RemoveCardSlot
-#define Glue_Util_004cfe4d SpellChain_CreateTargetSlot
+#define Glue_Util_004cf8b6 SpellChain_FindEntryIndex
+#define Glue_Util_004cf965 SpellChain_RemoveEntry
+#define Glue_Util_004cfab2 SpellChain_EntryTargetsMatch
+#define Glue_Util_004cfb2f SpellChain_InsertEntry
+#define Glue_Util_004cfd68 SpellChain_ClearEntryTargets
+#define Glue_Util_004cfe4d SpellChain_RebuildEntryTargets
 #define Glue_Util_004cffda SpellChain_UpdateLayout
-#define Glue_Util_004d05e8 SpellChain_SetWindowRect
+#define Glue_Util_004d05e8 SpellChain_GetContentRect
 #define Glue_Util_004d0602 SpellChain_MinimizedWndProc
-#define Glue_Util_004d0965 SpellChain_IsVisible
-#define Glue_Util_004d09bd SpellChain_IsMinimized
-#define Glue_Util_004d0a30 SpellChain_GetActiveCount
-#define Glue_Util_004d0a42 SpellChain_ProcessTriggerEvent
+#define Glue_Util_004d0965 SpellChain_MinimizeIfShown
+#define Glue_Util_004d09bd SpellChain_RestoreIfMinimized
+#define Glue_Util_004d0a30 Card_DefaultEventHandler
+#define Glue_Util_004d0a42 Card_GetColorAndTypeFlags
 #define Glue_Util_004d0cdb Card_PrismaticDragon_ColorChange
 #define Glue_Util_004d109a Card_RainbowKnights_ActivatedAbility
 #define Glue_Util_004d1cc4 Card_Sinbad_Draw
@@ -2240,13 +2240,13 @@ int Catalog_ReleaseWaveletLock(void);
 #define Glue_Util_004ebcdc Adventure_Audio_PlayEffect
 #define Glue_Util_004ebd62 Adventure_Audio_PlayEffectAtVolume
 #define Glue_Util_004ebdca Adventure_Audio_PlayEffectLooped
-#define Glue_Util_004ebe1a Adventure_Audio_StopEffectChannel
+#define Glue_Util_004ebe1a Adventure_Audio_PlayTrack
 #define Glue_Util_004ebe61 Adventure_Audio_SetPlaybackPosition
 #define Glue_Util_004ebebf Adventure_Audio_StopAllTracks
 #define Glue_Util_004ebeeb Adventure_Audio_PlayCastleVictory
 #define Glue_Util_004ebfef Adventure_Audio_PlayDuelIntro
 #define Glue_Util_004ec055 Adventure_Audio_PlayTerrainAmbience
-#define Glue_Util_004ec32f Adventure_Audio_PlayFootstep
+#define Glue_Util_004ec32f Adventure_Audio_LoadWalkAndBirdSounds
 #define Glue_Util_004ec439 Adventure_Audio_FindSoundOnDrives
 #define Glue_Util_004ec4fc Adventure_Audio_GetMusicDrivePath
 #define Glue_Util_004ec572 Adventure_Audio_FreeSoundTrack

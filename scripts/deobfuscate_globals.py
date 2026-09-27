@@ -30,19 +30,19 @@ def main():
 
         # Player & Turn State
         "006a49fc": "g_ActivePlayer",
-        "0068a71c": "g_DefendingPlayer",
+        "0068a71c": "g_TurnPlayer",
         "006a49e0": "g_CurrentTurnPhase",
         "006a49f8": "g_TurnCounter",
         "006a492c": "g_ActivePlayerPriority",
         "006a285c": "g_IsAiThinking",
         "006a4a00": "g_PlayerCreatureCount",
-        "006a4a08": "g_PlayerHandCardCount",
+        "006a4a08": "g_DuelModeFlags",
         "00695e80": "g_PlayerLifeTotals",
         "006808b8": "g_PlayerActiveCardCount",
         "006ff558": "g_ScWillyScore",
-        "006ff55c": "g_AiDecisionScore",
+        "006ff55c": "g_AiChoiceValue",
         "006ff680": "g_SpellStackDepth",
-        "006ff4c0": "g_PlayerManaPool",
+        "006ff4c0": "g_CurrentStepCode",
 
         # Master Card Catalog & Rules Table
         "0067f440": "g_MasterCardCount",
@@ -57,15 +57,15 @@ def main():
         "006b2e34": "g_MainAppHwnd",
         "006fecb0": "g_AppHInstance",
         "0068a654": "g_HdcBackBuffer",
-        "0068a660": "g_ActivePalette",
+        "0068a660": "g_CardEventResult",
         "0068a630": "g_ScreenDC",
         "006fe488": "g_DuelArenaHwnd",
         "00700eb0": "g_DialogPromptHwnd",
 
         # Overworld RPG Campaign & World State
         "00626850": "g_OverworldWorldState",
-        "0070100c": "g_OverworldMapGrid",
-        "006b2534": "g_OverworldPlayerCoordX",
+        "0070100c": "g_EventSourceSlot",
+        "006b2534": "g_EventSourcePlayer",
         "006b2d68": "g_OverworldPlayerCoordY",
         "0069f750": "g_OverworldGoldAmount",
         "00678830": "g_OverworldFoodAmount"

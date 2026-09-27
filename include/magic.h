@@ -49,7 +49,7 @@ int FUN_00405277(int player,int card_slot);;
 void Action_PromptTarget_00405370(uint32_t spell_id,int32_t target_id,int flags);;
 
 /* Function at 00405802 (Size: 1737 bytes) */
-int Action_ValidateTarget_00405802(int spell_id,uint32_t target_id,uint32_t flags,uint32_t flags,uint32_t flags,uint32_t arg_6,uint32_t arg_7,uint32_t arg_8,uint32_t arg_9,uint32_t arg_10,int arg_11,int arg_12,uint32_t arg_13,uint32_t arg_14,uint32_t arg_15,uint32_t arg_16,uint32_t arg_17,uint8_t *arg_18,int32_t arg_19,int *arg_20);;
+int Duel_ChooseTarget(int spell_id,uint32_t target_id,uint32_t flags,uint32_t flags,uint32_t flags,uint32_t arg_6,uint32_t arg_7,uint32_t arg_8,uint32_t arg_9,uint32_t arg_10,int arg_11,int arg_12,uint32_t arg_13,uint32_t arg_14,uint32_t arg_15,uint32_t arg_16,uint32_t arg_17,uint8_t *arg_18,int32_t arg_19,int *arg_20);;
 
 /* Function at 00405edf (Size: 184 bytes) */
 int32_t FUN_00405edf(int player,int card_slot);;
@@ -979,85 +979,85 @@ void Pic_SeekImageStream(int32_t value);;
 int Pic_Subsystem_00423940(void);;
 
 /* Function at 00423980 (Size: 353 bytes) */
-int Pic_Subsystem_00423980(int hInst,int32_t hWnd,uint32_t flags);;
+int Sound_Init(int hInst,int32_t hWnd,uint32_t flags);;
 
 /* Function at 00423ae1 (Size: 118 bytes) */
-void Pic_Subsystem_00423ae1(void);;
+void CloseSnd(void);;
 
 /* Function at 00423b57 (Size: 60 bytes) */
-int32_t Pic_Subsystem_00423b57(int32_t value,int32_t min_val,int32_t max_val);;
+int32_t InitSndTrack(int32_t value,int32_t min_val,int32_t max_val);;
 
 /* Function at 00423b93 (Size: 52 bytes) */
-int32_t Pic_Subsystem_00423b93(int32_t value);;
+int32_t CloseSndTrack(int32_t value);;
 
 /* Function at 00423bc7 (Size: 45 bytes) */
-int32_t Pic_Subsystem_00423bc7(void);;
+int32_t StopSndTrack(void);;
 
 /* Function at 00423bf4 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423bf4(int32_t sound_id,int32_t flags);;
+int32_t PlaySnd(int32_t sound_id,int32_t flags);;
 
 /* Function at 00423c39 (Size: 73 bytes) */
-int32_t Pic_Subsystem_00423c39(int32_t filename,int32_t loop_flag,int32_t out_handle);;
+int32_t PlaySndFile(int32_t filename,int32_t loop_flag,int32_t out_handle);;
 
 /* Function at 00423c82 (Size: 65 bytes) */
-int32_t Pic_Subsystem_00423c82(int32_t sound_id);;
+int32_t StopSnd(int32_t sound_id);;
 
 /* Function at 00423cc3 (Size: 48 bytes) */
-void Pic_Subsystem_00423cc3(void);;
+void PauseSnd(void);;
 
 /* Function at 00423cf3 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423cf3(int32_t player,int32_t card_slot);;
+int32_t ResumeSnd(int32_t player,int32_t card_slot);;
 
 /* Function at 00423d38 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423d38(int32_t value,int32_t card_slot);;
+int32_t SetPitch(int32_t value,int32_t card_slot);;
 
 /* Function at 00423d7d (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423d7d(int32_t player,int32_t card_slot);;
+int32_t GetPitch(int32_t player,int32_t card_slot);;
 
 /* Function at 00423dc2 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423dc2(int32_t value,int32_t card_slot);;
+int32_t SetVol(int32_t value,int32_t card_slot);;
 
 /* Function at 00423e07 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e07(int32_t player,int32_t card_slot);;
+int32_t GetVol(int32_t player,int32_t card_slot);;
 
 /* Function at 00423e4c (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e4c(int32_t value,int32_t card_slot);;
+int32_t SetPan(int32_t value,int32_t card_slot);;
 
 /* Function at 00423e91 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423e91(int32_t player,int32_t card_slot);;
+int32_t GetPan(int32_t player,int32_t card_slot);;
 
 /* Function at 00423ed6 (Size: 58 bytes) */
-int32_t Pic_Subsystem_00423ed6(void);;
+int32_t UpdateSnd(void);;
 
 /* Function at 00423f10 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423f10(int32_t player,int32_t card_slot);;
+int32_t SetSndMarker(int32_t player,int32_t card_slot);;
 
 /* Function at 00423f55 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423f55(int32_t player,int32_t card_slot);;
+int32_t PlaySndMarker(int32_t player,int32_t card_slot);;
 
 /* Function at 00423f9a (Size: 65 bytes) */
-int32_t Pic_Subsystem_00423f9a(int32_t value);;
+int32_t GetSndTime(int32_t value);;
 
 /* Function at 00423fdb (Size: 69 bytes) */
-int32_t Pic_Subsystem_00423fdb(int32_t player,int32_t card_slot);;
+int32_t ResetSnd(int32_t player,int32_t card_slot);;
 
 /* Function at 00424020 (Size: 69 bytes) */
-int32_t Pic_Subsystem_00424020(int32_t player,int32_t card_slot);;
+int32_t GetSndState(int32_t player,int32_t card_slot);;
 
 /* Function at 00424065 (Size: 66 bytes) */
-int32_t Pic_Subsystem_00424065(int32_t player,int32_t card_slot);;
+int32_t GetAVISndBuff(int32_t player,int32_t card_slot);;
 
 /* Function at 004240a7 (Size: 69 bytes) */
-int32_t Pic_Subsystem_004240a7(int32_t player,int32_t card_slot);;
+int32_t ReleaseAVISndBuff(int32_t player,int32_t card_slot);;
 
 /* Function at 004240ec (Size: 55 bytes) */
-int32_t Pic_Subsystem_004240ec(void);;
+int32_t GetSndHWND(void);;
 
 /* Function at 00424123 (Size: 66 bytes) */
-int32_t Pic_Subsystem_00424123(int32_t player,int32_t card_slot);;
+int32_t IsSndLoaded(int32_t player,int32_t card_slot);;
 
 /* Function at 00424165 (Size: 73 bytes) */
-int32_t Pic_Subsystem_00424165(int32_t value,int32_t min_val,int32_t max_val);;
+int32_t GetLRUSnd(int32_t value,int32_t min_val,int32_t max_val);;
 
 /* Function at 004241ae (Size: 58 bytes) */
 void Pic_Subsystem_004241ae(void);;
@@ -1522,7 +1522,7 @@ int32_t UI_RegisterThinkingCardClass(HWND hwnd,uint32_t y,HDC hdc,int32_t flags)
 uint32_t UI_PromptFastEffectsDialog(int player,char *str_2);;
 
 /* Function at 004468dc (Size: 1142 bytes) */
-uint32_t Pic_Subsystem_004468dc(int value);;
+uint32_t Ai_ChooseChainResponse(int value);;
 
 /* Function at 00446d52 (Size: 1260 bytes) */
 int32_t Pic_Subsystem_00446d52(int player,int card_slot);;
@@ -1540,7 +1540,7 @@ void Pic_Subsystem_00447a1a(void);;
 int Pic_Subsystem_00447b57(int player,int card_slot);;
 
 /* Function at 004485d6 (Size: 168 bytes) */
-int32_t Pic_Subsystem_004485d6(int x,int y,int width,int32_t flags);;
+int32_t Magic_BroadcastCardEventInStep(int player,int slot,int event_code,int32_t event_arg);;
 
 /* Function at 0044867e (Size: 546 bytes) */
 void Pic_Subsystem_0044867e(int value,int min_val,int max_val);;
@@ -2410,7 +2410,7 @@ void FUN_00472f0c(int32_t player,int card_slot);;
 void Rules_ProcessCombatDamageStep(void);;
 
 /* Function at 00473179 (Size: 2823 bytes) */
-uint32_t Card_TapForMana(int x,int y,int width,int32_t flags);;
+uint32_t Magic_QueryCardAttribute(int player,int slot,int event_code,int32_t target_slot);;
 
 /* Function at 00473cc5 (Size: 121 bytes) */
 int32_t Rules_CalculateManaCostReduction(uint8_t value);;
@@ -2422,22 +2422,22 @@ uint8_t * Mem_AllocOrFree_00473d7e(int value);;
 int FUN_00473d98(int value);;
 
 /* Function at 00473e69 (Size: 157 bytes) */
-int32_t Rules_ApplyContinuousDamage(int value,int32_t min_val,int max_val);;
+int32_t Magic_BroadcastCardEvent(int player,int32_t slot,int event_code);;
 
 /* Function at 00473f06 (Size: 864 bytes) */
 void Magic_ScanCards(int value);;
 
 /* Function at 00474266 (Size: 291 bytes) */
-int Magic_TriggerCardEvent(int value,int min_val,int max_val,int32_t flags,int32_t flags);;
+int Magic_TriggerCardEvent(int player,int slot,int event_code,int32_t target_player,int32_t target_slot);;
 
 /* Function at 00474389 (Size: 159 bytes) */
-bool Magic_ResolveSpellStack(int player,int card_slot);;
+bool Magic_IsManaSource(int player,int slot);;
 
 /* Function at 00474428 (Size: 182 bytes) */
-void Magic_PayManaCost(void);;
+void Magic_PushEventContext(void);;
 
 /* Function at 004744de (Size: 170 bytes) */
-void Magic_TapCardForMana(void);;
+void Magic_PopEventContext(void);;
 
 /* Function at 00474588 (Size: 945 bytes) */
 void Magic_UntapTurnPhase(void);;
@@ -2446,16 +2446,16 @@ void Magic_UntapTurnPhase(void);;
 void Magic_CheckTurnTriggers(int player,int card_slot);;
 
 /* Function at 0047496b (Size: 788 bytes) */
-int32_t Magic_UpkeepPhase(int value);;
+int32_t Duel_PlaySoundById(int value);;
 
 /* Function at 00474c7f (Size: 143 bytes) */
-void Magic_DrawCardPhase(void);;
+void Duel_PreloadSoundEffects(void);;
 
 /* Function at 00474d0e (Size: 16 bytes) */
 void FUN_00474d0e(void);;
 
 /* Function at 00474d1e (Size: 44 bytes) */
-int32_t Mem_AllocOrFree_00474d1e(void);;
+int32_t Magic_ClearSpellStack(void);;
 
 /* Function at 00474d4a (Size: 51 bytes) */
 int32_t FUN_00474d4a(void);;
@@ -2464,16 +2464,16 @@ int32_t FUN_00474d4a(void);;
 int32_t Magic_MainTurnPhase(int32_t value);;
 
 /* Function at 004751d7 (Size: 1062 bytes) */
-int32_t Magic_CombatPhase(int value,int min_val,int max_val,int flags,int32_t flags);;
+int32_t Magic_PushSpellStack(int player,int slot,int event_code,int target_slot,int32_t flags);;
 
 /* Function at 004755fd (Size: 164 bytes) */
 int32_t FUN_004755fd(void);;
 
 /* Function at 004756a1 (Size: 1295 bytes) */
-int32_t Magic_EndTurnPhase(void);;
+int32_t Magic_ResolveTopSpell(void);;
 
 /* Function at 00475bb0 (Size: 177 bytes) */
-int32_t Magic_DiscardToHandSize(void);;
+int32_t Magic_DropTopSpell(void);;
 
 /* Function at 00475c61 (Size: 41 bytes) */
 void Mem_AllocOrFree_00475c61(void);;
@@ -2488,7 +2488,7 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int32_t flags);;
 int32_t FUN_00476205(int x,int32_t min_val,char *max_val,int flags);;
 
 /* Function at 0047624f (Size: 495 bytes) */
-int32_t FUN_0047624f(int x,int32_t min_val,char *str_3,int height);;
+int32_t Magic_RunTurnStep(int player,int32_t step_code,char *step_name,int repeat_while_active);;
 
 /* Function at 0047643e (Size: 68 bytes) */
 int32_t FUN_0047643e(void);;
@@ -2977,7 +2977,7 @@ uint32_t Catalog_ComputeFilenameHash(uint8_t *value);;
 int32_t * ColorOctree_AllocNode(void);;
 
 /* Function at 00493e70 (Size: 519 bytes) */
-uint8_t * Catalog_LoadPaletteMap(char *str_1,char *str_2);;
+uint8_t * Palette_LoadTRFile(char *str_1,char *str_2);;
 
 /* Function at 00494080 (Size: 58 bytes) */
 int32_t Palette_InitSquareDistanceTable(void);;
@@ -2995,7 +2995,7 @@ int32_t ColorOctree_InsertColor(int32_t *value,char *str_2,int32_t max_val);;
 int ColorOctree_FreeTree(int *value);;
 
 /* Function at 00494310 (Size: 105 bytes) */
-void Color_QuantizeRGBToPalette(uint32_t player,uint32_t *card_slot);;
+void Color_RGBToOctreePath(uint32_t player,uint32_t *card_slot);;
 
 /* Function at 00494380 (Size: 98 bytes) */
 int32_t Palette_BuildFastColorLookup(void);;
@@ -3346,7 +3346,7 @@ int Palette_Subsystem_004a8fd8(int value,int min_val,int width,uint32_t height);
 int32_t Palette_Subsystem_004a9137(int value,int min_val,int32_t max_val);;
 
 /* Function at 004a99a0 (Size: 3718 bytes) */
-uint32_t Palette_Subsystem_004a99a0(int value);;
+uint32_t Ai_ChooseCardToPlay(int value);;
 
 /* Function at 004aa830 (Size: 698 bytes) */
 void Ai_SaveGameState(void);;
@@ -3361,13 +3361,13 @@ void Ai_PushBoardState(void);;
 void Ai_PopBoardState(void);;
 
 /* Function at 004ab1ef (Size: 37 bytes) */
-void Ai_ResetEvaluationState(void);;
+void Ai_ClearPlan(void);;
 
 /* Function at 004ab214 (Size: 119 bytes) */
-void Ai_GetActivePlayerScore(void);;
+void Ai_BeginTrial(void);;
 
 /* Function at 004ab28b (Size: 211 bytes) */
-void Ai_EvaluateCreaturePower(void);;
+void Ai_RecordChoice(void);;
 
 /* Function at 004ab35e (Size: 75 bytes) */
 int32_t Ai_GetOpponentPlayerScore(int value);;
@@ -3376,10 +3376,10 @@ int32_t Ai_GetOpponentPlayerScore(int value);;
 int32_t Ai_CalcLifeAdvantage(int value);;
 
 /* Function at 004ab3f3 (Size: 108 bytes) */
-void Ai_CalcCardAdvantage(void);;
+void Ai_ReplayChoice(void);;
 
 /* Function at 004ab45f (Size: 177 bytes) */
-void Ai_ScoreBoardPosition(void);;
+void Ai_CommitBestPlan(void);;
 
 /* Function at 004ab510 (Size: 21 bytes) */
 int32_t Ai_ClearCandidateScoreList(void);;
@@ -3388,10 +3388,10 @@ int32_t Ai_ClearCandidateScoreList(void);;
 void Ai_SortCandidateScoreList(void);;
 
 /* Function at 004ab552 (Size: 2722 bytes) */
-int Ai_SimulateCombatRound(int value);;
+int Ai_EvaluateBoard(int value);;
 
 /* Function at 004abff4 (Size: 2380 bytes) */
-int Ai_ChooseAttackers(int player,int card_slot);;
+int Ai_PenalizeCounterattack(int player,int card_slot);;
 
 /* Function at 004ac940 (Size: 575 bytes) */
 int32_t Ai_ChooseBlockers(int player,int card_slot);;
@@ -3400,7 +3400,7 @@ int32_t Ai_ChooseBlockers(int player,int card_slot);;
 void Ai_FilterValidBlockers(uint32_t *player,uint32_t *card_slot);;
 
 /* Function at 004acc20 (Size: 538 bytes) */
-int32_t Ai_AssignCombatDamage(int32_t *value,uint32_t *min_val,uint32_t max_val,int flags,uint32_t flags,uint32_t arg_6,int32_t arg_7,int arg_8,int32_t arg_9);;
+int32_t Duel_ShowStartOfDuelDialog(int32_t *value,uint32_t *min_val,uint32_t max_val,int flags,uint32_t flags,uint32_t arg_6,int32_t arg_7,int arg_8,int32_t arg_9);;
 
 /* Function at 004ace3a (Size: 2167 bytes) */
 HGDIOBJ Ai_DuelDialogProc(HWND hwnd,uint32_t uMsg,HWND wParam,HWND lParam);;
@@ -3529,7 +3529,7 @@ void Ai_Util_004b42d1(void);;
 uint32_t Ai_Subsystem_004b42dc(void);;
 
 /* Function at 004b4a3f (Size: 2402 bytes) */
-void Ai_EvalAttackCandidate_004b4a3f(int32_t player,uint32_t card_slot);;
+void Duel_RefreshAllWindows(int32_t player,uint32_t card_slot);;
 
 /* Function at 004b53a1 (Size: 37 bytes) */
 void Ai_Util_004b53a1(void);;
@@ -3775,7 +3775,7 @@ char * Ai_Subsystem_004b8e4d(int player,int card_slot);;
 void Ai_Subsystem_004b90de(int player,int card_slot);;
 
 /* Function at 004b9120 (Size: 238 bytes) */
-int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1);;
+int32_t UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1);;
 
 /* Function at 004b920e (Size: 118 bytes) */
 void Ai_Subsystem_004b920e(void);;
@@ -4009,10 +4009,10 @@ int32_t Ai_Util_004cbc36(int player,int card_slot);;
 int32_t Ai_Subsystem_004cbc65(int player,int card_slot);;
 
 /* Function at 004cbcd9 (Size: 137 bytes) */
-int Ai_Subsystem_004cbcd9(int value);;
+int CardTypeFromID(int value);;
 
 /* Function at 004cbd67 (Size: 61 bytes) */
-int32_t Ai_Subsystem_004cbd67(uint32_t value);;
+int32_t CardIDFromType(uint32_t value);;
 
 /* Function at 004cbda9 (Size: 44 bytes) */
 uint32_t Ai_Util_004cbda9(uint32_t value);;
@@ -4150,43 +4150,43 @@ void SpellChain_CleanupUI(void);;
 uint32_t SpellChain_WndProc(HWND hwnd,uint32_t y,HWND param_3,uint32_t height);;
 
 /* Function at 004cf8b6 (Size: 175 bytes) */
-int SpellChain_GetCardCount(HWND hwnd);;
+int SpellChain_FindEntryIndex(HWND hwnd);;
 
 /* Function at 004cf965 (Size: 333 bytes) */
-void SpellChain_UpdateTargetPositions(HWND hwnd,int card_slot);;
+void SpellChain_RemoveEntry(HWND hwnd,int card_slot);;
 
 /* Function at 004cfab2 (Size: 125 bytes) */
-bool SpellChain_HasActiveSpells(void);;
+bool SpellChain_EntryTargetsMatch(void);;
 
 /* Function at 004cfb2f (Size: 569 bytes) */
-int SpellChain_CreateCardSlot(HWND hwnd,int32_t min_val,int32_t max_val);;
+int SpellChain_InsertEntry(HWND hwnd,int32_t min_val,int32_t max_val);;
 
 /* Function at 004cfd68 (Size: 229 bytes) */
-void SpellChain_RemoveCardSlot(HWND hwnd,int card_slot);;
+void SpellChain_ClearEntryTargets(HWND hwnd,int card_slot);;
 
 /* Function at 004cfe4d (Size: 397 bytes) */
-int SpellChain_CreateTargetSlot(HWND hwnd);;
+int SpellChain_RebuildEntryTargets(HWND hwnd);;
 
 /* Function at 004cffda (Size: 1550 bytes) */
 void SpellChain_UpdateLayout(HWND hwnd,LPRECT card_slot);;
 
 /* Function at 004d05e8 (Size: 26 bytes) */
-void SpellChain_SetWindowRect(int32_t player,LPRECT card_slot);;
+void SpellChain_GetContentRect(int32_t player,LPRECT card_slot);;
 
 /* Function at 004d0602 (Size: 855 bytes) */
 LRESULT SpellChain_MinimizedWndProc(HWND hwnd,uint32_t uMsg,HDC wParam,uint32_t lParam);;
 
 /* Function at 004d0965 (Size: 88 bytes) */
-BOOL SpellChain_IsVisible(void);;
+BOOL SpellChain_MinimizeIfShown(void);;
 
 /* Function at 004d09bd (Size: 112 bytes) */
-bool SpellChain_IsMinimized(void);;
+bool SpellChain_RestoreIfMinimized(void);;
 
 /* Function at 004d0a30 (Size: 18 bytes) */
-int32_t SpellChain_GetActiveCount(void);;
+int32_t Card_DefaultEventHandler(void);;
 
 /* Function at 004d0a42 (Size: 645 bytes) */
-uint32_t SpellChain_ProcessTriggerEvent(int player,int card_slot);;
+uint32_t Card_GetColorAndTypeFlags(int player,int card_slot);;
 
 /* Function at 004d0cdb (Size: 959 bytes) */
 int32_t Card_ColorWard_ChangeColor(int value,int min_val,int max_val);;
@@ -4753,7 +4753,7 @@ void Adventure_Audio_PlayEffectAtVolume(int32_t value,int y,int width,int height
 void Adventure_Audio_PlayEffectLooped(int32_t value,int min_val,int max_val);;
 
 /* Function at 004ebe1a (Size: 71 bytes) */
-void Adventure_Audio_StopEffectChannel(int32_t value,int min_val,int max_val);;
+void Adventure_Audio_PlayTrack(int32_t value,int min_val,int max_val);;
 
 /* Function at 004ebe61 (Size: 94 bytes) */
 void Adventure_Audio_SetPlaybackPosition(char *player,int32_t card_slot);;
@@ -4771,7 +4771,7 @@ void Adventure_Audio_PlayDuelIntro(int value);;
 void Adventure_Audio_PlayTerrainAmbience(int value);;
 
 /* Function at 004ec32f (Size: 266 bytes) */
-void Adventure_Audio_PlayFootstep(void);;
+void Adventure_Audio_LoadWalkAndBirdSounds(void);;
 
 /* Function at 004ec439 (Size: 190 bytes) */
 uint32_t Adventure_Audio_FindSoundOnDrives(char *str_1);;
@@ -5470,7 +5470,7 @@ void FUN_0050d560(int player,int card_slot);;
 uint32_t Surface_GetPixel(int value,int min_val,int max_val);;
 
 /* Function at 0050da40 (Size: 199 bytes) */
-uint32_t Surface_GetPixelPtr(int *value,int min_val,int max_val);;
+uint32_t Surface_GetPixelValue(int *value,int min_val,int max_val);;
 
 /* Function at 0050db10 (Size: 157 bytes) */
 void Surface_DrawLine(int *value,int min_val,int max_val,int flags,int flags,int arg_6);;

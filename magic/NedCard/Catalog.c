@@ -211,7 +211,7 @@ void Palette_BuildFastColorLookup(void)
     Palette_InitSquareDistanceTable();
 }
 
-void* Catalog_LoadPaletteMap(const char *palette_csv, const char *image_path)
+void* Palette_LoadTRFile(const char *palette_csv, const char *image_path)
 {
     (void)palette_csv;
     (void)image_path;

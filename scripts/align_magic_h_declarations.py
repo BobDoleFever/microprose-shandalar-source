@@ -7,17 +7,17 @@ def align():
 
     # Align prototypes in magic.h with magic_engine.h
     replacements = {
-        r'bool\s+Magic_ResolveSpellStack\([^)]*\);;?': 'void Magic_ResolveSpellStack(void);',
-        r'void\s+Magic_PayManaCost\([^)]*\);;?': 'int Magic_PayManaCost(int player_id, int color_mask, int total_cost);',
-        r'void\s+Magic_TapCardForMana\([^)]*\);;?': 'void Magic_TapCardForMana(int player_id, int card_slot);',
-        r'undefined4\s+Magic_UpkeepPhase\([^)]*\);;?': 'void Magic_UpkeepPhase(void);',
+        r'bool\s+Magic_IsManaSource\([^)]*\);;?': 'void Magic_IsManaSource(void);',
+        r'void\s+Magic_PushEventContext\([^)]*\);;?': 'void Magic_PushEventContext(void);',
+        r'void\s+Magic_PopEventContext\([^)]*\);;?': 'void Magic_PopEventContext(void);',
+        r'undefined4\s+Duel_PlaySoundById\([^)]*\);;?': 'int Duel_PlaySoundById(int sound_id);',
         r'undefined4\s+Magic_MainTurnPhase\([^)]*\);;?': 'void Magic_MainTurnPhase(void);',
-        r'undefined4\s+Magic_CombatPhase\([^)]*\);;?': 'void Magic_CombatPhase(void);',
-        r'undefined4\s+Magic_EndTurnPhase\([^)]*\);;?': 'void Magic_EndTurnPhase(void);',
-        r'undefined4\s+Magic_DiscardToHandSize\([^)]*\);;?': 'void Magic_DiscardToHandSize(int player_id);',
+        r'undefined4\s+Magic_PushSpellStack\([^)]*\);;?': 'void Magic_PushSpellStack(int player, int slot, int event_code, int target_slot, int flags);',
+        r'undefined4\s+Magic_ResolveTopSpell\([^)]*\);;?': 'void Magic_ResolveTopSpell(void);',
+        r'undefined4\s+Magic_DropTopSpell\([^)]*\);;?': 'void Magic_DropTopSpell(void);',
         r'undefined4\s+Magic_CleanupPhase\([^)]*\);;?': 'void Magic_CleanupPhase(void);',
         r'undefined4\s+Magic_UntapTurnPhase\([^)]*\);;?': 'void Magic_UntapTurnPhase(void);',
-        r'undefined4\s+Magic_DrawCardPhase\([^)]*\);;?': 'void Magic_DrawCardPhase(void);',
+        r'undefined4\s+Duel_PreloadSoundEffects\([^)]*\);;?': 'void Duel_PreloadSoundEffects(void);',
     }
 
     for pat, rep in replacements.items():

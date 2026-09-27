@@ -72,18 +72,18 @@ void Magic_ScanCards(int player_id)
         (**(code **)(&g_CardScriptCallbackTable +
                     *(int *)(&g_CardSlot_CardId + slot_idx * 0x5b20 + arg2 * 0x120) * 0x34))
                   (slot_idx,arg2,arg_1);
-        if ((((arg_1 == 0x15) && (g_DefendingPlayer == slot_idx)) &&
+        if ((((arg_1 == 0x15) && (g_TurnPlayer == slot_idx)) &&
             (((uint8_t)*(int *)(&g_CardSlot_Flags + slot_idx * 0x5b20 + arg2 * 0x120) & 0x14) ==
              4)) && (val_2 = Rules_ValidateCardTargetSlot(slot_idx,arg2), val_2 == 0)) {
           *(uint32_t *)(&g_CardSlot_Flags + slot_idx * 0x5b20 + arg2 * 0x120) =
                *(uint32_t *)(&g_CardSlot_Flags + slot_idx * 0x5b20 + arg2 * 0x120) | 0x10;
           g_PendingAttackersTargetSlot = 0xffffffff;
-          Rules_ApplyContinuousDamage(slot_idx,arg2,0x81);
+          Magic_BroadcastCardEvent(slot_idx,arg2,0x81);
         }
       }
     }
   }
-  if ((arg_1 == 0x15) && (g_DefendingPlayer == slot_idx)) {
+  if ((arg_1 == 0x15) && (g_TurnPlayer == slot_idx)) {
     Rules_ProcessCombatDamageStep();
   }
   g_CardScanDepth = g_CardScanDepth + -1;
@@ -122,25 +122,25 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
     val_2 = 0;
   }
   else {
-    Magic_PayManaCost();
+    Magic_PushEventContext();
     uval_1 = g_CombatPhaseFlags;
-    g_ActivePalette = 0;
-    g_OverworldPlayerCoordX = arg_1;
-    g_OverworldMapGrid = arg_2;
-    DAT_007006c8 = arg_4;
-    DAT_006b2d5c = arg_5;
+    g_CardEventResult = 0;
+    g_EventSourcePlayer = arg_1;
+    g_EventSourceSlot = arg_2;
+    g_EventTargetPlayer = arg_4;
+    g_EventTargetSlot = arg_5;
     val_2 = (**(code **)(&g_CardScriptCallbackTable +
                         *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x34))
                       (arg_1,arg_2,arg_3);
-    if ((((val_2 != 99) && ((g_PlayerHandCardCount & 0x224) != 0)) &&
+    if ((((val_2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) &&
         ((arg_3 == 0x74 || (arg_3 == 0x73)))) &&
-       (val_3 = Magic_ResolveSpellStack(arg_1,arg_2), val_3 == 0)) {
+       (val_3 = Magic_IsManaSource(arg_1,arg_2), val_3 == 0)) {
       g_CombatPhaseFlags = uval_1;
-      Magic_TapCardForMana();
+      Magic_PopEventContext();
       return 0;
     }
-    DAT_006b2e38 = g_ActivePalette;
-    Magic_TapCardForMana();
+    DAT_006b2e38 = g_CardEventResult;
+    Magic_PopEventContext();
   }
   return val_2;
 }
@@ -148,7 +148,7 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
 
 
 /*
- * Magic_ResolveSpellStack
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains active entries.
@@ -157,13 +157,13 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int arg_4,
  * 4. Decrement the stack depth counter.
  */
 /*
- * Decompiled function: Magic_ResolveSpellStack
+ * Decompiled function: Magic_IsManaSource
  * Entry Point: 00474389
  * Size: 159 bytes
  */
 
 
-bool Magic_ResolveSpellStack(int x,int arg2)
+bool Magic_IsManaSource(int x,int arg2)
 
 {
   bool flag_1;
@@ -182,28 +182,31 @@ bool Magic_ResolveSpellStack(int x,int arg2)
 
 
 /*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_PayManaCost
+ * Decompiled function: Magic_PushEventContext
  * Entry Point: 00474428
  * Size: 182 bytes
  */
 
 
-void Magic_PayManaCost(void)
+void Magic_PushEventContext(void)
 
 {
   if (DAT_0052577c < 0x20) {
-    *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_OverworldPlayerCoordX;
-    *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_OverworldMapGrid;
-    *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = DAT_006a4f70;
-    *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = DAT_006b2fe4;
-    *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = DAT_007006c8;
-    *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = DAT_006b2d5c;
-    *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_ActivePalette;
+    *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28) = g_EventSourcePlayer;
+    *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28) = g_EventSourceSlot;
+    *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28) = g_EventCardId;
+    *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28) = g_EventCardColorMask;
+    *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28) = g_EventTargetPlayer;
+    *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28) = g_EventTargetSlot;
+    *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28) = g_CardEventResult;
     DAT_0052577c = DAT_0052577c + 1;
   }
   return;
@@ -212,33 +215,32 @@ void Magic_PayManaCost(void)
 
 
 /*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Procedure:
- * 1. Verify that the card is untapped.
- * 2. Set the STATUS_TAPPED flag on the card slot.
- * 3. Add mana of the card color to the player mana pool.
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_TapCardForMana
+ * Decompiled function: Magic_PopEventContext
  * Entry Point: 004744de
  * Size: 170 bytes
  */
 
 
-void Magic_TapCardForMana(void)
+void Magic_PopEventContext(void)
 
 {
   if (0 < DAT_0052577c) {
     DAT_0052577c = DAT_0052577c + -1;
   }
-  g_OverworldPlayerCoordX = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
-  g_OverworldMapGrid = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
-  DAT_006a4f70 = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
-  DAT_006b2fe4 = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
-  DAT_007006c8 = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
-  DAT_006b2d5c = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
-  g_ActivePalette = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
+  g_EventSourcePlayer = *(int *)(&DAT_00676e40 + DAT_0052577c * 0x28);
+  g_EventSourceSlot = *(int *)(&DAT_00676e44 + DAT_0052577c * 0x28);
+  g_EventCardId = *(int *)(&DAT_00676e48 + DAT_0052577c * 0x28);
+  g_EventCardColorMask = *(int *)(&DAT_00676e4c + DAT_0052577c * 0x28);
+  g_EventTargetPlayer = *(int *)(&DAT_00676e50 + DAT_0052577c * 0x28);
+  g_EventTargetSlot = *(int *)(&DAT_00676e54 + DAT_0052577c * 0x28);
+  g_CardEventResult = *(int *)(&DAT_00676e58 + DAT_0052577c * 0x28);
   return;
 }
 
@@ -305,8 +307,8 @@ void Magic_UntapTurnPhase(void)
         val_1 = *(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20);
         arg_1 = (&g_MasterCardColorTable)[val_1 * 0x34];
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 2) != 0) {
-          val_2 = Card_TapForMana(match_count, card_idx, 0x32, 0xffffffff);
-          val_3 = Card_TapForMana(match_count,card_idx,0x33,0xffffffff);
+          val_2 = Magic_QueryCardAttribute(match_count, card_idx, 0x32, 0xffffffff);
+          val_3 = Magic_QueryCardAttribute(match_count,card_idx,0x33,0xffffffff);
           val_4 = Rules_CalculateManaCostReduction(arg_1);
           *(int *)(&DAT_006b2e40 + val_4 * 4 + match_count * 0x20) =
                *(int *)(&DAT_006b2e40 + val_4 * 4 + match_count * 0x20) + val_2;
@@ -366,14 +368,17 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 
 /*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00 to 0x2f). Ids below 0x14 index the table of
+ *   20 sound names (artifact, buried, draw, enchant, ... untap); higher ids use further tables.
  * Procedure:
- * 1. Fire UPKEEP_EVENT triggers on all permanents in play.
- * 2. Process required upkeep payments.
+ * 1. If the id is not loaded yet, evict a least-recently-used track and load its .wav.
+ * 2. Start playback of the track.
+ * Verified on the live game (called with id 2, draw.wav, from the draw function). The original
+ * label "Upkeep phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_UpkeepPhase
+ * Decompiled function: Duel_PlaySoundById
  * Entry Point: 0047496b
  * Size: 788 bytes
  */
@@ -381,7 +386,7 @@ void Magic_CheckTurnTriggers(int x,int arg2)
 
 /* WARNING: Type propagation algorithm not settling */
 
-int Magic_UpkeepPhase(int player_id)
+int Duel_PlaySoundById(int sound_id)
 
 {
   int uval_1;
@@ -405,14 +410,14 @@ int Magic_UpkeepPhase(int player_id)
   else {
     local_28[0] = arg_1;
     if (arg_1 < 0x14) {
-      Pic_Subsystem_00423bf4(arg_1,0);
+      PlaySnd(arg_1,0);
     }
     else if (arg_1 < 0x1d) {
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
-        local_2c = Pic_Subsystem_00424165(local_28,0x14,0x16);
+        local_2c = GetLRUSnd(local_28,0x14,0x16);
         if (local_2c == 0) {
-          Pic_Subsystem_00423b93(local_28[0]);
+          CloseSndTrack(local_28[0]);
         }
         else if (local_2c != 1) {
           return 0;
@@ -420,16 +425,16 @@ int Magic_UpkeepPhase(int player_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d1c);
         strcat(local_134,(&PTR_s_artifact_wav_00525788)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
       }
-      Pic_Subsystem_00423bf4(local_28[0],0);
+      PlaySnd(local_28[0],0);
     }
     else if (arg_1 < 0x22) {
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
-        local_2c = Pic_Subsystem_00424165(local_28,0x1d,0x1d);
+        local_2c = GetLRUSnd(local_28,0x1d,0x1d);
         if (local_2c == 0) {
-          Pic_Subsystem_00423b93(local_28[0]);
+          CloseSndTrack(local_28[0]);
         }
         else if (local_2c != 1) {
           return 0;
@@ -437,16 +442,16 @@ int Magic_UpkeepPhase(int player_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d20);
         strcat(local_134,(&PTR_s_buried_wav_0052578c)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
       }
-      Pic_Subsystem_00423bf4(local_28[0],0);
+      PlaySnd(local_28[0],0);
     }
     else {
       if (0x2f < arg_1) {
         return 0;
       }
       local_28[1] = 400;
-      val_2 = Pic_Subsystem_00424123(arg_1,local_28);
+      val_2 = IsSndLoaded(arg_1,local_28);
       if (val_2 == 0) {
         if (arg_1 == 0x2b) {
           local_28[6] = 0xffffffff;
@@ -457,8 +462,8 @@ int Magic_UpkeepPhase(int player_id)
         strcpy(local_134,&g_DuelSoundsDirectory);
         strcat(local_134,&DAT_00525d24);
         strcat(local_134,(&PTR_s_draw_wav_00525790)[arg_1]);
-        Pic_Subsystem_00423b57(local_134,local_28[0],local_28 + 1);
-        Pic_Subsystem_00423bf4(local_28[0],local_28 + 1);
+        InitSndTrack(local_134,local_28[0],local_28 + 1);
+        PlaySnd(local_28[0],local_28 + 1);
       }
       else {
         if (arg_1 == 0x2b) {
@@ -467,7 +472,7 @@ int Magic_UpkeepPhase(int player_id)
         else {
           slot_idx = slot_idx | 4;
         }
-        Pic_Subsystem_00423bf4(local_28[0],local_28 + 1);
+        PlaySnd(local_28[0],local_28 + 1);
       }
     }
     uval_1 = 1;
@@ -478,21 +483,25 @@ int Magic_UpkeepPhase(int player_id)
 
 
 /*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects (artifact, buried, draw, enchant, endphase,
+ *   endturn, instant, interupt, five mana colours plus grey, lifeloss, sacrfice, sorcery,
+ *   summon, tap, untap).
  * Procedure:
- * 1. Verify that the active player library is not empty.
- * 2. Move the top card from the library to the player hand.
- * 3. Increment the hand card counter.
+ * 1. Stop any sound track that is playing.
+ * 2. For each of the 20 names, build the path from the duel sounds directory and register
+ *    the .wav.
+ * Verified on the live game: runs once when a duel starts. The original label "draw card
+ * phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_DrawCardPhase
+ * Decompiled function: Duel_PreloadSoundEffects
  * Entry Point: 00474c7f
  * Size: 143 bytes
  */
 
 
-void Magic_DrawCardPhase(void)
+void Duel_PreloadSoundEffects(void)
 
 {
   char local_130 [264];
@@ -500,12 +509,12 @@ void Magic_DrawCardPhase(void)
   uint32_t slot_idx;
   
   slot_idx = slot_idx & 0xfffffffb;
-  Pic_Subsystem_00423bc7();
+  StopSndTrack();
   for (local_28 = 0; local_28 < 0x14; local_28 = local_28 + 1) {
     strcpy(local_130,&g_DuelSoundsDirectory);
     strcat(local_130,&DAT_00525d28);
     strcat(local_130,(&PTR_s_artifact_wav_00525788)[local_28]);
-    Pic_Subsystem_00423b57(local_130,local_28,0);
+    InitSndTrack(local_130,local_28,0);
   }
   return;
 }
@@ -522,24 +531,24 @@ void Magic_DrawCardPhase(void)
 void FUN_00474d0e(void)
 
 {
-  Pic_Subsystem_00423bc7();
+  StopSndTrack();
   return;
 }
 
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_00474d1e
+ * Decompiled function: Magic_ClearSpellStack
  * Entry Point: 00474d1e
  * Size: 44 bytes
  */
 
 
-int Mem_AllocOrFree_00474d1e(void)
+int Magic_ClearSpellStack(void)
 
 {
   g_AiEvaluatedMoveCount = 0;
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   return 0;
 }
 
@@ -593,9 +602,9 @@ int Magic_MainTurnPhase(int player_id)
   int val_6;
   
   val_6 = g_AiEvaluatedMoveCount + -1;
-  val_1 = (&DAT_006fecc0)[val_6 * 2];
+  val_1 = (&g_SpellStackObjects)[val_6 * 2];
   val_2 = *(int *)(&DAT_006fecc4 + val_6 * 8);
-  if (*(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) == DAT_006fd3f4) {
+  if (*(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) == g_StackObjectCardId) {
     uval_3 = *(int *)(&g_CardSlot_SicknessState + val_2 * 0x120 + val_1 * 0x5b20);
     uval_4 = *(int *)(&g_CardSlot_TapState + val_2 * 0x120 + val_1 * 0x5b20);
     uval_5 = *(int *)(&g_CardSlot_DisplayIndex + val_2 * 0x120 + val_1 * 0x5b20);
@@ -603,7 +612,7 @@ int Magic_MainTurnPhase(int player_id)
            &g_ActiveCardsInPlay +
            *(int *)(&g_CardSlot_SicknessState + val_2 * 0x120 + val_1 * 0x5b20) * 0x120 +
            *(int *)(&g_CardSlot_TapState + val_2 * 0x120 + val_1 * 0x5b20) * 0x5b20,0x120);
-    *(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) = DAT_006fd3f4;
+    *(int *)(&g_CardSlot_CardId + val_2 * 0x120 + val_1 * 0x5b20) = g_StackObjectCardId;
     *(int *)(&DAT_006a5f80 + val_2 * 0x120 + val_1 * 0x5b20) = 0;
     (&g_CardSlot_CardTypeIndex)[val_2 * 0x120 + val_1 * 0x5b20] = 0;
     *(uint32_t *)(&g_CardSlot_Flags + val_2 * 0x120 + val_1 * 0x5b20) =
@@ -645,21 +654,22 @@ int Magic_MainTurnPhase(int player_id)
 
 
 /*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Procedure:
- * 1. Declare attackers step.
- * 2. Declare blockers step.
- * 3. Combat damage step.
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_CombatPhase
+ * Decompiled function: Magic_PushSpellStack
  * Entry Point: 004751d7
  * Size: 1062 bytes
  */
 
 
-int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int arg_5)
+int Magic_PushSpellStack(int player_id,int card_slot,int event_type,int arg_4,int arg_5)
 
 {
   int uval_1;
@@ -667,19 +677,19 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
   int match_count;
   
   if (g_AiEvaluatedMoveCount < 0x20) {
-    *(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
+    *(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
          *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20);
-    *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
-         *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) | arg_3 << 0x10;
-    *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) =
-         *(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) | arg_4 << 0x18;
+    *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
+         *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) | arg_3 << 0x10;
+    *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) =
+         *(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) | arg_4 << 0x18;
     if (((arg_3 == 0x71) || (arg_3 == 0x7e)) ||
        (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) < 5)) {
       match_count = arg_2;
       flag_2 = true;
     }
     else {
-      match_count = Deck_AddCardToDeck(arg_1,DAT_006fd3f4);
+      match_count = Deck_AddCardToDeck(arg_1,g_StackObjectCardId);
       if (match_count == -1) {
         flag_2 = false;
       }
@@ -687,7 +697,7 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
         uval_1 = *(int *)(&g_CardSlot_DisplayIndex + arg_1 * 0x5b20 + match_count * 0x120);
         memcpy(&g_ActiveCardsInPlay + match_count * 0x120 + arg_1 * 0x5b20,
                &g_ActiveCardsInPlay + arg_1 * 0x5b20 + arg_2 * 0x120,0x120);
-        *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + match_count * 0x120) = DAT_006fd3f4;
+        *(int *)(&g_CardSlot_CardId + arg_1 * 0x5b20 + match_count * 0x120) = g_StackObjectCardId;
         *(int *)(&DAT_006a5f80 + arg_1 * 0x5b20 + match_count * 0x120) = 0;
         (&g_CardSlot_CardTypeIndex)[arg_1 * 0x5b20 + match_count * 0x120] = 0;
         if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == -1) {
@@ -709,23 +719,23 @@ int Magic_CombatPhase(int player_id,int card_slot,int event_type,int arg_4,int a
       }
     }
     if (flag_2) {
-      (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = arg_1;
+      (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = arg_1;
       *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) = match_count;
       *(int *)(&DAT_006ff390 + g_AiEvaluatedMoveCount * 8) =
            (int)(char)(&g_CardSlot_Toughness)[arg_2 * 0x120 + arg_1 * 0x5b20];
       *(int *)(&DAT_006ff394 + g_AiEvaluatedMoveCount * 8) =
            *(int *)(&g_CardSlot_OriginalCardId + arg_2 * 0x120 + arg_1 * 0x5b20);
-      if (g_PlayerManaPool == -1) {
+      if (g_CurrentStepCode == -1) {
         *(int *)(&DAT_00696880 + g_AiEvaluatedMoveCount * 4) = g_ScWillyScore;
       }
       else {
-        *(int *)(&DAT_00696880 + g_AiEvaluatedMoveCount * 4) = g_PlayerManaPool;
+        *(int *)(&DAT_00696880 + g_AiEvaluatedMoveCount * 4) = g_CurrentStepCode;
       }
       if (g_IsAiThinking != 1) {
         *(int *)(&DAT_00695d70 + g_AiEvaluatedMoveCount * 4) = arg_5;
       }
       g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + 1;
-      (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+      (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
     }
   }
   return 0;
@@ -747,7 +757,7 @@ int FUN_004755fd(void)
   int match_count;
   
   for (match_count = 0; match_count < g_AiEvaluatedMoveCount; match_count = match_count + 1) {
-    val_1 = (&DAT_006fecc0)[match_count * 2];
+    val_1 = (&g_SpellStackObjects)[match_count * 2];
     *(int *)(&DAT_006ff390 + match_count * 8) =
          (int)(char)(&g_CardSlot_Toughness)
                     [val_1 * 0x5b20 + *(int *)(&DAT_006fecc4 + match_count * 8) * 0x120];
@@ -762,21 +772,20 @@ int FUN_004755fd(void)
 
 
 /*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Procedure:
- * 1. Check end-of-turn triggers.
- * 2. Prompt player to discard to maximum hand size if needed.
- * 3. Switch the active player turn index.
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_EndTurnPhase
+ * Decompiled function: Magic_ResolveTopSpell
  * Entry Point: 004756a1
  * Size: 1295 bytes
  */
 
 
-int Magic_EndTurnPhase(void)
+int Magic_ResolveTopSpell(void)
 
 {
   int player_id;
@@ -785,22 +794,22 @@ int Magic_EndTurnPhase(void)
   
   if (0 < g_AiEvaluatedMoveCount) {
     g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + -1;
-    arg_1 = (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2];
+    arg_1 = (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2];
     arg_2 = *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8);
     match_count = *(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20);
-    if (DAT_006fd3f4 == match_count) {
+    if (g_StackObjectCardId == match_count) {
       match_count = *(int *)(&g_ActiveCardsInPlay + arg_2 * 0x120 + arg_1 * 0x5b20);
     }
     if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) != -1) {
-      if ((char)((uint32_t)*(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10) == '~') {
-        Pic_Subsystem_004485d6
-                  (arg_1,arg_2,*(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
-                   *(int *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x18);
+      if ((char)((uint32_t)*(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10) == '~') {
+        Magic_BroadcastCardEventInStep
+                  (arg_1,arg_2,*(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
+                   *(int *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x18);
       }
       else if (((&g_CardSlot_SpecialState)[arg_2 * 0x120 + arg_1 * 0x5b20] & 8) == 0) {
         if (((&g_CardSlot_SpecialState)[arg_2 * 0x120 + arg_1 * 0x5b20] & 0x80) == 0) {
           Magic_TriggerCardEvent
-                    (arg_1,arg_2,*(uint32_t *)(&DAT_006ff4d0 + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
+                    (arg_1,arg_2,*(uint32_t *)(&g_SpellStackEntries + g_AiEvaluatedMoveCount * 4) >> 0x10 & 0xff,
                      1 - arg_1,0xffffffff);
         }
         else {
@@ -849,16 +858,16 @@ int Magic_EndTurnPhase(void)
                       *(int *)(&g_CardSlot_SicknessState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x120 +
                       *(int *)(&g_CardSlot_TapState + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x5b20) | 4;
       }
-      if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == DAT_006fd3f4) {
+      if (*(int *)(&g_CardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) == g_StackObjectCardId) {
         Pic_Subsystem_0044867e(arg_1,arg_2,4);
       }
     }
-    (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
     Rules_ProcessCombatDamageStep();
-    if (((((&g_MasterCardFlagsTable)[match_count * 0x34] & 0x10) == 0) || (((uint8_t)g_PlayerHandCardCount & 2) != 0)
-        ) && ((DAT_006fd3f0 < 2 && (((g_PlayerHandCardCount._1_1_ & 2) == 0 || (g_AiEvaluatedMoveCount == 0)))
+    if (((((&g_MasterCardFlagsTable)[match_count * 0x34] & 0x10) == 0) || (((uint8_t)g_DuelModeFlags & 2) != 0)
+        ) && ((DAT_006fd3f0 < 2 && (((g_DuelModeFlags._1_1_ & 2) == 0 || (g_AiEvaluatedMoveCount == 0)))
               ))) {
-      Rules_ProcessDamagePrevention(g_DefendingPlayer);
+      Rules_ProcessDamagePrevention(g_TurnPlayer);
       Rules_SendCardsToGraveyard();
     }
   }
@@ -868,31 +877,32 @@ int Magic_EndTurnPhase(void)
 
 
 /*
- * Magic_DiscardToHandSize
- * Purpose: Force a player to discard cards when hand count exceeds 7.
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
 /*
- * Decompiled function: Magic_DiscardToHandSize
+ * Decompiled function: Magic_DropTopSpell
  * Entry Point: 00475bb0
  * Size: 177 bytes
  */
 
 
-int Magic_DiscardToHandSize(void)
+int Magic_DropTopSpell(void)
 
 {
   if (0 < g_AiEvaluatedMoveCount) {
     g_AiEvaluatedMoveCount = g_AiEvaluatedMoveCount + -1;
-    if (DAT_006fd3f4 ==
+    if (g_StackObjectCardId ==
         *(int *)(&g_CardSlot_CardId +
                 *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) * 0x120 +
-                (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] * 0x5b20)) {
+                (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] * 0x5b20)) {
       *(int *)
        (&g_CardSlot_CardId +
        *(int *)(&DAT_006fecc4 + g_AiEvaluatedMoveCount * 8) * 0x120 +
-       (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] * 0x5b20) = 0xffffffff;
+       (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] * 0x5b20) = 0xffffffff;
     }
-    (&DAT_006fecc0)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
+    (&g_SpellStackObjects)[g_AiEvaluatedMoveCount * 2] = 0xffffffff;
   }
   return 0;
 }
@@ -943,8 +953,8 @@ int FUN_00475c8a(int x,int card_slot,char *arg_3,int arg_4)
   DAT_0063ee1c = uval_1;
   if (g_AiEvaluatedMoveCount == 0) {
     DAT_0063ee1c = 0;
-    *(uint32_t *)(&g_PlayerManaPoolAvailable + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) =
-         *(uint32_t *)(&g_PlayerManaPoolAvailable + g_DefendingPlayer * 0x98 + g_ScWillyScore * 4) & 0xfffffffd;
+    *(uint32_t *)(&g_PlayerManaPoolAvailable + g_TurnPlayer * 0x98 + g_ScWillyScore * 4) =
+         *(uint32_t *)(&g_PlayerManaPoolAvailable + g_TurnPlayer * 0x98 + g_ScWillyScore * 4) & 0xfffffffd;
   }
   return uval_3;
 }
@@ -978,8 +988,8 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int arg_4)
   uval_3 = g_CombatPhaseFlags;
   uval_2 = g_ActiveCardTargetSlot;
   uval_1 = DAT_006808b0;
-  match_count = g_PlayerManaPool;
-  g_PlayerManaPool = 0xffffffff;
+  match_count = g_CurrentStepCode;
+  g_CurrentStepCode = 0xffffffff;
   DAT_006ff684 = DAT_006ff684 + 1;
   if (DAT_006ff684 == 1) {
     DAT_006b2d24 = 0;
@@ -998,8 +1008,8 @@ int Magic_CleanupPhase(int x,int y,char *str_3,int arg_4)
   }
   val_4 = FUN_00505c74();
   if ((val_4 == 0) &&
-     ((*(int *)(&g_PlayerManaPoolAvailable + g_DefendingPlayer * 0x98 + y * 4) != 0 ||
-      ((g_DefendingPlayer == DAT_00627a84 && (y == DAT_00627a88)))))) {
+     ((*(int *)(&g_PlayerManaPoolAvailable + g_TurnPlayer * 0x98 + y * 4) != 0 ||
+      ((g_TurnPlayer == DAT_00627a84 && (y == DAT_00627a88)))))) {
     DAT_006808b0 = 1;
   }
   else {
@@ -1016,7 +1026,7 @@ LAB_0047615d:
     DAT_006808b0 = uval_1;
     DAT_00525850 = slot_idx;
     g_CombatPhaseFlags = uval_3;
-    g_PlayerManaPool = match_count;
+    g_CurrentStepCode = match_count;
     g_ActiveCardTargetSlot = uval_2;
     if (local_94 != 0) {
       DAT_00633434 = 0;
@@ -1025,12 +1035,12 @@ LAB_0047615d:
   }
   strcpy(local_8c,str_3);
   if ((g_ScWillyScore == 4) && (DAT_006ff684 == 1)) {
-    g_CurrentTurnTargetPlayer = g_DefendingPlayer;
+    g_CurrentTurnTargetPlayer = g_TurnPlayer;
     FUN_00476b0e();
   }
   do {
     do {
-      if (g_DefendingPlayer == 0) {
+      if (g_TurnPlayer == 0) {
         DAT_0068a67c = 1;
       }
       else if (x < 0) {
@@ -1044,11 +1054,11 @@ LAB_0047615d:
       }
       g_ActivePlayer = 0;
       g_CombatPhaseFlags = 0;
-      local_98 = UI_PromptFastEffectsDialog(g_DefendingPlayer,local_8c);
+      local_98 = UI_PromptFastEffectsDialog(g_TurnPlayer,local_8c);
       if (local_98 != 0) {
         DAT_006ff380 = 1;
       }
-      if (((g_DefendingPlayer == g_CurrentTurnPhase) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
+      if (((g_TurnPlayer == g_CurrentTurnPhase) && (local_98 != 0)) && (g_IsAiThinking != 1)) {
         local_94 = 1;
       }
       if ((DAT_006ff684 < DAT_006b2d24) && (-1 < g_AiEvaluatedMoveCount)) {
@@ -1056,11 +1066,11 @@ LAB_0047615d:
       }
     } while ((local_98 != 0) || (((g_CombatPhaseFlags & 1) != 0 && (DAT_006ff684 == 1))));
     if ((g_ScWillyScore == 4) && (DAT_006ff684 == 1)) {
-      g_CurrentTurnTargetPlayer = 1 - g_DefendingPlayer;
+      g_CurrentTurnTargetPlayer = 1 - g_TurnPlayer;
       FUN_00476b0e();
     }
     while( true ) {
-      if (g_DefendingPlayer == 0) {
+      if (g_TurnPlayer == 0) {
         if (x < 0) {
           DAT_0068a67c = 2;
         }
@@ -1077,11 +1087,11 @@ LAB_0047615d:
       g_ActivePlayer = 0;
       g_CombatPhaseFlags = 0;
       if (((DAT_006ff684 < DAT_006b2d24) && (-1 < g_AiEvaluatedMoveCount)) ||
-         (val_4 = UI_PromptFastEffectsDialog(1 - g_DefendingPlayer,local_8c), val_4 == 0))
+         (val_4 = UI_PromptFastEffectsDialog(1 - g_TurnPlayer,local_8c), val_4 == 0))
       goto LAB_0047615d;
       DAT_006ff380 = 1;
       if (g_IsAiThinking != 1) break;
-      if ((g_DefendingPlayer != g_CurrentTurnPhase) &&
+      if ((g_TurnPlayer != g_CurrentTurnPhase) &&
          (((g_CombatPhaseFlags & 1) == 0 || (DAT_006ff684 != 1)))) goto LAB_0047615d;
     }
   } while( true );
@@ -1099,21 +1109,21 @@ LAB_0047615d:
 int FUN_00476205(int x,int card_slot,char *arg_3,int arg_4)
 
 {
-  FUN_0047624f(x,arg_2,arg_3,arg_4);
-  FUN_0047624f(1 - x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(x,arg_2,arg_3,arg_4);
+  Magic_RunTurnStep(1 - x,arg_2,arg_3,arg_4);
   return 1;
 }
 
 
 
 /*
- * Decompiled function: FUN_0047624f
+ * Decompiled function: Magic_RunTurnStep
  * Entry Point: 0047624f
  * Size: 495 bytes
  */
 
 
-int FUN_0047624f(int x,int card_slot,char *str_3,int height)
+int Magic_RunTurnStep(int x,int card_slot,char *str_3,int height)
 
 {
   uint32_t uval_1;
@@ -1139,7 +1149,7 @@ int FUN_0047624f(int x,int card_slot,char *str_3,int height)
     else {
       DAT_0068a67c = 2;
     }
-    g_PlayerManaPool = arg_2;
+    g_CurrentStepCode = arg_2;
     if (height == 0) {
       DAT_0063ee70 = 0;
     }
@@ -1153,7 +1163,7 @@ int FUN_0047624f(int x,int card_slot,char *str_3,int height)
     DAT_0063edc8 = uval_1 & 0x30;
   } while (((g_TurnPhaseStateFlags & (-(uint32_t)(val_6 == 0) & 0xfffffffe) + 6) != 0) ||
           ((height != 0 && (val_6 != 0))));
-  g_PlayerManaPool = 0xffffffff;
+  g_CurrentStepCode = 0xffffffff;
   DAT_006fd3f0 = DAT_006fd3f0 + -1;
   DAT_0063ee70 = uval_1;
   DAT_0068a67c = uval_2;
@@ -1384,7 +1394,7 @@ int FUN_004769c4(int x,int arg2)
   }
   else {
     slot_idx = *(int *)(&g_CardSlot_CardId + arg2 * 0x120 + x * 0x5b20);
-    if (DAT_006fd3f4 == slot_idx) {
+    if (g_StackObjectCardId == slot_idx) {
       slot_idx = *(int *)(&g_ActiveCardsInPlay + arg2 * 0x120 + x * 0x5b20);
     }
     if (slot_idx == -1) {
@@ -1456,8 +1466,8 @@ void FUN_00476b0e(void)
                  (&DAT_006a603c)[match_count + slot_idx * 0x5b20 + card_idx * 0x120];
           }
           *(int *)(&g_CardSlot_SpecialState + card_idx * 0x120 + slot_idx * 0x5b20) = 0;
-          Rules_ApplyContinuousDamage(slot_idx,card_idx,0x85);
-          Rules_ApplyContinuousDamage(slot_idx,card_idx,0x84);
+          Magic_BroadcastCardEvent(slot_idx,card_idx,0x85);
+          Magic_BroadcastCardEvent(slot_idx,card_idx,0x84);
         }
       }
     }
@@ -5805,7 +5815,7 @@ LAB_004810c3:
           if (val_3 == 0) {
             Glue_Subsystem_004ef849(g_AiSelectedActionCode,&local_174,(int *)0x0,&local_144);
           }
-          if ((local_158 != DAT_006fd3f4) && (local_15c != 2)) {
+          if ((local_158 != g_StackObjectCardId) && (local_15c != 2)) {
             if (((local_158 == -1) || (local_15c != 1)) ||
                (((local_150 & 0x10000) != 0 && (DAT_006fe43c == 0)))) {
               if (local_178 != 0) {

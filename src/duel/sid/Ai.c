@@ -40,7 +40,7 @@ void Ai_SaveGameState(void)
   FID_conflict__memcpy(&DAT_0050ecf0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00511ef0,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_00510e30,&DAT_00681ee0,2000);
-  DAT_00514eb8 = g_DuelPlayerManaPool;
+  DAT_00514eb8 = g_DuelModeFlags;
   DAT_0050f9b8 = g_DuelCombatPhaseState;
   DAT_006c1214 = g_DuelCombatPhaseState;
   DAT_00514528 = DAT_0066644c;
@@ -92,7 +92,7 @@ void FUN_0042fea9(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_0050ecf0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00511ef0,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_00510e30,2000);
-  g_DuelPlayerManaPool = DAT_00514eb8;
+  g_DuelModeFlags = DAT_00514eb8;
   g_DuelCombatPhaseState = DAT_0050f9b8;
   DAT_0066644c = DAT_00514528;
   DAT_006826b0 = DAT_005126d4;
@@ -140,7 +140,7 @@ void FUN_00430120(void)
   FID_conflict__memcpy(&DAT_005109b0,&DAT_0068ed50,0x80);
   FID_conflict__memcpy(&DAT_00514640,&DAT_00690320,2000);
   FID_conflict__memcpy(&DAT_0050b388,&DAT_00681ee0,2000);
-  DAT_0050f838 = g_DuelPlayerManaPool;
+  DAT_0050f838 = g_DuelModeFlags;
   DAT_00513578 = g_DuelCombatPhaseState;
   DAT_0050f9bc = DAT_0066644c;
   DAT_0050f9c8 = DAT_006826b0;
@@ -185,7 +185,7 @@ void FUN_00430367(void)
   FID_conflict__memcpy(&DAT_0068ed50,&DAT_005109b0,0x80);
   FID_conflict__memcpy(&DAT_00690320,&DAT_00514640,2000);
   FID_conflict__memcpy(&DAT_00681ee0,&DAT_0050b388,2000);
-  g_DuelPlayerManaPool = DAT_0050f838;
+  g_DuelModeFlags = DAT_0050f838;
   g_DuelCombatPhaseState = DAT_00513578;
   DAT_0066644c = DAT_0050f9bc;
   DAT_006826b0 = DAT_0050f9c8;
@@ -204,13 +204,13 @@ void FUN_00430367(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004305ae
+ * Decompiled function: Ai_ClearPlan
  * Entry Point: 004305ae
  * Size: 37 bytes
  */
 
 
-void Mem_AllocOrFree_004305ae(void)
+void Ai_ClearPlan(void)
 
 {
   DAT_0050b37c = 0;
@@ -221,13 +221,13 @@ void Mem_AllocOrFree_004305ae(void)
 
 
 /*
- * Decompiled function: FUN_004305d3
+ * Decompiled function: Ai_BeginTrial
  * Entry Point: 004305d3
  * Size: 119 bytes
  */
 
 
-void FUN_004305d3(void)
+void Ai_BeginTrial(void)
 
 {
   int slot_idx;
@@ -239,7 +239,7 @@ void FUN_004305d3(void)
     (&DAT_00511a00)[slot_idx] = 99;
   }
   FUN_0042fea9();
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     DAT_00666400 = 0xffffffff;
   }
   return;
@@ -248,13 +248,13 @@ void FUN_004305d3(void)
 
 
 /*
- * Decompiled function: FUN_0043064a
+ * Decompiled function: Ai_RecordChoice
  * Entry Point: 0043064a
  * Size: 211 bytes
  */
 
 
-void FUN_0043064a(void)
+void Ai_RecordChoice(void)
 
 {
   if (DAT_0050b37c < 0x100) {
@@ -263,7 +263,7 @@ void FUN_0043064a(void)
          *(int32_t *)
           (&g_DuelCardSlot_CardId + (DAT_0068f0bc & 0xff) * 0x120 + ((DAT_0068f0bc & 0x100) >> 8) * 0x5b20);
     *(int32_t *)(&DAT_00513178 + DAT_0050b37c * 4) = DAT_004f3c6c;
-    (&DAT_00511a00)[DAT_0050b37c] = DAT_0068f2c8;
+    (&DAT_00511a00)[DAT_0050b37c] = g_AiChoiceValue;
     DAT_0050b37c = DAT_0050b37c + 1;
     if ((DAT_00511a00 == 99) || (DAT_00511600 == 99)) {
       DAT_0068f0bc = 0xffffffff;
@@ -288,7 +288,7 @@ void FUN_0043064a(void)
 int32_t Card_DispatchRulesEvent(int player_id)
 
 {
-  if ((g_DuelDebugModeFlag != 1) &&
+  if ((g_IsAiThinking != 1) &&
      (DAT_0068f0bc = *(uint32_t *)(&DAT_0050ed70 + (arg_1 + DAT_0050b37c) * 4),
      DAT_0068f0bc != 0xffffffff)) {
     DAT_0068f0bc = DAT_0068f0bc & 0xfff;
@@ -308,7 +308,7 @@ int32_t Card_DispatchRulesEvent(int player_id)
 int32_t FUN_00430768(int player_id)
 
 {
-  if ((g_DuelDebugModeFlag != 1) &&
+  if ((g_IsAiThinking != 1) &&
      (DAT_00666410 = (&DAT_00511600)[DAT_0050b37c + arg_1], DAT_00666410 == 99)) {
     DAT_00666410 = 0;
   }
@@ -318,17 +318,17 @@ int32_t FUN_00430768(int player_id)
 
 
 /*
- * Decompiled function: FUN_004307b2
+ * Decompiled function: Ai_ReplayChoice
  * Entry Point: 004307b2
  * Size: 108 bytes
  */
 
 
-void FUN_004307b2(void)
+void Ai_ReplayChoice(void)
 
 {
   DAT_0068f0bc = *(int32_t *)(&DAT_0050ed70 + DAT_0050b37c * 4);
-  DAT_0068f2c8 = (&DAT_00511600)[DAT_0050b37c];
+  g_AiChoiceValue = (&DAT_00511600)[DAT_0050b37c];
   if ((&DAT_00511600)[DAT_0050b37c] != 99) {
     DAT_0050b37c = DAT_0050b37c + 1;
   }
@@ -339,13 +339,13 @@ void FUN_004307b2(void)
 
 
 /*
- * Decompiled function: FUN_0043081e
+ * Decompiled function: Ai_CommitBestPlan
  * Entry Point: 0043081e
  * Size: 177 bytes
  */
 
 
-void FUN_0043081e(void)
+void Ai_CommitBestPlan(void)
 
 {
   int slot_idx;
@@ -367,13 +367,13 @@ void FUN_0043081e(void)
 
 
 /*
- * Decompiled function: Mem_AllocOrFree_004308cf
+ * Decompiled function: Ai_GetPlanCursor
  * Entry Point: 004308cf
  * Size: 21 bytes
  */
 
 
-int32_t Mem_AllocOrFree_004308cf(void)
+int32_t Ai_GetPlanCursor(void)
 
 {
   return DAT_0050b37c;
@@ -403,13 +403,13 @@ void Mem_AllocOrFree_004308e4(void)
 
 
 /*
- * Decompiled function: FUN_00430911
+ * Decompiled function: Ai_EvaluateBoard
  * Entry Point: 00430911
  * Size: 2728 bytes
  */
 
 
-int FUN_00430911(int player_id)
+int Ai_EvaluateBoard(int player_id)
 
 {
   int val_1;
@@ -472,8 +472,8 @@ int FUN_00430911(int player_id)
           }
         }
       }
-      if ((DAT_006c121c == 0) && (g_DuelDefendingPlayer == arg_1)) {
-        match_count = FUN_004313b9(arg_1,match_count);
+      if ((DAT_006c121c == 0) && (g_TurnPlayer == arg_1)) {
+        match_count = Ai_PenalizeCounterattack(arg_1,match_count);
       }
       DAT_005ef980 = 0;
       return match_count;
@@ -493,18 +493,18 @@ int FUN_00430911(int player_id)
         if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 0x80) == 0) {
           local_2c = 1;
           if (((&g_DuelMasterCardTable)[player_idx * 0x34] & 2) != 0) {
-            uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
-            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x32,0xffffffff);
+            uval_2 = Duel_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
+            uval_3 = Duel_QueryCardAttribute(slot_idx,color_idx,0x32,0xffffffff);
             target_idx = (uval_3 & 0xffffbfff) * 2;
             if ((&DAT_004ff595)[player_idx * 0x34] == '\0') {
               target_idx = 0;
             }
             val_1 = target_idx;
-            uval_3 = Duel_TapCardForMana(slot_idx,color_idx,0x33,0xffffffff);
+            uval_3 = Duel_QueryCardAttribute(slot_idx,color_idx,0x33,0xffffffff);
             uval_3 = uval_3 & 0xffffbfff;
             local_2c = (int)((val_1 + 3) * (uval_3 + 4)) / 2;
             if ((((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 0x10) != 0) &&
-               (g_DuelDefendingPlayer == slot_idx)) {
+               (g_TurnPlayer == slot_idx)) {
               local_2c = local_2c + -1;
             }
             if ((uval_2 & 0x80) != 0) {
@@ -522,18 +522,18 @@ int FUN_00430911(int player_id)
             if ((uval_2 & 0x200) != 0) {
               local_2c = (int)(local_2c * 3) / 2;
             }
-            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_DuelDefendingPlayer == arg_1)) &&
+            if ((((DAT_006c121c == 0) && (slot_idx != arg_1)) && (g_TurnPlayer == arg_1)) &&
                (((&g_DuelCardSlot_Flags)[color_idx * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
               local_e4 = 0;
-              uval_2 = Duel_TapCardForMana(slot_idx, color_idx, 0x34, 0xffffffff);
+              uval_2 = Duel_QueryCardAttribute(slot_idx, color_idx, 0x34, 0xffffffff);
               for (local_24 = 0; local_24 < (int)(&g_DuelPlayerCreatureCount)[local_28]; local_24 = local_24 + 1)
               {
                 val_4 = FUN_0048b2c9(local_28,local_24,slot_idx,color_idx,uval_2,local_d4[slot_idx]);
                 if (val_4 != 0) {
                   local_e4 = 1;
-                  val_4 = Duel_TapCardForMana(local_28,local_24,0x33,color_idx);
+                  val_4 = Duel_QueryCardAttribute(local_28,local_24,0x33,color_idx);
                   if ((val_1 < val_4) ||
-                     (val_4 = Duel_TapCardForMana(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
+                     (val_4 = Duel_QueryCardAttribute(local_28,local_24,0x32,color_idx), (int)uval_3 <= val_4)) {
                     local_e4 = 3;
                     break;
                   }
@@ -622,13 +622,13 @@ int FUN_00430911(int player_id)
 
 
 /*
- * Decompiled function: FUN_004313b9
+ * Decompiled function: Ai_PenalizeCounterattack
  * Entry Point: 004313b9
  * Size: 2380 bytes
  */
 
 
-int FUN_004313b9(int arg1,int arg2)
+int Ai_PenalizeCounterattack(int arg1,int arg2)
 
 {
   int x;
@@ -675,9 +675,9 @@ int FUN_004313b9(int arg1,int arg2)
        (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_1b0 * 0x120 + arg1 * 0x5b20) * 0x34] & 2) !=
         0)) {
       acStack_ac[local_1b0] = (char)card_idx;
-      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x32,0xffffffff);
+      val_1 = Duel_QueryCardAttribute(arg1,local_1b0,0x32,0xffffffff);
       aiStack_f0[card_idx] = val_1;
-      val_1 = Duel_TapCardForMana(arg1,local_1b0,0x33,0xffffffff);
+      val_1 = Duel_QueryCardAttribute(arg1,local_1b0,0x33,0xffffffff);
       aiStack_194[card_idx] = val_1;
       aiStack_58[card_idx] = *(int *)(&DAT_00682700 + local_1b0 * 0x120 + arg1 * 0x5b20);
       card_idx = card_idx + 1;
@@ -689,8 +689,8 @@ int FUN_004313b9(int arg1,int arg2)
        ((((&g_DuelCardSlot_Flags)[local_1a0 * 0x120 + x * 0x5b20] & 2) != 0 &&
         (((&DAT_004ff595)[local_19c * 0x34] != '\0' ||
          (((&DAT_006826f9)[local_1a0 * 0x120 + x * 0x5b20] & 8) != 0)))))) {
-      local_1c0 = Duel_TapCardForMana(x,local_1a0,0x32,0xffffffff);
-      local_1bc = Duel_TapCardForMana(x,local_1a0,0x33,0xffffffff);
+      local_1c0 = Duel_QueryCardAttribute(x,local_1a0,0x32,0xffffffff);
+      local_1bc = Duel_QueryCardAttribute(x,local_1a0,0x33,0xffffffff);
       if (g_DuelTargetPlayer == x) {
         if (((&DAT_004ff5a8)[local_19c * 0x34] & 8) != 0) {
           val_1 = (**(code **)(&DAT_004ff5a0 + local_19c * 0x34))(x,local_1a0,0x39);
@@ -729,7 +729,7 @@ LAB_004317d2:
       return arg2;
     }
     local_1a0 = aiStack_154[player_idx * 3];
-    local_198 = Duel_TapCardForMana(x,local_1a0,0x34,0xffffffff);
+    local_198 = Duel_QueryCardAttribute(x,local_1a0,0x34,0xffffffff);
     val_1 = aiStack_154[player_idx * 3 + 1];
     val_3 = aiStack_154[player_idx * 3 + 2];
     local_1b4 = 0;
@@ -1496,7 +1496,7 @@ uint32_t FUN_00432e04(void)
   uVar41 = FileIo_ReadDataBlock(&DAT_0068ed50,0x80);
   uVar42 = FileIo_ReadDataBlock(&DAT_00690318,4);
   uVar43 = FileIo_ReadDataBlock(&DAT_0068f0f8,4);
-  uVar44 = FileIo_ReadDataBlock(&DAT_0068f2c8,4);
+  uVar44 = FileIo_ReadDataBlock(&g_AiChoiceValue,4);
   uVar45 = FileIo_ReadDataBlock(&DAT_0068f0bc,4);
   uVar46 = FileIo_ReadDataBlock(&DAT_0068ee70,0x60);
   uVar47 = FileIo_ReadDataBlock(&DAT_00666430,8);
@@ -1511,11 +1511,11 @@ uint32_t FUN_00432e04(void)
   uVar56 = FileIo_ReadDataBlock(&DAT_006668f0,8);
   uVar57 = FileIo_ReadDataBlock(&DAT_0068f228,8);
   uVar58 = FileIo_ReadDataBlock(&DAT_00666730,0x10);
-  uVar59 = FileIo_ReadDataBlock(&g_DuelDefendingPlayer,4);
+  uVar59 = FileIo_ReadDataBlock(&g_TurnPlayer,4);
   uVar60 = FileIo_ReadDataBlock(&DAT_0068ed00,4);
   uVar61 = FileIo_ReadDataBlock(&g_DuelDamageAccumulator,4);
   uVar62 = FileIo_ReadDataBlock(&g_DuelCombatPhaseState,4);
-  uVar63 = FileIo_ReadDataBlock(&g_DuelPlayerManaPool,4);
+  uVar63 = FileIo_ReadDataBlock(&g_DuelModeFlags,4);
   uVar64 = FileIo_ReadDataBlock(&DAT_006826b0,4);
   uVar65 = FileIo_ReadDataBlock(&DAT_00666440,4);
   uVar66 = FileIo_ReadDataBlock(&DAT_006669e8,4);
@@ -1524,13 +1524,13 @@ uint32_t FUN_00432e04(void)
   uVar69 = FileIo_ReadDataBlock(&DAT_0068ed04,4);
   uVar70 = FileIo_ReadDataBlock(&g_DuelTargetPlayer,4);
   uVar71 = FileIo_ReadDataBlock(&g_DuelTargetCardSlot,4);
-  uVar72 = FileIo_ReadDataBlock(&g_DuelActivePlayer,4);
-  uVar73 = FileIo_ReadDataBlock(&g_DuelActiveCardSlot,4);
+  uVar72 = FileIo_ReadDataBlock(&g_EventSourcePlayer,4);
+  uVar73 = FileIo_ReadDataBlock(&g_EventSourceSlot,4);
   uVar74 = FileIo_ReadDataBlock(&DAT_00681ecc,4);
   uVar75 = FileIo_ReadDataBlock(&DAT_0068ee64,4);
   uVar76 = FileIo_ReadDataBlock(&DAT_00690310,4);
   uVar77 = FileIo_ReadDataBlock(&DAT_0068ecfc,4);
-  uVar78 = FileIo_ReadDataBlock(&g_DuelCurrentTurnPhase,4);
+  uVar78 = FileIo_ReadDataBlock(&g_CardEventResult,4);
   uVar79 = FileIo_ReadDataBlock(&DAT_0066aadc,4);
   uVar80 = FileIo_ReadDataBlock(&DAT_0066aae0,4);
   uVar81 = FileIo_ReadDataBlock(&DAT_0066641c,4);

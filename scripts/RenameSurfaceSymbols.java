@@ -20,7 +20,7 @@ public class RenameSurfaceSymbols extends GhidraScript {
 
         if (progName.equalsIgnoreCase("MAGIC.EXE")) {
             renames.put("0050d6f0", "Surface_GetPixel");
-            renames.put("0050da40", "Surface_GetPixelPtr");
+            renames.put("0050da40", "Surface_GetPixelValue");
             renames.put("0050db10", "Surface_DrawLine");
             renames.put("0050dbb0", "Surface_PutPixel");
             renames.put("0050dc30", "Surface_FillRect");

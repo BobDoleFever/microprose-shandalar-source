@@ -2329,7 +2329,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
             val_5 = Mem_AllocOrFree_004d9810((int)(char)(&DAT_004ff598)[local_40c * 0x34]);
             FUN_0049b235(match_count,0,val_5);
             FUN_00446d17();
-            Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+            Duel_RefreshAllWindows(0,0xff);
           }
         }
         else {
@@ -2388,7 +2388,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
               FID_conflict__memcpy(local_624,&DAT_00664780,0xe8);
               GetWindowTextA(DAT_0060cc6c,local_69c,100);
               local_628 = DAT_00618158;
-              local_634 = Action_ValidateTarget_0041e2a2
+              local_634 = Duel_ChooseTarget
                                     (0,0,1,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,2,0,
                                      s_Band_with_which_attacker__004fa634,1,&local_630);
               DAT_00618158 = local_628;
@@ -2490,7 +2490,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
             FID_conflict__memcpy(local_790,&DAT_00664780,0xe8);
             GetWindowTextA(DAT_0060cc6c,local_808,100);
             local_794 = DAT_00618158;
-            local_7a0 = Action_ValidateTarget_0041e2a2
+            local_7a0 = Duel_ChooseTarget
                                   (0,1,0,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,2,0,
                                    s_Block_which_attacker__004fa678,1,&local_79c);
             DAT_00618158 = local_794;
@@ -2612,25 +2612,25 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
         if (DAT_00601618 != 0) {
           *(uint32_t *)(&g_DuelCardSlot_Flags + match_count * 0x5b20 + card_idx * 0x120) =
                *(uint32_t *)(&g_DuelCardSlot_Flags + match_count * 0x5b20 + card_idx * 0x120) ^ 0x10;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if (uval_6 == 0x264) {
         if (DAT_00601618 != 0) {
-          local_80c = *(int32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98);
-          *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) =
-               *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) & 0xfffe;
+          local_80c = *(int32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98);
+          *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) =
+               *(uint32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) & 0xfffe;
           *(uint32_t *)(&g_DuelCardSlot_Abilities1 + match_count * 0x5b20 + card_idx * 0x120) =
                *(uint32_t *)(&g_DuelCardSlot_Abilities1 + match_count * 0x5b20 + card_idx * 0x120) | 8;
           Duel_DrawCardSprite(match_count,card_idx,2);
-          *(int32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_DuelDefendingPlayer * 0x98) = local_80c;
-          Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+          *(int32_t *)(&DAT_006667c0 + g_DuelCombatPhaseState * 4 + g_TurnPlayer * 0x98) = local_80c;
+          Duel_RefreshAllWindows(0,0xff);
         }
       }
       else if ((uval_6 == 0x266) && (DAT_00601618 != 0)) {
         *(int *)(&DAT_0068270c + match_count * 0x5b20 + card_idx * 0x120) =
              *(int *)(&DAT_0068270c + match_count * 0x5b20 + card_idx * 0x120) + 1;
-        Ai_EvalAttackCandidate_004b4a3f(0,0xff);
+        Duel_RefreshAllWindows(0,0xff);
       }
       return 0;
     }

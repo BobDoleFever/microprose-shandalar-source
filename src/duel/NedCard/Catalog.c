@@ -259,7 +259,7 @@ int Catalog_ParseCsvLine(uint *csv_buffer,uint *out_record)
   int local_c;
   int local_8;
   
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     Mem_AllocOrFree_004d9630(local_108,(uint *)&DAT_004f45f8);
     Str_CopyFast(local_108,out_record);
     Str_CopyFast(local_108,(uint *)&DAT_004f45fc);
@@ -318,7 +318,7 @@ uint FUN_004348b2(undefined4 csv_buffer,undefined4 out_record)
   int local_10;
   int local_c;
   
-  if (g_DuelDebugModeFlag == 1) {
+  if (g_IsAiThinking == 1) {
     arg_1 = 0;
   }
   else {
@@ -366,7 +366,7 @@ void * FUN_00434a10(void)
 
 
 /*
- * Decompiled function: Catalog_LoadPaletteMap
+ * Decompiled function: Palette_LoadTRFile
  * Entry Point: 00434a43
  * Size: 596 bytes
  */
@@ -374,7 +374,7 @@ void * FUN_00434a10(void)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-undefined2 * Catalog_LoadPaletteMap(char *str_1,char *str_2)
+undefined2 * Palette_LoadTRFile(char *str_1,char *str_2)
 
 {
   char local_120 [256];
@@ -627,13 +627,13 @@ int FUN_00434fa1(int *arg_1)
 
 
 /*
- * Decompiled function: FUN_0043504d
+ * Decompiled function: Color_RGBToOctreePath
  * Entry Point: 0043504d
  * Size: 100 bytes
  */
 
 
-void FUN_0043504d(uint csv_buffer,uint *out_record)
+void Color_RGBToOctreePath(uint csv_buffer,uint *out_record)
 
 {
   int iVar1;
@@ -719,7 +719,7 @@ undefined4 FUN_004351b5(uint arg_1)
   uint local_2c;
   int local_28;
   
-  FUN_0043504d(arg_1,(uint *)&DAT_005166d0);
+  Color_RGBToOctreePath(arg_1,(uint *)&DAT_005166d0);
   pbVar5 = &DAT_005166d0;
   piVar3 = DAT_005162b4;
   do {
@@ -776,7 +776,7 @@ uint FUN_00435343(uint arg_1)
   uint local_2c;
   int local_28;
   
-  FUN_0043504d(arg_1,(uint *)&DAT_005162c0);
+  Color_RGBToOctreePath(arg_1,(uint *)&DAT_005162c0);
   pbVar5 = &DAT_005162c0;
   piVar3 = DAT_005162b4;
   do {

@@ -24,8 +24,8 @@ def process_magic_c():
  * 2. Execute the script event handler.
  * 3. Return the result code to the calling function.
  */""",
-        "Magic_ResolveSpellStack": """/*
- * Magic_ResolveSpellStack
+        "Magic_IsManaSource": """/*
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains active entries.
@@ -33,18 +33,20 @@ def process_magic_c():
  * 3. Move the card to the graveyard or battlefield.
  * 4. Decrement the stack depth counter.
  */""",
-        "Magic_PayManaCost": """/*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+        "Magic_PushEventContext": """/*
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_TapCardForMana": """/*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Procedure:
- * 1. Verify that the card is untapped.
- * 2. Set the STATUS_TAPPED flag on the card slot.
- * 3. Add mana of the card color to the player mana pool.
+        "Magic_PopEventContext": """/*
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
         "Magic_UntapTurnPhase": """/*
  * Magic_UntapTurnPhase
@@ -54,20 +56,27 @@ def process_magic_c():
  * 2. Clear the STATUS_TAPPED flag on cards that can untap.
  * 3. Remove summoning sickness from creatures played on previous turns.
  */""",
-        "Magic_UpkeepPhase": """/*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
+        "Duel_PlaySoundById": """/*
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00 to 0x2f). Ids below 0x14 index the table of
+ *   20 sound names (artifact, buried, draw, enchant, ... untap); higher ids use further tables.
  * Procedure:
- * 1. Fire UPKEEP_EVENT triggers on all permanents in play.
- * 2. Process required upkeep payments.
+ * 1. If the id is not loaded yet, evict a least-recently-used track and load its .wav.
+ * 2. Start playback of the track.
+ * Verified on the live game (called with id 2, draw.wav, from the draw function). The original
+ * label "Upkeep phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_DrawCardPhase": """/*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
+        "Duel_PreloadSoundEffects": """/*
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects (artifact, buried, draw, enchant, endphase,
+ *   endturn, instant, interupt, five mana colours plus grey, lifeloss, sacrfice, sorcery,
+ *   summon, tap, untap).
  * Procedure:
- * 1. Verify that the active player library is not empty.
- * 2. Move the top card from the library to the player hand.
- * 3. Increment the hand card counter.
+ * 1. Stop any sound track that is playing.
+ * 2. For each of the 20 names, build the path from the duel sounds directory and register
+ *    the .wav.
+ * Verified on the live game: runs once when a duel starts. The original label "draw card
+ * phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
         "Magic_MainTurnPhase": """/*
  * Magic_MainTurnPhase
@@ -76,25 +85,26 @@ def process_magic_c():
  * 1. Grant priority to the active player.
  * 2. Process land drops and spell casts.
  */""",
-        "Magic_CombatPhase": """/*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Procedure:
- * 1. Declare attackers step.
- * 2. Declare blockers step.
- * 3. Combat damage step.
+        "Magic_PushSpellStack": """/*
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_EndTurnPhase": """/*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Procedure:
- * 1. Check end-of-turn triggers.
- * 2. Prompt player to discard to maximum hand size if needed.
- * 3. Switch the active player turn index.
+        "Magic_ResolveTopSpell": """/*
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
-        "Magic_DiscardToHandSize": """/*
- * Magic_DiscardToHandSize
- * Purpose: Force a player to discard cards when hand count exceeds 7.
+        "Magic_DropTopSpell": """/*
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */""",
         "Magic_CleanupPhase": """/*
  * Magic_CleanupPhase
@@ -170,8 +180,8 @@ def process_catalog_c():
  * ColorOctree_AllocNode
  * Purpose: Allocate and clear a new 8-child color octree node.
  */""",
-        "Catalog_LoadPaletteMap": """/*
- * Catalog_LoadPaletteMap
+        "Palette_LoadTRFile": """/*
+ * Palette_LoadTRFile
  * Purpose: Load a palette mapping CSV file and build color octree clusters.
  */""",
         "Palette_InitSquareDistanceTable": """/*
@@ -194,8 +204,8 @@ def process_catalog_c():
  * ColorOctree_FreeTree
  * Purpose: Recursively free all nodes and cluster buffers in a color octree.
  */""",
-        "Color_QuantizeRGBToPalette": """/*
- * Color_QuantizeRGBToPalette
+        "Color_RGBToOctreePath": """/*
+ * Color_RGBToOctreePath
  * Purpose: Convert a 24-bit RGB color to the best matching palette entry.
  */""",
         "Palette_BuildFastColorLookup": """/*

@@ -265,7 +265,7 @@ int32_t g_PlayerLife[2] = {20, 20};
 int32_t g_ActiveTurn = 1;
 int32_t g_ActivePlayerId = 0;
 int32_t g_CurrentTurnPhaseId = 3; /* 0: Untap, 1: Upkeep, 2: Draw, 3: Main 1, 4: Combat, 5: Main 2, 6: End, 7: Cleanup */
-int32_t g_PlayerManaPool[2][6] = {{0}}; /* W, U, B, R, G, C */
+int32_t g_CurrentStepCode[2][6] = {{0}}; /* W, U, B, R, G, C */
 
 /* Surface Info and Globals for 2D Sprite blitter */
 static SurfaceInfo g_MainSurfaceInfo = {0};

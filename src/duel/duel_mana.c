@@ -12,7 +12,7 @@ extern int DAT_00618ad8;
 extern int DAT_006826dc;
 extern int DAT_006826d0;
 extern int DAT_006826f9;
-int Action_ValidateTarget_0041e2a2();
+int Duel_ChooseTarget();
 int Pic_Subsystem_004488a0();
 extern int DAT_004ff596;
 extern int DAT_004ff59c;
@@ -40,7 +40,7 @@ extern int DAT_0068ee64;
 typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
-uint Duel_TapCardForMana(int x, int y, int width, undefined4 arg_4);
+uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Mana_GetCardColorRequirement(int player, int card_slot);
 bool Mana_CanAffordCost(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
@@ -94,18 +94,18 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -122,13 +122,13 @@ extern char g_DuelAssetDirectory;
 extern int32_t g_DisplayScreenWidth;
 extern int32_t g_DisplayScreenHeight;
 
-extern uint32_t g_ActivePalette;
+extern uint32_t g_CardEventResult;
 extern int32_t g_CardSlot_Counters;
 extern int32_t g_CardSlot_CardId;
 extern int32_t g_CardSlot_Flags;
-extern int g_OverworldPlayerCoordX;
+extern int g_EventSourcePlayer;
 extern int g_OverworldPlayerCoordY;
-extern int g_OverworldMapGrid;
+extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
@@ -228,7 +228,7 @@ uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
 int FUN_0048cb7f();
-int FUN_0048ca2a();
+int Magic_IsManaSource();
 int FUN_0048cac9();
 int FUN_0048caf4();
 int FUN_00432c2a();
@@ -307,13 +307,13 @@ uint Mana_GetCardColorRequirement(int player,int card_slot)
 }
 
 /*
- * Decompiled function: Duel_TapCardForMana
+ * Decompiled function: Duel_QueryCardAttribute
  * Entry Point: 0048b81a
  * Size: 2824 bytes
  */
 
 
-uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
+uint Duel_QueryCardAttribute(int x,int y,int width,undefined4 flags)
 
 {
   uint uVar1;
@@ -332,8 +332,8 @@ uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
   if (DAT_0068eed8 != 0) {
     FUN_0048cac9();
   }
-  g_DuelActivePlayer = x;
-  g_DuelActiveCardSlot = y;
+  g_EventSourcePlayer = x;
+  g_EventSourceSlot = y;
   DAT_00681ecc = *(int *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20);
   DAT_0068ee64 = (int)(char)(&DAT_004ff596)[DAT_00681ecc * 0x34];
   DAT_0068ecfc = flags;
@@ -351,7 +351,7 @@ uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfbffffff;
       goto LAB_0048be41;
     }
-    g_DuelCurrentTurnPhase = (uint)*(short *)(&DAT_006826d4 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint)*(short *)(&DAT_006826d4 + y * 0x120 + x * 0x5b20);
     break;
   case 0x33:
     if (((&g_DuelCardSlot_Flags)[y * 0x120 + x * 0x5b20] & 2) == 0) {
@@ -366,7 +366,7 @@ uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfdffffff;
       goto LAB_0048be41;
     }
-    g_DuelCurrentTurnPhase = (uint)*(short *)(&DAT_006826d6 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint)*(short *)(&DAT_006826d6 + y * 0x120 + x * 0x5b20);
     break;
   case 0x34:
     uVar1 = *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
@@ -391,7 +391,7 @@ uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
            *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xf7ffffff;
       goto LAB_0048be41;
     }
-    g_DuelCurrentTurnPhase = *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = *(uint *)(&g_DuelCardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
     break;
   case 0x35:
     local_8 = (uint)*(short *)(&DAT_006826d0 + y * 0x120 + x * 0x5b20);
@@ -402,20 +402,20 @@ uint Duel_TapCardForMana(int x,int y,int width,undefined4 flags)
   default:
     local_8 = 0;
 LAB_0048be41:
-    g_DuelCurrentTurnPhase = local_8;
-    if ((DAT_0068eed8 != 0) && (Magic_ScanCards(width), (g_DuelPlayerManaPool & 0x10000) != 0)) {
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool & 0xfffeffff;
-      *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20) = g_DuelCurrentTurnPhase;
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool | 0x20000;
+    g_CardEventResult = local_8;
+    if ((DAT_0068eed8 != 0) && (Magic_ScanCards(width), (g_DuelModeFlags & 0x10000) != 0)) {
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffeffff;
+      *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20) = g_CardEventResult;
+      g_DuelModeFlags = g_DuelModeFlags | 0x20000;
       Magic_ScanCards(width);
-      g_DuelPlayerManaPool = g_DuelPlayerManaPool & 0xfffdffff;
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffdffff;
     }
     if (width == 0x32) {
-      if ((int)g_DuelCurrentTurnPhase < 0) {
-        g_DuelCurrentTurnPhase = 0;
+      if ((int)g_CardEventResult < 0) {
+        g_CardEventResult = 0;
       }
       if (((&DAT_006826f9)[y * 0x120 + x * 0x5b20] & 0x40) != 0) {
-        g_DuelCurrentTurnPhase = g_DuelCurrentTurnPhase << 1;
+        g_CardEventResult = g_CardEventResult << 1;
       }
     }
     break;
@@ -432,18 +432,18 @@ LAB_0048be41:
         (&DAT_006827df)[y * 0x120 + x * 0x5b20] = 0;
         goto LAB_0048be41;
       }
-      g_DuelCurrentTurnPhase = *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20);
     }
     else {
-      g_DuelCurrentTurnPhase = *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint *)(&g_DuelCardSlot_CardId + y * 0x120 + x * 0x5b20);
     }
   }
-  uVar1 = g_DuelCurrentTurnPhase;
+  uVar1 = g_CardEventResult;
   iVar5 = Duel_CardIsTapped(x, y);
   if (((iVar5 != 0) && (width == 0x33)) &&
      ((((&g_DuelMasterCardTable)[DAT_00681ecc * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 || ((int)uVar1 <= (int)*(short *)(&DAT_006826d0 + y * 0x120 + x * 0x5b20)))
-        && (g_DuelCurrentEventCode == -1)) && ((g_DuelPlayerManaPool & 0x204) == 0)))))) {
+        && (g_DuelCurrentEventCode == -1)) && ((g_DuelModeFlags & 0x204) == 0)))))) {
     Duel_DrawCardSprite(x,y,2);
     Pic_Subsystem_004488a0();
   }
@@ -544,7 +544,7 @@ bool Mana_CanAffordCost(int player,uint cost_mask,int card_slot)
   arg_10 = 0;
   arg_9 = 0;
   arg_8 = Mana_GetCardColorRequirement(player,card_slot);
-  iVar1 = Action_ValidateTarget_0041e2a2
+  iVar1 = Duel_ChooseTarget
                     (player,2,cost_mask,0x200,2,0,0,arg_8,arg_9,arg_10,iVar1,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (iVar1 != 0) {

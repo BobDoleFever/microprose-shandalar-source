@@ -26,23 +26,23 @@ def analyze():
         elif addr == "00474266":
             sname = "Magic_TriggerCardEvent"
         elif addr == "00474389":
-            sname = "Magic_ResolveSpellStack"
+            sname = "Magic_IsManaSource"
         elif addr == "0047444b":
-            sname = "Magic_PayManaCost"
+            sname = "Magic_PushEventContext"
         elif addr == "0047458f":
-            sname = "Magic_TapCardForMana"
+            sname = "Magic_PopEventContext"
         elif addr == "00474712":
             sname = "Magic_UntapTurnPhase"
         elif addr == "00474890":
-            sname = "Magic_UpkeepPhase"
+            sname = "Duel_PlaySoundById"
         elif addr == "004749f0":
-            sname = "Magic_DrawCardPhase"
+            sname = "Duel_PreloadSoundEffects"
         elif addr == "00474b50":
             sname = "Magic_MainTurnPhase"
         elif addr == "00474cf0":
-            sname = "Magic_CombatPhase"
+            sname = "Magic_PushSpellStack"
         elif addr == "00474e20":
-            sname = "Magic_EndTurnPhase"
+            sname = "Magic_ResolveTopSpell"
         elif "mana" in strings.lower():
             sname = f"Magic_Mana_{addr}"
         elif "damage" in strings.lower() or "life" in strings.lower():

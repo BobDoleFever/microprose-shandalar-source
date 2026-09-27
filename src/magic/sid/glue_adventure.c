@@ -785,14 +785,14 @@ LAB_004e8570:
       val_result = Math_Clamp(0x80 - local_68,0,100);
       if ((val_result < 0xb) || (*(int *)(&g_CardSlot_CreatureType + local_58 * 100) < 1)) {
         if (DAT_0052f014 != 0) {
-          Pic_Subsystem_00423c82(0x10);
+          StopSnd(0x10);
         }
         DAT_0052f014 = 0;
         DAT_0052f064 = -1;
       }
       else {
         if (local_58 == DAT_0052f064) {
-          Pic_Subsystem_00423dc2(0x10,val_result << 2);
+          SetVol(0x10,val_result << 2);
         }
         else {
           DAT_0052f064 = local_58;
@@ -807,7 +807,7 @@ LAB_004e8570:
             val_4 = DAT_0052f018;
             if (local_30 + 0x15 != DAT_0052f018) {
               if ((DAT_0052f018 != -1) && (local_30 + 0x15 != DAT_0052f018)) {
-                Pic_Subsystem_00423b93(0x10);
+                CloseSndTrack(0x10);
               }
               switch(local_30) {
               case 0:
@@ -830,7 +830,7 @@ LAB_004e8570:
           }
           else if (*(int *)(&g_CardSlot_CreatureType + local_58 * 100) == 1) {
             if ((DAT_0052f018 != -1) && (DAT_0052f018 != 0x32)) {
-              Pic_Subsystem_00423b93(0x10);
+              CloseSndTrack(0x10);
             }
             if (DAT_0052f018 != 0x32) {
               Adventure_Audio_SetPlaybackPosition(s_x_sound_locmus0_wav_0052f240,0x10);
@@ -842,7 +842,7 @@ LAB_004e8570:
             val_4 = local_58 % 0x14;
             if (val_4 != DAT_0052f018) {
               if (DAT_0052f018 != -1) {
-                Pic_Subsystem_00423b93(0x10);
+                CloseSndTrack(0x10);
               }
               switch(val_4) {
               case 0:
@@ -912,7 +912,7 @@ LAB_004e8570:
           }
           DAT_0052f018 = val_4;
           Adventure_Audio_PlayEffectLooped(0x10,val_result,0);
-          Pic_Subsystem_00423f10(0x10,1);
+          SetSndMarker(0x10,1);
         }
         DAT_0052f014 = 1;
       }
@@ -925,8 +925,8 @@ LAB_004e8570:
         FUN_0040c889(0x10,DAT_00641010,DAT_00641014);
       }
       else {
-        Pic_Subsystem_00423dc2(0x10,400);
-        Pic_Subsystem_00423f55(0x10,1);
+        SetVol(0x10,400);
+        PlaySndMarker(0x10,1);
         Town_Process_00506580(uval_3);
         DAT_0052f00c = 1;
         DAT_005659b0 = 1;
@@ -1744,7 +1744,7 @@ void Adventure_PlayMonsterEncounterSound(int x,int arg2,int arg3,int height)
 
 {
   if (DAT_0052f068 == 0) {
-    Pic_Subsystem_00423b93(0xf);
+    CloseSndTrack(0xf);
   }
   DAT_0052f068 = 0;
   switch((&DAT_0052262a)[x * 0x44]) {
@@ -2291,14 +2291,14 @@ void Adventure_Audio_PlayEffect(char *arg1,int arg2,int arg3,int arg4,int arg5)
   int color_idx;
   uint32_t slot_idx;
   
-  Pic_Subsystem_00423b93(arg2);
+  CloseSndTrack(arg2);
   Adventure_Audio_InitSoundTrack(arg1,arg2,0);
   memset(&local_24,0,0x20);
   local_24 = arg3 << 2;
   loop_idx = (arg4 * 0x5622) / 100;
   color_idx = arg5 << 2;
   slot_idx = slot_idx & 0xffffffee;
-  Pic_Subsystem_00423bf4(arg2,&local_24);
+  PlaySnd(arg2,&local_24);
   return;
 }
 
@@ -2327,7 +2327,7 @@ void Adventure_Audio_PlayEffectAtVolume(int arg1,int y,int width,int height)
   loop_idx = (width * 0x5622) / 100;
   color_idx = height << 2;
   slot_idx = slot_idx & 0xffffffee;
-  Pic_Subsystem_00423bf4(arg1,&local_24);
+  PlaySnd(arg1,&local_24);
   return;
 }
 
@@ -2354,23 +2354,23 @@ void Adventure_Audio_PlayEffectLooped(int arg1,int arg2,int arg3)
   local_24[1] = 0x5622;
   local_24[2] = arg3 << 2;
   slot_idx = slot_idx | 1;
-  Pic_Subsystem_00423bf4(arg1,local_24);
+  PlaySnd(arg1,local_24);
   return;
 }
 
 /*
- * Adventure_Audio_StopEffectChannel
+ * Adventure_Audio_PlayTrack
  * Purpose: Stop specific audio effect channel.
  * Procedure:
  * 1. Halt playback on audio channel.
  */
 /*
- * Decompiled function: Adventure_Audio_StopEffectChannel
+ * Decompiled function: Adventure_Audio_PlayTrack
  * Entry Point: 004ebe1a
  * Size: 71 bytes
  */
 
-void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3)
+void Adventure_Audio_PlayTrack(int arg1,int arg2,int arg3)
 
 {
   int local_24 [8];
@@ -2379,7 +2379,7 @@ void Adventure_Audio_StopEffectChannel(int arg1,int arg2,int arg3)
   local_24[0] = arg2 << 2;
   local_24[1] = 0x5622;
   local_24[2] = arg3 << 2;
-  Pic_Subsystem_00423bf4(arg1,local_24);
+  PlaySnd(arg1,local_24);
   return;
 }
 
@@ -2409,7 +2409,7 @@ void Adventure_Audio_SetPlaybackPosition(char *arg1,int arg2)
   loop_idx = 0;
   color_idx = 0;
   Adventure_Audio_InitSoundTrack(arg1,arg2,&local_24);
-  Pic_Subsystem_00423f10(arg2,1);
+  SetSndMarker(arg2,1);
   return;
 }
 
@@ -2429,7 +2429,7 @@ void Adventure_Audio_StopAllTracks(void)
 
 {
   if (DAT_0052f014 != 0) {
-    Pic_Subsystem_00423c82(0x10);
+    StopSnd(0x10);
   }
   DAT_0052f014 = 0;
   return;
@@ -2452,7 +2452,7 @@ void Adventure_Audio_PlayCastleVictory(int arg1)
 {
   Adventure_Audio_StopAllTracks();
   if (DAT_0052f018 != -1) {
-    Pic_Subsystem_00423b93(0x10);
+    CloseSndTrack(0x10);
   }
   DAT_0052f018 = arg1 + 0x15;
   switch(arg1) {
@@ -2495,12 +2495,12 @@ void Adventure_Audio_PlayDuelIntro(int arg1)
 
 {
   if (DAT_0052f018 != -1) {
-    Pic_Subsystem_00423b93(0x10);
+    CloseSndTrack(0x10);
   }
   DAT_0052f018 = 0x15;
   DAT_0052f064 = 0xffffffff;
   Adventure_Audio_SetPlaybackPosition((&PTR_s_x_sound_dueltune_wav_0052f070)[arg1],0x10);
-  Adventure_Audio_StopEffectChannel(0x10,0x80,0);
+  Adventure_Audio_PlayTrack(0x10,0x80,0);
   DAT_0052f014 = 1;
   return;
 }
@@ -2531,7 +2531,7 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
   Adventure_Audio_PlayEffectAtVolume(arg_1_00,100,val_result + 0x46,status);
   status = Util_GetRandomNumber(3);
   if (status == 0) {
-    Pic_Subsystem_00423b93(arg_1_00);
+    CloseSndTrack(arg_1_00);
     switch(arg1) {
     case 1:
       status = Util_GetRandomNumber(3);
@@ -2589,18 +2589,18 @@ void Adventure_Audio_PlayTerrainAmbience(int arg1)
 }
 
 /*
- * Adventure_Audio_PlayFootstep
+ * Adventure_Audio_LoadWalkAndBirdSounds
  * Purpose: Play footstep walking sound effects by terrain type.
  * Procedure:
  * 1. Play terrain-specific walking audio clip.
  */
 /*
- * Decompiled function: Adventure_Audio_PlayFootstep
+ * Decompiled function: Adventure_Audio_LoadWalkAndBirdSounds
  * Entry Point: 004ec32f
  * Size: 266 bytes
  */
 
-void Adventure_Audio_PlayFootstep(void)
+void Adventure_Audio_LoadWalkAndBirdSounds(void)
 
 {
   Adventure_Audio_InitSoundTrack(s_x_sound_kwalkl_wav_0052f9c8,0,0);
@@ -2715,7 +2715,7 @@ void Adventure_Audio_FreeSoundTrack(void *arg1)
 
 {
   _DAT_00640f0c = _DAT_00640f0c + 1;
-  Pic_Subsystem_00423b57(arg1,*(int *)((int)arg1 + 0x100),(int)arg1 + 0x104);
+  InitSndTrack(arg1,*(int *)((int)arg1 + 0x100),(int)arg1 + 0x104);
   free(arg1);
   _DAT_00640f0c = _DAT_00640f0c + -1;
   return;
@@ -2753,7 +2753,7 @@ int Adventure_Audio_InitSoundTrack(char *name_or_path,int arg2,int arg3)
   }
   do {
   } while (DAT_0062681c != 0);
-  Pic_Subsystem_00423b57(name_or_path,arg2,arg3);
+  InitSndTrack(name_or_path,arg2,arg3);
   return 0;
 }
 
@@ -3015,7 +3015,7 @@ int Adventure_Map_UpdateLightingAndPalette(uint32_t arg1,uint32_t arg2)
   BringWindowToTop(_hwndScreen);
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_0052fb20);
-  Catalog_LoadPaletteMap(s_todpal_tr_0052fb30,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_0052fb30,(char *)0x0);
   SelectPalette(*(HDC *)(g_ScreenSurfaces + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(g_ScreenSurfaces + 4));
   return 0;

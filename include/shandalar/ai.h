@@ -58,20 +58,20 @@ void Ai_SaveGameState(void);
 void Ai_RestoreGameState(void);
 void Ai_PushBoardState(void);
 void Ai_PopBoardState(void);
-void Ai_ResetEvaluationState(void);
-void Ai_GetActivePlayerScore(void);
-void Ai_EvaluateCreaturePower(void);
+void Ai_ClearPlan(void);
+void Ai_BeginTrial(void);
+void Ai_RecordChoice(void);
 int Ai_GetOpponentPlayerScore(int arg1);
 int Ai_CalcLifeAdvantage(int arg1);
-void Ai_CalcCardAdvantage(void);
-void Ai_ScoreBoardPosition(void);
+void Ai_ReplayChoice(void);
+void Ai_CommitBestPlan(void);
 int Ai_Score_ClearCache(void);
 void Ai_Score_SetValidityFlag(void);
-int Ai_SimulateCombatRound(int arg1);
-int Ai_ChooseAttackers(int player, int attacker_idx);
+int Ai_EvaluateBoard(int arg1);
+int Ai_PenalizeCounterattack(int player, int attacker_idx);
 int Ai_ChooseBlockers(int player, int attacker_idx);
 void Ai_FilterValidBlockers(uint32_t * arg1, uint32_t * arg2);
-int Ai_AssignCombatDamage(int * arg1, uint32_t * arg2, uint32_t arg3, int arg4, uint32_t arg5, uint32_t arg6, int arg7, int arg8, int arg9);
+int Duel_ShowStartOfDuelDialog(int * arg1, uint32_t * arg2, uint32_t arg3, int arg4, uint32_t arg5, uint32_t arg6, int arg7, int arg8, int arg9);
 HGDIOBJ Ai_DuelDialogProc(HWND hwnd, uint32_t uMsg, HWND wParam, HWND lParam);
 void Ai_LoadStartDuel2Backdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6);
 void Ai_StartDuel_InitContext(int arg1, int arg2, int arg3);
@@ -275,7 +275,7 @@ int Ai_Util_004cbc07(int arg1, int arg2);
 int Ai_Util_004cbc36(int arg1, int arg2);
 int Ai_Subsystem_004cbc65(int arg1, int arg2);
 int Ai_Overworld_ChooseRoamDirection(int player);
-int Ai_Subsystem_004cbd67(uint32_t arg1);
+int CardIDFromType(uint32_t arg1);
 uint32_t Ai_Util_004cbda9(uint32_t arg1);
 void Ai_Subsystem_004cbdda(int arg1, int arg2);
 bool Ai_Subsystem_004cbe10(int arg1, int arg2);
@@ -323,20 +323,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004aaaea Ai_RestoreGameState
 #define Ai_004aad61 Ai_PushBoardState
 #define Ai_004aafa8 Ai_PopBoardState
-#define Ai_004ab1ef Ai_ResetEvaluationState
-#define Ai_004ab214 Ai_GetActivePlayerScore
-#define Ai_004ab28b Ai_EvaluateCreaturePower
+#define Ai_004ab1ef Ai_ClearPlan
+#define Ai_004ab214 Ai_BeginTrial
+#define Ai_004ab28b Ai_RecordChoice
 #define Ai_004ab35e Ai_GetOpponentPlayerScore
 #define Ai_004ab3a9 Ai_CalcLifeAdvantage
-#define Ai_004ab3f3 Ai_CalcCardAdvantage
-#define Ai_004ab45f Ai_ScoreBoardPosition
+#define Ai_004ab3f3 Ai_ReplayChoice
+#define Ai_004ab45f Ai_CommitBestPlan
 #define Ai_004ab510 Ai_Score_ClearCache
 #define Ai_004ab525 Ai_Score_SetValidityFlag
-#define Ai_004ab552 Ai_SimulateCombatRound
-#define Ai_004abff4 Ai_ChooseAttackers
+#define Ai_004ab552 Ai_EvaluateBoard
+#define Ai_004abff4 Ai_PenalizeCounterattack
 #define Ai_004ac940 Ai_ChooseBlockers
 #define Ai_004acb7f Ai_FilterValidBlockers
-#define Ai_004acc20 Ai_AssignCombatDamage
+#define Ai_004acc20 Duel_ShowStartOfDuelDialog
 #define Ai_004ace3a Ai_DuelDialogProc
 #define Ai_004ad6c5 Ai_LoadStartDuel2Backdrop
 #define Ai_004ad77b Ai_StartDuel_InitContext
@@ -461,7 +461,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004b8dfd Ai_Subsystem_004b8dfd
 #define Ai_004b8e4d Ai_FormatCardScoreString
 #define Ai_004b90de Ai_Subsystem_004b90de
-#define Ai_004b9120 Ai_CalcManaRequirement_MultiColor
+#define UI_Register_WINBK_ManaPool_004b9120 Ai_CalcManaRequirement_MultiColor
 #define Ai_004b920e Ai_Subsystem_004b920e
 #define Ai_004b9284 Ai_CalcManaRequirement_General
 #define Ai_004ba6b6 Ai_WndProc_004ba6b6
@@ -539,8 +539,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004cbc07 Ai_Util_004cbc07
 #define Ai_004cbc36 Ai_Util_004cbc36
 #define Ai_004cbc65 Ai_Subsystem_004cbc65
-#define Ai_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Ai_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Ai_004cbda9 Ai_Util_004cbda9
 #define Ai_004cbdda Ai_Subsystem_004cbdda
 #define Ai_004cbe10 Ai_Subsystem_004cbe10
@@ -581,7 +581,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004cd3eb Ai_Subsystem_004cd3eb
 #define Ai_CalcManaRequirement_004b32d1 Ai_CalcManaRequirement_Black
 #define Ai_CalcManaRequirement_004b7897 Ai_CalcManaRequirement_Colorless
-#define Ai_CalcManaRequirement_004b9120 Ai_CalcManaRequirement_MultiColor
+#define UI_Register_WINBK_ManaPool_004b9120 Ai_CalcManaRequirement_MultiColor
 #define Ai_CalcManaRequirement_004b9284 Ai_CalcManaRequirement_General
 #define Ai_CalcManaRequirement_004ba890 Ai_CalcManaRequirement_PayCost
 #define Ai_CalcManaRequirement_004bc423 Ai_CalcMana_004bc423
@@ -589,7 +589,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_CalcManaRequirement_004c003d Ai_CalcMana_004c003d
 #define Ai_CastleEncounter_004c0efe Ai_Subsystem_004c0efe
 #define Ai_CastleEncounter_004c24b3 Overworld_LoadMapScreenPics
-#define Ai_EvalAttackCandidate_004b4a3f Ai_EvalAttackCandidate_CombatTrade
+#define Duel_RefreshAllWindows Ai_EvalAttackCandidate_CombatTrade
 #define Ai_EvalAttackCandidate_004c864d Ai_EvalAttackCandidate_General
 #define Ai_EvaluateCreatureCast Ai_ScoreCardPlay_Creature
 #define Ai_EvaluateSpellCast Ai_ScoreCardPlay_Spell
@@ -597,20 +597,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -722,7 +722,7 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_Subsystem_004cbbd7 Ai_Util_004cbbd7
 #define Ai_Subsystem_004cbc07 Ai_Util_004cbc07
 #define Ai_Subsystem_004cbc36 Ai_Util_004cbc36
-#define Ai_Subsystem_004cbcd9 Ai_Overworld_ChooseRoamDirection
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
 #define Ai_Subsystem_004cbda9 Ai_Util_004cbda9
 #define Ai_Subsystem_004cc0c7 Ai_Util_004cc0c7
 #define Ai_Subsystem_004cc0f7 Ai_Util_004cc0f7
@@ -737,20 +737,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -940,8 +940,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_Util_004cbad0 Ai_Subsystem_004cbad0
 #define Ai_Util_004cbb33 Ai_Subsystem_004cbb33
 #define Ai_Util_004cbc65 Ai_Subsystem_004cbc65
-#define Ai_Util_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Ai_Util_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Ai_Util_004cbdda Ai_Subsystem_004cbdda
 #define Ai_Util_004cbe10 Ai_Subsystem_004cbe10
 #define Ai_Util_004cbe57 Ai_Subsystem_004cbe57
@@ -978,20 +978,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -1194,8 +1194,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define FUN_004cbc07 Ai_Util_004cbc07
 #define FUN_004cbc36 Ai_Util_004cbc36
 #define FUN_004cbc65 Ai_Subsystem_004cbc65
-#define FUN_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define FUN_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define FUN_004cbda9 Ai_Util_004cbda9
 #define FUN_004cbdda Ai_Subsystem_004cbdda
 #define FUN_004cbe10 Ai_Subsystem_004cbe10
@@ -1238,20 +1238,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -1454,8 +1454,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Mem_AllocOrFree_004cbc07 Ai_Util_004cbc07
 #define Mem_AllocOrFree_004cbc36 Ai_Util_004cbc36
 #define Mem_AllocOrFree_004cbc65 Ai_Subsystem_004cbc65
-#define Mem_AllocOrFree_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Mem_AllocOrFree_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Mem_AllocOrFree_004cbda9 Ai_Util_004cbda9
 #define Mem_AllocOrFree_004cbdda Ai_Subsystem_004cbdda
 #define Mem_AllocOrFree_004cbe10 Ai_Subsystem_004cbe10
@@ -1498,20 +1498,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -1714,8 +1714,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define Pic_Load_004cbc07 Ai_Util_004cbc07
 #define Pic_Load_004cbc36 Ai_Util_004cbc36
 #define Pic_Load_004cbc65 Ai_Subsystem_004cbc65
-#define Pic_Load_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define Pic_Load_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define Pic_Load_004cbda9 Ai_Util_004cbda9
 #define Pic_Load_004cbdda Ai_Subsystem_004cbdda
 #define Pic_Load_004cbe10 Ai_Subsystem_004cbe10
@@ -1758,20 +1758,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -1974,8 +1974,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_CreateWindow_004cbc07 Ai_Util_004cbc07
 #define UI_CreateWindow_004cbc36 Ai_Util_004cbc36
 #define UI_CreateWindow_004cbc65 Ai_Subsystem_004cbc65
-#define UI_CreateWindow_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_CreateWindow_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_CreateWindow_004cbda9 Ai_Util_004cbda9
 #define UI_CreateWindow_004cbdda Ai_Subsystem_004cbdda
 #define UI_CreateWindow_004cbe10 Ai_Subsystem_004cbe10
@@ -2018,20 +2018,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -2234,8 +2234,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_DialogProc_004cbc07 Ai_Util_004cbc07
 #define UI_DialogProc_004cbc36 Ai_Util_004cbc36
 #define UI_DialogProc_004cbc65 Ai_Subsystem_004cbc65
-#define UI_DialogProc_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_DialogProc_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_DialogProc_004cbda9 Ai_Util_004cbda9
 #define UI_DialogProc_004cbdda Ai_Subsystem_004cbdda
 #define UI_DialogProc_004cbe10 Ai_Subsystem_004cbe10
@@ -2278,20 +2278,20 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_RestoreGameState Ai_RestoreGameState
 #define Ai_PushBoardState Ai_PushBoardState
 #define Ai_PopBoardState Ai_PopBoardState
-#define Ai_ResetEvaluationState Ai_ResetEvaluationState
-#define Ai_GetActivePlayerScore Ai_GetActivePlayerScore
-#define Ai_EvaluateCreaturePower Ai_EvaluateCreaturePower
+#define Ai_ClearPlan Ai_ClearPlan
+#define Ai_BeginTrial Ai_BeginTrial
+#define Ai_RecordChoice Ai_RecordChoice
 #define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
 #define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
-#define Ai_CalcCardAdvantage Ai_CalcCardAdvantage
-#define Ai_ScoreBoardPosition Ai_ScoreBoardPosition
+#define Ai_ReplayChoice Ai_ReplayChoice
+#define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
-#define Ai_SimulateCombatRound Ai_SimulateCombatRound
-#define Ai_ChooseAttackers Ai_ChooseAttackers
+#define Ai_EvaluateBoard Ai_EvaluateBoard
+#define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
 #define Ai_ChooseBlockers Ai_ChooseBlockers
 #define Ai_FilterValidBlockers Ai_FilterValidBlockers
-#define Ai_AssignCombatDamage Ai_AssignCombatDamage
+#define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
 #define Ai_InitCombatHeuristics Ai_StartDuel_InitContext
@@ -2494,8 +2494,8 @@ void Ai_Subsystem_004cd3eb(void);
 #define UI_WndProc_004cbc07 Ai_Util_004cbc07
 #define UI_WndProc_004cbc36 Ai_Util_004cbc36
 #define UI_WndProc_004cbc65 Ai_Subsystem_004cbc65
-#define UI_WndProc_004cbcd9 Ai_Overworld_ChooseRoamDirection
-#define UI_WndProc_004cbd67 Ai_Subsystem_004cbd67
+#define CardTypeFromID Ai_Overworld_ChooseRoamDirection
+#define CardIDFromType CardIDFromType
 #define UI_WndProc_004cbda9 Ai_Util_004cbda9
 #define UI_WndProc_004cbdda Ai_Subsystem_004cbdda
 #define UI_WndProc_004cbe10 Ai_Subsystem_004cbe10

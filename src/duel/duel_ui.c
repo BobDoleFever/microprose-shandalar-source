@@ -27,7 +27,7 @@ int Rules_ParseFilter_0041c0ab();
 typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
-uint Duel_TapCardForMana(int x, int y, int width, undefined4 arg_4);
+uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Mana_GetCardColorRequirement(int player, int card_slot);
 bool Mana_CanAffordCost(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
@@ -81,18 +81,18 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -109,13 +109,13 @@ extern char g_DuelAssetDirectory;
 extern int32_t g_DisplayScreenWidth;
 extern int32_t g_DisplayScreenHeight;
 
-extern uint32_t g_ActivePalette;
+extern uint32_t g_CardEventResult;
 extern int32_t g_CardSlot_Counters;
 extern int32_t g_CardSlot_CardId;
 extern int32_t g_CardSlot_Flags;
-extern int g_OverworldPlayerCoordX;
+extern int g_EventSourcePlayer;
 extern int g_OverworldPlayerCoordY;
-extern int g_OverworldMapGrid;
+extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
@@ -215,7 +215,7 @@ uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
 int FUN_0048cb7f();
-int FUN_0048ca2a();
+int Magic_IsManaSource();
 int FUN_0048cac9();
 int FUN_0048caf4();
 int FUN_00432c2a();
@@ -331,7 +331,7 @@ int Duel_DrawString(int x,uint y,int text)
       }
     }
     local_1c = *(int *)(&DAT_0068ed10 + local_28 * 4 + x * 0x20);
-    if (((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_DuelDebugModeFlag == 1)) {
+    if (((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_IsAiThinking == 1)) {
       for (local_24 = 0; (int)local_24 < 7; local_24 = local_24 + 1) {
         if ((local_24 != local_28) && ((local_2c & 1 << ((byte)local_24 & 0x1f)) != 0)) {
           local_1c = local_1c + *(int *)(&DAT_0068ed10 + local_24 * 4 + x * 0x20);
@@ -347,7 +347,7 @@ int Duel_DrawString(int x,uint y,int text)
       }
       else if ((*(uint *)(&DAT_00666570 + local_24 * 4 + x * 0xcc) &
                1 << ((byte)local_28 & 0x1f)) == 0) {
-        if ((((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_DuelDebugModeFlag == 1)) &&
+        if ((((x == g_DuelTargetCardSlot) || (DAT_0068f0b0 != 0)) || (g_IsAiThinking == 1)) &&
            ((local_2c & *(uint *)(&DAT_00666570 + local_24 * 4 + x * 0xcc)) != 0)) {
           local_10 = local_10 + (*(int *)(&DAT_00666570 + local_24 * 4 + x * 0xcc) >> 0x10);
         }

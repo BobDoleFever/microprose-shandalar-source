@@ -1,6 +1,6 @@
 # SDL2 Win32 API implementation plan
 
-Status: code review completed on 2026-08-27.
+> **Status:** a code review written on 2026-08-27, before the oracle-based verification work. Its counts (358 imported Win32 entry points, 32 implemented) were not re-checked and the tree has changed since. Use it as a starting checklist, not as fact.
 
 ## Goal
 

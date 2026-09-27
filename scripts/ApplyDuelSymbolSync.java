@@ -62,7 +62,7 @@ public class ApplyDuelSymbolSync extends GhidraScript {
         Map<String, String> duelGlobals = new HashMap<>();
         duelGlobals.put("006baa78", "g_ActiveCardsInPlay");
         duelGlobals.put("006b9544", "g_ActivePlayer");
-        duelGlobals.put("0069f264", "g_DefendingPlayer");
+        duelGlobals.put("0069f264", "g_TurnPlayer");
         duelGlobals.put("006aa9c8", "g_PlayerLifeTotals");
         duelGlobals.put("006b9548", "g_PlayerCreatureCount");
         duelGlobals.put("00694540", "g_MasterCardCount");

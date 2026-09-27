@@ -1336,8 +1336,8 @@ int Duel_LogActionStatusBanner(int spell_id,int target_id,int flags,uint arg4,ui
         g_OverworldWorldState = 0;
         local_104 = FUN_00474d4a();
         if (local_104 != 0xffffffff) {
-          status = *(int *)(&DAT_006fecb8 + DAT_006a3f78 * 8);
-          arg2 = *(int *)(&DAT_006fecbc + DAT_006a3f78 * 8);
+          status = *(int *)(&DAT_006fecb8 + g_SpellStackCount * 8);
+          arg2 = *(int *)(&DAT_006fecbc + g_SpellStackCount * 8);
           u_temp = local_104 >> 0x10 & 0xff;
           if (u_temp == 0x71) {
             strcpy(&g_OverworldWorldState,s_CASTING__0052ffc8);
@@ -1440,19 +1440,19 @@ LAB_004f024d:
       }
       else {
         if (g_IsAiThinking == 1) {
-          g_AiDecisionScore = Math_RandomRange(local_110);
-          DAT_006fefa8 = CONCAT31((int3)((aiStack_f4[g_AiDecisionScore] == 0) - 1 >> 8),
-                                  (char)aiStack_200[g_AiDecisionScore]) & 0x1ff | 0x4000;
-          Ai_EvaluateCreaturePower();
+          g_AiChoiceValue = Math_RandomRange(local_110);
+          DAT_006fefa8 = CONCAT31((int3)((aiStack_f4[g_AiChoiceValue] == 0) - 1 >> 8),
+                                  (char)aiStack_200[g_AiChoiceValue]) & 0x1ff | 0x4000;
+          Ai_RecordChoice();
         }
         else {
-          Ai_CalcCardAdvantage();
-          if (g_AiDecisionScore == 99) {
-            g_AiDecisionScore = Math_RandomRange(local_110);
+          Ai_ReplayChoice();
+          if (g_AiChoiceValue == 99) {
+            g_AiChoiceValue = Math_RandomRange(local_110);
           }
         }
-        _DAT_0063ee20 = aiStack_f4[g_AiDecisionScore];
-        local_108 = aiStack_200[g_AiDecisionScore];
+        _DAT_0063ee20 = aiStack_f4[g_AiChoiceValue];
+        local_108 = aiStack_200[g_AiChoiceValue];
       }
     }
   }

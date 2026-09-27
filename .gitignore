@@ -22,3 +22,7 @@ functions/
 .DS_Store
 __pycache__/
 *.pyc
+
+# Local-only source material (game installers, Windows ISOs, etc.) -- never
+# commit these: copyrighted, large, and not something to publish on the fork.
+sources/

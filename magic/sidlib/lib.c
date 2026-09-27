@@ -309,13 +309,13 @@ uint Surface_GetPixel(int arg_1,int arg_2,int arg_3)
 
 
 /*
- * Decompiled function: Surface_GetPixelPtr
+ * Decompiled function: Surface_GetPixelValue
  * Entry Point: 0050da40
  * Size: 199 bytes
  */
 
 
-uint Surface_GetPixelPtr(int *arg_1,int arg_2,int arg_3)
+uint Surface_GetPixelValue(int *arg_1,int arg_2,int arg_3)
 
 {
   int iVar1;

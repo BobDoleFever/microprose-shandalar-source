@@ -1652,7 +1652,7 @@ int32_t Pic_Load_advfac64_0040a4fc(void)
 {
   SetFocus(_hwndScreen);
   LoadPalNoPic(s_advfac64_pic_005171e4);
-  Catalog_LoadPaletteMap(s_todpal_tr_005171f4,(char *)0x0);
+  Palette_LoadTRFile(s_todpal_tr_005171f4,(char *)0x0);
   SelectPalette(*(HDC *)(g_ScreenSurfaces + 4),_hLibPal,0);
   RealizePalette(*(HDC *)(g_ScreenSurfaces + 4));
   FUN_0040a566();
@@ -2617,7 +2617,7 @@ uint32_t Surface_GetPixelColor(int x,int y)
   if ((0x3f < y) || (y < 0)) {
     y = 0;
   }
-  uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+  uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
   return uval_1 & 0xf;
 }
 
@@ -2635,7 +2635,7 @@ int32_t FUN_0040c7c0(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x,y);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x,y);
     }
     else {
       uval_1 = 0;
@@ -2660,7 +2660,7 @@ void FUN_0040c81c(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot,arg_3,uval_1 | player);
   }
   return;
@@ -2679,7 +2679,7 @@ void FUN_0040c889(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot,arg_3,uval_1 & ~player);
   }
   return;
@@ -2699,7 +2699,7 @@ int32_t FUN_0040c8fa(int x,int y)
   
   if ((x < 0x40) && (-1 < x)) {
     if ((y < 0x40) && (-1 < y)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,x + 0x40,y);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,x + 0x40,y);
     }
     else {
       uval_1 = 0;
@@ -2724,7 +2724,7 @@ void FUN_0040c959(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3,uval_1 | player);
   }
   return;
@@ -2743,7 +2743,7 @@ void FUN_0040c9cc(uint32_t player,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((card_slot < 0x40) && (-1 < card_slot)) && (arg_3 < 0x40)) && (-1 < arg_3)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,card_slot + 0x40,arg_3,uval_1 & ~player);
   }
   return;
@@ -2764,13 +2764,13 @@ void FUN_0040ca43(int player_id,int card_slot,int event_type)
   uint32_t uval_1;
   
   if ((((player < 0x40) && (-1 < player)) && (card_slot < 0x40)) && (-1 < card_slot)) {
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,player,card_slot + 0x40,
                      uval_1 | 1 << ((char)arg_3 - 1U & 0x1f));
     FUN_0040c81c(0x20,player,card_slot);
     arg_2_00 = player + *(int *)(&DAT_00522378 + arg_3 * 4);
     arg_3_00 = card_slot + *(int *)(&DAT_005223e0 + arg_3 * 4);
-    uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
+    uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40);
     Surface_PutPixel((int *)g_DisplaySurfaceWork,arg_2_00,arg_3_00 + 0x40,
                      uval_1 | 1 << ((char)arg_3 + 3U & 7));
     FUN_0040c81c(0x20,arg_2_00,arg_3_00);
@@ -2792,7 +2792,7 @@ uint32_t FUN_0040cb4f(int player_id,int card_slot,char arg_3)
   
   if ((player < 0x40) && (-1 < player)) {
     if ((card_slot < 0x40) && (-1 < card_slot)) {
-      uval_1 = Surface_GetPixelPtr((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
+      uval_1 = Surface_GetPixelValue((int *)g_DisplaySurfaceWork,player,card_slot + 0x40);
       uval_1 = uval_1 & 1 << (arg_3 - 1U & 0x1f);
     }
     else {
@@ -3830,7 +3830,7 @@ void Pic_Load_winbak01_0040eb5a(int x,int y)
       *(int32_t *)(g_DisplaySurfaceScreen + 0x20) = 4;
       FUN_004896be(s_Won_These_Cards_00519224,0x40,0x96);
     }
-    Pic_Subsystem_00423c82(0x10);
+    StopSnd(0x10);
   }
   return;
 }
@@ -4432,9 +4432,9 @@ int Card_ApplyTriggerEffect(int player_id,int card_slot,int event_type,int targe
 int32_t FUN_00410ef1(int player_id,int card_slot,int event_type)
 
 {
-  if (((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)
-      && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_OverworldPlayerCoordX))
-     && (g_OverworldMapGrid != -1)) {
+  if (((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)
+      && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer))
+     && (g_EventSourceSlot != -1)) {
     if ((((&DAT_006a5f56)[card_slot * 0x120 + player * 0x5b20] & 8) != 0) &&
        (*(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20) != -1)) {
       *(uint16_t *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20) =
@@ -4451,11 +4451,11 @@ int32_t FUN_00410ef1(int player_id,int card_slot,int event_type)
                              0x5b20) >> 8) & 0xff;
     }
     if (arg_3 == 0x32) {
-      g_ActivePalette = g_ActivePalette + *(short *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20)
+      g_CardEventResult = g_CardEventResult + *(short *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20)
       ;
     }
     if (arg_3 == 0x33) {
-      g_ActivePalette = g_ActivePalette + *(short *)(&g_CardSlot_ToughnessCounters + card_slot * 0x120 + player * 0x5b20)
+      g_CardEventResult = g_CardEventResult + *(short *)(&g_CardSlot_ToughnessCounters + card_slot * 0x120 + player * 0x5b20)
       ;
     }
   }
@@ -4477,9 +4477,9 @@ int32_t FUN_0041115f(int player_id,int card_slot,int event_type)
 
 {
   if (((arg_3 == 0x78) &&
-      (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == DAT_006b2d5c)) &&
-     ((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120] == DAT_007006c8)) {
-    g_ActivePalette = g_ActivePalette + 1;
+      (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == g_EventTargetSlot)) &&
+     ((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120] == g_EventTargetPlayer)) {
+    g_CardEventResult = g_CardEventResult + 1;
   }
   if ((arg_3 == 0x22) || (arg_3 == 199)) {
     Pic_Subsystem_0044867e(player,card_slot,1);
@@ -4498,7 +4498,7 @@ int32_t FUN_00411201(int player_id,int card_slot,int event_type)
 
 {
   if (((arg_3 == 0x22) || (arg_3 == 199)) &&
-     ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_DefendingPlayer)) {
+     ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_TurnPlayer)) {
     if (*(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) == 0) {
       *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) =
            *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) + 1;
@@ -4528,18 +4528,18 @@ int32_t FUN_0041130e(int player_id,int card_slot,int event_type)
 
 {
   if ((((arg_3 == 0x34) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)
+       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
-             g_OverworldPlayerCoordX)) && (g_OverworldMapGrid != -1)) {
-    g_ActivePalette =
-         g_ActivePalette | *(uint32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20)
+             g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) {
+    g_CardEventResult =
+         g_CardEventResult | *(uint32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20)
     ;
   }
   if ((((arg_3 == 0x77) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)
+       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)
        ) && (((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
-              g_OverworldPlayerCoordX &&
-             ((g_OverworldMapGrid != -1 &&
+              g_EventSourcePlayer &&
+             ((g_EventSourceSlot != -1 &&
               ((&g_CardSlot_CardTypeIndex)
                [*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                 (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20] != '\x04')))
@@ -4553,12 +4553,12 @@ int32_t FUN_0041130e(int player_id,int card_slot,int event_type)
               ((int)(char)(&g_CardSlot_DamageReceived)[card_slot * 0x120 + player * 0x5b20],
                *(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20),2);
   }
-  if ((g_OverworldMapGrid == card_slot) && (g_OverworldPlayerCoordX == player)) {
+  if ((g_EventSourceSlot == card_slot) && (g_EventSourcePlayer == player)) {
     if ((&g_CardSlot_CardTypeIndex)[card_slot * 0x120 + player * 0x5b20] == '\x05') {
-      if (((g_PlayerManaPool == 0xcd) || (arg_3 == 199)) &&
+      if (((g_CurrentStepCode == 0xcd) || (arg_3 == 199)) &&
          ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_CurrentCardColorTarget)) {
         if (arg_3 == 0x7d) {
-          g_ActivePalette = g_ActivePalette | 2;
+          g_CardEventResult = g_CardEventResult | 2;
         }
         if (((arg_3 == 0x7e) || (arg_3 == 199)) &&
            (Pic_Subsystem_0044867e
@@ -4594,11 +4594,11 @@ int32_t FUN_00411753(int player_id,int card_slot,int event_type)
 
 {
   if ((((arg_3 == 0x34) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == g_OverworldMapGrid)
+       (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120] ==
-             g_OverworldPlayerCoordX)) && (g_OverworldMapGrid != -1)) {
-    g_ActivePalette =
-         g_ActivePalette &
+             g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) {
+    g_CardEventResult =
+         g_CardEventResult &
          ~*(uint32_t *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120);
   }
   if ((arg_3 == 0x22) || (arg_3 == 199)) {
@@ -4627,10 +4627,10 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
   uint32_t uval_2;
   int val_3;
   
-  if ((((g_OverworldMapGrid == card_slot) && (g_OverworldPlayerCoordX == player)) &&
+  if ((((g_EventSourceSlot == card_slot) && (g_EventSourcePlayer == player)) &&
       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) != -1)) &&
-     (((uint8_t)g_PlayerHandCardCount & 4) != 0)) {
-    uval_2 = Card_TapForMana((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+     (((uint8_t)g_DuelModeFlags & 4) != 0)) {
+    uval_2 = Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x34,
                          0xffffffff);
     if ((uval_2 & 0x1ff800) != 0) {
@@ -4644,14 +4644,14 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
       }
     }
   }
-  if (((arg_3 == 0x6e) && (g_OverworldMapGrid == card_slot)) &&
-     ((g_OverworldPlayerCoordX == player &&
+  if (((arg_3 == 0x6e) && (g_EventSourceSlot == card_slot)) &&
+     ((g_EventSourcePlayer == player &&
       (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0)))) {
     *(uint32_t *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x10;
     if (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == -1) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0xe);
+        Duel_PlaySoundById(0xe);
       }
       if (*(int *)(&g_MasterCardTypeTable +
                   *(int *)(&g_CardSlot_CardId +
@@ -4711,7 +4711,7 @@ int32_t FUN_004118a8(int player_id,int card_slot,int event_type)
                (short)*(int32_t *)
                        (&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20),
          g_IsAiThinking != 1)) {
-        Magic_UpkeepPhase(0x16);
+        Duel_PlaySoundById(0x16);
         Ai_Subsystem_004cc3f8
                   ((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                    *(int32_t *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),6,2)
@@ -4739,7 +4739,7 @@ int32_t CardScript_NafsAsp_DamageTrigger(int player_id,int card_slot,int event_t
     uval_1 = Font_DrawString(player,7,1);
   }
   else {
-    if (((arg_3 == 0x6d) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6d) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       val_2 = Font_DrawString(player,7,1);
       if (val_2 != 0) {
         Ai_CalcManaRequirement_004ba890(player,0,1);
@@ -4748,12 +4748,12 @@ int32_t CardScript_NafsAsp_DamageTrigger(int player_id,int card_slot,int event_t
     if (arg_3 == 0x72) {
       Pic_Subsystem_0044867e(g_DialogPromptHwnd,g_DuelArenaHwnd,4);
     }
-    if ((((g_PlayerManaPool == 0xce) || (arg_3 == 199)) &&
-        ((g_OverworldMapGrid == card_slot &&
-         ((g_OverworldPlayerCoordX == player && (g_DefendingPlayer == player)))))) &&
+    if ((((g_CurrentStepCode == 0xce) || (arg_3 == 199)) &&
+        ((g_EventSourceSlot == card_slot &&
+         ((g_EventSourcePlayer == player && (g_TurnPlayer == player)))))) &&
        (player == g_CurrentCardColorTarget)) {
       if (arg_3 == 0x7d) {
-        g_ActivePalette = g_ActivePalette | 2;
+        g_CardEventResult = g_CardEventResult | 2;
       }
       if ((arg_3 == 0x7e) || (arg_3 == 199)) {
         Ai_Subsystem_004cc56d(player,player,card_slot,-1,-1,s_Naf_s_Asp_takes_1_life__005196ac,0);
@@ -4781,10 +4781,10 @@ int32_t CardScript_NafsAsp_DamageTrigger(int player_id,int card_slot,int event_t
 int32_t FUN_0041214b(int player_id,int card_slot,int event_type)
 
 {
-  if ((((g_PlayerManaPool == 0xcc) || (arg_3 == 199)) && (g_OverworldMapGrid == card_slot)) &&
-     (g_OverworldPlayerCoordX == player)) {
+  if ((((g_CurrentStepCode == 0xcc) || (arg_3 == 199)) && (g_EventSourceSlot == card_slot)) &&
+     (g_EventSourcePlayer == player)) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((arg_3 == 0x7e) || (arg_3 == 199)) {
       if ((&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] != -1) {
@@ -4808,10 +4808,10 @@ int32_t FUN_0041214b(int player_id,int card_slot,int event_type)
 int32_t FUN_00412246(int player_id,int card_slot,int event_type)
 
 {
-  if ((((g_PlayerManaPool == 0xcc) || (arg_3 == 199)) && (card_slot == g_OverworldMapGrid)) &&
-     (player == g_OverworldPlayerCoordX)) {
+  if ((((g_CurrentStepCode == 0xcc) || (arg_3 == 199)) && (card_slot == g_EventSourceSlot)) &&
+     (player == g_EventSourcePlayer)) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((arg_3 == 0x7e) || (arg_3 == 199)) {
       if ((&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120] != -1) {
@@ -4847,9 +4847,9 @@ int32_t FUN_00412413(int player_id,int card_slot,int event_type)
   int val_1;
   
   if ((((arg_3 == 0x32) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)
+       (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
-             g_OverworldPlayerCoordX)) && (g_OverworldMapGrid != -1)) {
+             g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) {
     val_1 = Card_IsTapped((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20));
     if ((val_1 != 0) &&
@@ -4858,7 +4858,7 @@ int32_t FUN_00412413(int player_id,int card_slot,int event_type)
                   *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                   (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) * 0x34] &
         2) != 0)) {
-      g_ActivePalette = g_ActivePalette + -2;
+      g_CardEventResult = g_CardEventResult + -2;
     }
   }
   if ((arg_3 == 0x22) || (arg_3 == 199)) {
@@ -4882,12 +4882,12 @@ int32_t FUN_00412586(int player_id,int card_slot,int event_type)
       (((&g_MasterCardColorTable)
         [*(int *)(&g_CardSlot_CardId +
                  *(int *)(&g_CardSlot_TypeFlags +
-                         g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) * 0x120 +
+                         g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x120 +
                  (char)(&g_CardSlot_DamageReceived)
-                       [g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120] * 0x5b20) *
+                       [g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] * 0x5b20) *
          0x34] & 2) != 0)))) {
     *(int32_t *)
-     (&g_CardSlot_ConvertedManaCost + g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120)
+     (&g_CardSlot_ConvertedManaCost + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)
          = 0;
   }
   if ((arg_3 == 0x22) || (arg_3 == 199)) {
@@ -4944,7 +4944,7 @@ bool UI_PromptLifeBidValidation(int player_id,int card_slot,int event_type)
     if ((arg_3 == 0x22) || (arg_3 == 199)) {
       Pic_Subsystem_0044867e(player,card_slot,1);
     }
-    if (((arg_3 == 0x7f) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x7f) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       FUN_0040d7e9(player,0,(&g_PlayerCreatureCount)[player]);
     }
     flag_1 = false;
@@ -4966,20 +4966,20 @@ int32_t FUN_0041283f(int player_id,int card_slot,int event_type)
   
   if (((&DAT_006a5f69)[card_slot * 0x120 + player * 0x5b20] & 0x40) != 0) {
     if (((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) ==
-          g_OverworldMapGrid) &&
-        ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_OverworldPlayerCoordX))
-       && (g_OverworldMapGrid != -1)) {
+          g_EventSourceSlot) &&
+        ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer))
+       && (g_EventSourceSlot != -1)) {
       if (arg_3 == 0x34) {
-        g_ActivePalette =
-             g_ActivePalette |
+        g_CardEventResult =
+             g_CardEventResult |
              *(uint32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20);
       }
       if (arg_3 == 0x32) {
-        g_ActivePalette =
-             g_ActivePalette + (int)*(short *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20);
+        g_CardEventResult =
+             g_CardEventResult + (int)*(short *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20);
       }
     }
-    if (((g_OverworldMapGrid == card_slot) && (player == g_OverworldPlayerCoordX)) &&
+    if (((g_EventSourceSlot == card_slot) && (player == g_EventSourcePlayer)) &&
        ((arg_3 == 0x22 &&
         ((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) != -1 &&
          (((&g_CardSlot_Flags)
@@ -4990,11 +4990,11 @@ int32_t FUN_0041283f(int player_id,int card_slot,int event_type)
     }
   }
   if (((&DAT_006a5f69)[card_slot * 0x120 + player * 0x5b20] & 0x10) != 0) {
-    if (((((arg_3 == 0x3c) && ((g_PlayerHandCardCount._2_1_ & 2) == 0)) &&
+    if (((((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
          (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) ==
-          g_OverworldMapGrid)) &&
-        (((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_OverworldPlayerCoordX
-         && (g_OverworldMapGrid != -1)))) &&
+          g_EventSourceSlot)) &&
+        (((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer
+         && (g_EventSourceSlot != -1)))) &&
        (*(int *)(&g_CardSlot_CardId +
                 *(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                 (char)(&g_CardSlot_DamageReceived)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) != -1))
@@ -5004,12 +5004,12 @@ int32_t FUN_0041283f(int player_id,int card_slot,int event_type)
                                    *(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20)
                                    * 0x120 + (char)(&g_CardSlot_DamageReceived)
                                                    [card_slot * 0x120 + player * 0x5b20] * 0x5b20));
-      g_ActivePalette = val_1 - 1;
+      g_CardEventResult = val_1 - 1;
     }
     if (((arg_3 == 0x77) &&
         ((char)(&g_CardSlot_DamageReceived)[card_slot * 0x120 + player * 0x5b20] ==
-         g_OverworldPlayerCoordX)) &&
-       (*(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid)) {
+         g_EventSourcePlayer)) &&
+       (*(int *)(&g_CardSlot_TypeFlags + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)) {
       *(uint32_t *)(&g_CardSlot_Abilities2 +
                *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) =
@@ -5021,15 +5021,15 @@ int32_t FUN_0041283f(int player_id,int card_slot,int event_type)
     }
   }
   if (((&DAT_006a5f6a)[card_slot * 0x120 + player * 0x5b20] & 0x40) != 0) {
-    if ((arg_3 == 0x6a) && (player == g_DefendingPlayer)) {
+    if ((arg_3 == 0x6a) && (player == g_TurnPlayer)) {
       Pic_Subsystem_0044867e(player,card_slot,2);
       *(int32_t *)(&DAT_00680780 + player * 4) = 0;
     }
     if ((arg_3 == 0x79) &&
        ((*(uint32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) &
         *(uint32_t *)(&g_CardSlot_Abilities2 +
-                 g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120)) == 0)) {
-      g_ActivePalette = g_ActivePalette + 1;
+                 g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)) == 0)) {
+      g_CardEventResult = g_CardEventResult + 1;
     }
   }
   if (((&DAT_006a5f69)[card_slot * 0x120 + player * 0x5b20] & 1) != 0) {
@@ -5042,12 +5042,12 @@ int32_t FUN_0041283f(int player_id,int card_slot,int event_type)
            *(uint32_t *)(&g_CardSlot_Abilities1 + card_slot * 0x120 + player * 0x5b20) & 0xffffffdf;
     }
   }
-  if ((g_OverworldMapGrid == card_slot) && (player == g_OverworldPlayerCoordX)) {
+  if ((g_EventSourceSlot == card_slot) && (player == g_EventSourcePlayer)) {
     if ((&g_CardSlot_CardTypeIndex)[card_slot * 0x120 + player * 0x5b20] == '\x05') {
-      if (((g_PlayerManaPool == 0xcd) || (arg_3 == 199)) &&
+      if (((g_CurrentStepCode == 0xcd) || (arg_3 == 199)) &&
          ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_CurrentCardColorTarget)) {
         if (arg_3 == 0x7d) {
-          g_ActivePalette = g_ActivePalette | 2;
+          g_CardEventResult = g_CardEventResult | 2;
         }
         if (((arg_3 == 0x7e) || (arg_3 == 199)) &&
            (Pic_Subsystem_0044867e
@@ -5082,9 +5082,9 @@ int32_t FUN_00412f15(int player_id,int card_slot,int event_type)
   uint32_t match_count;
   int slot_idx;
   
-  if ((((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid
+  if ((((*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot
         ) && ((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
-              g_OverworldPlayerCoordX)) && (g_OverworldMapGrid != -1)) &&
+              g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) &&
      (((arg_3 == 0x32 && (((&g_CardSlot_TargetSlot)[card_slot * 0x120 + player * 0x5b20] & 4) != 0)) ||
       ((arg_3 == 0x33 && (((&g_CardSlot_TargetSlot)[card_slot * 0x120 + player * 0x5b20] & 8) != 0))))))
   {
@@ -5161,7 +5161,7 @@ int32_t FUN_00412f15(int player_id,int card_slot,int event_type)
         }
       }
     }
-    g_ActivePalette = g_ActivePalette + match_count;
+    g_CardEventResult = g_CardEventResult + match_count;
     if (arg_3 == 0x32) {
       *(short *)(&g_CardSlot_PowerCounters + card_slot * 0x120 + player * 0x5b20) = (short)match_count;
     }
@@ -5189,10 +5189,10 @@ int32_t FUN_00413570(int player_id,int card_slot,int event_type)
   int slot_idx;
   
   if ((((((&DAT_006a5f6b)[player * 0x5b20 + card_slot * 0x120] & 1) != 0) &&
-       (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == g_OverworldMapGrid)
+       (*(int *)(&g_CardSlot_OriginalCardId + player * 0x5b20 + card_slot * 0x120) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120] ==
-             g_OverworldPlayerCoordX)) &&
-     ((g_OverworldMapGrid != -1 && ((arg_3 == 0x32 || (arg_3 == 0x33)))))) {
+             g_EventSourcePlayer)) &&
+     ((g_EventSourceSlot != -1 && ((arg_3 == 0x32 || (arg_3 == 0x33)))))) {
     player_idx = 0;
     card_idx = 0;
     val_2 = (int)(char)(&g_CardSlot_Toughness)[player * 0x5b20 + card_slot * 0x120];
@@ -5212,12 +5212,12 @@ int32_t FUN_00413570(int player_id,int card_slot,int event_type)
       slot_idx = slot_idx + 1;
     }
     if (arg_3 == 0x32) {
-      g_ActivePalette =
-           g_ActivePalette + *(short *)(&g_CardSlot_PowerCounters + player * 0x5b20 + card_slot * 0x120) + card_idx;
+      g_CardEventResult =
+           g_CardEventResult + *(short *)(&g_CardSlot_PowerCounters + player * 0x5b20 + card_slot * 0x120) + card_idx;
     }
     else {
-      g_ActivePalette =
-           g_ActivePalette + *(short *)(&g_CardSlot_ToughnessCounters + player * 0x5b20 + card_slot * 0x120) + player_idx;
+      g_CardEventResult =
+           g_CardEventResult + *(short *)(&g_CardSlot_ToughnessCounters + player * 0x5b20 + card_slot * 0x120) + player_idx;
     }
   }
   if ((((&g_CardSlot_Abilities1)[player * 0x5b20 + card_slot * 0x120] & 0x20) == 0) &&
@@ -5247,16 +5247,16 @@ int32_t FUN_00413869(int player_id,int card_slot,int event_type)
                   *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                   (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) |
          0x1000000;
-    Card_TapForMana((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+    Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                  *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x3c,
                  0xffffffff);
     Ai_Subsystem_004cced8();
   }
-  if ((((arg_3 == 0x3c) && ((g_PlayerHandCardCount._2_1_ & 2) == 0)) &&
-      (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid))
-     && (((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_OverworldPlayerCoordX
-         && (g_OverworldMapGrid != -1)))) {
-    g_ActivePalette = *(int32_t *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20);
+  if ((((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
+      (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot))
+     && (((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer
+         && (g_EventSourceSlot != -1)))) {
+    g_CardEventResult = *(int32_t *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20);
   }
   return 0;
 }
@@ -5308,8 +5308,8 @@ int32_t FUN_00413baa(int player_id,int card_slot,int event_type)
   if (arg_3 == 0x89) {
     Glue_Subsystem_004e65e1(FUN_00413d01,-1);
   }
-  if ((((arg_3 == 0x22) || (arg_3 == 199)) && (g_OverworldMapGrid == card_slot)) &&
-     (g_OverworldPlayerCoordX == player)) {
+  if ((((arg_3 == 0x22) || (arg_3 == 199)) && (g_EventSourceSlot == card_slot)) &&
+     (g_EventSourcePlayer == player)) {
     x = 1 - player;
     for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[x]; match_count = match_count + 1) {
       val_1 = *(int *)(&g_CardSlot_CardId + match_count * 0x120 + x * 0x5b20);
@@ -5337,7 +5337,7 @@ int32_t FUN_00413d01(int x,int y)
 {
   int val_1;
   
-  if ((g_DefendingPlayer == x) && (((&DAT_006a5f3d)[y * 0x120 + x * 0x5b20] & 0x80) == 0))
+  if ((g_TurnPlayer == x) && (((&DAT_006a5f3d)[y * 0x120 + x * 0x5b20] & 0x80) == 0))
   {
     *(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) | 0x8000;
@@ -5360,29 +5360,29 @@ int32_t FUN_00413d8d(int player_id,int card_slot,int event_type)
 
 {
   if ((arg_3 == 0x21) && ((g_ScWillyScore == 0x1a || (g_ScWillyScore == 0x19)))) {
-    if (((&g_CardSlot_Toughness)[g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120] ==
+    if (((&g_CardSlot_Toughness)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] ==
          (&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20]) &&
        (*(int *)(&g_CardSlot_OriginalCardId +
-                g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) ==
+                g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) ==
         *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20))) {
       *(int32_t *)
        (&g_CardSlot_ConvertedManaCost +
-       g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) = 0;
+       g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) = 0;
     }
-    if (((&g_CardSlot_DamageReceived)[g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120]
+    if (((&g_CardSlot_DamageReceived)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120]
          == (&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20]) &&
        (*(int *)(&g_CardSlot_TypeFlags +
-                g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) ==
+                g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) ==
         *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20))) {
       *(int32_t *)
        (&g_CardSlot_ConvertedManaCost +
-       g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) = 0;
+       g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) = 0;
     }
   }
-  if ((((g_PlayerManaPool == 0xcc) || (arg_3 == 199)) && (g_OverworldMapGrid == card_slot)) &&
-     (g_OverworldPlayerCoordX == player)) {
+  if ((((g_CurrentStepCode == 0xcc) || (arg_3 == 199)) && (g_EventSourceSlot == card_slot)) &&
+     (g_EventSourcePlayer == player)) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((arg_3 == 0x7e) || (arg_3 == 199)) {
       Pic_Subsystem_0044867e(player,card_slot,1);
@@ -5401,12 +5401,12 @@ int32_t FUN_00413d8d(int player_id,int card_slot,int event_type)
 int32_t FUN_00413fb4(int player_id,int card_slot,int event_type)
 
 {
-  if ((((arg_3 == 0x3c) && ((g_PlayerHandCardCount._2_1_ & 2) == 0)) &&
-      (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_OverworldMapGrid))
-     && ((((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_OverworldPlayerCoordX
-          && (g_OverworldMapGrid != -1)) &&
+  if ((((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
+      (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot))
+     && ((((char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer
+          && (g_EventSourceSlot != -1)) &&
          (*(int *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20) != -1)))) {
-    g_ActivePalette = *(uint32_t *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20);
+    g_CardEventResult = *(uint32_t *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20);
     *(uint32_t *)(&g_CardSlot_Abilities1 +
              *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
              (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) =
@@ -5414,12 +5414,12 @@ int32_t FUN_00413fb4(int player_id,int card_slot,int event_type)
                   *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                   (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) | 0x40;
   }
-  if (((g_PlayerManaPool == 0xc9) || (arg_3 == 199)) &&
-     ((g_OverworldMapGrid == card_slot &&
-      (((g_OverworldPlayerCoordX == player && (g_DefendingPlayer == player)) &&
+  if (((g_CurrentStepCode == 0xc9) || (arg_3 == 199)) &&
+     ((g_EventSourceSlot == card_slot &&
+      (((g_EventSourcePlayer == player && (g_TurnPlayer == player)) &&
        (g_CurrentCardColorTarget == player)))))) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if ((arg_3 == 0x7e) || (arg_3 == 199)) {
       Mem_AllocOrFree_0041d942(*(int *)(&g_CardSlot_Controller + card_slot * 0x120 + player * 0x5b20));
@@ -5431,7 +5431,7 @@ int32_t FUN_00413fb4(int player_id,int card_slot,int event_type)
                     *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                     (char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] * 0x5b20) |
            0x1000000;
-      Card_TapForMana((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
+      Magic_QueryCardAttribute((int)(char)(&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20],
                    *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20),0x3c,
                    0xffffffff);
       Ai_Subsystem_004cced8();
@@ -5455,10 +5455,10 @@ int32_t FUN_00414270(int player_id,int card_slot,int event_type)
   int match_count;
   int slot_idx;
   
-  if ((((g_PlayerManaPool == 0xd5) && (g_OverworldMapGrid == card_slot)) &&
-      (g_OverworldPlayerCoordX == player)) && (player == g_CurrentCardColorTarget)) {
+  if ((((g_CurrentStepCode == 0xd5) && (g_EventSourceSlot == card_slot)) &&
+      (g_EventSourcePlayer == player)) && (player == g_CurrentCardColorTarget)) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (arg_3 == 0x7e) {
       val_1 = Pic_Subsystem_0045268f(0x200);
@@ -5525,10 +5525,10 @@ int32_t FUN_0041459d(int player_id,int card_slot,int event_type)
   int match_count;
   int slot_idx;
   
-  if ((((g_PlayerManaPool == 0xd7) && (g_OverworldMapGrid == card_slot)) &&
-      (player == g_OverworldPlayerCoordX)) && (player == g_CurrentCardColorTarget)) {
+  if ((((g_CurrentStepCode == 0xd7) && (g_EventSourceSlot == card_slot)) &&
+      (player == g_EventSourcePlayer)) && (player == g_CurrentCardColorTarget)) {
     if (arg_3 == 0x7d) {
-      g_ActivePalette = g_ActivePalette | 2;
+      g_CardEventResult = g_CardEventResult | 2;
     }
     if (arg_3 == 0x7e) {
       val_1 = Pic_Subsystem_0045268f(0x44);
@@ -5598,7 +5598,7 @@ int32_t FUN_00414875(int player_id,int card_slot,int event_type)
   
   if ((((arg_3 == 0x73) && (g_ScWillyScore == 10)) && (g_CurrentTurnTargetPlayer == player)) &&
      ((*(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) == 0 &&
-      (g_PlayerManaPool == -1)))) {
+      (g_CurrentStepCode == -1)))) {
     g_CombatPhaseFlags = g_CombatPhaseFlags | 3;
     uval_1 = 1;
   }
@@ -5707,7 +5707,7 @@ int32_t FUN_00414ac1(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if (g_SelectedTargetPlayer == -1) {
         g_ActivePlayer = 1;
       }
@@ -5730,9 +5730,9 @@ int32_t FUN_00414ac1(int player_id,int card_slot,int event_type)
              *(uint32_t *)(&g_CardSlot_Abilities1 + val_1 * 0x120 + player * 0x5b20) | 8;
         g_TurnCounter =
              *(int32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20);
-        g_PlayerHandCardCount = g_PlayerHandCardCount | 0x400;
+        g_DuelModeFlags = g_DuelModeFlags | 0x400;
         Pic_Subsystem_0042ac1f(player,val_1);
-        g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffffbff;
+        g_DuelModeFlags = g_DuelModeFlags & 0xfffffbff;
       }
       (&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] = 0;
       Pic_Subsystem_0044867e(player,card_slot,1);
@@ -5761,7 +5761,7 @@ int32_t FUN_00414f59(int player_id,int card_slot,int event_type)
       (((&g_MasterCardColorTable)[arg_3 * 0x34] & 1) != 0)))) {
     Magic_TriggerCardEvent(player,card_slot,0x6d,1 - player,0xffffffff);
     if (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) != 0) {
-      Rules_ApplyContinuousDamage(player,card_slot,0x81);
+      Magic_BroadcastCardEvent(player,card_slot,0x81);
     }
   }
   g_AiManaPoolReserve = 0;
@@ -5781,7 +5781,7 @@ int32_t FUN_00415080(int player_id,int card_slot,int event_type)
   int32_t uval_1;
   
   if (arg_3 == 0x74) {
-    if ((player == g_DefendingPlayer) || (0x14 < g_ScWillyScore)) {
+    if ((player == g_TurnPlayer) || (0x14 < g_ScWillyScore)) {
       uval_1 = 0;
     }
     else {
@@ -5815,7 +5815,7 @@ int32_t FUN_00415d48(int x,int y)
          [*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 1) != 0) {
       g_PendingAttackersTargetSlot = 0xffffffff;
     }
-    Rules_ApplyContinuousDamage(x,y,0x81);
+    Magic_BroadcastCardEvent(x,y,0x81);
   }
   return 0;
 }
@@ -5837,7 +5837,7 @@ int32_t FUN_00416059(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       Glue_Subsystem_004df8ba(player,card_slot);
     }
     if (arg_3 == 0x71) {
@@ -5934,9 +5934,9 @@ int32_t FUN_00417919(int player_id,int card_slot,int event_type)
   }
   else {
     if ((arg_3 == 0x32) &&
-       (((&g_CardSlot_Flags)[g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120] & 4) !=
+       (((&g_CardSlot_Flags)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] & 4) !=
         0)) {
-      g_ActivePalette = g_ActivePalette + 2;
+      g_CardEventResult = g_CardEventResult + 2;
     }
     if ((arg_3 == 0x22) || (arg_3 == 199)) {
       Pic_Subsystem_0044867e(player,card_slot,1);
@@ -5966,7 +5966,7 @@ int32_t FUN_004179a4(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       DAT_00538728 = player;
       DAT_0053872c = card_slot;
-      Glue_Subsystem_004e65e1(FUN_00417a57,g_DefendingPlayer);
+      Glue_Subsystem_004e65e1(FUN_00417a57,g_TurnPlayer);
       Pic_Subsystem_0044867e(player,card_slot,1);
     }
     if (arg_3 == 0x3b) {
@@ -6026,7 +6026,7 @@ int32_t FUN_00417b09(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       DAT_00538740 = player;
       DAT_0053873c = card_slot;
-      Glue_Subsystem_004e65e1(FUN_00417bb9,1 - g_DefendingPlayer);
+      Glue_Subsystem_004e65e1(FUN_00417bb9,1 - g_TurnPlayer);
       Pic_Subsystem_0044867e(player,card_slot,1);
     }
     if (arg_3 == 0x3b) {
@@ -6118,7 +6118,7 @@ int32_t FUN_00417c96(int player_id,int card_slot,int event_type)
                          arg_15,arg_16,arg_17,arg_18_00,arg_19);
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       arg_20 = &match_count;
       uval_2 = 1;
       arg_18 = s_Target_Creature_00519974;
@@ -6133,7 +6133,7 @@ int32_t FUN_00417c96(int player_id,int card_slot,int event_type)
       uval_5 = 1 << (flag_1 & 0x1f);
       uval_6 = 0;
       uval_3 = Glue_Subsystem_004d0a42(player,card_slot);
-      val_4 = Action_ValidateTarget_00405802
+      val_4 = Duel_ChooseTarget
                         (player,2,1 - player,0x200,2,0x40,0,uval_3,uval_6,uval_5,val_4,val_7,uval_8,uVar9,
                          uVar10,uVar11,uVar12,arg_18,uval_2,arg_20);
       if (val_4 == 0) {
@@ -6193,7 +6193,7 @@ bool FUN_004186ac(int player_id,int card_slot,int event_type)
       flag_1 = true;
     }
     else {
-      flag_1 = player != g_DefendingPlayer;
+      flag_1 = player != g_TurnPlayer;
     }
   }
   else {
@@ -6217,7 +6217,7 @@ int32_t FUN_0041872f(int x,int y)
 
 {
   if (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 4) != 0) {
-    Card_ApplyCombatDamage(x,y,1,g_OverworldPlayerCoordX,g_OverworldMapGrid);
+    Card_ApplyCombatDamage(x,y,1,g_EventSourcePlayer,g_EventSourceSlot);
   }
   return 0;
 }
@@ -6288,9 +6288,9 @@ uint32_t FUN_0041a245(int player_id,int card_slot,int event_type)
     else {
       Ai_GetOpponentPlayerScore(0);
       if (player == g_CurrentTurnPhase) {
-        uval_1 = g_PlayerHandCardCount & 0x20;
+        uval_1 = g_DuelModeFlags & 0x20;
       }
-      else if (((g_PlayerHandCardCount & 0x20) == 0) || (g_DefendingPlayer != g_CurrentTurnPhase)) {
+      else if (((g_DuelModeFlags & 0x20) == 0) || (g_TurnPlayer != g_CurrentTurnPhase)) {
         uval_1 = 0;
       }
       else {
@@ -6299,7 +6299,7 @@ uint32_t FUN_0041a245(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if (((arg_3 == 0x6c) && (card_slot == g_OverworldMapGrid)) && (player == g_OverworldPlayerCoordX)) {
+    if (((arg_3 == 0x6c) && (card_slot == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
       if (slot_idx == -1) {
         g_ActivePlayer = 1;
       }
@@ -6360,7 +6360,7 @@ int32_t FUN_0041a4c6(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if ((player == g_CurrentTurnPhase) || (g_SelectedTargetPlayer != -1)) {
         *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) = g_SelectedTargetPlayer;
         *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20) = g_SelectedTargetSlot;
@@ -6437,7 +6437,7 @@ int32_t FUN_0041a782(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if (g_SelectedTargetPlayer == -1) {
         g_ActivePlayer = 1;
       }
@@ -6461,11 +6461,11 @@ int32_t FUN_0041a782(int player_id,int card_slot,int event_type)
         val_1 = *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20);
         arg_2_00 = *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20);
         if (val_1 == g_CurrentTurnPhase) {
-          Magic_CombatPhase(player,card_slot,0x7e,0,0);
+          Magic_PushSpellStack(player,card_slot,0x7e,0,0);
           slot_idx = Ai_CalcManaRequirement_004ba890
                               (val_1,0,*(int *)(&g_CardSlot_ConvertedManaCost +
                                                card_slot * 0x120 + player * 0x5b20));
-          Magic_DiscardToHandSize();
+          Magic_DropTopSpell();
           g_ActivePlayer = 0;
         }
         else {
@@ -6585,7 +6585,7 @@ int32_t FUN_0041adc1(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if ((((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player))
+    if ((((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player))
        && (g_SelectedTargetPlayer != -1)) {
       DAT_006b2d48 = 1;
       Ai_CalcManaRequirement_004ba890
@@ -6639,7 +6639,7 @@ uint32_t FUN_0041b695(int player_id,int card_slot,int event_type)
     uval_1 = (&g_PlayerPoisonCounters)[player] & 2;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if (card_idx == -1) {
         g_ActivePlayer = 1;
       }
@@ -6692,7 +6692,7 @@ int32_t FUN_0041b89c(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       if ((int)(&g_ActivePlayerSpellPriority)[player] < 8) {
         g_SpellStackDepth = g_SpellStackDepth + -0x3c;
       }
@@ -6752,10 +6752,10 @@ uint32_t FUN_0041cb9a(int player_id,int card_slot,int event_type)
   
   if (arg_3 == 0x74) {
     Ai_GetOpponentPlayerScore(0);
-    uval_1 = g_PlayerHandCardCount & 4;
+    uval_1 = g_DuelModeFlags & 4;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (player == g_OverworldPlayerCoordX)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (player == g_EventSourcePlayer)) {
       if (*(int *)(&g_CardSlot_CardId +
                   *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                   *(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20) * 0x5b20) ==
@@ -6779,24 +6779,24 @@ uint32_t FUN_0041cb9a(int player_id,int card_slot,int event_type)
     if (((arg_3 == 0x6e) &&
         (*(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) != -1)) &&
        ((*(int *)(&g_CardSlot_OriginalCardId +
-                 g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) ==
+                 g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) ==
          *(int *)(&g_CardSlot_OriginalCardId + card_slot * 0x120 + player * 0x5b20) &&
         ((&g_CardSlot_Toughness)[card_slot * 0x120 + player * 0x5b20] ==
-         (&g_CardSlot_Toughness)[g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120]))))
+         (&g_CardSlot_Toughness)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120]))))
     {
       val_2 = Math_Clamp(*(int *)(&g_CardSlot_ConvertedManaCost +
-                                   g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120),0,
+                                   g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120),0,
                            *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20))
       ;
       *(int *)(&g_CardSlot_ConvertedManaCost +
-              g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) =
+              g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) =
            *(int *)(&g_CardSlot_ConvertedManaCost +
-                   g_OverworldPlayerCoordX * 0x5b20 + g_OverworldMapGrid * 0x120) - val_2;
+                   g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) - val_2;
       *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) =
            *(int *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) - val_2;
     }
     if (arg_3 == 0x73) {
-      if (((g_PlayerHandCardCount & 4) == 0) || (val_2 = Font_DrawString(player,7,1), val_2 == 0)) {
+      if (((g_DuelModeFlags & 4) == 0) || (val_2 = Font_DrawString(player,7,1), val_2 == 0)) {
         uval_1 = 0;
       }
       else {
@@ -6868,7 +6868,7 @@ int32_t FUN_0041d019(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    if (((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player)) {
+    if (((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
       *(int32_t *)(&g_CardSlot_ConvertedManaCost + card_slot * 0x120 + player * 0x5b20) = 6;
     }
     if (arg_3 == 0x71) {
@@ -6949,7 +6949,7 @@ int32_t FUN_0041d411(int player_id,int card_slot,int event_type)
     }
   }
   else {
-    if ((((arg_3 == 0x6c) && (g_OverworldMapGrid == card_slot)) && (g_OverworldPlayerCoordX == player))
+    if ((((arg_3 == 0x6c) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player))
        && (val_1 = Palette_Subsystem_004a7bcd(player,card_slot,(int)local_504), val_1 != 0)) {
       for (local_508 = 0; local_508 < g_TurnCounter; local_508 = local_508 + 1) {
         val_3 = Util_GetRandomNumber(val_1);
@@ -6969,7 +6969,7 @@ int32_t FUN_0041d411(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x71) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x2c);
+        Duel_PlaySoundById(0x2c);
         Sleep(0xdac);
       }
       while ((&g_CardSlot_TurnPlayed)[card_slot * 0x120 + player * 0x5b20] != '\0') {
@@ -7041,7 +7041,7 @@ int32_t FUN_0041d411(int player_id,int card_slot,int event_type)
                                              [card_slot * 0x120 + player * 0x5b20] * 8) * 0x5b20) +
                0x1000000;
           if (g_IsAiThinking != 1) {
-            Magic_UpkeepPhase(0x2b);
+            Duel_PlaySoundById(0x2b);
           }
         }
       }
@@ -7138,7 +7138,7 @@ void FUN_0041da41(int x,int y)
   
   DAT_00695f08 = x;
   DAT_006b2e14 = y;
-  FUN_00476205(g_DefendingPlayer,0xd4,s_Card_leaving_play_00519c0c,0);
+  FUN_00476205(g_TurnPlayer,0xd4,s_Card_leaving_play_00519c0c,0);
   *(int32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) = 0xffffffff;
   Pic_Subsystem_00448e29(x,y);
   if (((&g_CardSlot_Abilities1)[y * 0x120 + x * 0x5b20] & 0x10) == 0) {
@@ -7193,7 +7193,7 @@ int Card_ApplyCombatDamage(int player_id,int card_slot,int event_type,int target
       }
       else {
         if ((*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == -1) ||
-           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == DAT_006fd3f4)) {
+           (*(int *)(&g_CardSlot_CardId + flags * 0x120 + target_slot * 0x5b20) == g_StackObjectCardId)) {
           card_idx = *(int *)(&g_ActiveCardsInPlay + flags * 0x120 + target_slot * 0x5b20);
         }
         else {
@@ -7218,7 +7218,7 @@ int Card_ApplyCombatDamage(int player_id,int card_slot,int event_type,int target
                val_2 << 0x10 | *(uint32_t *)(&g_MasterCardTypeTable + card_idx * 0x34);
         }
       }
-      g_PlayerHandCardCount = g_PlayerHandCardCount | 2;
+      g_DuelModeFlags = g_DuelModeFlags | 2;
     }
   }
   return val_1;
@@ -10730,13 +10730,13 @@ void FUN_0046f300(void)
       *(int32_t *)(&DAT_0063eed0 + slot_idx * 4) = 0;
     }
   }
-  DAT_006fecc0 = 0xffffffff;
+  g_SpellStackObjects = 0xffffffff;
   for (match_count = 0; match_count < 0x10; match_count = match_count + 1) {
     if ((&g_MasterCardTable)[(g_MasterCardCount + match_count) * 0x34] == -1) {
       *(int32_t *)(&g_MasterCardTypeTable + (g_MasterCardCount + match_count) * 0x34) = 0xffffffff;
     }
   }
-  g_PlayerHandCardCount = 0;
+  g_DuelModeFlags = 0;
   DAT_00680788 = 0xffffffff;
   DAT_00627a88 = 0xffffffff;
   DAT_0063ee88 = 0;
@@ -10795,7 +10795,7 @@ int Magic_ExecuteDrawPhase(int player_id)
   uint8_t slot_idx;
   
   DAT_006fe408 = 0;
-  FUN_0047624f(player,0xcf,s_Draw_a_card_Phase_00525af8,1);
+  Magic_RunTurnStep(player,0xcf,s_Draw_a_card_Phase_00525af8,1);
   if (DAT_006fe408 == 0) {
     if (g_CurrentTurnPhase == player) {
       if (g_OverworldPlayerDirection == -1) {
@@ -10887,7 +10887,7 @@ int Magic_ExecuteDrawPhase(int player_id)
     (&g_ActivePlayerSpellPriority)[player] = (&g_ActivePlayerSpellPriority)[player] + 1;
     _DAT_006b3038 = _DAT_006b3038 + 1;
     if ((g_IsAiThinking != 1) && (match_count != -1)) {
-      Magic_UpkeepPhase(2);
+      Duel_PlaySoundById(2);
     }
     if (match_count != -1) {
       *(uint32_t *)(&g_CardSlot_Flags + match_count * 0x120 + player * 0x5b20) =
@@ -10980,7 +10980,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
     g_SelectedTargetPlayer = player;
     g_SelectedTargetSlot = card_slot;
     DAT_0068a708 = val_5;
-    Magic_CombatPhase(player,card_slot,0x71,player,0);
+    Magic_PushSpellStack(player,card_slot,0x71,player,0);
     Ai_Subsystem_004bd4f0();
     if (DAT_006fe3f4 == 0) {
       if ((g_CurrentTurnPhase == player) && (g_IsAiThinking != 1)) {
@@ -11014,33 +11014,33 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
                 val_3 = Font_DrawString(player,7,1);
                 if (val_3 == 0) {
                   val_3 = Font_DrawString(player,7,1);
-                  g_AiDecisionScore = Util_GetRandomNumber(val_3 + 1);
-                  target_idx = g_AiDecisionScore;
+                  g_AiChoiceValue = Util_GetRandomNumber(val_3 + 1);
+                  target_idx = g_AiChoiceValue;
                 }
                 else {
                   val_3 = Util_GetRandomNumber(val_3);
-                  g_AiDecisionScore = val_3 + 1;
-                  target_idx = g_AiDecisionScore;
+                  g_AiChoiceValue = val_3 + 1;
+                  target_idx = g_AiChoiceValue;
                 }
               }
               else if (val_3 == 1) {
                 target_idx = Font_DrawString(player,7,1);
-                g_AiDecisionScore = target_idx;
+                g_AiChoiceValue = target_idx;
                 if ((g_PlayerCreatureCount < target_idx) && (val_3 = Util_GetRandomNumber(3), val_3 == 0)) {
                   target_idx = g_PlayerCreatureCount;
-                  g_AiDecisionScore = g_PlayerCreatureCount;
+                  g_AiChoiceValue = g_PlayerCreatureCount;
                 }
-                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiDecisionScore)
+                if ((g_OverworldPlayerCoordY != -1) && (g_OverworldPlayerCoordY < g_AiChoiceValue)
                    ) {
                   target_idx = g_OverworldPlayerCoordY;
-                  g_AiDecisionScore = g_OverworldPlayerCoordY;
+                  g_AiChoiceValue = g_OverworldPlayerCoordY;
                 }
               }
-              Ai_EvaluateCreaturePower();
+              Ai_RecordChoice();
             }
             else {
-              Ai_CalcCardAdvantage();
-              target_idx = g_AiDecisionScore;
+              Ai_ReplayChoice();
+              target_idx = g_AiChoiceValue;
             }
             g_OverworldPlayerCoordY = target_idx;
             Ai_CalcManaRequirement_004ba890(player,0,-1);
@@ -11075,7 +11075,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
            (&g_PlayerPoisonCounters)[player] | (uint32_t)(uint8_t)(&g_MasterCardColorTable)[val_5 * 0x34];
       *(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) =
            *(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) | 0x20;
-      g_PlayerHandCardCount = g_PlayerHandCardCount | 0x20;
+      g_DuelModeFlags = g_DuelModeFlags | 0x20;
       if ((g_CurrentTurnPhase == player) || (g_IsAiThinking != 1)) {
         *(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) =
              *(uint32_t *)(&g_CardSlot_Flags + player * 0x5b20 + card_slot * 0x120) | 0x30000;
@@ -11091,7 +11091,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
         Ai_Util_004bd5af();
       }
       else {
-        val_4 = Rules_ApplyContinuousDamage(player,card_slot,0x6c);
+        val_4 = Magic_BroadcastCardEvent(player,card_slot,0x6c);
         if (val_4 != 0) {
           Engine_ReportFatalError(s_Illegal_cast_00525bcc);
           g_ActivePlayer = 1;
@@ -11128,7 +11128,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
     if (*(int *)(&g_CardSlot_CardId + player * 0x5b20 + card_slot * 0x120) == -1) {
       g_ActivePlayer = 1;
     }
-    g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
+    g_DuelModeFlags = g_DuelModeFlags & 0xffffffdf;
     DAT_0068a708 = val_4;
     g_SelectedTargetSlot = val_1;
     g_SelectedTargetPlayer = val_2;
@@ -11161,7 +11161,7 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
         else {
           Ai_Subsystem_004b574d(player,card_slot,-1,-1,&g_OverworldWorldState,0);
         }
-        DAT_00627a84 = g_DefendingPlayer;
+        DAT_00627a84 = g_TurnPlayer;
         DAT_00627a88 = g_ScWillyScore;
       }
       if (g_IsAiThinking != 1) {
@@ -11188,8 +11188,8 @@ int32_t Magic_ExecuteCastSpellPhase(int player_id,int card_slot,int event_type)
       DAT_00701008 = 1;
     }
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
-    g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
+    Magic_DropTopSpell();
+    g_DuelModeFlags = g_DuelModeFlags & 0xffffffdf;
     uval_6 = 0;
   }
   else {
@@ -11216,7 +11216,7 @@ int32_t Magic_ResolveCastSpell(int x,int y)
   val_1 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
   Rules_CalculateManaCostReduction((&g_MasterCardColorTable)[val_1 * 0x34]);
   if (val_1 == -1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uval_3 = 0;
   }
   else {
@@ -11231,36 +11231,36 @@ int32_t Magic_ResolveCastSpell(int x,int y)
          *(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) & 0xffffffdf;
     *(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) =
          *(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) | 2;
-    g_PlayerHandCardCount = g_PlayerHandCardCount & 0xffffffdf;
+    g_DuelModeFlags = g_DuelModeFlags & 0xffffffdf;
     if (*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) == val_1) {
       (&g_PlayerPoisonCounters)[x] =
            (&g_PlayerPoisonCounters)[x] | (uint32_t)(uint8_t)(&g_MasterCardColorTable)[val_1 * 0x34];
       if (g_IsAiThinking != 1) {
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 2) != 0) {
-          Magic_UpkeepPhase(0x11);
+          Duel_PlaySoundById(0x11);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x40) != 0) {
-          Magic_UpkeepPhase(0);
+          Duel_PlaySoundById(0);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 4) != 0) {
-          Magic_UpkeepPhase(3);
+          Duel_PlaySoundById(3);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x10) != 0) {
-          Magic_UpkeepPhase(6);
+          Duel_PlaySoundById(6);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 0x20) != 0) {
-          Magic_UpkeepPhase(7);
+          Duel_PlaySoundById(7);
         }
         if (((&g_MasterCardColorTable)[val_1 * 0x34] & 8) != 0) {
-          Magic_UpkeepPhase(0x10);
+          Duel_PlaySoundById(0x10);
         }
       }
-      Magic_EndTurnPhase();
+      Magic_ResolveTopSpell();
       uval_2 = DAT_006b2e14;
       uval_3 = DAT_00695f08;
       DAT_00695f08 = x;
       DAT_006b2e14 = y;
-      FUN_00476205(g_DefendingPlayer,0xd3,s_Casting_00525c0c,0);
+      FUN_00476205(g_TurnPlayer,0xd3,s_Casting_00525c0c,0);
       DAT_00695f08 = uval_3;
       DAT_006b2e14 = uval_2;
       Rules_ProcessDamagePrevention(x);
@@ -11283,7 +11283,7 @@ int32_t Magic_ResolveCastSpell(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       uval_3 = 0;
     }
   }
@@ -11365,7 +11365,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
     val_2 = FUN_004769c4(x,y);
     if (val_2 == 0) {
       if (((((&g_MasterCardSubtypeTable)[*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) * 0x34] &
-            0x18) != 0) && (g_DefendingPlayer == x)) && (DAT_0062785c != 0)) {
+            0x18) != 0) && (g_TurnPlayer == x)) && (DAT_0062785c != 0)) {
         strcat(&g_OverworldWorldState,s__with_00525c3c);
         char_ptr_3 = _itoa(DAT_0062785c,&DAT_00538df8,10);
         strcat(&g_OverworldWorldState,char_ptr_3);
@@ -11397,7 +11397,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       Ai_Subsystem_004b574d(x,y,-1,-1,&g_OverworldWorldState,0);
     }
   }
-  Magic_CombatPhase(x,y,0x72,x,0);
+  Magic_PushSpellStack(x,y,0x72,x,0);
   DAT_00695df8 = 0;
   if (((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 1) == 0) {
     if ((((&g_CardSlot_SpecialState)[x * 0x5b20 + y * 0x120] & 0x10) != 0) &&
@@ -11414,7 +11414,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       }
       if (g_ActivePlayer != 0) {
         g_ActivePlayer = 0;
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
         return false;
       }
       *(uint32_t *)(&g_CardSlot_SpecialState + x * 0x5b20 + y * 0x120) =
@@ -11424,7 +11424,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       Magic_MainTurnPhase(1);
       return true;
     }
-    val_2 = Rules_ApplyContinuousDamage(x,y,0x80);
+    val_2 = Magic_BroadcastCardEvent(x,y,0x80);
     if (val_2 == 0) {
       if (((&g_MasterCardFlagsTable)[*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) * 0x34] &
           0x10) != 0) {
@@ -11436,14 +11436,14 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       bVar4 = g_ActivePlayer == 1;
       if (bVar4) {
         Ai_Subsystem_004bd5e3(x);
-        Magic_DiscardToHandSize();
+        Magic_DropTopSpell();
       }
       bVar4 = !bVar4;
       Ai_Util_004bd5af();
       if (bVar4) {
         if (((uval_1 & 0x10) == 0) &&
            (((&g_CardSlot_Flags)[x * 0x5b20 + y * 0x120] & 0x10) != 0)) {
-          Rules_ApplyContinuousDamage(x,y,0x81);
+          Magic_BroadcastCardEvent(x,y,0x81);
         }
         if (*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) == -1) {
           local_28 = *(uint32_t *)(&g_MasterCardSubtypeTable +
@@ -11463,10 +11463,10 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
         if (g_IsAiThinking != 1) {
           if ((((&g_MasterCardFlagsTable)[*(int *)(&g_CardSlot_CardId + x * 0x5b20 + y * 0x120) * 0x34]
                & 0x10) == 0) || (g_PendingAttackersTargetSlot == -1)) {
-            Magic_UpkeepPhase(0x1c);
+            Duel_PlaySoundById(0x1c);
           }
           else {
-            Magic_UpkeepPhase(0x12);
+            Duel_PlaySoundById(0x12);
           }
         }
         if (g_IsAiThinking != 1) {
@@ -11475,7 +11475,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
       }
     }
     else {
-      Magic_DiscardToHandSize();
+      Magic_DropTopSpell();
       bVar4 = false;
     }
     if (bVar4 != false) {
@@ -11513,7 +11513,7 @@ bool Magic_ExecuteUpkeepPhase(int x,int y)
   }
   if (g_ActivePlayer != 0) {
     g_ActivePlayer = 0;
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     return false;
   }
 LAB_004714f6:
@@ -11562,12 +11562,12 @@ int32_t Magic_ExecuteTapCardAction(int x,int y)
       }
       FUN_00475c8a(player_idx,g_ScWillyScore,&g_OverworldWorldState,0x6d);
     }
-    Magic_EndTurnPhase();
+    Magic_ResolveTopSpell();
     uval_3 = DAT_006b2e14;
     uval_2 = DAT_00695f08;
     DAT_00695f08 = x;
     DAT_006b2e14 = y;
-    FUN_00476205(g_DefendingPlayer,0xd2,s_Tapping_00525c80,0);
+    FUN_00476205(g_TurnPlayer,0xd2,s_Tapping_00525c80,0);
     DAT_00695f08 = uval_2;
     DAT_006b2e14 = uval_3;
   }
@@ -11587,9 +11587,9 @@ int32_t Magic_ExecuteProcessTriggers(int player_id,int card_slot,int event_type)
   int32_t uval_1;
   
   DAT_0068078c = 1;
-  Magic_CombatPhase(player,card_slot,0x7e,arg_3,0);
+  Magic_PushSpellStack(player,card_slot,0x7e,arg_3,0);
   if (g_ActivePlayer == 1) {
-    Magic_DiscardToHandSize();
+    Magic_DropTopSpell();
     uval_1 = 0;
   }
   else {
@@ -11605,7 +11605,7 @@ int32_t Magic_ExecuteProcessTriggers(int player_id,int card_slot,int event_type)
          *(uint32_t *)(&g_CardSlot_Flags + card_slot * 0x120 + player * 0x5b20) | 0x100;
     strcpy(&g_OverworldWorldState,s_Process_00525c98);
     Ai_Subsystem_004b90de(player,card_slot);
-    uval_1 = Magic_EndTurnPhase();
+    uval_1 = Magic_ResolveTopSpell();
   }
   DAT_0068078c = 0;
   return uval_1;
@@ -11713,7 +11713,7 @@ void Magic_ExecuteDeclareBlockersPhase(uint32_t player)
     for (local_50 = 0; local_50 < (int)(&g_PlayerActiveCardCount)[player]; local_50 = local_50 + 1) {
       local_38 = *(int *)(&g_CardSlot_CardId + local_50 * 0x120 + player * 0x5b20);
       if ((local_38 != -1) && (((&g_CardSlot_Flags)[local_50 * 0x120 + player * 0x5b20] & 4) != 0)) {
-        local_64 = Card_TapForMana(player,local_50,0x32,0xffffffff);
+        local_64 = Magic_QueryCardAttribute(player,local_50,0x32,0xffffffff);
         aiStack_100[local_30] = local_50;
         aiStack_c0[local_30] = local_64;
         local_30 = local_30 + 1;
@@ -11724,14 +11724,14 @@ void Magic_ExecuteDeclareBlockersPhase(uint32_t player)
     }
     loop_idx = 0;
     while ((loop_idx == 0 && (val_1 = FUN_00472a0a(local_2c), val_1 != 0))) {
-      val_1 = Action_ValidateTarget_00405802
+      val_1 = Duel_ChooseTarget
                         (local_2c,local_2c,local_2c,0x2200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0
                          ,0,0x11,s_Choose_blockers_00525ca4,2,&local_28);
       if (val_1 == 0) {
         loop_idx = 1;
       }
       else {
-        val_1 = Action_ValidateTarget_00405802
+        val_1 = Duel_ChooseTarget
                           (local_2c,local_80,local_80,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,
                            0,2,0,s_Block_which_attacker__00525cb4,1,&color_idx);
         if (val_1 != 0) {
@@ -11804,7 +11804,7 @@ int32_t FUN_004726c5(int x,int y)
   int val_3;
   
   uval_1 = g_ActivePlayer;
-  val_3 = g_ActivePalette;
+  val_3 = g_CardEventResult;
   if (((((&g_MasterCardRarityTable)[*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] == '\0'
         ) && (((&DAT_006a5f69)[y * 0x120 + x * 0x5b20] & 8) == 0)) ||
       (((&g_MasterCardColorTable)
@@ -11812,37 +11812,37 @@ int32_t FUN_004726c5(int x,int y)
      (((*(uint32_t *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) & 0x10010) != 0 ||
       (((&DAT_006a5f69)[y * 0x120 + x * 0x5b20] & 0x80) != 0)))) {
     uval_2 = 0;
-    g_ActivePalette = val_3;
+    g_CardEventResult = val_3;
     g_ActivePlayer = uval_1;
   }
   else {
-    g_ActivePalette = 0;
+    g_CardEventResult = 0;
     (**(code **)(&g_CardScriptCallbackTable + *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34)
     )(x,y,0x79);
-    if (g_ActivePalette == 0) {
-      g_ActivePalette = val_3;
+    if (g_CardEventResult == 0) {
+      g_CardEventResult = val_3;
       g_ActivePlayer = uval_1;
       if (g_ActivePlayerPriority == x) {
-        Magic_PayManaCost();
-        g_ActivePalette = 0;
-        g_OverworldPlayerCoordX = x;
-        g_OverworldMapGrid = y;
+        Magic_PushEventContext();
+        g_CardEventResult = 0;
+        g_EventSourcePlayer = x;
+        g_EventSourceSlot = y;
         Glue_Subsystem_004e65e1(Pic_Subsystem_0042e80e,-1);
-        val_3 = g_ActivePalette;
-        Magic_TapCardForMana();
+        val_3 = g_CardEventResult;
+        Magic_PopEventContext();
         if (val_3 != 0) {
           return 0;
         }
       }
       if ((*(int *)(&DAT_00680780 + (1 - x) * 4) != 0) &&
-         (val_3 = Rules_ApplyContinuousDamage(x,y,0x79), val_3 != 0)) {
+         (val_3 = Magic_BroadcastCardEvent(x,y,0x79), val_3 != 0)) {
         return 0;
       }
       uval_2 = 1;
     }
     else {
       uval_2 = 0;
-      g_ActivePalette = val_3;
+      g_CardEventResult = val_3;
       g_ActivePlayer = uval_1;
     }
   }
@@ -11937,7 +11937,7 @@ int32_t FUN_00472a0a(int player_id)
     }
     if ((*(int *)(&g_CardSlot_CardId + x * 0x5b20 + match_count * 0x120) != -1) &&
        (((&g_CardSlot_Flags)[x * 0x5b20 + match_count * 0x120] & 4) != 0)) {
-      flags = Card_TapForMana(x,match_count,0x34,0xffffffff);
+      flags = Magic_QueryCardAttribute(x,match_count,0x34,0xffffffff);
       for (target_idx = 0; target_idx < (int)(&g_PlayerActiveCardCount)[player]; target_idx = target_idx + 1)
       {
         if (((*(int *)(&g_CardSlot_CardId + x * 0x5b20 + match_count * 0x120) != -1) &&
@@ -11968,7 +11968,7 @@ int32_t FUN_00472b91(int x,int card_slot,int event_type,int target_slot)
   uint32_t match_count;
   uint32_t slot_idx;
   
-  flags = Card_TapForMana(arg_3,target_slot,0x34,0xffffffff);
+  flags = Magic_QueryCardAttribute(arg_3,target_slot,0x34,0xffffffff);
   Ai_FilterValidBlockers(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
@@ -12008,20 +12008,20 @@ bool FUN_00472c0c(int player_id,int card_slot,int32_t arg_3,int32_t target_slot,
   else if ((((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 4) == 0) ||
           (val_3 = Rules_ValidateCardTargetSlot(player,card_slot), val_3 != 0)) {
     if (((flags & 0x20) == 0) ||
-       (uval_4 = Card_TapForMana(player,card_slot,0x34,0xffffffff), (uval_4 & 0x420) != 0)) {
+       (uval_4 = Magic_QueryCardAttribute(player,card_slot,0x34,0xffffffff), (uval_4 & 0x420) != 0)) {
       if (((flags & 0x1ff800) == 0) ||
          (cVar1 = Rules_CalculateManaCostReduction((&g_CardSlot_MinusOneCounters)[card_slot * 0x120 + player * 0x5b20]),
          (flags & 0x800 << (cVar1 - 1U & 0x1f)) == 0)) {
         if ((arg_6 & flags & 0x1f) == 0) {
-          Magic_PayManaCost();
-          g_OverworldPlayerCoordX = player;
-          g_OverworldMapGrid = card_slot;
-          DAT_007006c8 = arg_3;
-          DAT_006b2d5c = target_slot;
-          g_ActivePalette = 0;
+          Magic_PushEventContext();
+          g_EventSourcePlayer = player;
+          g_EventSourceSlot = card_slot;
+          g_EventTargetPlayer = arg_3;
+          g_EventTargetSlot = target_slot;
+          g_CardEventResult = 0;
           Magic_ScanCards(0x78);
-          flag_2 = g_ActivePalette < 1;
-          Magic_TapCardForMana();
+          flag_2 = g_CardEventResult < 1;
+          Magic_PopEventContext();
         }
         else {
           flag_2 = false;
@@ -12123,7 +12123,7 @@ void Rules_ProcessCombatDamageStep(void)
          (*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) != -1)) {
         *(uint32_t *)(&g_CardSlot_Abilities2 + match_count * 0x120 + slot_idx * 0x5b20) =
              *(uint32_t *)(&g_CardSlot_Abilities2 + match_count * 0x120 + slot_idx * 0x5b20) | 0xf000000;
-        Card_TapForMana(slot_idx,match_count,0x3c,0xffffffff);
+        Magic_QueryCardAttribute(slot_idx,match_count,0x3c,0xffffffff);
       }
     }
   }
@@ -12136,8 +12136,8 @@ void Rules_ProcessCombatDamageStep(void)
           (((&g_MasterCardColorTable)
             [*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 2) != 0))
          && (len_1 = *(short *)(&g_CardSlot_Power + match_count * 0x120 + slot_idx * 0x5b20),
-            val_2 = Card_TapForMana(slot_idx,match_count,0x33,0xffffffff), len_1 < val_2)) {
-        Card_TapForMana(slot_idx,match_count,0x32,0xffffffff);
+            val_2 = Magic_QueryCardAttribute(slot_idx,match_count,0x33,0xffffffff), len_1 < val_2)) {
+        Magic_QueryCardAttribute(slot_idx,match_count,0x32,0xffffffff);
       }
     }
   }
@@ -12145,13 +12145,13 @@ void Rules_ProcessCombatDamageStep(void)
 }
 
 /*
- * Decompiled function: Card_TapForMana
+ * Decompiled function: Magic_QueryCardAttribute
  * Entry Point: 00473179
  * Size: 2823 bytes
  */
 
 
-uint32_t Card_TapForMana(int x,int y,int width,int32_t target_slot)
+uint32_t Magic_QueryCardAttribute(int player,int slot,int event_code,int32_t target_slot)
 
 {
   uint32_t uval_1;
@@ -12168,166 +12168,166 @@ uint32_t Card_TapForMana(int x,int y,int width,int32_t target_slot)
   uval_3 = g_CardSlot_PowerBonus;
   DAT_00677340 = DAT_00677340 + 1;
   if (g_AiCombatScore_Blocker != 0) {
-    Magic_PayManaCost();
+    Magic_PushEventContext();
   }
-  g_OverworldPlayerCoordX = x;
-  g_OverworldMapGrid = y;
-  DAT_006a4f70 = *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
-  DAT_006b2fe4 = (int)(char)(&g_MasterCardColorTable)[DAT_006a4f70 * 0x34];
-  DAT_006b2d5c = target_slot;
-  switch(width) {
+  g_EventSourcePlayer = player;
+  g_EventSourceSlot = slot;
+  g_EventCardId = *(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
+  g_EventCardColorMask = (int)(char)(&g_MasterCardColorTable)[g_EventCardId * 0x34];
+  g_EventTargetSlot = target_slot;
+  switch(event_code) {
   case 0x32:
-    if (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 2) == 0) {
-      slot_idx = (uint32_t)*(short *)(&DAT_0051aec2 + DAT_006a4f70 * 0x34);
+    if (((&g_CardSlot_Flags)[slot * 0x120 + player * 0x5b20] & 2) == 0) {
+      slot_idx = (uint32_t)*(short *)(&DAT_0051aec2 + g_EventCardId * 0x34);
     }
     else {
-      slot_idx = (int)*(short *)(&DAT_0051aec2 + DAT_006a4f70 * 0x34) & 0xffffbfff;
+      slot_idx = (int)*(short *)(&DAT_0051aec2 + g_EventCardId * 0x34) & 0xffffbfff;
     }
-    slot_idx = slot_idx + (int)*(short *)(&g_CardSlot_PowerCounters + y * 0x120 + x * 0x5b20);
-    if (((&DAT_006a5f6f)[y * 0x120 + x * 0x5b20] & 4) != 0) {
-      *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) =
-           *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfbffffff;
+    slot_idx = slot_idx + (int)*(short *)(&g_CardSlot_PowerCounters + slot * 0x120 + player * 0x5b20);
+    if (((&DAT_006a5f6f)[slot * 0x120 + player * 0x5b20] & 4) != 0) {
+      *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) =
+           *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) & 0xfbffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = (uint32_t)*(short *)(&g_CardSlot_Counters + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint32_t)*(short *)(&g_CardSlot_Counters + slot * 0x120 + player * 0x5b20);
     break;
   case 0x33:
-    if (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 2) == 0) {
-      slot_idx = (uint32_t)*(short *)(&DAT_0051aec4 + DAT_006a4f70 * 0x34);
+    if (((&g_CardSlot_Flags)[slot * 0x120 + player * 0x5b20] & 2) == 0) {
+      slot_idx = (uint32_t)*(short *)(&DAT_0051aec4 + g_EventCardId * 0x34);
     }
     else {
-      slot_idx = (int)*(short *)(&DAT_0051aec4 + DAT_006a4f70 * 0x34) & 0xffffbfff;
+      slot_idx = (int)*(short *)(&DAT_0051aec4 + g_EventCardId * 0x34) & 0xffffbfff;
     }
-    slot_idx = slot_idx + (int)*(short *)(&g_CardSlot_ToughnessCounters + y * 0x120 + x * 0x5b20);
-    if (((&DAT_006a5f6f)[y * 0x120 + x * 0x5b20] & 2) != 0) {
-      *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) =
-           *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfdffffff;
+    slot_idx = slot_idx + (int)*(short *)(&g_CardSlot_ToughnessCounters + slot * 0x120 + player * 0x5b20);
+    if (((&DAT_006a5f6f)[slot * 0x120 + player * 0x5b20] & 2) != 0) {
+      *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) =
+           *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) & 0xfdffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = (uint32_t)*(short *)(&DAT_006a5f46 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = (uint32_t)*(short *)(&DAT_006a5f46 + slot * 0x120 + player * 0x5b20);
     break;
   case 0x34:
-    uval_1 = *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
-    uval_2 = *(uint32_t *)(&DAT_0051aecc + DAT_006a4f70 * 0x34);
+    uval_1 = *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20);
+    uval_2 = *(uint32_t *)(&DAT_0051aecc + g_EventCardId * 0x34);
     slot_idx = uval_1 & 0x7000000 | uval_2;
     if ((uval_2 & 0x1ff81f) != 0) {
       color_idx = 0;
       for (target_idx = 0; target_idx < 5; target_idx = target_idx + 1) {
         if ((slot_idx & 1 << ((uint8_t)target_idx & 0x1f)) != 0) {
-          cVar4 = Card_UntapCard(x,y,target_idx + 1);
+          cVar4 = Card_UntapCard(player,slot,target_idx + 1);
           color_idx = color_idx | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((slot_idx & 0x800 << ((uint8_t)target_idx & 0x1f)) != 0) {
-          cVar4 = Card_SetTapState(x,y,target_idx + 1);
+          cVar4 = Card_SetTapState(player,slot,target_idx + 1);
           color_idx = color_idx | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
       slot_idx = uval_1 & 0x7000000 | uval_2 & 0xffe007e0 | color_idx;
     }
-    if (((&DAT_006a5f6f)[y * 0x120 + x * 0x5b20] & 8) != 0) {
-      *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) =
-           *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xf7ffffff;
+    if (((&DAT_006a5f6f)[slot * 0x120 + player * 0x5b20] & 8) != 0) {
+      *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) =
+           *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) & 0xf7ffffff;
       goto LAB_004737a0;
     }
-    g_ActivePalette = *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20);
+    g_CardEventResult = *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20);
     break;
   case 0x35:
-    slot_idx = (uint32_t)*(short *)(&g_CardSlot_Power + y * 0x120 + x * 0x5b20);
+    slot_idx = (uint32_t)*(short *)(&g_CardSlot_Power + slot * 0x120 + player * 0x5b20);
     goto LAB_004737a0;
   case 0x36:
-    slot_idx = (uint32_t)(char)(&g_MasterCardColorTable)[DAT_006a4f70 * 0x34];
+    slot_idx = (uint32_t)(char)(&g_MasterCardColorTable)[g_EventCardId * 0x34];
     goto LAB_004737a0;
   default:
     slot_idx = 0;
 LAB_004737a0:
-    g_ActivePalette = slot_idx;
-    if ((g_AiCombatScore_Blocker != 0) && (Magic_ScanCards(width), (g_PlayerHandCardCount & 0x10000) != 0)) {
-      g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffeffff;
-      *(uint32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) = g_ActivePalette;
-      g_PlayerHandCardCount = g_PlayerHandCardCount | 0x20000;
-      Magic_ScanCards(width);
-      g_PlayerHandCardCount = g_PlayerHandCardCount & 0xfffdffff;
+    g_CardEventResult = slot_idx;
+    if ((g_AiCombatScore_Blocker != 0) && (Magic_ScanCards(event_code), (g_DuelModeFlags & 0x10000) != 0)) {
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffeffff;
+      *(uint32_t *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) = g_CardEventResult;
+      g_DuelModeFlags = g_DuelModeFlags | 0x20000;
+      Magic_ScanCards(event_code);
+      g_DuelModeFlags = g_DuelModeFlags & 0xfffdffff;
     }
-    if (width == 0x32) {
-      if ((int)g_ActivePalette < 0) {
-        g_ActivePalette = 0;
+    if (event_code == 0x32) {
+      if ((int)g_CardEventResult < 0) {
+        g_CardEventResult = 0;
       }
-      if (((&DAT_006a5f69)[y * 0x120 + x * 0x5b20] & 0x40) != 0) {
-        g_ActivePalette = g_ActivePalette << 1;
+      if (((&DAT_006a5f69)[slot * 0x120 + player * 0x5b20] & 0x40) != 0) {
+        g_CardEventResult = g_CardEventResult << 1;
       }
     }
     break;
   case 0x3c:
-    if (((*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) < g_PendingSpellTargetSlot) ||
-        (g_PendingSpellTargetSlot + 0x1d <= *(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20))) &&
-       (*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) != -1)) {
-      slot_idx = *(uint32_t *)(&g_ActiveCardsInPlay + y * 0x120 + x * 0x5b20);
-      if (((&DAT_006a5f6f)[y * 0x120 + x * 0x5b20] & 1) != 0) {
-        *(int32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) =
-             *(int32_t *)(&g_ActiveCardsInPlay + y * 0x120 + x * 0x5b20);
-        *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) =
-             *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) & 0xfeffffff;
-        (&DAT_006a604f)[y * 0x120 + x * 0x5b20] = 0;
+    if (((*(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) < g_PendingSpellTargetSlot) ||
+        (g_PendingSpellTargetSlot + 0x1d <= *(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20))) &&
+       (*(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) != -1)) {
+      slot_idx = *(uint32_t *)(&g_ActiveCardsInPlay + slot * 0x120 + player * 0x5b20);
+      if (((&DAT_006a5f6f)[slot * 0x120 + player * 0x5b20] & 1) != 0) {
+        *(int32_t *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) =
+             *(int32_t *)(&g_ActiveCardsInPlay + slot * 0x120 + player * 0x5b20);
+        *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) =
+             *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) & 0xfeffffff;
+        (&DAT_006a604f)[slot * 0x120 + player * 0x5b20] = 0;
         goto LAB_004737a0;
       }
-      g_ActivePalette = *(uint32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint32_t *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
     }
     else {
-      g_ActivePalette = *(uint32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20);
+      g_CardEventResult = *(uint32_t *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20);
     }
   }
-  uval_1 = g_ActivePalette;
-  val_5 = Card_IsTapped(x,y);
-  if (((val_5 != 0) && (width == 0x33)) &&
-     ((((&g_MasterCardColorTable)[DAT_006a4f70 * 0x34] & 2) != 0 &&
+  uval_1 = g_CardEventResult;
+  val_5 = Card_IsTapped(player,slot);
+  if (((val_5 != 0) && (event_code == 0x33)) &&
+     ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uval_1 < 1 ||
-         ((int)uval_1 <= (int)*(short *)(&g_CardSlot_Power + y * 0x120 + x * 0x5b20))) &&
-        (g_PlayerManaPool == -1)) && ((g_PlayerHandCardCount & 0x204) == 0)))))) {
-    Pic_Subsystem_0044867e(x,y,2);
+         ((int)uval_1 <= (int)*(short *)(&g_CardSlot_Power + slot * 0x120 + player * 0x5b20))) &&
+        (g_CurrentStepCode == -1)) && ((g_DuelModeFlags & 0x204) == 0)))))) {
+    Pic_Subsystem_0044867e(player,slot,2);
     Rules_SendCardsToGraveyard();
   }
   if (g_AiCombatScore_Blocker != 0) {
-    Magic_TapCardForMana();
+    Magic_PopEventContext();
   }
-  if (width == 0x32) {
-    *(short *)(&g_CardSlot_Counters + y * 0x120 + x * 0x5b20) = (short)uval_1;
+  if (event_code == 0x32) {
+    *(short *)(&g_CardSlot_Counters + slot * 0x120 + player * 0x5b20) = (short)uval_1;
   }
-  if (width == 0x33) {
-    *(short *)(&DAT_006a5f46 + y * 0x120 + x * 0x5b20) = (short)uval_1;
+  if (event_code == 0x33) {
+    *(short *)(&DAT_006a5f46 + slot * 0x120 + player * 0x5b20) = (short)uval_1;
   }
-  if (width == 0x34) {
-    *(uint32_t *)(&g_CardSlot_Abilities2 + y * 0x120 + x * 0x5b20) = uval_1;
+  if (event_code == 0x34) {
+    *(uint32_t *)(&g_CardSlot_Abilities2 + slot * 0x120 + player * 0x5b20) = uval_1;
   }
-  if (width != 0x3c) {
+  if (event_code != 0x3c) {
     g_CardSlot_PowerBonus = uval_3;
     return uval_1;
   }
-  *(uint32_t *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) = uval_1;
+  *(uint32_t *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) = uval_1;
   if (((&g_MasterCardFlagsTable)[uval_1 * 0x34] & 0x10) == 0) goto LAB_00473adb;
   val_5 = *(int *)(&g_MasterCardTypeTable + uval_1 * 0x34);
   if (val_5 < 0x12d) {
     if (val_5 == 300) {
-      (&g_CardSlot_PlusOneCounters)[y * 0x120 + x * 0x5b20] = 1;
+      (&g_CardSlot_PlusOneCounters)[slot * 0x120 + player * 0x5b20] = 1;
       goto LAB_00473adb;
     }
     if (val_5 == 0xf) {
-      (&g_CardSlot_PlusOneCounters)[y * 0x120 + x * 0x5b20] = 0x3e;
+      (&g_CardSlot_PlusOneCounters)[slot * 0x120 + player * 0x5b20] = 0x3e;
       goto LAB_00473adb;
     }
   }
   else if ((val_5 == 0x13e) || (val_5 == 0x366)) goto LAB_00473adb;
-  (&g_CardSlot_PlusOneCounters)[y * 0x120 + x * 0x5b20] = (&g_MasterCardColorTable)[uval_1 * 0x34];
+  (&g_CardSlot_PlusOneCounters)[slot * 0x120 + player * 0x5b20] = (&g_MasterCardColorTable)[uval_1 * 0x34];
 LAB_00473adb:
-  if ((((&g_CardSlot_Abilities1)[y * 0x120 + x * 0x5b20] & 0x40) != 0) &&
-     (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 2)
+  if ((((&g_CardSlot_Abilities1)[slot * 0x120 + player * 0x5b20] & 0x40) != 0) &&
+     (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + slot * 0x120 + player * 0x5b20) * 0x34] & 2)
       == 0)) {
     for (match_count = 0; match_count < 2; match_count = match_count + 1) {
       for (card_idx = 0; card_idx < (int)(&g_PlayerActiveCardCount)[match_count];
           card_idx = card_idx + 1) {
         if ((((*(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20) != -1) &&
              (((&g_CardSlot_Flags)[card_idx * 0x120 + match_count * 0x5b20] & 2) != 0)) &&
-            ((char)(&g_CardSlot_Toughness)[card_idx * 0x120 + match_count * 0x5b20] == x)) &&
-           (((*(int *)(&g_CardSlot_OriginalCardId + card_idx * 0x120 + match_count * 0x5b20) == y &&
+            ((char)(&g_CardSlot_Toughness)[card_idx * 0x120 + match_count * 0x5b20] == player)) &&
+           (((*(int *)(&g_CardSlot_OriginalCardId + card_idx * 0x120 + match_count * 0x5b20) == slot &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20) * 0x34] & 4) != 0
              )) && (*(int *)(&DAT_006b3088 +
@@ -12425,33 +12425,33 @@ int FUN_00473d98(int player_id)
 }
 
 /*
- * Decompiled function: Rules_ApplyContinuousDamage
+ * Decompiled function: Magic_BroadcastCardEvent
  * Entry Point: 00473e69
  * Size: 157 bytes
  */
 
 
-int32_t Rules_ApplyContinuousDamage(int player_id,int32_t card_slot,int event_type)
+int32_t Magic_BroadcastCardEvent(int player_id,int32_t card_slot,int event_type)
 
 {
   int32_t uval_1;
   int32_t uval_2;
   
-  Magic_PayManaCost();
-  uval_2 = g_PlayerManaPool;
-  g_ActivePalette = 0;
-  g_OverworldPlayerCoordX = player;
-  g_OverworldMapGrid = card_slot;
-  DAT_007006c8 = 1 - player;
-  DAT_006b2d5c = 0xffffffff;
+  Magic_PushEventContext();
+  uval_2 = g_CurrentStepCode;
+  g_CardEventResult = 0;
+  g_EventSourcePlayer = player;
+  g_EventSourceSlot = card_slot;
+  g_EventTargetPlayer = 1 - player;
+  g_EventTargetSlot = 0xffffffff;
   if ((arg_3 != 0x7d) && (arg_3 != 0x7e)) {
-    g_PlayerManaPool = 0xffffffff;
+    g_CurrentStepCode = 0xffffffff;
   }
   Magic_ScanCards(arg_3);
-  uval_1 = g_ActivePalette;
-  g_OverworldPlayerCoordX = 0xffffffff;
-  g_PlayerManaPool = uval_2;
-  Magic_TapCardForMana();
+  uval_1 = g_CardEventResult;
+  g_EventSourcePlayer = 0xffffffff;
+  g_CurrentStepCode = uval_2;
+  Magic_PopEventContext();
   return uval_1;
 }
 
@@ -13228,7 +13228,7 @@ LAB_004837f3:
     case 0x22:
       strcpy(&g_OverworldWorldState,s_HEALING_00526f08);
     }
-    UI_DrawCombatString(&g_OverworldWorldState,0x248,4,(-(uint32_t)(g_DefendingPlayer == 0) & 0x23) + 0xdc);
+    UI_DrawCombatString(&g_OverworldWorldState,0x248,4,(-(uint32_t)(g_TurnPlayer == 0) & 0x23) + 0xdc);
     if (g_GlobalEnchantmentCardId == -1) {
       FUN_0040c274(&DAT_00701830,4,4,0);
     }
@@ -13291,7 +13291,7 @@ LAB_004837f3:
     strcat(&g_OverworldWorldState,&DAT_00526f48);
     UI_DrawCombatString(&g_OverworldWorldState,(int)g_AiManaColorCost_Red / 2,4,0xff);
     Pic_Subsystem_00452708(&DAT_005395b0);
-    if (g_DefendingPlayer == g_CurrentTurnPhase) {
+    if (g_TurnPlayer == g_CurrentTurnPhase) {
       if (g_ScWillyScore < 0x15) {
         strcpy(&g_OverworldWorldState,s_ATTACK_00526f4c + ((DAT_0063ee78 != 0) - 1 & 8));
       }
@@ -13301,7 +13301,7 @@ LAB_004837f3:
           strcpy(&g_OverworldWorldState,&DAT_00526f6c);
         }
       }
-      if (((uint8_t)g_PlayerHandCardCount & 0x80) != 0) {
+      if (((uint8_t)g_DuelModeFlags & 0x80) != 0) {
         FUN_00483590(&g_OverworldWorldState,0x127,200);
       }
       if (g_ActivePlayer == -1) {
@@ -13557,7 +13557,7 @@ int FUN_00484ecd(int x,int y,int width,int32_t target_slot)
     }
   }
   else {
-    slot_idx = Card_TapForMana(x,y,width,target_slot);
+    slot_idx = Magic_QueryCardAttribute(x,y,width,target_slot);
   }
   return slot_idx;
 }
@@ -15902,7 +15902,7 @@ uint32_t FUN_0048d259(void)
   uVar41 = FileIo_ReadStream(&DAT_006b2d90,0x80);
   uVar42 = FileIo_ReadStream(&DAT_007006d4,4);
   uVar43 = FileIo_ReadStream(&DAT_006ff2d8,4);
-  uVar44 = FileIo_ReadStream(&g_AiDecisionScore,4);
+  uVar44 = FileIo_ReadStream(&g_AiChoiceValue,4);
   uVar45 = FileIo_ReadStream(&g_AiCurrentSearchPath,4);
   uVar46 = FileIo_ReadStream(&DAT_006b3000,0x60);
   uVar47 = FileIo_ReadStream(&DAT_0068a668,8);
@@ -15917,11 +15917,11 @@ uint32_t FUN_0048d259(void)
   uVar56 = FileIo_ReadStream(&DAT_00696870,8);
   uVar57 = FileIo_ReadStream(&DAT_006ff4b8,8);
   uVar58 = FileIo_ReadStream(&DAT_00695eb0,0x10);
-  uVar59 = FileIo_ReadStream(&g_DefendingPlayer,4);
+  uVar59 = FileIo_ReadStream(&g_TurnPlayer,4);
   uVar60 = FileIo_ReadStream(&DAT_006b2d64,4);
   uVar61 = FileIo_ReadStream(&g_SpellStackDepth,4);
   uVar62 = FileIo_ReadStream(&g_ScWillyScore,4);
-  uVar63 = FileIo_ReadStream(&g_PlayerHandCardCount,4);
+  uVar63 = FileIo_ReadStream(&g_DuelModeFlags,4);
   uVar64 = FileIo_ReadStream(&g_ActiveBattlefieldFlag,4);
   uVar65 = FileIo_ReadStream(&DAT_0068a67c,4);
   uVar66 = FileIo_ReadStream(&DAT_00696a18,4);
@@ -15930,13 +15930,13 @@ uint32_t FUN_0048d259(void)
   uVar69 = FileIo_ReadStream(&g_OverworldPlayerCoordY,4);
   uVar70 = FileIo_ReadStream(&g_CurrentTurnPhase,4);
   uVar71 = FileIo_ReadStream(&g_ActivePlayerPriority,4);
-  uVar72 = FileIo_ReadStream(&g_OverworldPlayerCoordX,4);
-  uVar73 = FileIo_ReadStream(&g_OverworldMapGrid,4);
-  uVar74 = FileIo_ReadStream(&DAT_006a4f70,4);
-  uVar75 = FileIo_ReadStream(&DAT_006b2fe4,4);
-  uVar76 = FileIo_ReadStream(&DAT_007006c8,4);
-  uVar77 = FileIo_ReadStream(&DAT_006b2d5c,4);
-  uVar78 = FileIo_ReadStream(&g_ActivePalette,4);
+  uVar72 = FileIo_ReadStream(&g_EventSourcePlayer,4);
+  uVar73 = FileIo_ReadStream(&g_EventSourceSlot,4);
+  uVar74 = FileIo_ReadStream(&g_EventCardId,4);
+  uVar75 = FileIo_ReadStream(&g_EventCardColorMask,4);
+  uVar76 = FileIo_ReadStream(&g_EventTargetPlayer,4);
+  uVar77 = FileIo_ReadStream(&g_EventTargetSlot,4);
+  uVar78 = FileIo_ReadStream(&g_CardEventResult,4);
   uVar79 = FileIo_ReadStream(&DAT_006a2838,4);
   uVar80 = FileIo_ReadStream(&DAT_006a2840,4);
   uVar81 = FileIo_ReadStream(&DAT_0068a650,4);
@@ -15948,7 +15948,7 @@ uint32_t FUN_0048d259(void)
   uVar87 = FileIo_ReadStream(&g_SelectedTargetPlayer,4);
   uVar88 = FileIo_ReadStream(&g_SelectedTargetSlot,4);
   uVar89 = FileIo_ReadStream(&DAT_006b2fe8,4);
-  uVar90 = FileIo_ReadStream(&g_PlayerManaPool,4);
+  uVar90 = FileIo_ReadStream(&g_CurrentStepCode,4);
   uVar91 = FileIo_ReadStream(&DAT_00695f08,4);
   uVar92 = FileIo_ReadStream(&DAT_006b2e14,4);
   uVar93 = FileIo_ReadStream(&g_DialogPromptHwnd,4);
@@ -15985,8 +15985,8 @@ uint32_t FUN_0048d259(void)
   uVar124 = FileIo_ReadStream(&DAT_006a4b58,4);
   uVar125 = FileIo_ReadStream(&DAT_006a2858,4);
   uVar126 = FileIo_ReadStream(&DAT_00680780,8);
-  uVar127 = FileIo_ReadStream(&DAT_006ff4d0,0x80);
-  uVar128 = FileIo_ReadStream(&DAT_006fecc0,0x100);
+  uVar127 = FileIo_ReadStream(&g_SpellStackEntries,0x80);
+  uVar128 = FileIo_ReadStream(&g_SpellStackObjects,0x100);
   uVar129 = FileIo_ReadStream(&DAT_006ff390,0x100);
   uVar130 = FileIo_ReadStream(&DAT_00696880,0x80);
   uVar131 = FileIo_ReadStream(&DAT_00695d70,0x80);
@@ -17051,13 +17051,13 @@ int32_t FUN_00505c74(void)
 
 {
   if ((DAT_00627a88 != -1) && (g_IsAiThinking != 1)) {
-    if ((g_ScWillyScore < DAT_00627a88) || (DAT_00627a84 != g_DefendingPlayer)) {
+    if ((g_ScWillyScore < DAT_00627a88) || (DAT_00627a84 != g_TurnPlayer)) {
       return 1;
     }
-    if ((g_PlayerManaPool != -1) && (g_ScWillyScore == DAT_00627a88)) {
+    if ((g_CurrentStepCode != -1) && (g_ScWillyScore == DAT_00627a88)) {
       return 1;
     }
-    if ((DAT_00627a88 < g_ScWillyScore) && (DAT_00627a84 == g_DefendingPlayer)) {
+    if ((DAT_00627a88 < g_ScWillyScore) && (DAT_00627a84 == g_TurnPlayer)) {
       DAT_00627a88 = -1;
     }
   }
@@ -17108,7 +17108,7 @@ bool FUN_00505d20(int player_id)
       }
       flag_2 = DAT_00627a88 == match_count;
       if ((DAT_00627a88 == -1) &&
-         (((&g_PlayerManaPoolAvailable)[match_count * 4 + g_DefendingPlayer * 0x98] & 1) != 0)) {
+         (((&g_PlayerManaPoolAvailable)[match_count * 4 + g_TurnPlayer * 0x98] & 1) != 0)) {
         flag_2 = true;
       }
     }
@@ -17131,8 +17131,8 @@ int32_t FUN_00505e3f(int player_id)
 {
   int32_t uval_1;
   
-  if (*(int *)(&g_PlayerManaPoolAvailable + player * 4 + g_DefendingPlayer * 0x98) == 0) {
-    if ((DAT_00627a88 == player) && (DAT_00627a84 == g_DefendingPlayer)) {
+  if (*(int *)(&g_PlayerManaPoolAvailable + player * 4 + g_TurnPlayer * 0x98) == 0) {
+    if ((DAT_00627a88 == player) && (DAT_00627a84 == g_TurnPlayer)) {
       uval_1 = 1;
     }
     else {
@@ -17157,14 +17157,14 @@ void FUN_00505ea7(int player_id)
 {
   bool flag_1;
   
-  if ((DAT_00627a88 == player) && (DAT_00627a84 == g_DefendingPlayer)) {
+  if ((DAT_00627a88 == player) && (DAT_00627a84 == g_TurnPlayer)) {
     flag_1 = true;
   }
   else {
     flag_1 = false;
   }
   if ((g_IsAiThinking != 1) &&
-     (((*(uint32_t *)(&g_PlayerManaPoolAvailable + player * 4 + g_DefendingPlayer * 0x98) & 1) != 0 || (flag_1)))) {
+     (((*(uint32_t *)(&g_PlayerManaPoolAvailable + player * 4 + g_TurnPlayer * 0x98) & 1) != 0 || (flag_1)))) {
     strcpy(&g_OverworldWorldState,s_Paused_005314e8);
     if (player == 4) {
       strcat(&g_OverworldWorldState,s___Upkeep_phase_005314f0);
@@ -17264,7 +17264,7 @@ LAB_005061ff:
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     if (0 < *(int *)(&DAT_0063eeac + slot_idx * 0x20)) {
       if (g_IsAiThinking != 1) {
-        Magic_UpkeepPhase(0x20);
+        Duel_PlaySoundById(0x20);
         Ai_Subsystem_004b784d(slot_idx,*(int32_t *)(&DAT_0063eeac + slot_idx * 0x20));
       }
       (&g_PlayerCreatureCount)[slot_idx] =
@@ -17384,7 +17384,7 @@ int32_t FUN_005064e9(int x,int y)
   g_PendingAttackersTargetSlot = 0xffffffff;
   Magic_TriggerCardEvent(x,y,0x6d,1 - x,0xffffffff);
   if (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) != 0) {
-    Rules_ApplyContinuousDamage(x,y,0x81);
+    Magic_BroadcastCardEvent(x,y,0x81);
   }
   g_AiManaPoolReserve = 0;
   return g_PendingAttackersTargetSlot;

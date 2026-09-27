@@ -80,7 +80,7 @@ Address,NewName
 0042fbf0,Ai_SaveGameState
 00431d05,Ai_ChooseBlockers
 004340f0,Catalog_Open
-00434a43,Catalog_LoadPaletteMap
+00434a43,Palette_LoadTRFile
 00435cb5,Palette_AllocErrorDiffusionTable
 00436af6,Ai_CalcManaRequirement_004b9284
 00437710,Palette_Color_00495430
@@ -109,7 +109,7 @@ Address,NewName
 0043dbb9,Sound_GetPan
 0043dbda,Sound_SetPitch
 0043dbfb,Sound_GetPitch
-0043e0e0,Ai_AssignCombatDamage
+0043e0e0,Duel_ShowStartOfDuelDialog
 0043e2fa,Ai_DuelDialogProc
 0043eb81,Ai_LoadStartDuel2Backdrop
 0043ec81,Ai_StartDuelWndProc
@@ -125,7 +125,7 @@ Address,NewName
 004447aa,Ai_CalcManaRequirement_004b32d1
 00444d18,Ai_Subsystem_004b3847
 0044565e,Ai_Subsystem_004b4197
-00445f05,Ai_EvalAttackCandidate_004b4a3f
+00445f05,Duel_RefreshAllWindows
 00446915,Ai_Subsystem_004b544d
 00447e83,Ai_Subsystem_004b69ba
 00448d60,Ai_CalcManaRequirement_004b7897
@@ -133,7 +133,7 @@ Address,NewName
 004498e5,Ai_Subsystem_004b8421
 0044a18b,Ai_Subsystem_004b8cc3
 0044a314,Ai_Subsystem_004b8e4d
-0044a5e0,Ai_CalcManaRequirement_004b9120
+0044a5e0,UI_Register_WINBK_ManaPool_004b9120
 0044a744,Ai_CalcManaRequirement_004b9284
 0044cb00,Pic_Load_004248b0
 0044cc6e,Pic_Load_00424a1e
@@ -224,8 +224,8 @@ Address,NewName
 0048c5a8,Magic_ScanCards
 0048f500,Palette_Subsystem_0049608e
 00492440,Pic_Subsystem_00452551
-00493e30,Glue_Subsystem_004cdb4f
-0049918f,Glue_Subsystem_004d0602
+00493e30,SpellChain_WndProc
+0049918f,SpellChain_MinimizedWndProc
 00499d09,Ai_CalcManaRequirement_004b9284
 0049ac00,Pic_Subsystem_0044eca0
 0049ad55,Pic_Subsystem_0044edf5
@@ -233,11 +233,11 @@ Address,NewName
 0049b7f0,Palette_Subsystem_00495958
 0049ba93,Pic_Load_004420a1
 0049d17d,Palette_Subsystem_00496497
-0049f820,Glue_Subsystem_004cd760
-0049fc0f,Glue_Subsystem_004cdb4f
+0049f820,SpellChain_RegisterClass
+0049fc0f,SpellChain_WndProc
 004a1bf7,Palette_Subsystem_0049608e
 004a1f15,Palette_Subsystem_0049608e
-004a26c6,Glue_Subsystem_004d0602
+004a26c6,SpellChain_MinimizedWndProc
 004a6bd4,Palette_Color_0049ae00
 004a6f39,Palette_Color_0049ae00
 004a70d5,Palette_Color_0049ae00

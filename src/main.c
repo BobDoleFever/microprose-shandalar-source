@@ -252,7 +252,12 @@ int main(int argc, char *argv[])
 
     bool test_mode = false;
     int max_test_frames = 120;
-    const char *program_dir = "/Users/ben/Downloads/shand-extract/program";
+    /* Directory holding the original game files (ICONS.SPR, *.PIC, ...). Override with
+     * --dir or the SHANDALAR_PROGRAM_DIR environment variable. */
+    const char *program_dir = getenv("SHANDALAR_PROGRAM_DIR");
+    if (program_dir == NULL || program_dir[0] == '\0') {
+        program_dir = "sources/installed/Magic/Program";
+    }
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--test") == 0 || strcmp(argv[i], "-t") == 0) {

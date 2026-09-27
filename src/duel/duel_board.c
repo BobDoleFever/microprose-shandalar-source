@@ -25,7 +25,7 @@ extern int DAT_004ff5a0;
 typedef int (*GhidraCall)(void *, ...);
 
 int Duel_ColorMaskToIndex(byte arg_1);
-uint Duel_TapCardForMana(int x, int y, int width, undefined4 arg_4);
+uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Mana_GetCardColorRequirement(int player, int card_slot);
 bool Mana_CanAffordCost(int arg_1, uint arg_2, int arg_3);
 int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
@@ -79,18 +79,18 @@ extern int32_t g_DuelCardSlot_AttachedAuraSlot;
 extern uint8_t g_DuelCardSlot_TapState;
 extern uint8_t g_DuelCardSlot_SpecialState;
 
-extern int32_t g_DuelActivePlayer;
-extern int32_t g_DuelActiveCardSlot;
+extern int32_t g_EventSourcePlayer;
+extern int32_t g_EventSourceSlot;
 extern int32_t g_DuelHumanPlayerIndex;
 extern int32_t g_DuelPlayerLifeTotals;
-extern int32_t g_DuelPlayerManaPool;
+extern int32_t g_DuelModeFlags;
 extern int32_t g_DuelTurnCounter;
 extern int32_t g_DuelPlayerCreatureCount;
-extern int32_t g_DuelCurrentTurnPhase;
-extern int32_t g_DuelDefendingPlayer;
+extern int32_t g_CardEventResult;
+extern int32_t g_TurnPlayer;
 extern int32_t g_DuelTargetPlayer;
 extern int32_t g_DuelTargetCardSlot;
-extern int32_t g_DuelDebugModeFlag;
+extern int32_t g_IsAiThinking;
 extern int32_t g_DuelCombatPhaseState;
 extern int32_t g_DuelCurrentEventCode;
 extern int32_t g_DuelTargetCardId;
@@ -107,13 +107,13 @@ extern char g_DuelAssetDirectory;
 extern int32_t g_DisplayScreenWidth;
 extern int32_t g_DisplayScreenHeight;
 
-extern uint32_t g_ActivePalette;
+extern uint32_t g_CardEventResult;
 extern int32_t g_CardSlot_Counters;
 extern int32_t g_CardSlot_CardId;
 extern int32_t g_CardSlot_Flags;
-extern int g_OverworldPlayerCoordX;
+extern int g_EventSourcePlayer;
 extern int g_OverworldPlayerCoordY;
-extern int g_OverworldMapGrid;
+extern int g_EventSourceSlot;
 extern int g_ActivePlayerPriority;
 extern int g_IsAiThinking;
 
@@ -213,7 +213,7 @@ uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
 int FUN_0048cb7f();
-int FUN_0048ca2a();
+int Magic_IsManaSource();
 int FUN_0048cac9();
 int FUN_0048caf4();
 int FUN_00432c2a();
@@ -261,7 +261,7 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(local_8, local_10, 0x3c, 0xffffffff);
+        Duel_QueryCardAttribute(local_8, local_10, 0x3c, 0xffffffff);
       }
     }
   }
@@ -271,13 +271,13 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
       if ((*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) != -1) &&
          (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + local_10 * 0x120 + local_8 * 0x5b20) * 0x34] & 2
           ) != 0)) {
-        Duel_TapCardForMana(local_8,local_10,0x34,0xffffffff);
-        Duel_TapCardForMana(local_8,local_10,0x32,0xffffffff);
-        Duel_TapCardForMana(local_8,local_10,0x33,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x34,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x32,0xffffffff);
+        Duel_QueryCardAttribute(local_8,local_10,0x33,0xffffffff);
       }
     }
   }
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     DAT_00676500 = 0;
     for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
       for (local_10 = 0; local_10 < (int)(&g_DuelPlayerCreatureCount)[local_8]; local_10 = local_10 + 1) {
@@ -378,21 +378,21 @@ int Duel_PlayCardSoundEffect(int arg_1,int arg_2,int arg_3,undefined4 arg_4,unde
   else {
     FUN_0048cac9();
     uVar1 = DAT_00676500;
-    g_DuelCurrentTurnPhase = 0;
-    g_DuelActivePlayer = arg_1;
-    g_DuelActiveCardSlot = arg_2;
+    g_CardEventResult = 0;
+    g_EventSourcePlayer = arg_1;
+    g_EventSourceSlot = arg_2;
     DAT_00690310 = arg_4;
     DAT_0068ecfc = arg_5;
     iVar2 = (**(GhidraCall *)(&DAT_004ff5a0 +
                         *(int *)(&g_DuelCardSlot_CardId + arg_2 * 0x120 + arg_1 * 0x5b20) * 0x34))
                       (arg_1,arg_2,arg_3);
-    if ((((iVar2 != 99) && ((g_DuelPlayerManaPool & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
-       && (iVar3 = FUN_0048ca2a(arg_1,arg_2), iVar3 == 0)) {
+    if ((((iVar2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
+       && (iVar3 = Magic_IsManaSource(arg_1,arg_2), iVar3 == 0)) {
       DAT_00676500 = uVar1;
       FUN_0048cb7f();
       return 0;
     }
-    DAT_0068edd8 = g_DuelCurrentTurnPhase;
+    DAT_0068edd8 = g_CardEventResult;
     FUN_0048cb7f();
   }
   return iVar2;

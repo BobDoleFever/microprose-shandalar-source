@@ -103,7 +103,7 @@ void Card_IncrementCounter(int player,int card_index)
            *(int *)(&DAT_006a5f7c + card_index * 0x120 + player * 0x5b20) + 1U & 0xff |
            *(uint *)(&DAT_006a5f7c + card_index * 0x120 + player * 0x5b20) & 0xffffff00, g_IsAiThinking != 1
      )) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   return;
 }
@@ -150,7 +150,7 @@ void Card_AddCounters(int player,int card_index,int event_code)
            *(int *)(&DAT_006a5f7c + player * 0x5b20 + card_index * 0x120) + event_code & 0xffU |
            *(uint *)(&DAT_006a5f7c + player * 0x5b20 + card_index * 0x120) & 0xffffff00,
      g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(0x1b);
+    Duel_PlaySoundById(0x1b);
   }
   return;
 }
@@ -266,8 +266,8 @@ bool CardTarget_PromptTargetCreature(int player,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
-  status = Action_ValidateTarget_00405802
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,2,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -307,7 +307,7 @@ bool CardTarget_SetTargetCreature(int player,uint arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
@@ -351,7 +351,7 @@ int CardTarget_HasValidCreatureTarget(int player)
   int local_8;
   
   if ((player == g_CurrentTurnPhase) && (g_IsAiThinking != 1)) {
-    status = Action_ValidateTarget_00405802
+    status = Duel_ChooseTarget
                       (player,player,player,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                        &g_OverworldGoldAmount,0,&local_1c);
     if (status == 0) {
@@ -369,8 +369,8 @@ int CardTarget_HasValidCreatureTarget(int player)
       if ((((local_c != -1) && (((&g_CardSlot_Flags)[local_10 * 0x120 + player * 0x5b20] & 2) != 0))
           && (((&g_MasterCardColorTable)[local_c * 0x34] & 2) != 0)) &&
          ((&DAT_006a5f50)[local_10 * 0x120 + player * 0x5b20] != '\x03')) {
-        status = Card_TapForMana(player, local_10, 0x32, 0xffffffff);
-        val_result = Card_TapForMana(player,local_10,0x33,0xffffffff);
+        status = Magic_QueryCardAttribute(player, local_10, 0x32, 0xffffffff);
+        val_result = Magic_QueryCardAttribute(player,local_10,0x33,0xffffffff);
         local_8 = (status + 2) * (val_result + 2);
         if (local_8 < local_14) {
           local_20 = local_10;
@@ -380,7 +380,7 @@ int CardTarget_HasValidCreatureTarget(int player)
     }
   }
   if ((local_20 != -1) && (g_IsAiThinking != 1)) {
-    Magic_UpkeepPhase(0xf);
+    Duel_PlaySoundById(0xf);
   }
   return local_20;
 }
@@ -431,8 +431,8 @@ bool CardTarget_PromptTargetPermanent(int player,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
-  status = Action_ValidateTarget_00405802
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,1,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,arg_15,
                      arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -472,7 +472,7 @@ bool CardTarget_SetTargetPermanent(int player,uint arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
@@ -510,7 +510,7 @@ int CardTarget_HasValidPermanentTarget(int player)
   int local_c;
   int local_8;
   
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,player,player,0x200,1,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&local_c);
   if (status == 0) {
@@ -518,7 +518,7 @@ int CardTarget_HasValidPermanentTarget(int player)
   }
   else {
     if (g_IsAiThinking != 1) {
-      Magic_UpkeepPhase(0xf);
+      Duel_PlaySoundById(0xf);
     }
     Pic_Subsystem_0044867e(local_c,local_8,3);
     u_temp = 1;
@@ -572,8 +572,8 @@ bool CardTarget_PromptTargetPlayerOrCreature(int player,uint arg2,int arg3)
   status = -1;
   arg_10 = 0;
   arg_9 = 0;
-  arg_8 = SpellChain_ProcessTriggerEvent(player,arg3);
-  status = Action_ValidateTarget_00405802
+  arg_8 = Card_GetColorAndTypeFlags(player,arg3);
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,0x40,0,0,arg_8,arg_9,arg_10,status,arg_12,arg_13,arg_14,
                      arg_15,arg_16,arg_17,arg_18,arg_19,arg_20);
   if (status != 0) {
@@ -613,7 +613,7 @@ bool CardTarget_SetTargetPlayerOrCreature(int player,uint arg2,int arg3)
   if (arg2 == 0xffffffff) {
     arg2 = 2;
   }
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,2,arg2,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,1,&local_c);
   if (status != 0) {
@@ -651,7 +651,7 @@ int CardTarget_HasValidPlayerOrCreatureTarget(int player)
   int local_c;
   int local_8;
   
-  status = Action_ValidateTarget_00405802
+  status = Duel_ChooseTarget
                     (player,player,player,0x200,0x40,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0,
                      &g_OverworldGoldAmount,0,&local_c);
   if (status == 0) {
@@ -659,7 +659,7 @@ int CardTarget_HasValidPlayerOrCreatureTarget(int player)
   }
   else {
     if (g_IsAiThinking != 1) {
-      Magic_UpkeepPhase(0xf);
+      Duel_PlaySoundById(0xf);
     }
     Pic_Subsystem_0044867e(local_c,local_8,3);
     u_temp = 1;

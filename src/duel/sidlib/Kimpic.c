@@ -923,14 +923,14 @@ void FUN_0043e09c(void)
 
 
 /*
- * Decompiled function: Ai_AssignCombatDamage
+ * Decompiled function: Duel_ShowStartOfDuelDialog
  * Entry Point: 0043e0e0
  * Size: 538 bytes
  */
 
 
 int32_t
-Ai_AssignCombatDamage
+Duel_ShowStartOfDuelDialog
           (int32_t *arg_1,uint32_t *arg_2,uint32_t arg_3,int arg_4,uint32_t arg_5,uint32_t arg_6,int32_t arg_7
           ,int arg_8,int32_t arg_9)
 
@@ -4806,13 +4806,13 @@ uint32_t FUN_004457a2(void)
 
 
 /*
- * Decompiled function: Ai_EvalAttackCandidate_004b4a3f
+ * Decompiled function: Duel_RefreshAllWindows
  * Entry Point: 00445f05
  * Size: 2404 bytes
  */
 
 
-void Ai_EvalAttackCandidate_004b4a3f(int32_t arg1,uint32_t arg2)
+void Duel_RefreshAllWindows(int32_t arg1,uint32_t arg2)
 
 {
   HBRUSH pHVar1;
@@ -5117,7 +5117,7 @@ int32_t Ai_Subsystem_004b544d(void)
   if ((DAT_0068f0b0 == 0) && (LVar1 = SendMessageA(DAT_00618ab0,0x411,0,0), LVar1 != 0)) {
     if (DAT_006152b4 == 0) {
       do {
-        val_2 = Action_ValidateTarget_0041e2a2
+        val_2 = Duel_ChooseTarget
                           (0,0,1,0x200,2,0,0,0,0,0,-1,-1,0xffffffff,0xffffffff,0,0,0x10,
                            s_Choose_defenders_004f7edc,2,match_count);
       } while (val_2 != 0);
@@ -5299,7 +5299,7 @@ int FUN_00446c16(int player_id,int card_slot,int event_type,int arg_4,int32_t ar
 int32_t FUN_00446d17(void)
 
 {
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     EnterCriticalSection((LPCRITICAL_SECTION)&DAT_00601560);
     FID_conflict__memcpy(&DAT_006152c0,&DAT_0068f2e0,0x1c);
     FID_conflict__memcpy(&DAT_0060cc90,&DAT_0068f300,0x1c);
@@ -6994,7 +6994,7 @@ void FUN_00448d16(int32_t arg1,int32_t arg2)
   int32_t card_idx;
   int32_t match_count;
   
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     card_idx = arg1;
     match_count = arg2;
     DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf3,g_DuelMainHwnd,Ai_CalcManaRequirement_004b7897,
@@ -7143,7 +7143,7 @@ int FUN_004491fe(uint32_t *arg_1)
   uval_1 = _rand();
   uval_2 = (int)uval_1 >> 0x1f;
   match_count = ((uval_1 ^ uval_2) - uval_2 & 1 ^ uval_2) - uval_2;
-  if (g_DuelDebugModeFlag != 1) {
+  if (g_IsAiThinking != 1) {
     Mem_AllocOrFree_004d9630(local_70,arg_1);
     slot_idx = DialogBoxParamA(g_DuelInstanceHandle,(LPCSTR)0xf0,g_DuelMainHwnd,UI_PlayCoinTossAvi,
                               (LPARAM)local_70);
@@ -7799,13 +7799,13 @@ void FUN_0044a5a4(int arg1,int arg2)
 
 
 /*
- * Decompiled function: Ai_CalcManaRequirement_004b9120
+ * Decompiled function: UI_Register_WINBK_ManaPool_004b9120
  * Entry Point: 0044a5e0
  * Size: 238 bytes
  */
 
 
-int32_t Ai_CalcManaRequirement_004b9120(LPCSTR str_1)
+int32_t UI_Register_WINBK_ManaPool_004b9120(LPCSTR str_1)
 
 {
   ATOM AVar1;

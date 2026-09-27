@@ -1,0 +1,4 @@
+unicorn>=2.1
+pefile
+numpy
+pillow

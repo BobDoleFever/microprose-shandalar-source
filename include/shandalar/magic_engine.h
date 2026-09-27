@@ -58,16 +58,20 @@ void Magic_ScanCards(int phase_id);
 
 /*
  * Magic_TriggerCardEvent
- * Purpose: Execute a card script function with the specified event code.
- * Parameter player_id: Index of the player (0 or 1).
- * Parameter card_slot: Index of the card slot (0 to 79).
- * Parameter event_code: The event identifier to pass to the card script.
- * Returns: Result code from the card script callback.
+ * Purpose: Run one card's own script handler (the function pointer at offset 0x10 of its
+ *   master card record) for an event, with the card-event context set up around it.
+ * Parameter player: Index of the player that owns the card (0 or 1).
+ * Parameter slot: Index of the card slot.
+ * Parameter event_code: The event identifier passed to the card script.
+ * Parameter target_player, target_slot: The event's target, stored in g_EventTargetPlayer and
+ *   g_EventTargetSlot.
+ * Returns: Result code from the card script callback (99 means it asked to stop).
+ * Verified in part on the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-int Magic_TriggerCardEvent(int player_id, int card_slot, int event_code, uint32_t extra_arg1, uint32_t extra_arg2);
+int Magic_TriggerCardEvent(int player, int slot, int event_code, int target_player, int target_slot);
 
 /*
- * Magic_ResolveSpellStack
+ * Magic_IsManaSource
  * Purpose: Resolve the top spell or activated ability on the resolution stack.
  * Procedure:
  * 1. Check if the spell stack contains any active entries.
@@ -75,22 +79,26 @@ int Magic_TriggerCardEvent(int player_id, int card_slot, int event_code, uint32_
  * 3. Move resolved spell card to the graveyard or battlefield.
  * 4. Decrement the stack depth counter.
  */
-void Magic_ResolveSpellStack(void);
+void Magic_IsManaSource(void);
 
 /*
- * Magic_PayManaCost
- * Purpose: Check and deduct required mana from the active player mana pool.
- * Returns: 1 if mana was paid successfully, or 0 if mana was insufficient.
+ * Magic_PushEventContext
+ * Purpose: Save the current card-event context onto a stack (32 frames, depth in
+ *   DAT_0052577c) so events can nest. Saves g_EventSourcePlayer, g_EventSourceSlot,
+ *   g_EventCardId, g_EventCardColorMask, g_EventTargetPlayer, g_EventTargetSlot and g_CardEventResult.
+ * Verified against the running game; the original label "pay mana cost" was wrong.
+ *   See docs/SYMBOL_VERIFICATION.md.
  */
-int Magic_PayManaCost(int player_id, int color_mask, int total_cost);
+void Magic_PushEventContext(void);
 
 /*
- * Magic_TapCardForMana
- * Purpose: Tap an untapped land or artifact to add mana to the player pool.
- * Parameter player_id: Index of the player (0 or 1).
- * Parameter card_slot: Index of the card slot (0 to 79).
+ * Magic_PopEventContext
+ * Purpose: Restore the card-event context saved by Magic_PushEventContext (drop one
+ *   stack frame and reload the seven event globals).
+ * Verified against the running game (98 pops, restoring outer contexts); the original label
+ *   "tap card for mana" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_TapCardForMana(int player_id, int card_slot);
+void Magic_PopEventContext(void);
 
 /*
  * Magic_UntapTurnPhase
@@ -100,18 +108,18 @@ void Magic_TapCardForMana(int player_id, int card_slot);
 void Magic_UntapTurnPhase(void);
 
 /*
- * Magic_UpkeepPhase
- * Purpose: Execute the Upkeep step for the active player.
- * Checks for upkeep triggers and prompts the player for upkeep costs.
+ * Duel_PlaySoundById
+ * Purpose: Play one duel sound effect by id (0x00-0x2f); loads the .wav on first use.
+ * Verified against the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_UpkeepPhase(void);
+int Duel_PlaySoundById(int sound_id);
 
 /*
- * Magic_DrawCardPhase
- * Purpose: Execute the Draw step for the active player.
- * Moves the top card of the active player library into their hand.
+ * Duel_PreloadSoundEffects
+ * Purpose: Preload the 20 duel sound effects. Runs once when a duel starts.
+ * Verified against the live game; see docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_DrawCardPhase(void);
+void Duel_PreloadSoundEffects(void);
 
 /*
  * Magic_MainTurnPhase
@@ -121,24 +129,31 @@ void Magic_DrawCardPhase(void);
 void Magic_MainTurnPhase(void);
 
 /*
- * Magic_CombatPhase
- * Purpose: Execute the Combat phase.
- * Manages Declare Attackers, Declare Blockers, and Combat Damage steps.
+ * Magic_PushSpellStack
+ * Purpose: Push one card event (a spell, ability or trigger) onto the spell stack, a table of up to
+ *   32 entries counted by g_SpellStackCount. Each entry packs the card id, the event code (bits 16-23)
+ *   and the target slot (bits 24-31) into g_SpellStackEntries and records the owner and slot in
+ *   g_SpellStackObjects. For cards with an id of 5 or more it also copies the card into a free slot as a
+ *   stand-in object marked with g_StackObjectCardId.
+ * Static evidence only; the original label "combat phase" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_CombatPhase(void);
+void Magic_PushSpellStack(int player, int slot, int event_code, int target_slot, int flags);
 
 /*
- * Magic_EndTurnPhase
- * Purpose: Execute the End of Turn step.
- * Checks end-of-turn triggers and switches active player turn.
+ * Magic_ResolveTopSpell
+ * Purpose: Pop the top entry of the spell stack and run it: the card's own handler through
+ *   Magic_TriggerCardEvent, or the in-step broadcast for event 0x7e, with extra handling for stand-in
+ *   objects.
+ * Static evidence only; the original label "end of turn" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_EndTurnPhase(void);
+void Magic_ResolveTopSpell(void);
 
 /*
- * Magic_DiscardToHandSize
- * Purpose: Force player to discard cards if hand size exceeds maximum (7 cards).
+ * Magic_DropTopSpell
+ * Purpose: Pop the top entry of the spell stack without running it, clearing its stand-in card slot.
+ * Static evidence only; the original label "discard to hand size" was wrong. See docs/SYMBOL_VERIFICATION.md.
  */
-void Magic_DiscardToHandSize(int player_id);
+void Magic_DropTopSpell(void);
 
 /*
  * Magic_CleanupPhase
