@@ -82,8 +82,43 @@ def client_size(win):
     return max(win["w"], 0), max(win["h"], 0)
 
 
+def _owner_alive(m, tid):
+    return any(t.tid == tid and t.state != "done" for t in m.threads)
+
+
 def send(m, hwnd, msg, wp, lp):
-    """Generator: deliver a message synchronously to a window procedure and return its result."""
+    """Generator: SendMessage. Delivered synchronously; a window created by another thread has its procedure run
+    *on that thread* (the sender sleeps until the owner next pumps messages), as Windows does."""
+    win = window(m, hwnd)
+    if win is None:
+        return 0
+    owner = win.get("tid")
+    if owner is not None and owner != m.cur.tid and _owner_alive(m, owner):
+        rec = {"hwnd": hwnd, "msg": msg, "wp": wp, "lp": lp, "done": False, "result": 0, "tid": owner}
+        _st(m).setdefault("sent", []).append(rec)
+        yield Block(ready=lambda: rec["done"])
+        return rec["result"]
+    r = yield from send_local(m, hwnd, msg, wp, lp)
+    return r
+
+
+def process_sent(m):
+    """Generator: run messages other threads sent to windows this thread owns."""
+    q = _st(m).get("sent", [])
+    while True:
+        rec = next((r for r in q if r["tid"] == m.cur.tid and not r["done"] and not r.get("running")), None)
+        if rec is None:
+            return
+        rec["running"] = True                                  # nested pumps inside its handler must not re-run it
+        if m.state.get("gdi_debug"):
+            m.log(f"   [sent] t{m.cur.tid} runs 0x{rec['hwnd']:x} msg=0x{rec['msg']:x} wp=0x{rec['wp']:x} lp=0x{rec['lp']:x} "
+                  f"depth={len(m.cur.conts)} vt={m.vt:.3f} sender_state={[t.state for t in m.threads]}")
+        rec["result"] = yield from send_local(m, rec["hwnd"], rec["msg"], rec["wp"], rec["lp"])
+        rec["done"] = True
+        q.remove(rec)
+
+
+def send_local(m, hwnd, msg, wp, lp):
     win = window(m, hwnd)
     if win is None:
         return 0
@@ -717,6 +752,7 @@ def _write_msg(m, p, msg):
 
 @u("PeekMessageA", 5)
 def peek_message(m, a):
+    yield from process_sent(m)
     hook = m.state.get("on_pump")
     if hook:
         hook(m)
@@ -745,6 +781,7 @@ def peek_message(m, a):
 @u("GetMessageA", 4)
 def get_message(m, a):
     st = _st(m)
+    yield from process_sent(m)
     hook = m.state.get("on_pump")
     if hook:
         hook(m)
@@ -1010,6 +1047,7 @@ def dialog_box(m, a):
                                             for it in dd["items"] if it["cls"] in ("BUTTON", "COMBOBOX", "LISTBOX", "EDIT")))
     yield Cont(proc, [hdlg, WM_INITDIALOG, first, param])
     while not win["ended"]:
+        yield from process_sent(m)
         hook = m.state.get("on_pump")
         if hook:
             hook(m)

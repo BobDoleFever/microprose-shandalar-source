@@ -158,7 +158,8 @@ class Machine:
         self.pending_dll_inits = []
         self.cur = None
         self.next_tid = 1
-        self.slice = 400_000
+        self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
+                                                    # static C runtime is not thread-safe and relies on that)
         self.vt = 0.0                               # virtual time in seconds: the only clock the guest sees
         self.ips = 100_000_000                      # instructions per virtual second (a fast late-90s PC)
         self.modules = {}                           # lower-case name -> dict(base, pe, path)
@@ -611,7 +612,8 @@ class Machine:
                     ebp = self.r32(ebp)
             except Exception:
                 pass
-            self.log(f"   thread {t.tid} ({t.name}) {t.state}: eip=0x{eip:08x} esp=0x{esp:08x} callers "
+            where = self.stubs.get(eip)
+            self.log(f"   thread {t.tid} ({t.name}) {t.state}{' in ' + where[1] if where else ''}: eip=0x{eip:08x} esp=0x{esp:08x} callers "
                      + " ".join(f"0x{c:08x}" for c in chain))
 
     def dump_crash(self, eip):

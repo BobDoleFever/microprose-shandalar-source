@@ -165,6 +165,8 @@ def main(argv=None):
                 actions.sort(key=lambda a: a[0])
         elif op == "dlgsel":                                   # dlgsel ID INDEX
             user32.select_dialog_item(mm, int(cmd[1]), int(cmd[2]))
+        elif op == "threads":                                  # where every thread is right now
+            mm.report_threads()
         elif op == "state":                                    # print the duel's card slots (DUEL.EXE addresses)
             tu = [w["title"] for w in mm.state.get("u32", {}).get("windows", {}).values() if w["cls"] == "MAGIC_TellUserClass"]
             print(f"   [state {now:.0f}s] prompt: {tu[0] if tu else None!r}")

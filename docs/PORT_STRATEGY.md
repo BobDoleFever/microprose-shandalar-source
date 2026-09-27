@@ -46,10 +46,21 @@ render) and the name prompt to the stained-glass adventure frame, every screen d
 code. There is no sound yet, dialogs made with `DialogBoxParam` are not implemented, and the
 adventure screen has only been seen fading in.
 
-**What does not work yet:** clicking a hand card or the Done button reaches the right window and the game runs
-its handler (it posts a `0x464` selection message to the main window and the main thread refreshes the whole UI),
-but the duel does not advance and no card slot changes. Not yet understood; the next step is to trace what the
-engine waits on. Rendering of the hand list is also still wrong (its rows draw at the wrong size).
+**Duel input now works.** Clicking a hand card plays it (a land moved from the hand into play, card slot flags
+changed, and the prompt lost "play land"), and the Done button advances the phase ("Main phase (before combat)"
+to "(after combat)"). The bug was `SendMessage` across threads: the engine thread sends the main window a "wait
+for the player's choice" message (`0x403`) and then loops reading its own queue for the answer (`0x464`). Windows
+runs a window's procedure on the thread that created it, so that loop reads the *main* thread's queue, where the
+click is posted. Running it on the sender's thread starved the loop. The host now marshals cross-thread sends to the
+owner thread and blocks the sender until it replies (and an in-progress sent message must not be re-entered by
+the nested pumps inside its own handler, or the stack overflows).
+
+Scheduling matters too: `DUEL.EXE`'s statically linked C runtime is not thread-safe (two threads reading files
+share a static buffer), so threads are run cooperatively (a thread keeps the CPU until it blocks) instead of
+being cut into short time slices, which produced random crashes.
+
+Still rough: the hand list rows draw at the wrong size, and some runs spin after a phase change (26 million import
+calls, under investigation).
 
 Run it the same way with `--script`:
 
