@@ -15343,10 +15343,10 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004ab340,"LAB_004ab340",Label,true,false
 004ab345,"LAB_004ab345",Label,true,false
 004ab34f,"LAB_004ab34f",Label,true,false
-004ab35e,"Ai_GetOpponentPlayerScore",Function,true,true
+004ab35e,"Ai_PeekPlannedSlot",Function,true,true
 004ab39d,"LAB_004ab39d",Label,true,false
 004ab3a4,"LAB_004ab3a4",Label,true,false
-004ab3a9,"Ai_CalcLifeAdvantage",Function,true,true
+004ab3a9,"Ai_PeekPlannedChoice",Function,true,true
 004ab3e7,"LAB_004ab3e7",Label,true,false
 004ab3ee,"LAB_004ab3ee",Label,true,false
 004ab3f3,"Ai_ReplayChoice",Function,true,true
@@ -15359,7 +15359,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004ab501,"LAB_004ab501",Label,true,false
 004ab510,"Ai_GetPlanCursor",Function,true,true
 004ab520,"LAB_004ab520",Label,true,false
-004ab525,"Ai_Util_004ab525",Function,true,true
+004ab525,"Ai_PlanCursorBack",Function,true,true
 004ab543,"LAB_004ab543",Label,true,false
 004ab54d,"LAB_004ab54d",Label,true,false
 004ab552,"Ai_EvaluateBoard",Function,true,true
@@ -15473,7 +15473,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004ac900,"LAB_004ac900",Label,true,false
 004ac933,"LAB_004ac933",Label,true,false
 004ac93b,"LAB_004ac93b",Label,true,false
-004ac940,"Ai_ChooseBlockers",Function,true,true
+004ac940,"Ai_FormatPlanDebugText",Function,true,true
 004aca07,"LAB_004aca07",Label,true,false
 004aca0a,"LAB_004aca0a",Label,true,false
 004aca21,"LAB_004aca21",Label,true,false
@@ -15491,7 +15491,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004acb55,"LAB_004acb55",Label,true,false
 004acb5a,"LAB_004acb5a",Label,true,false
 004acb7a,"LAB_004acb7a",Label,true,false
-004acb7f,"Ai_FilterValidBlockers",Function,true,true
+004acb7f,"Ai_GetLandColorMasks",Function,true,true
 004acba1,"LAB_004acba1",Label,true,false
 004acba4,"LAB_004acba4",Label,true,false
 004acbcd,"LAB_004acbcd",Label,true,false
@@ -18362,7 +18362,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 004cc996,"LAB_004cc996",Label,true,false
 004cc9b4,"LAB_004cc9b4",Label,true,false
 004cc9c0,"LAB_004cc9c0",Label,true,false
-004cc9c5,"Ai_Subsystem_004cc9c5",Function,true,true
+004cc9c5,"Duel_UpdateBoardState",Function,true,true
 004cc9e4,"LAB_004cc9e4",Label,true,false
 004cca08,"LAB_004cca08",Label,true,false
 004cca1e,"LAB_004cca1e",Label,true,false

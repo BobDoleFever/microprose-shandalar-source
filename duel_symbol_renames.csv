@@ -100,9 +100,9 @@ Address,OldName,NewName
 0042ce51,FUN_0042ce51,Action_PromptTarget_0042ce51
 0042e0cd,FUN_0042e0cd,Mem_AllocOrFree_0042e0cd
 004305ae,FUN_004305ae,Ai_ClearPlan
-0043071d,FUN_0043071d,Card_DispatchRulesEvent
+0043071d,Ai_PeekPlannedSlot,Card_DispatchRulesEvent
 004308cf,FUN_004308cf,Ai_GetPlanCursor
-004308e4,FUN_004308e4,Mem_AllocOrFree_004308e4
+004308e4,FUN_004308e4,Ai_PlanCursorBack
 00431fe0,FUN_00431fe0,Mem_AllocOrFree_00431fe0
 00432c72,FUN_00432c72,Mem_AllocOrFree_00432c72
 00432c87,FUN_00432c87,Mem_AllocOrFree_00432c87

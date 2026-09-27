@@ -316,19 +316,19 @@ void Ai_RecordChoice(void)
 }
 
 /*
- * Ai_GetOpponentPlayerScore
+ * Ai_PeekPlannedSlot
  * Purpose: Calculate threat score of opponent cards on battlefield.
  * Procedure:
  * 1. Evaluate opponent creature power, hand size, and open mana.
  * 2. Return composite threat score (ScWilly metric).
  */
 /*
- * Decompiled function: Ai_GetOpponentPlayerScore
+ * Decompiled function: Ai_PeekPlannedSlot
  * Entry Point: 004ab35e
  * Size: 75 bytes
  */
 
-int Ai_GetOpponentPlayerScore(int x)
+int Ai_PeekPlannedSlot(int x)
 
 {
   if ((g_IsAiThinking != 1) &&
@@ -340,19 +340,19 @@ int Ai_GetOpponentPlayerScore(int x)
 }
 
 /*
- * Ai_CalcLifeAdvantage
+ * Ai_PeekPlannedChoice
  * Purpose: Calculate heuristic score for life point difference between players.
  * Procedure:
  * 1. Compute life total differential (player life minus opponent life).
  * 2. Apply non-linear scaling when life is below critical threshold.
  */
 /*
- * Decompiled function: Ai_CalcLifeAdvantage
+ * Decompiled function: Ai_PeekPlannedChoice
  * Entry Point: 004ab3a9
  * Size: 74 bytes
  */
 
-int Ai_CalcLifeAdvantage(int x)
+int Ai_PeekPlannedChoice(int x)
 
 {
   if ((g_IsAiThinking != 1) &&
@@ -467,7 +467,7 @@ void Ai_Score_SetValidityFlag(void)
  * Ai_EvaluateBoard
  * Purpose: Simulate complete combat step between attacker and defender.
  * Procedure:
- * 1. Evaluate legal blocking assignments with Ai_FilterValidBlockers.
+ * 1. Evaluate legal blocking assignments with Ai_GetLandColorMasks.
  * 2. Calculate combat damage dealt to creatures and defending player.
  * 3. Compute life point changes and determine combat advantage score.
  */
@@ -503,7 +503,7 @@ int Ai_EvaluateBoard(int x)
   g_CardSlot_PowerBonus = 1;
   local_c = 0;
   local_28 = 1 - x;
-  Ai_FilterValidBlockers(local_d4,local_d4 + 1);
+  Ai_GetLandColorMasks(local_d4,local_d4 + 1);
   memset(local_cc,0,0xa0);
   local_20 = 0;
   for (local_1c = 1; local_1c <= (int)(&g_PlayerCreatureCount)[x]; local_1c = local_1c + 1) {
@@ -736,7 +736,7 @@ int Ai_PenalizeCounterattack(int player, int attacker_idx)
   char acStack_c [8];
   
   x = 1 - x;
-  Ai_FilterValidBlockers(&local_1a8,(uint *)0x0);
+  Ai_GetLandColorMasks(&local_1a8,(uint *)0x0);
   for (local_1a0 = 0; local_1a0 < 8; local_1a0 = local_1a0 + 1) {
     acStack_c[local_1a0] = (&g_AiCombatScore_Total)[local_1a0 * 4 + x * 0x20];
     *(int *)(&g_AiCombatScore_Total + local_1a0 * 4 + x * 0x20) =
@@ -868,7 +868,7 @@ LAB_004ac407:
 }
 
 /*
- * Ai_ChooseBlockers
+ * Ai_FormatPlanDebugText
  * Purpose: Assign defending creatures to block attacking creatures.
  * Procedure:
  * 1. Check legal blocker restrictions for each attacking creature.
@@ -876,12 +876,12 @@ LAB_004ac407:
  * 3. Record blocking pairs in combat assignment matrix.
  */
 /*
- * Decompiled function: Ai_ChooseBlockers
+ * Decompiled function: Ai_FormatPlanDebugText
  * Entry Point: 004ac940
  * Size: 575 bytes
  */
 
-int Ai_ChooseBlockers(int player, int attacker_idx)
+int Ai_FormatPlanDebugText(int player, int attacker_idx)
 
 {
   char *pcVar1;
@@ -949,19 +949,19 @@ int Ai_ChooseBlockers(int player, int attacker_idx)
 }
 
 /*
- * Ai_FilterValidBlockers
+ * Ai_GetLandColorMasks
  * Purpose: Filter list of potential blockers against specific attacking creature.
  * Procedure:
  * 1. Verify flying, protection, and landwalk evasion restrictions.
  * 2. Return count of legal blocking candidates.
  */
 /*
- * Decompiled function: Ai_FilterValidBlockers
+ * Decompiled function: Ai_GetLandColorMasks
  * Entry Point: 004acb7f
  * Size: 155 bytes
  */
 
-void Ai_FilterValidBlockers(uint * x, uint * arg2)
+void Ai_GetLandColorMasks(uint * x, uint * arg2)
 
 {
   int local_10;
@@ -13346,7 +13346,7 @@ void Ai_Subsystem_004c4c84(int x)
   
   g_AiCreatureToughnessEval = 1 - x;
   if (DAT_00559b18 == 0) {
-    Ai_FilterValidBlockers(&local_8,&local_18);
+    Ai_GetLandColorMasks(&local_8,&local_18);
     if (g_AiCreatureToughnessEval == 1) {
       DAT_0055a094 = local_8;
     }
@@ -13952,7 +13952,7 @@ uint Ai_Subsystem_004c5fc9(int x)
   }
   Ai_PopBoardState();
   local_258 = 9999;
-  Ai_FilterValidBlockers(&local_2b4,(uint *)0x0);
+  Ai_GetLandColorMasks(&local_2b4,(uint *)0x0);
   local_2c0 = 0;
   do {
     if (1 << ((byte)local_254 & 0x1f) <= (int)local_2c0) {

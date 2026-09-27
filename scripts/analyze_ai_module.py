@@ -50,9 +50,9 @@ def analyze():
         elif addr == "004ab28b":
             semantic_name = "Ai_RecordChoice"
         elif addr == "004ab35e":
-            semantic_name = "Ai_GetOpponentPlayerScore"
+            semantic_name = "Ai_PeekPlannedSlot"
         elif addr == "004ab3a9":
-            semantic_name = "Ai_CalcLifeAdvantage"
+            semantic_name = "Ai_PeekPlannedChoice"
         elif addr == "004ab3f3":
             semantic_name = "Ai_ReplayChoice"
         elif addr == "004ab45f":
@@ -62,9 +62,9 @@ def analyze():
         elif addr == "004abff4":
             semantic_name = "Ai_PenalizeCounterattack"
         elif addr == "004ac940":
-            semantic_name = "Ai_ChooseBlockers"
+            semantic_name = "Ai_FormatPlanDebugText"
         elif addr == "004acb7f":
-            semantic_name = "Ai_FilterValidBlockers"
+            semantic_name = "Ai_GetLandColorMasks"
         elif addr == "004acc20":
             semantic_name = "Duel_ShowStartOfDuelDialog"
         elif addr == "004ace3a":

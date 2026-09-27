@@ -5686,7 +5686,7 @@ int32_t FUN_00414ac1(int player_id,int card_slot,int event_type)
   int32_t uval_2;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (g_SelectedTargetPlayer == -1) {
       uval_2 = 0;
     }
@@ -6102,7 +6102,7 @@ int32_t FUN_00417c96(int player_id,int card_slot,int event_type)
   int slot_idx;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -6286,7 +6286,7 @@ uint32_t FUN_0041a245(int player_id,int card_slot,int event_type)
       uval_1 = 0;
     }
     else {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       if (player == g_CurrentTurnPhase) {
         uval_1 = g_DuelModeFlags & 0x20;
       }
@@ -6343,7 +6343,7 @@ int32_t FUN_0041a4c6(int player_id,int card_slot,int event_type)
   int32_t uval_2;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (g_SelectedTargetPlayer == -1) {
       uval_2 = 0;
     }
@@ -6417,7 +6417,7 @@ int32_t FUN_0041a782(int player_id,int card_slot,int event_type)
   int slot_idx;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (g_SelectedTargetPlayer == -1) {
       uval_2 = 0;
     }
@@ -6554,7 +6554,7 @@ int32_t FUN_0041adc1(int player_id,int card_slot,int event_type)
   int match_count;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (g_SelectedTargetPlayer == -1) {
       uval_3 = 0;
     }
@@ -6635,7 +6635,7 @@ uint32_t FUN_0041b695(int player_id,int card_slot,int event_type)
   int card_idx;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = (&g_PlayerPoisonCounters)[player] & 2;
   }
   else {
@@ -6751,7 +6751,7 @@ uint32_t FUN_0041cb9a(int player_id,int card_slot,int event_type)
   int val_2;
   
   if (arg_3 == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = g_DuelModeFlags & 4;
   }
   else {
@@ -11923,7 +11923,7 @@ int32_t FUN_00472a0a(int player_id)
   uint32_t slot_idx;
   
   x = 1 - player;
-  Ai_FilterValidBlockers(&slot_idx,&card_idx);
+  Ai_GetLandColorMasks(&slot_idx,&card_idx);
   if (player == 1) {
     player_idx = slot_idx;
   }
@@ -11969,7 +11969,7 @@ int32_t FUN_00472b91(int x,int card_slot,int event_type,int target_slot)
   uint32_t slot_idx;
   
   flags = Magic_QueryCardAttribute(arg_3,target_slot,0x34,0xffffffff);
-  Ai_FilterValidBlockers(&slot_idx,&match_count);
+  Ai_GetLandColorMasks(&slot_idx,&match_count);
   if (x == 1) {
     card_idx = slot_idx;
   }

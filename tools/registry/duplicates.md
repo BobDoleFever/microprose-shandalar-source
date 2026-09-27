@@ -25,7 +25,7 @@ None.
 | `Palette_Subsystem_0049c7c7` | `0x0042053a` (4227), `0x004238e7` (900), `0x00485887` (921) |  |
 | `Palette_Subsystem_004a9137` | `0x00419aab` (563), `0x00453463` (332), `0x0046af37` (2076) |  |
 | `wcsncnt` | `0x004eb950` (110), `0x004ebdb0` (108), `0x004edff0` (108) |  |
-| `Ai_ChooseBlockers` | `0x00431d05` (572), `0x00489247` (877) | in the doc, not registered: `0x00431d05` (line 559) |
+| `Ai_FormatPlanDebugText` | `0x00431d05` (572), `0x00489247` (877) | in the doc, not registered: `0x00431d05` (line 559) |
 | `Ai_Subsystem_004b8e4d` | `0x0044a314` (656), `0x0047acdd` (670) |  |
 | `Ai_Subsystem_004cc1e8` | `0x00450ca8` (110), `0x004d7510` (461) |  |
 | `Card_Setup_00467a68` | `0x00482299` (12135), `0x0048a423` (722) |  |

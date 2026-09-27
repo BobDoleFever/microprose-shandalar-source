@@ -61,16 +61,16 @@ void Ai_PopBoardState(void);
 void Ai_ClearPlan(void);
 void Ai_BeginTrial(void);
 void Ai_RecordChoice(void);
-int Ai_GetOpponentPlayerScore(int arg1);
-int Ai_CalcLifeAdvantage(int arg1);
+int Ai_PeekPlannedSlot(int arg1);
+int Ai_PeekPlannedChoice(int arg1);
 void Ai_ReplayChoice(void);
 void Ai_CommitBestPlan(void);
 int Ai_Score_ClearCache(void);
 void Ai_Score_SetValidityFlag(void);
 int Ai_EvaluateBoard(int arg1);
 int Ai_PenalizeCounterattack(int player, int attacker_idx);
-int Ai_ChooseBlockers(int player, int attacker_idx);
-void Ai_FilterValidBlockers(uint32_t * arg1, uint32_t * arg2);
+int Ai_FormatPlanDebugText(int player, int attacker_idx);
+void Ai_GetLandColorMasks(uint32_t * arg1, uint32_t * arg2);
 int Duel_ShowStartOfDuelDialog(int * arg1, uint32_t * arg2, uint32_t arg3, int arg4, uint32_t arg5, uint32_t arg6, int arg7, int arg8, int arg9);
 HGDIOBJ Ai_DuelDialogProc(HWND hwnd, uint32_t uMsg, HWND wParam, HWND lParam);
 void Ai_LoadStartDuel2Backdrop(int * arg1, int * out_buffer, int * arg3, int * arg4, int * arg5, int * arg6);
@@ -326,16 +326,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_004ab1ef Ai_ClearPlan
 #define Ai_004ab214 Ai_BeginTrial
 #define Ai_004ab28b Ai_RecordChoice
-#define Ai_004ab35e Ai_GetOpponentPlayerScore
-#define Ai_004ab3a9 Ai_CalcLifeAdvantage
+#define Ai_004ab35e Ai_PeekPlannedSlot
+#define Ai_004ab3a9 Ai_PeekPlannedChoice
 #define Ai_004ab3f3 Ai_ReplayChoice
 #define Ai_004ab45f Ai_CommitBestPlan
 #define Ai_004ab510 Ai_Score_ClearCache
 #define Ai_004ab525 Ai_Score_SetValidityFlag
 #define Ai_004ab552 Ai_EvaluateBoard
 #define Ai_004abff4 Ai_PenalizeCounterattack
-#define Ai_004ac940 Ai_ChooseBlockers
-#define Ai_004acb7f Ai_FilterValidBlockers
+#define Ai_004ac940 Ai_FormatPlanDebugText
+#define Ai_004acb7f Ai_GetLandColorMasks
 #define Ai_004acc20 Duel_ShowStartOfDuelDialog
 #define Ai_004ace3a Ai_DuelDialogProc
 #define Ai_004ad6c5 Ai_LoadStartDuel2Backdrop
@@ -600,16 +600,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -740,16 +740,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -981,16 +981,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -1241,16 +1241,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -1501,16 +1501,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -1761,16 +1761,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -2021,16 +2021,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop
@@ -2281,16 +2281,16 @@ void Ai_Subsystem_004cd3eb(void);
 #define Ai_ClearPlan Ai_ClearPlan
 #define Ai_BeginTrial Ai_BeginTrial
 #define Ai_RecordChoice Ai_RecordChoice
-#define Ai_GetOpponentPlayerScore Ai_GetOpponentPlayerScore
-#define Ai_CalcLifeAdvantage Ai_CalcLifeAdvantage
+#define Ai_PeekPlannedSlot Ai_PeekPlannedSlot
+#define Ai_PeekPlannedChoice Ai_PeekPlannedChoice
 #define Ai_ReplayChoice Ai_ReplayChoice
 #define Ai_CommitBestPlan Ai_CommitBestPlan
 #define Ai_ClearCandidateScoreList Ai_Score_ClearCache
 #define Ai_SortCandidateScoreList Ai_Score_SetValidityFlag
 #define Ai_EvaluateBoard Ai_EvaluateBoard
 #define Ai_PenalizeCounterattack Ai_PenalizeCounterattack
-#define Ai_ChooseBlockers Ai_ChooseBlockers
-#define Ai_FilterValidBlockers Ai_FilterValidBlockers
+#define Ai_FormatPlanDebugText Ai_FormatPlanDebugText
+#define Ai_GetLandColorMasks Ai_GetLandColorMasks
 #define Duel_ShowStartOfDuelDialog Duel_ShowStartOfDuelDialog
 #define Ai_DuelDialogProc Ai_DuelDialogProc
 #define Ai_LoadStartDuel2Backdrop Ai_LoadStartDuel2Backdrop

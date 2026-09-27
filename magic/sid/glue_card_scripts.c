@@ -630,7 +630,7 @@ int Card_XenicPoltergeist_AnimateArtifact(int player,int card_index,int event_co
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (event_code == 0x6d) {
@@ -1440,7 +1440,7 @@ int Card_PersonalIncarnation_RedirectDamage(int player,int card_index,int event_
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -1613,7 +1613,7 @@ int Card_AliFromCairo_PreventLethalDamage(int player,int card_index,int event_co
                    -1;
             }
           }
-          Ai_Subsystem_004cc9c5(0,0x20);
+          Duel_UpdateBoardState(0,0x20);
         }
         else if (g_IsAiThinking != 1) {
           Ai_Util_004cc42d(s_Illegal_target__prevent_damage_t_0052ea50);
@@ -1717,7 +1717,7 @@ int Card_ShivanDragon_PumpFirebreathing(int player,int card_index,int event_code
     u_res = Font_DrawString(player,7,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -1856,7 +1856,7 @@ int Card_DragonWhelp_PumpFirebreathing(int player,int card_index,int event_code)
     u_res = Font_DrawString(player,4,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -1986,7 +1986,7 @@ int Card_DragonWhelp_EndTurnCheck(int player,int card_index,int event_code)
     val_result = Font_DrawString(player,4,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     val_result = 0;
   }
   else {
@@ -2597,7 +2597,7 @@ int Card_GaeasLiege_TransformLand(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (event_code == 0x6d) {
@@ -2968,7 +2968,7 @@ int Card_GenericCreature_Regenerate(int player,int card_index,int event_code,uin
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -3116,7 +3116,7 @@ int Card_DrudgeSkeletons_Regenerate(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -3241,7 +3241,7 @@ int Card_UthdenTroll_Regenerate(int player,int card_index,int event_code)
     u_res = Font_DrawString(player,1,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -3369,7 +3369,7 @@ int Card_WillOTheWisp_Regenerate(int player,int card_index,int event_code)
     u_res = Font_DrawString(player,3,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -3506,7 +3506,7 @@ int Card_MarrowThieves_Regenerate(int player,int card_index,int event_code)
     u_res = Font_DrawString(player,2,1);
   }
   else if (event_code == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     u_res = 0;
   }
   else {
@@ -3769,7 +3769,7 @@ int Card_TimeElemental_BouncePermanent(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -3926,7 +3926,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -4029,7 +4029,7 @@ int Card_RoyalAssassin_DestroyTapped(int player,int card_index,int event_code)
     local_8 = Card_Targeting_PromptCreature(player,card_index,event_code,1 - player);
   }
   if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else {
@@ -4098,7 +4098,7 @@ int Card_DwarvenDemolitionTeam_DestroyWall(int player,int card_index,int event_c
     local_8 = Card_Targeting_PromptCreature(player,card_index,event_code,1 - player);
   }
   if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else if ((event_code == 0x72) &&
@@ -4144,7 +4144,7 @@ int Card_KingSuleiman_DestroyDjinn(int player,int card_index,int event_code)
     local_8 = Card_Targeting_PromptCreature(player,card_index,event_code,1 - player);
   }
   if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else if ((event_code == 0x72) &&
@@ -4302,7 +4302,7 @@ int Card_NettlingImp_ForceAttack(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     local_8 = 0;
   }
   else {
@@ -4554,7 +4554,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -4563,7 +4563,7 @@ int Card_SorceressQueen_SetStats02(int player,int card_index,int event_code)
       Pic_Subsystem_00424500(s_prompts_txt_0052ebfc,s_SORCERESS_QUEEN_0052ebec);
       *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) | 0x100000;
-      Ai_Subsystem_004cc9c5(0,0x20);
+      Duel_UpdateBoardState(0,0x20);
       arg_20 = &local_14;
       u_res = 1;
       arg_18 = &g_OverworldGoldAmount;
@@ -4681,7 +4681,7 @@ void Card_SorceressQueen_ResetStats(int player,int card_index,int event_code)
   
   if (event_code != 0x73) {
     if (event_code == 0x90) {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
     }
     else {
       if ((event_code == 0x6d) &&
@@ -4775,7 +4775,7 @@ int Card_StoneGiant_Fling(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -4906,7 +4906,7 @@ int Card_DwarvenWarriors_MakeUnblockable(int player,int card_index,int event_cod
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -5040,7 +5040,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar3 = 0;
   }
   else {
@@ -5192,7 +5192,7 @@ int Card_PradeshGypsies_PreventAttack(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -5320,7 +5320,7 @@ int Card_PradeshGypsies_ResetRestriction(int player,int card_index,int event_cod
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -5394,7 +5394,7 @@ uint8_t Card_SamiteHealer_PreventDamage(int player,int card_index,int event_code
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -5468,7 +5468,7 @@ int Card_SamiteHealer_CalculateHealAdvantage(int player,int card_index,int event
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -5665,7 +5665,7 @@ int Card_DamagePrevention_ClearAtCleanup(int player,int card_index,int event_cod
   }
   if (((event_code == 0x77) && (g_EventSourceSlot == card_index)) && (g_EventSourcePlayer == player)) {
     CardQuery_ForEachPermanent(Card_DamagePrevention_QueryAmount,-1);
-    Ai_Subsystem_004cc9c5(0,0xff);
+    Duel_UpdateBoardState(0,0xff);
   }
   return 0;
 }
@@ -6040,7 +6040,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
                         aiStack_20[aiStack_20[4] * 2] * 0x5b20 +
                         aiStack_20[aiStack_20[4] * 2 + 1] * 0x120) & 0xffcfffff;
       }
-      Ai_Subsystem_004cc9c5(0,0x20);
+      Duel_UpdateBoardState(0,0x20);
       g_ActivePlayer = 1;
     }
     else {
@@ -6049,7 +6049,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
            *(uint *)(&g_CardSlot_Flags +
                     aiStack_20[aiStack_20[5] * 2] * 0x5b20 +
                     aiStack_20[aiStack_20[5] * 2 + 1] * 0x120) | 0x300000;
-      Ai_Subsystem_004cc9c5(0,0x20);
+      Duel_UpdateBoardState(0,0x20);
     }
     aiStack_20[5] = aiStack_20[5] + 1;
   }
@@ -6170,7 +6170,7 @@ int Card_BrothersOfFire_Ping(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     u_temp = 0;
   }
   else {
@@ -6225,7 +6225,7 @@ bool Card_BrothersOfFire_EvaluateTarget(int player,int card_index,int event_code
     is_valid = (*(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     is_valid = false;
   }
   else {
@@ -6307,7 +6307,7 @@ int Card_CrimsonManticore_DamageTarget(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -6395,7 +6395,7 @@ bool Card_ProdigalSorcerer_PingTarget(int player,int card_index,int event_code)
     is_valid = (*(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     is_valid = false;
   }
   else {
@@ -6664,7 +6664,7 @@ bool Card_PirateShip_PingTarget(int player,int card_index,int event_code)
     is_valid = (*(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     is_valid = false;
   }
   else {
@@ -6945,7 +6945,7 @@ uint Card_RodOfRuin_Ping(int player,int card_index,int event_code)
     u_res = (&DAT_006a2828)[player] & 0x40;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -7006,7 +7006,7 @@ int Card_RodOfRuin_EvaluateAi(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -7085,7 +7085,7 @@ int Card_RodOfRuin_SelectTarget(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     u_res = 0;
   }
   else {
@@ -7135,7 +7135,7 @@ bool Card_OrcishArtillery_ShootTarget(int player,int card_index,int event_code)
     is_match = (*(uint *)(&g_CardSlot_Flags + player * 0x5b20 + card_index * 0x120) & 0x20010) == 0;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     is_match = false;
   }
   else {
@@ -7194,7 +7194,7 @@ bool Card_PsionicEntity_ShootTarget(int player,int card_index,int event_code)
     is_match = (*(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) & 0x20010) == 0;
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     is_match = false;
   }
   else {
@@ -7255,7 +7255,7 @@ int Card_PsionicEntity_EvaluateTarget(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -7953,7 +7953,7 @@ int Card_LordOfThePit_SacrificeOrDamage(int player,int card_index,int event_code
     else {
       *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) =
            *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) | 0x100000;
-      Ai_Subsystem_004cc9c5(0,0x20);
+      Duel_UpdateBoardState(0,0x20);
       Pic_Subsystem_00424500(s_prompts_txt_0052eeac,s_LORD_OF_THE_PIT_0052ee9c);
       status = CardTarget_HasValidCreatureTarget(player);
       *(uint *)(&g_CardSlot_Flags + card_index * 0x120 + player * 0x5b20) =
@@ -8053,7 +8053,7 @@ int Card_KormusBell_PayLandUpkeep(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -8258,7 +8258,7 @@ int Card_NetherShadow_ReturnFromGrave(int player,int card_index,int event_code)
              *(uint *)(&g_CardSlot_Flags + player * 0x5b20 + status * 0x120) & 0xfffcffff;
         Pic_Subsystem_00449223(player,local_c);
         Pic_Subsystem_0044867e(player,card_index,4);
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
         Ai_Subsystem_004cc56d(player,player,status,-1,-1,s_is_returning_from_the_grave__0052eef4,0);
         return 0;
       }
@@ -8544,7 +8544,7 @@ int Card_AliBaba_TapWall(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((event_code == 0x6d) && (status = Font_DrawString(player,4,1), status != 0)) &&
@@ -8667,7 +8667,7 @@ int Card_LeyDruid_UntapLand(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (event_code == 0x6d) {
@@ -8763,7 +8763,7 @@ uint Card_LeyDruid_AiEvaluateLand(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_res = 0;
   }
   else {
@@ -8985,7 +8985,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
                          arg_14,arg_15,arg_16_00,arg_17_00,arg_18_00,arg_19_00);
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     u_temp = 0;
   }
   else {
@@ -9507,7 +9507,7 @@ int Card_RadjanSpirit_RemoveFlying(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((event_code == 0x6d) &&
@@ -9635,7 +9635,7 @@ int Card_HurrJackal_GrantCombatAbility(int player,int card_index,int event_code)
     }
   }
   else if (event_code == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((event_code == 0x6d) &&

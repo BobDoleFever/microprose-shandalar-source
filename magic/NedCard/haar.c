@@ -3740,7 +3740,7 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
         else if (local_108 < local_110) {
           Glue_Subsystem_004e701f(1);
         }
-        Ai_Subsystem_004cc9c5(0,0xff);
+        Duel_UpdateBoardState(0,0xff);
       } while (local_110 != local_108);
       do {
         if (DAT_006b300c < DAT_006b3008) {
@@ -3783,7 +3783,7 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
           iVar2 = Glue_Subsystem_004e6bff(1);
           Pic_Subsystem_0044867e(1,iVar2,3);
         }
-        Ai_Subsystem_004cc9c5(0,0xff);
+        Duel_UpdateBoardState(0,0xff);
       } while (local_110 != local_108);
       Pic_Subsystem_0044867e(spell_id,target_id,1);
     }
@@ -3903,7 +3903,7 @@ undefined4 FUN_004f7869(int hDIBSection,int card_slot,int arg_3)
           local_14 = local_14 + -1;
         }
       }
-      Ai_Subsystem_004cc9c5(0,0x30);
+      Duel_UpdateBoardState(0,0x30);
       local_10 = 0;
       local_c = 0;
       for (local_18 = 0; local_18 < 500; local_18 = local_18 + 1) {
@@ -4133,7 +4133,7 @@ undefined4 FUN_004f7eee(int hDIBSection,int card_slot,int arg_3)
             local_14 = local_14 + 1;
           }
         }
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
         Pic_Subsystem_00452276(local_8);
         FUN_004f823a(local_8,local_14);
         local_10 = local_10 + 1;
@@ -4199,7 +4199,7 @@ undefined4 FUN_004f8031(int hDIBSection,int card_slot,int arg_3)
         for (local_c = 0; local_c < 500; local_c = local_c + 1) {
           *(undefined4 *)(&DAT_006ff710 + local_c * 4 + local_8 * 2000) = 0xffffffff;
         }
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
         Pic_Subsystem_00452276(local_8);
         FUN_004f823a(local_8,7);
         local_10 = local_10 + 1;
@@ -4612,7 +4612,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
       else {
         *(uint *)(&g_CardSlot_Flags + local_20 * 0x5b20 + local_1c * 0x120) =
              *(uint *)(&g_CardSlot_Flags + local_20 * 0x5b20 + local_1c * 0x120) | 0x300000;
-        Ai_Subsystem_004cc9c5(0,0x20);
+        Duel_UpdateBoardState(0,0x20);
         *(int *)(&g_CardSlot_CombatTarget +
                 spell_id * 0x5b20 +
                 target_id * 0x120 +
@@ -4996,7 +4996,7 @@ undefined4 Prompts_Load_004f9737(int spell_id,int target_id,int flags)
                         *(int *)(&g_CardSlot_CombatTarget +
                                 local_c * 8 + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20) |
                0x300000;
-          Ai_Subsystem_004cc9c5(0,0x20);
+          Duel_UpdateBoardState(0,0x20);
         }
         local_c = local_c + 1;
       }
@@ -5276,7 +5276,7 @@ undefined4 Prompts_Load_004f9e64(int spell_id,int target_id,int flags)
         else {
           *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) =
                *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) | 0x300000;
-          Ai_Subsystem_004cc9c5(0,0x20);
+          Duel_UpdateBoardState(0,0x20);
           *(int *)(&g_CardSlot_CombatTarget +
                   target_id * 0x120 +
                   spell_id * 0x5b20 +
@@ -5542,7 +5542,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
                   *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) =
                        *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) |
                        0x300000;
-                  Ai_Subsystem_004cc9c5(0,0x20);
+                  Duel_UpdateBoardState(0,0x20);
                   *(int *)(&g_CardSlot_CombatTarget +
                           target_id * 0x120 +
                           spell_id * 0x5b20 +
@@ -5612,7 +5612,7 @@ undefined4 Prompts_Load_004fa586(int spell_id,int target_id,int flags)
             else {
               *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) =
                    *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) | 0x300000;
-              Ai_Subsystem_004cc9c5(0,0x20);
+              Duel_UpdateBoardState(0,0x20);
               *(int *)(&g_CardSlot_CombatTarget +
                       target_id * 0x120 +
                       spell_id * 0x5b20 +
@@ -6026,7 +6026,7 @@ undefined4 Prompts_Load_004fb6b5(int spell_id,int target_id,int flags)
       else {
         *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) =
              *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) | 0x300000;
-        Ai_Subsystem_004cc9c5(0,0x20);
+        Duel_UpdateBoardState(0,0x20);
         *(int *)(&g_CardSlot_CombatTarget +
                 spell_id * 0x5b20 +
                 target_id * 0x120 +
@@ -6464,7 +6464,7 @@ undefined4 Prompts_Load_004fc89e(int spell_id,int target_id,int flags)
         }
       }
       if (local_8 != -1) {
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
         Pic_Subsystem_00452276(spell_id);
       }
       Pic_Subsystem_0044867e(spell_id,target_id,1);
@@ -6550,7 +6550,7 @@ undefined4 Prompts_Load_004fcb7a(int spell_id,int target_id,int flags)
          arg2 != -1)) {
         Pic_Subsystem_004523fd(spell_id,local_c);
         Pic_Subsystem_0042ac1f(spell_id,arg2);
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
       }
       Pic_Subsystem_00452276(spell_id);
       Pic_Subsystem_0044867e(spell_id,target_id,1);
@@ -7197,7 +7197,7 @@ undefined4 Prompts_Load_004fe05f(int spell_id,int target_id,int flags)
           else {
             *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) =
                  *(uint *)(&g_CardSlot_Flags + local_14 * 0x5b20 + local_10 * 0x120) | 0x200000;
-            Ai_Subsystem_004cc9c5(0,0x20);
+            Duel_UpdateBoardState(0,0x20);
             *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20 + local_c * 8)
                  = local_14;
             *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20 + local_c * 8)

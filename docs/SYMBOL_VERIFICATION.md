@@ -510,14 +510,28 @@ hand, `0x2000` activate, `0x4000` target pick, `0xffffffff` none. Best score `0x
 phase, 2 blockers, 3 and 4 end-of-turn steps and responses, 8 declare attackers; 5 to 7 not decoded); trial list length and
 replay cursor are one variable (`0x50b37c`).
 
-Reported but **not applied** (static only or medium confidence; nothing above rests on them): `Ai_CalcLifeAdvantage` (never
-entered), `Ai_ChooseBlockers` (only runs with a debug flag; looks like a plan-to-text dump), `Ai_FilterValidBlockers`
-(reads per-colour land counts; medium), `Ai_Util_004ab525` (cursor step back; medium), `Ai_GetOpponentPlayerScore` (looks
-like a planned-slot peek; medium), `Combat_ResolveBlocksAndDamage` (runs the combat damage step; medium),
-`Ai_Subsystem_004cc9c5` (a board-refresh routine in DUEL's own domain). The `Ai_` prefix on the start-of-duel dialog code and
+The `Ai_` prefix on the start-of-duel dialog code and
 on most `Ai_Subsystem_*` after `0x4acb7f` in MAGIC.EXE is unsupported: the real `sid\Ai.c` assert string appears only in
 `Ai_SaveGameState`. `Ai_SaveGameState`, `Ai_RestoreGameState` and the board-state push and pop (a one-deep snapshot, not a
 stack) held up.
+
+### Round 3: the five reported-but-unapplied AI names, resolved with the twin table (2026-09-27)
+
+`tools/twins/twins.csv` (built after round 2) gives each of the five its `DUEL.EXE` twin at score 1.0000 or 0.9392,
+well clear of the runner-up, confirming the addresses the live traces already used. Reading each MAGIC.EXE body against that
+confirms the earlier reports:
+
+| MAGIC.EXE / DUEL.EXE | Old name | New name | Evidence |
+|---|---|---|---|
+| `0x4acb7f` / `0x431f41` (twin 1.0000) | `Ai_FilterValidBlockers` | `Ai_GetLandColorMasks` | body: builds two bitmasks from two 5-entry per-colour count arrays (one per player) and returns them through two out-parameters; natural, 498 calls (round 2) |
+| `0x4ab35e` / `0x43071d` (twin 1.0000) | `Ai_GetOpponentPlayerScore` | `Ai_PeekPlannedSlot` | body: while not thinking, reads the planned-list slot at `cursor + offset` and masks it to 12 bits (the slot without the mode bits); natural, 54 calls (round 2) |
+| `0x4ab3a9` / `0x430768` (twin 1.0000) | `Ai_CalcLifeAdvantage` | `Ai_PeekPlannedChoice` | body: while not thinking, reads the planned-list choice at `cursor + offset`, substituting 0 for 99; never entered live (static only) |
+| `0x4ab525` / `0x4308e4` (twin 1.0000) | `Ai_Util_004ab525` | `Ai_PlanCursorBack` | body: decrements the plan cursor by one; natural, entered once (round 2) |
+| `0x4ac940` / `0x431d05` (twin 0.6616, weak) | `Ai_ChooseBlockers` | `Ai_FormatPlanDebugText` | body (MAGIC.EXE side, not the weak twin): builds a text dump of the plan list with `strcat`/`_itoa`, the strings "Cast" and " -> target" among them; only runs with a debug flag, never entered live (static only) |
+| `0x4cc9c5` / `0x451482` (twin 0.9392) | `Ai_Subsystem_004cc9c5` | `Duel_UpdateBoardState` | the `DUEL.EXE` side already had this name (in the split sources and the rename maps, but not yet in `duel/function_index.csv`, `duel/symbols.csv` or `duel/source_mapping.csv`, fixed here); natural, called `(0, 255)` (round 2) |
+
+`Ai_PeekPlannedChoice` and `Ai_FormatPlanDebugText` are still never entered live; the other four now have live evidence
+from round 2 plus a confirmed body. `make check` clean, `make test` passes.
 
 ### Colour, palette and sound helpers (emulator, 2026-09-26)
 

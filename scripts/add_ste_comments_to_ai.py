@@ -54,13 +54,13 @@ def main():
  * 2. Store the evaluated values in the creature score array.
  * 3. Increment the active creature counter.
  */""",
-        "Ai_GetOpponentPlayerScore": """/*
- * Ai_GetOpponentPlayerScore
+        "Ai_PeekPlannedSlot": """/*
+ * Ai_PeekPlannedSlot
  * Purpose: Calculate the threat score of opponent cards on the board.
  * Evaluates creature abilities, card count in hand, and open mana.
  */""",
-        "Ai_CalcLifeAdvantage": """/*
- * Ai_CalcLifeAdvantage
+        "Ai_PeekPlannedChoice": """/*
+ * Ai_PeekPlannedChoice
  * Purpose: Calculate the score value for the life point difference.
  * Gives a positive score when player life is higher than opponent life.
  */""",
@@ -81,7 +81,7 @@ def main():
  * Ai_EvaluateBoard
  * Purpose: Simulate a complete combat step between the attacking player and defending player.
  * Procedure:
- * 1. Check legal blocking assignments with Ai_FilterValidBlockers.
+ * 1. Check legal blocking assignments with Ai_GetLandColorMasks.
  * 2. Calculate potential damage dealt to creatures and defending player.
  * 3. Calculate life point changes and determine combat advantage score.
  */""",
@@ -93,16 +93,16 @@ def main():
  * 2. Simulate combat outcomes against possible opponent blockers.
  * 3. Mark the best candidates with the attack flag.
  */""",
-        "Ai_ChooseBlockers": """/*
- * Ai_ChooseBlockers
+        "Ai_FormatPlanDebugText": """/*
+ * Ai_FormatPlanDebugText
  * Purpose: Assign defending creatures to block attacking creatures.
  * Procedure:
  * 1. Check legal blocker restrictions for each attacking creature.
  * 2. Optimize blocker pairings to destroy attackers and protect high-value creatures.
  * 3. Assign combat damage priorities.
  */""",
-        "Ai_FilterValidBlockers": """/*
- * Ai_FilterValidBlockers
+        "Ai_GetLandColorMasks": """/*
+ * Ai_GetLandColorMasks
  * Purpose: Verify if a defending creature can legally block a specific attacking creature.
  * Procedure:
  * 1. Check flying and reach attributes.

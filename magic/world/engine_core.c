@@ -5685,7 +5685,7 @@ undefined4 FUN_00414ac1(int value,int min_val,int max_val)
   undefined4 uVar2;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_006b2d3c == -1) {
       uVar2 = 0;
     }
@@ -6101,7 +6101,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
   int local_8;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     arg_19 = 0;
     arg_18_00 = 0;
     arg_17 = 0;
@@ -6285,7 +6285,7 @@ uint FUN_0041a245(int value,int min_val,int max_val)
       uVar1 = 0;
     }
     else {
-      Ai_GetOpponentPlayerScore(0);
+      Ai_PeekPlannedSlot(0);
       if (value == g_CurrentTurnPhase) {
         uVar1 = g_DuelModeFlags & 0x20;
       }
@@ -6342,7 +6342,7 @@ undefined4 FUN_0041a4c6(int value,int min_val,int max_val)
   undefined4 uVar2;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_006b2d3c == -1) {
       uVar2 = 0;
     }
@@ -6416,7 +6416,7 @@ undefined4 FUN_0041a782(int value,int min_val,int max_val)
   int local_8;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_006b2d3c == -1) {
       uVar2 = 0;
     }
@@ -6553,7 +6553,7 @@ undefined4 FUN_0041adc1(int value,int min_val,int max_val)
   int local_c;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     if (DAT_006b2d3c == -1) {
       uVar3 = 0;
     }
@@ -6634,7 +6634,7 @@ uint FUN_0041b695(int value,int min_val,int max_val)
   int local_10;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = (&DAT_006a2828)[value] & 2;
   }
   else {
@@ -6750,7 +6750,7 @@ uint FUN_0041cb9a(int value,int min_val,int max_val)
   int iVar2;
   
   if (max_val == 0x74) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uVar1 = g_DuelModeFlags & 4;
   }
   else {
@@ -10822,7 +10822,7 @@ int Magic_ExecuteDrawPhase(int value)
         }
       }
       else {
-        Ai_Subsystem_004cc9c5(0,0x30);
+        Duel_UpdateBoardState(0,0x30);
         if (g_IsAiThinking != 1) {
           if (DAT_0063ee18 == 0) {
             Ai_Subsystem_004cc50a
@@ -10881,7 +10881,7 @@ int Magic_ExecuteDrawPhase(int value)
           Pic_Util_00450975(1);
         }
       }
-      Ai_Subsystem_004cc9c5(0,0x30);
+      Duel_UpdateBoardState(0,0x30);
     }
     (&DAT_006b3008)[value] = (&DAT_006b3008)[value] + 1;
     _DAT_006b3038 = _DAT_006b3038 + 1;
@@ -11277,7 +11277,7 @@ undefined4 FUN_00470b36(int x,int y)
       }
       else {
         g_ActivePlayer = 0;
-        Ai_Subsystem_004cc9c5(0,0xff);
+        Duel_UpdateBoardState(0,0xff);
         uVar3 = 1;
       }
     }
@@ -11704,7 +11704,7 @@ void FUN_00471d16(uint value)
   int local_18;
   
   if (g_IsAiThinking != 1) {
-    Ai_Subsystem_004cc9c5(0,0xff);
+    Duel_UpdateBoardState(0,0xff);
     local_80 = value;
     local_2c = 1 - value;
     local_70 = 0;
@@ -11753,7 +11753,7 @@ void FUN_00471d16(uint value)
             }
             *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) =
                  *(uint *)(&g_CardSlot_Flags + local_28 * 0x5b20 + local_24 * 0x120) | 8;
-            Ai_Subsystem_004cc9c5(0,0xff);
+            Duel_UpdateBoardState(0,0xff);
           }
         }
       }
@@ -11922,7 +11922,7 @@ undefined4 FUN_00472a0a(int value)
   uint local_8;
   
   x = 1 - value;
-  Ai_FilterValidBlockers(&local_8,&local_10);
+  Ai_GetLandColorMasks(&local_8,&local_10);
   if (value == 1) {
     local_14 = local_8;
   }
@@ -11968,7 +11968,7 @@ undefined4 FUN_00472b91(int x,int min_val,int max_val,int target_slot)
   uint local_8;
   
   flags = Magic_QueryCardAttribute(max_val,target_slot,0x34,0xffffffff);
-  Ai_FilterValidBlockers(&local_8,&local_c);
+  Ai_GetLandColorMasks(&local_8,&local_c);
   if (x == 1) {
     local_10 = local_8;
   }
@@ -17309,7 +17309,7 @@ undefined4 FUN_005062b1(void)
       local_8 = 0;
     }
     else {
-      Ai_Subsystem_004cc9c5(0,0xff);
+      Duel_UpdateBoardState(0,0xff);
       local_8 = 1;
     }
   }

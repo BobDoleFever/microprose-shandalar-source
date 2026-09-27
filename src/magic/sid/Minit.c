@@ -699,7 +699,7 @@ int32_t CardScript_Oasis(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = 0;
   }
   else {
@@ -2962,7 +2962,7 @@ int32_t Minit_Subsystem_00458cae(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = 0;
   }
   else {
@@ -3089,7 +3089,7 @@ int32_t Minit_Subsystem_004592ae(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {
@@ -3628,7 +3628,7 @@ bool CardScript_Triskelion(int spell_id,int target_id,int flags)
     flag_1 = 0 < val_2;
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     flag_1 = false;
   }
   else {
@@ -4216,7 +4216,7 @@ int32_t CardScript_AshnodsBattlegear(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) &&
@@ -4410,7 +4410,7 @@ int32_t CardScript_TawnosWeaponry(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) &&
@@ -4631,7 +4631,7 @@ int32_t CardScript_CandelabraOfTawnos(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_CalcLifeAdvantage(0);
+    Ai_PeekPlannedChoice(0);
     uval_1 = 0;
   }
   else {
@@ -4864,7 +4864,7 @@ int32_t CardScript_Forcefield(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_1 = 0;
   }
   else {
@@ -5398,7 +5398,7 @@ int32_t CardScript_Conservator(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {
@@ -6110,7 +6110,7 @@ int32_t CardScript_EbonyHorse(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((((flags == 0x6d) &&
@@ -6550,7 +6550,7 @@ int32_t CardScript_JandorsSaddlebags(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) &&
@@ -6652,7 +6652,7 @@ int32_t CardScript_JadeMonolith(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (val_1 = Font_DrawString(spell_id, 7, 1), val_1 != 0)) &&
@@ -6811,7 +6811,7 @@ int32_t CardScript_AmuletOfKroog(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {
@@ -6885,7 +6885,7 @@ int32_t Minit_Subsystem_004626d2(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {
@@ -6986,7 +6986,7 @@ int32_t CardScript_GrapeshotCatapult(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if ((flags == 0x6d) &&
@@ -7081,7 +7081,7 @@ int32_t Minit_Subsystem_00462d1e(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     uval_2 = 0;
   }
   else {
@@ -7174,7 +7174,7 @@ int32_t CardScript_BronzeTablet(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (val_1 = Font_DrawString(spell_id,7,4), val_1 != 0)) &&
@@ -7471,7 +7471,7 @@ int32_t CardScript_AladdinsRing(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     uval_2 = 0;
   }
   else {
@@ -7529,7 +7529,7 @@ int32_t CardScript_RodOfRuin(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(1);
+    Ai_PeekPlannedSlot(1);
     uval_2 = 0;
   }
   else {
@@ -7983,7 +7983,7 @@ int32_t CardScript_FlyingCarpet(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) &&
@@ -8093,7 +8093,7 @@ int32_t Minit_Subsystem_00465602(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_3 = 0;
   }
   else {
@@ -8243,7 +8243,7 @@ int32_t CardScript_HelmOfChatzuk(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && (val_1 = Font_DrawString(spell_id, 7, 1), val_1 != 0)) &&
@@ -8376,7 +8376,7 @@ int32_t CardScript_CoralHelm(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) && ((&g_ActivePlayerSpellPriority)[spell_id] != 0)) &&
@@ -8470,7 +8470,7 @@ int32_t Minit_Subsystem_004662e2(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {
@@ -8566,7 +8566,7 @@ int32_t CardScript_TawnosWand(int spell_id,int target_id,int flags)
     }
   }
   else if (flags == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
   }
   else {
     if (((flags == 0x6d) &&
@@ -8670,7 +8670,7 @@ int32_t Card_Setup_0046695e(int player_id,int card_slot,int event_type)
     }
   }
   else if (arg_3 == 0x90) {
-    Ai_GetOpponentPlayerScore(0);
+    Ai_PeekPlannedSlot(0);
     uval_2 = 0;
   }
   else {

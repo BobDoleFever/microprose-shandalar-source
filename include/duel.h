@@ -805,7 +805,7 @@ void Ai_RecordChoice(void);;
 int32_t Card_DispatchRulesEvent(int max_val);;
 
 /* Function at 00430768 (Size: 74 bytes) */
-int32_t FUN_00430768(int max_val);;
+int32_t Ai_PeekPlannedChoice(int max_val);;
 
 /* Function at 004307b2 (Size: 108 bytes) */
 void Ai_ReplayChoice(void);;
@@ -817,7 +817,7 @@ void Ai_CommitBestPlan(void);;
 int32_t Ai_GetPlanCursor(void);;
 
 /* Function at 004308e4 (Size: 45 bytes) */
-void Mem_AllocOrFree_004308e4(void);;
+void Ai_PlanCursorBack(void);;
 
 /* Function at 00430911 (Size: 2728 bytes) */
 int Ai_EvaluateBoard(int max_val);;
@@ -826,10 +826,10 @@ int Ai_EvaluateBoard(int max_val);;
 int Ai_PenalizeCounterattack(int player,int card_slot);;
 
 /* Function at 00431d05 (Size: 572 bytes) */
-int32_t Ai_ChooseBlockers(int player,int card_slot);;
+int32_t Ai_FormatPlanDebugText(int player,int card_slot);;
 
 /* Function at 00431f41 (Size: 155 bytes) */
-void FUN_00431f41(uint32_t *player,uint32_t *card_slot);;
+void Ai_GetLandColorMasks(uint32_t *player,uint32_t *card_slot);;
 
 /* Function at 00431fe0 (Size: 21 bytes) */
 int32_t Mem_AllocOrFree_00431fe0(void);;
@@ -2992,7 +2992,7 @@ int32_t FUN_00488598(int player,int card_slot);;
 int32_t FUN_00488662(int max_val,int point,int hBitmap);;
 
 /* Function at 00489247 (Size: 877 bytes) */
-int32_t Ai_ChooseBlockers(int player,int card_slot);;
+int32_t Ai_FormatPlanDebugText(int player,int card_slot);;
 
 /* Function at 004895b4 (Size: 408 bytes) */
 bool FUN_004895b4(int max_val,int point,int hBitmap);;
