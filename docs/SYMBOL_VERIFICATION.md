@@ -572,4 +572,24 @@ seconds, about 750,000 traced lines.
   3 (30, four), 4 (30, two), 2 (30, one), 8 (30, one). Stages 5 to 7 did not occur. The budget is not the search length: every search lasted 2.0 s.
 - **Still not entered:** the plan-to-text dump (`0x431d05`), the planned-choice peek (`0x430768`) and the log-message function (`0x45102d`), so
   their names stay static-only. The planned-slot peek (`0x43071d`, 54 entries) and the colour-mask function (`0x431f41`, 498 entries)
-  behaved as reported before, but their names stay unapplied.
+  behaved as reported before; both are now applied (`Ai_PeekPlannedSlot`, `Ai_GetLandColorMasks`), see round 3 below.
+
+### Round 4: the `Mana_CanAffordCost` / `CardTarget_PromptTargetCreature` conflict, resolved (2026-09-27)
+
+`tools/twins/propagate.py` flagged `MAGIC.EXE 0x004e69ac` (`CardTarget_PromptTargetCreature`, unverified) and its twin
+`DUEL.EXE 0x00468130` (`Mana_CanAffordCost`, also unverified, and already the name the split sources used) as a
+conflict: the same code, two different guesses, neither checked. Reading both bodies (they are identical apart from
+addresses) settles it: there is no mana or cost arithmetic anywhere in the function. It defaults its `min_val` argument
+to 2, calls the colour/type-flags function and the target picker (`Duel_ChooseTarget`), and on a successful pick stores
+the chosen (player, slot) into an "attached aura" slot pair and a combat-target field, incrementing a per-slot counter.
+That is a target prompt, not a cost check. `Mana_CanAffordCost` is replaced by `CardTarget_PromptTargetCreature`
+everywhere (static evidence only; not yet seen live).
+
+Found along the way, not yet resolved: `duel/duel_all.c` and `duel/duel_unified.c` both contain a function literally
+named `Mana_GetCardColorRequirement`, immediately after `Card_DefaultEventHandler`, whose own header comment claims the
+same address as `Card_GetColorAndTypeFlags` (`0x004521e2`) even though its body is different (several more locals) and
+it is called from many sites in `duel_all.c` that `Card_GetColorAndTypeFlags` is not. `duel/function_index.csv` has no
+row named `Mana_GetCardColorRequirement` at any address, so either the header comment's address is stale (most likely,
+given other index/source drift found this session) or two functions have been merged under one name by an earlier pass.
+Not investigated further; the call sites still compile as calls to a declared prototype (`duel/duel_unified.h`), so
+nothing is broken, just unresolved.

@@ -224,7 +224,7 @@ Address,OldName,NewName
 00465f8b,FUN_00465f8b,Prompts_Load_00465f8b
 004675bf,FUN_004675bf,Prompts_Load_004675bf
 0046792a,FUN_0046792a,Prompts_Load_0046792a
-00468130,FUN_00468130,Mana_CanAffordCost
+00468130,FUN_00468130,CardTarget_PromptTargetCreature
 00468def,FUN_00468def,Prompts_Load_00468def
 0046e571,FUN_0046e571,Duel_DrawCardSprite
 0046f172,FUN_0046f172,Sprite_ResolveAssetPath

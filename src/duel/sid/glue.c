@@ -8181,7 +8181,7 @@ int32_t FUN_00465a30(int player_id,int card_slot,int event_type)
   int val_1;
   
   if (((hBitmap == 0x6c) && (card_slot == g_EventSourceSlot)) && (hDIBSection == g_EventSourcePlayer)) {
-    val_1 = Mana_CanAffordCost(hDIBSection, 0xffffffff, card_slot);
+    val_1 = CardTarget_PromptTargetCreature(hDIBSection, 0xffffffff, card_slot);
     if (val_1 == 0) {
       Duel_DrawCardSprite(hDIBSection,card_slot,1);
       g_DuelHumanPlayerIndex = 1;
@@ -8354,7 +8354,7 @@ int32_t Glue_Subsystem_004e4807(int spell_id,int target_id,int flags)
   else {
     if (((flags == 0x6c) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
       Catalog_ParseCsvLine(s_prompts_txt_004f8e40,s_VENOM_004f8e38);
-      val_3 = Mana_CanAffordCost(spell_id,spell_id,target_id);
+      val_3 = CardTarget_PromptTargetCreature(spell_id,spell_id,target_id);
       if (val_3 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }
@@ -9198,13 +9198,13 @@ uint32_t FUN_004680fc(int player,int card_slot)
 
 
 /*
- * Decompiled function: Mana_CanAffordCost
+ * Decompiled function: CardTarget_PromptTargetCreature
  * Entry Point: 00468130
  * Size: 300 bytes
  */
 
 
-bool Mana_CanAffordCost(int player_id,uint32_t card_slot,int event_type)
+bool CardTarget_PromptTargetCreature(int player_id,uint32_t card_slot,int event_type)
 
 {
   uint32_t arg_8;
@@ -17337,7 +17337,7 @@ int32_t Ai_Subsystem_004b8e4d(int player_id,int card_slot,int event_type)
         DAT_0068f0f4 = 0;
       }
       else {
-        val_2 = Mana_CanAffordCost(hDIBSection,1 - hDIBSection,card_slot);
+        val_2 = CardTarget_PromptTargetCreature(hDIBSection,1 - hDIBSection,card_slot);
         if (val_2 == 0) {
           g_DuelHumanPlayerIndex = 1;
         }
@@ -17691,7 +17691,7 @@ int32_t FUN_0047bba3(int player_id,int card_slot,int event_type)
   }
   else {
     if (hBitmap == 0x6d) {
-      val_2 = Mana_CanAffordCost(hDIBSection,hDIBSection,card_slot);
+      val_2 = CardTarget_PromptTargetCreature(hDIBSection,hDIBSection,card_slot);
       if (val_2 == 0) {
         g_DuelHumanPlayerIndex = 1;
       }

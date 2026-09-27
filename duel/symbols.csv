@@ -8999,7 +8999,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 004680b1,"LAB_004680b1",Label,true,false
 004680fc,"FUN_004680fc",Function,true,true
 0046812b,"LAB_0046812b",Label,true,false
-00468130,"Mana_CanAffordCost",Function,true,true
+00468130,"CardTarget_PromptTargetCreature",Function,true,true
 0046814a,"LAB_0046814a",Label,true,false
 00468255,"LAB_00468255",Label,true,false
 0046825c,"LAB_0046825c",Label,true,false
