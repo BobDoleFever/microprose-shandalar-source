@@ -1,0 +1,161 @@
+# Difftest vectors
+
+A **vector** is one call of one original game function, recorded as data: the memory the function
+read, its arguments, the calls it made to other functions, its return value, and the memory it left
+behind. The difftest harness runs the **native** replacement of the same function (`src/native/`) on the
+same inputs and checks that it produces the same outputs. This is Phase B of `docs/PORT_STRATEGY.md`
+(replace verified functions one at a time, each checked against the original), without needing the game
+files at test time: the original only has to run once, when the vector is recorded.
+
+Seed vectors are hand-made from the numbers in `docs/SYMBOL_VERIFICATION.md`
+(`make_doc_vectors.py` writes `vectors/doc_*.json`). The real supply is meant to come from tracing the
+original in the emulator (below); that tracer is not part of this folder yet.
+
+## The format
+
+One JSON object per file in `tools/difftest/vectors/`. Numbers are JSON integers or strings (`"0x006826c4"`,
+`"-1"`); negative values are two's complement and everything is 32-bit. An abridged example (a runnable
+vector also lists every other byte the function reads; see `vectors/doc_query_power_elves_recompute.json`):
+
+```json
+{
+  "function": "Magic_QueryCardAttribute",
+  "program": "DUEL",
+  "address": "0x0048b81a",
+  "description": "Llanowar Elves, code 0x32 (power)",
+  "source": "docs/SYMBOL_VERIFICATION.md, Magic_QueryCardAttribute codes",
+  "args": [0, 3, 50, -1],
+  "memory_in": [
+    {"addr": "0x00682a24", "dwords": ["0x00000038"]},
+    {"addr": "0x005000fa", "bytes": "0100"}
+  ],
+  "calls": [
+    {"callee": "0x0048a33f", "name": "Duel_CardIsTapped", "args": [0, 3], "return": 0,
+     "memory_writes": []}
+  ],
+  "expected_return": 1,
+  "memory_out_expected": [
+    {"addr": "0x0066642c", "dwords": [1]}
+  ],
+  "memory_out_exhaustive": true
+}
+```
+
+| Field | Required | Meaning |
+|---|---|---|
+| `function` | yes | the verified name of the original function; the harness has a native implementation under this name (`NATIVE_FUNCTIONS` in `src/native/engine.c`) |
+| `program` | yes | `MAGIC` or `DUEL`: which program's addresses the vector uses. Both carry the same engine at different addresses (`src/native/layout.c`) |
+| `args` | yes | the stack arguments, in order, as 32-bit values |
+| `memory_in` | yes (may be empty) | the snapshot. Each region is `{addr, dwords}` (little-endian 32-bit values) or `{addr, bytes}` (a hex string or a list of byte values). Only these bytes exist: see "Undefined memory" |
+| `expected_return` | yes | EAX when the function returned. Compared on the function's return width (below) |
+| `memory_out_expected` | yes (may be empty) | regions (`dwords` or `bytes`) whose contents must match after the call. Regions not listed are not compared, unless `memory_out_exhaustive` is set |
+| `address` | no | the function's entry address in `program`. If given, it must match the harness's layout, which catches a vector recorded from the wrong function |
+| `calls` | no | every call the function makes to a function that is not native, in order (see "Calls") |
+| `memory_out_exhaustive` | no | when true, every byte the native code changed must lie in a `memory_out_expected` region. Recorded vectors should set it: then an extra write is a failure too |
+| `return_bits` | no | overrides the return width: 8, 16 or 32 |
+| `description`, `source` | no | for people: what the vector shows and where its numbers come from |
+
+### Undefined memory
+
+The harness's memory image (`src/native/mem.h`) is sparse and addressed by the original virtual
+addresses, so native code keeps using the original globals (`0x006764b8` is still the spell-stack count).
+A byte exists only if `memory_in` or a replayed call defined it, or the native code wrote it. **Reading any
+other byte fails the vector** and names the address: a vector must contain everything the function reads,
+and a native function must not read more than the original did.
+
+### Calls
+
+Native functions call functions that are not native yet through a hook (`vm_call` in
+`src/native/engine.h`). In the harness the hook **replays** the vector's `calls` list in order:
+
+- `callee` is the callee's address in `program`. Names are labels only (several decompiler names of these
+  callees are wrong: `Card_SetTapState` is a colour-override lookup), so the address is what is compared.
+- `args` are the stack arguments the original passed. The native code's must be equal.
+- `return` is what the callee returned in EAX, handed back to the native code.
+- `memory_writes` are the callee's side effects (regions like `memory_in`), applied before it returns, so
+  the native code sees what the original saw. Memory the callee only *read* is not needed.
+
+A call to a different address, a call beyond the end of the list, or a list entry that is never reached
+fails the vector. Later, hosted in the emulator, the same hook can call the emulated original instead of
+replaying.
+
+### Return width
+
+`Magic_IsManaSource` returns a C `bool` in AL; the rest of EAX is whatever was there. The harness knows
+each native function's width (`ret_bits` in `NATIVE_FUNCTIONS`) and compares only those bits.
+`return_bits` in a vector overrides it.
+
+## Running
+
+```bash
+python3 tools/difftest/run_vectors.py              # all vectors; builds tools/difftest/build/harness if needed
+python3 tools/difftest/run_vectors.py -v a.json    # also list the calls and writes of each vector
+python3 tools/difftest/run_vectors.py --strict     # UNIMPLEMENTED counts as a failure
+make -C tools/difftest                             # build the harness with the full warning set
+make -C tools/difftest asan                        # build/harness-asan, with AddressSanitizer and UBSan
+python3 -m pytest tools/difftest                   # the pipeline's own tests (needs pytest)
+```
+
+Each vector is **PASS**, **FAIL** (with every difference: return value, calls, undefined reads, memory),
+**UNIMPLEMENTED** (the native function reached a path it asserts it does not cover, such as query codes
+0x35 and 0x36), or **ERROR** (the vector is malformed, names a function with no native version, or gives
+the wrong entry address). The exit status is 1 if any vector failed or errored.
+
+The runner turns each vector into a small line protocol for the harness (documented at the top of
+`harness.c`), one process per vector, so an assert in one vector cannot affect another.
+
+## Recording vectors from the original (for the emulator; not implemented here)
+
+`tools/emu_spike/winemu` already stops at function entries (`--break ADDR:label:nargs`) and returns. A
+recorder built on the same Unicorn hooks would, for one call of a function at `entry`:
+
+1. **At entry**, read the `nargs` stack arguments above the return address (`[esp+4]`, `[esp+8]`, ...) and
+   note the return address and ESP.
+2. **While the function runs** (until EIP reaches the return address with ESP back above it), log memory
+   accesses with `UC_HOOK_MEM_READ` and `UC_HOOK_MEM_WRITE`:
+   - a byte **read** by the function itself that it (or a callee) has not written earlier in this call goes
+     to `memory_in`, with the value it had;
+   - every byte **written** goes to `memory_out_expected`, with its final value, and
+     `memory_out_exhaustive` is set;
+   - accesses to the thread's stack (between the stack limit and the entry ESP plus the arguments) are left
+     out: native code keeps its locals in C variables.
+3. **Calls**: when a `call` leaves the function, record the target address and its stack arguments (the
+   argument count is `ParameterCount` in `<program>/function_index.csv`), then hook the return address to
+   record EAX. Writes made while inside the callee go to that call's `memory_writes`; reads made inside the
+   callee are not recorded. Calls to functions whose work the native code does itself are **transparent**:
+   record their reads and writes as the function's own, not as a call. Today that is `memcpy` (a
+   `MSVCRTD` import in `MAGIC.EXE`; the statically linked `FID_conflict:_memcpy` in `DUEL.EXE`), used by
+   `Magic_PushSpellStack`.
+4. **At return**, EAX is `expected_return`. Write `function`, `program`, `address` and a `source` naming the
+   run (script, virtual time) so a failing vector can be reproduced.
+
+Recording many calls of the same function from one scripted game gives a regression suite for it; runs are
+deterministic, so a vector can be recorded again from the same script. Keep vectors small by recording
+one call per interesting situation rather than every call (the card-attribute query runs about 350,000
+times in one game).
+
+## Adding a native function
+
+1. Write it in `src/native/` from the decompiled body in `magic/magic_unified.c`, checked against its
+   `DUEL.EXE` twin (`tools/twins/twins.csv`), reading every global through the layout and every non-native
+   callee through `vm_call`. Keep the order of reads and calls the original has: a vector records what the
+   original read, and a read the original did not make is undefined memory.
+2. Add its globals and callees to `Layout` in `engine.h` and their addresses for both programs in
+   `layout.c`, each read off the decompiled body in that program (symbol names in the maps are not
+   reliable enough: several `DUEL.EXE` field names point at neighbouring fields).
+3. Add it to `NATIVE_FUNCTIONS` with its argument count and return width.
+4. Add vectors. A path the native version does not cover calls `NATIVE_UNIMPLEMENTED`, which asserts.
+
+## What is native today
+
+| Function | MAGIC.EXE | DUEL.EXE | Not covered | Callees replayed |
+|---|---|---|---|---|
+| `Magic_QueryCardAttribute` | `0x00473179` | `0x0048b81a` | codes 0x35, 0x36 and any code other than 0x32, 0x33, 0x34, 0x3c assert | `Magic_ScanCards`, `Card_IsTapped`, the two colour overrides, `Pic_Subsystem_0044867e`, `Pic_Subsystem_004488a0`, the event-context push and pop |
+| `Magic_IsManaSource` | `0x00474389` | `0x0048ca2a` | | |
+| `Magic_DropTopSpell` | `0x00475bb0` | `0x0048e251` | | |
+| `Magic_PushSpellStack` | `0x004751d7` | `0x0048d878` | | the free-slot finder `Pic_Subsystem_00451291` |
+| `Magic_ClearSpellStack` | `0x00474d1e` | `0x0048d3bf` | | |
+| `Card_GetColorAndTypeFlags` | `0x004d0a42` | `0x004521e2` | | `Card_ColorMaskToColorIndex`, the `+0xf9` colour override |
+
+The original's default case of the query (any other code returns 0 through the card scan) is not in the
+verified set and asserts too; no call site passes such a code.
