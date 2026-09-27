@@ -10,11 +10,11 @@ A name is *generic* when it is a Ghidra default (`FUN_`, `thunk_FUN_`), an auto-
 
 | | Pairs |
 |---|---|
-| 1. MAGIC semantic, DUEL generic | 211 (8 of the MAGIC names verified) |
+| 1. MAGIC semantic, DUEL generic | 208 (7 of the MAGIC names verified) |
 | 2. DUEL semantic, MAGIC generic | 5 (0 of the DUEL names verified) |
-| 3. Both semantic, different | 2 |
-| Sections 1 and 2 where the other side's C file already has a different semantic name (conflicts once the index catches up) | 3 |
-| Both semantic, the same | 66 |
+| 3. Both semantic, different | 3 |
+| Sections 1 and 2 where the other side's C file already has a different semantic name (conflicts once the index catches up) | 0 |
+| Both semantic, the same | 68 |
 | Both generic | 1009 |
 | 4. DUEL names on several addresses, a twin among them | 27 |
 
@@ -28,11 +28,9 @@ Candidates for carrying the MAGIC.EXE name to the DUEL.EXE twin. Verified MAGIC 
 | `0x00473e69` | `Magic_BroadcastCardEvent` (verified) | `0x0048c50b` | `FUN_0048c50b` (generic: Ghidra default) | 1.0000 |  |
 | `0x00474428` | `Magic_PushEventContext` (verified) | `0x0048cac9` | `FUN_0048cac9` (generic: Ghidra default) | 1.0000 |  |
 | `0x004744de` | `Magic_PopEventContext` (verified) | `0x0048cb7f` | `FUN_0048cb7f` (generic: Ghidra default) | 1.0000 |  |
-| `0x00473179` | `Magic_QueryCardAttribute` (verified) | `0x0048b81a` | `FUN_0048b81a` (generic: Ghidra default) | 0.9790 | DUEL C file already says `Duel_QueryCardAttribute` (**UNVERIFIED**; the index lags) |
 | `0x004cfe4d` | `SpellChain_RebuildEntryTargets` (verified) | `0x004a1f15` | `Palette_Subsystem_0049608e` (generic: auto-label) | 0.8261 | `Palette_Subsystem_0049608e` is carried by 6 DUEL addresses: rename by address |
 | `0x004cfb2f` | `SpellChain_InsertEntry` (verified) | `0x004a1bf7` | `Palette_Subsystem_0049608e` (generic: auto-label) | 0.8213 | `Palette_Subsystem_0049608e` is carried by 6 DUEL addresses: rename by address |
 | `0x004756a1` | `Magic_ResolveTopSpell` (verified) | `0x0048dd43` | `FUN_0048dd43` (generic: Ghidra default) | 0.7347 |  |
-| `0x00474266` | `Magic_TriggerCardEvent` (**UNVERIFIED**) | `0x0048c907` | `FUN_0048c907` (generic: Ghidra default) | 1.0000 | DUEL C file already says `Duel_PlayCardSoundEffect` (**UNVERIFIED**; the index lags) |
 | `0x00474939` | `Magic_CheckTurnTriggers` (**UNVERIFIED**) | `0x0048cfda` | `FUN_0048cfda` (generic: Ghidra default) | 1.0000 |  |
 | `0x00493bea` | `Catalog_CompareEntryHash` (**UNVERIFIED**) | `0x004343f6` | `FUN_004343f6` (generic: Ghidra default) | 1.0000 |  |
 | `0x004aaaea` | `Ai_RestoreGameState` (**UNVERIFIED**) | `0x0042fea9` | `FUN_0042fea9` (generic: Ghidra default) | 1.0000 |  |
@@ -119,7 +117,6 @@ Candidates for carrying the MAGIC.EXE name to the DUEL.EXE twin. Verified MAGIC 
 | `0x004e689b` | `Card_RemoveCounters` (**UNVERIFIED**) | `0x0046801f` | `FUN_0046801f` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6913` | `Card_SetCounters` (**UNVERIFIED**) | `0x00468097` | `FUN_00468097` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6978` | `Card_GetCounters` (**UNVERIFIED**) | `0x004680fc` | `FUN_004680fc` (generic: Ghidra default) | 1.0000 |  |
-| `0x004e69ac` | `CardTarget_PromptTargetCreature` (**UNVERIFIED**) | `0x00468130` | `FUN_00468130` (generic: Ghidra default) | 1.0000 | DUEL C file already says `CardTarget_PromptTargetCreature` (**UNVERIFIED**; the index lags) |
 | `0x004e6add` | `CardTarget_SetTargetCreature` (**UNVERIFIED**) | `0x00468261` | `FUN_00468261` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6bff` | `CardTarget_HasValidCreatureTarget` (**UNVERIFIED**) | `0x00468383` | `FUN_00468383` (generic: Ghidra default) | 1.0000 |  |
 | `0x004e6dcc` | `CardTarget_PromptTargetPermanent` (**UNVERIFIED**) | `0x00468550` | `FUN_00468550` (generic: Ghidra default) | 1.0000 |  |
@@ -244,7 +241,7 @@ Candidates for carrying the DUEL.EXE name back to MAGIC.EXE. Verified DUEL names
 |---|---|---|---|---|---|
 | `0x004cbda9` | `Ai_Util_004cbda9` (generic: ends in its own address) | `0x00450869` | `CardInDeck` (**UNVERIFIED**) | 1.0000 |  |
 | `0x004cbdda` | `Ai_Subsystem_004cbdda` (generic: auto-label) | `0x0045089a` | `SetCardInDeck` (**UNVERIFIED**) | 1.0000 |  |
-| `0x00470b36` | `FUN_00470b36` (generic: Ghidra default) | `0x00489247` | `Ai_FormatPlanDebugText` (**UNVERIFIED**) | 0.9184 | **`Ai_FormatPlanDebugText` is carried by 2 DUEL addresses** (`0x00431d05`, `0x00489247`): probably a rename by name that hit more than one function; do not carry it over (section 4); `Ai_FormatPlanDebugText` already names MAGIC `0x004ac940` |
+| `0x00470b36` | `FUN_00470b36` (generic: Ghidra default) | `0x00489247` | `Ai_FormatPlanDebugText` (**UNVERIFIED** here (verified at MAGIC 0x004ac940, DUEL 0x00431d05)) | 0.9184 | **`Ai_FormatPlanDebugText` is carried by 2 DUEL addresses** (`0x00431d05`, `0x00489247`): probably a rename by name that hit more than one function; do not carry it over (section 4); `Ai_FormatPlanDebugText` already names MAGIC `0x004ac940` |
 | `0x0048e0ee` | `Mem_AllocOrFree_0048e0ee` (generic: ends in its own address) | `0x004e1320` | `__flushall` (**UNVERIFIED**) | 0.7538 |  |
 | `0x0040c180` | `Mem_AllocOrFree_0040c180` (generic: ends in its own address) | `0x004da600` | `__malloc_dbg` (**UNVERIFIED**) | 0.7084 |  |
 
@@ -254,6 +251,7 @@ The same code carries two different meaningful names; at most one can be right, 
 
 | MAGIC | MAGIC name | DUEL | DUEL name | Twin score | Notes |
 |---|---|---|---|---|---|
+| `0x00473179` | `Magic_QueryCardAttribute` (verified) | `0x0048b81a` | `Duel_QueryCardAttribute` (**UNVERIFIED**) | 0.9790 |  |
 | `0x0047496b` | `Duel_PlaySoundById` (verified) | `0x0048d00c` | `Sound_PlayTrackById` (verified) | 0.9539 |  |
 | `0x00513fde` | `_write` (**UNVERIFIED**) | `0x004eec20` | `RtlUnwind` (**UNVERIFIED**) | 0.7761 |  |
 
@@ -273,7 +271,7 @@ A rename by name hits every address in the group (this happened with `Glue_Subsy
 | `Palette_Subsystem_00496497` (generic: auto-label) | listed | `0x00438771` (twin of `0x00496497`, 0.9990, `Palette_Subsystem_00496497` (generic: auto-label))<br>`0x00439a76` (twin of `0x004f2f56`, 0.9054, `UI_CreateWindow_004f2f56` (generic: ends in its own address))<br>`0x0049d17d` (no `twin` row) |
 | `Palette_Subsystem_0049c7c7` (generic: auto-label) | listed | `0x0042053a` (twin of `0x0049c7c7`, 0.9190, `Palette_Subsystem_0049c7c7` (generic: auto-label))<br>`0x004238e7` (twin of `0x0049fb63`, 0.9130, `Palette_Subsystem_0049fb63` (generic: auto-label))<br>`0x00485887` (twin of `0x0046b04a`, 0.8257, `FUN_0046b04a` (generic: Ghidra default)) |
 | `Palette_Subsystem_004a9137` (generic: auto-label) | listed | `0x00419aab` (twin of `0x00466d29`, 0.9616, `Minit_Subsystem_00466d29` (generic: auto-label))<br>`0x00453463` (twin of `0x004d1cc4`, 1.0000, `Card_Sinbad_Draw` (**UNVERIFIED**))<br>`0x0046af37` (twin of `0x004a9137`, 0.9431, `Palette_Subsystem_004a9137` (generic: auto-label)) |
-| `Ai_FormatPlanDebugText` (**UNVERIFIED**) | listed | `0x00431d05` (no `twin` row)<br>`0x00489247` (twin of `0x00470b36`, 0.9184, `FUN_00470b36` (generic: Ghidra default)) |
+| `Ai_FormatPlanDebugText` (verified) | listed | `0x00431d05` (no `twin` row)<br>`0x00489247` (twin of `0x00470b36`, 0.9184, `FUN_00470b36` (generic: Ghidra default)) |
 | `Ai_Subsystem_004b8e4d` (generic: auto-label) | listed | `0x0044a314` (twin of `0x004b8e4d`, 0.7591, `Ai_Subsystem_004b8e4d` (generic: auto-label))<br>`0x0047acdd` (twin of `0x0045350d`, 0.9335, `Minit_Subsystem_0045350d` (generic: auto-label)) |
 | `Ai_Subsystem_004cc1e8` (generic: auto-label) | listed | `0x00450ca8` (twin of `0x004cc1e8`, 1.0000, `Ai_Subsystem_004cc1e8` (generic: auto-label))<br>`0x004d7510` (twin of `0x00451e40`, 0.8545, `Pic_Subsystem_00451e40` (generic: auto-label)) |
 | `Card_Setup_00467a68` (generic: ends in another address) | listed | `0x00482299` (twin of `0x00467a68`, 0.9500, `Card_Setup_00467a68` (generic: ends in its own address))<br>`0x0048a423` (twin of `0x00471d16`, 0.9652, `FUN_00471d16` (generic: Ghidra default)) |
