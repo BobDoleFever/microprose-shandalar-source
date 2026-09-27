@@ -279,13 +279,13 @@ void Ai_RecordChoice(void)
 
 
 /*
- * Decompiled function: Card_DispatchRulesEvent
+ * Decompiled function: Ai_PeekPlannedSlot
  * Entry Point: 0043071d
  * Size: 75 bytes
  */
 
 
-int32_t Card_DispatchRulesEvent(int player_id)
+int32_t Ai_PeekPlannedSlot(int player_id)
 
 {
   if ((g_IsAiThinking != 1) &&

@@ -1017,7 +1017,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 0048c43a,"FUN_0048c43a","unattributed/duel_core.c","unattributed"
 0048c50b,"FUN_0048c50b","unattributed/duel_core.c","unattributed"
 0048c5a8,"Magic_ScanCards","sid/Magic.c","sid"
-0048c907,"Duel_PlayCardSoundEffect","sid/Magic.c","sid"
+0048c907,"Magic_TriggerCardEvent","sid/Magic.c","sid"
 0048ca2a,"Magic_IsManaSource","sid/Magic.c","sid"
 0048cac9,"FUN_0048cac9","sid/Magic.c","sid"
 0048cb7f,"FUN_0048cb7f","sid/Magic.c","sid"

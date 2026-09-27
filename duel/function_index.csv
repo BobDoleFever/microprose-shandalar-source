@@ -1017,7 +1017,7 @@ Address,FunctionName,ReturnType,ParameterCount,BodySize,Status,Filename
 0048c43a,"FUN_0048c43a","undefined",1,209,SUCCESS,"FUN_0048c43a_0048c43a.c"
 0048c50b,"FUN_0048c50b","undefined",3,157,SUCCESS,"FUN_0048c50b_0048c50b.c"
 0048c5a8,"Magic_ScanCards","undefined",1,863,SUCCESS,"Magic_ScanCards_0048c5a8.c"
-0048c907,"Duel_PlayCardSoundEffect","undefined",5,291,SUCCESS,"FUN_0048c907_0048c907.c"
+0048c907,"Magic_TriggerCardEvent","undefined",5,291,SUCCESS,"FUN_0048c907_0048c907.c"
 0048ca2a,"Magic_IsManaSource","undefined",2,159,SUCCESS,"FUN_0048ca2a_0048ca2a.c"
 0048cac9,"FUN_0048cac9","undefined",0,182,SUCCESS,"FUN_0048cac9_0048cac9.c"
 0048cb7f,"FUN_0048cb7f","undefined",0,170,SUCCESS,"FUN_0048cb7f_0048cb7f.c"

@@ -88,13 +88,13 @@ void Magic_ScanCards(int player_id)
 
 
 /*
- * Decompiled function: Duel_PlayCardSoundEffect
+ * Decompiled function: Magic_TriggerCardEvent
  * Entry Point: 0048c907
  * Size: 291 bytes
  */
 
 
-int Duel_PlayCardSoundEffect(int player_id,int card_slot,int event_type,int32_t arg_4,int32_t arg_5)
+int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int32_t arg_4,int32_t arg_5)
 
 {
   int32_t uval_1;
@@ -708,7 +708,7 @@ int32_t FUN_0048dd43(void)
       }
       else if (((&DAT_006827d4)[color_mask * 0x5b20 + arg_2 * 0x120] & 8) == 0) {
         if (((&DAT_006827d4)[color_mask * 0x5b20 + arg_2 * 0x120] & 0x80) == 0) {
-          Duel_PlayCardSoundEffect(color_mask,arg_2,*(uint32_t *)(&DAT_0068f240 + g_SpellStackCount * 4) >> 0x10 & 0xff,
+          Magic_TriggerCardEvent(color_mask,arg_2,*(uint32_t *)(&DAT_0068f240 + g_SpellStackCount * 4) >> 0x10 & 0xff,
                        1 - color_mask,0xffffffff);
         }
         else {
@@ -720,7 +720,7 @@ int32_t FUN_0048dd43(void)
                           *(int *)(&g_DuelCardSlot_AttachedAuraPlayer + color_mask * 0x5b20 + arg_2 * 0x120) * 0x5b20 +
                           *(int *)(&g_DuelCardSlot_AttachedAuraSlot + color_mask * 0x5b20 + arg_2 * 0x120) * 0x120) &
                  0xffffffef;
-            Duel_PlayCardSoundEffect(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + color_mask * 0x5b20 + arg_2 * 0x120),
+            Magic_TriggerCardEvent(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + color_mask * 0x5b20 + arg_2 * 0x120),
                          *(int *)(&g_DuelCardSlot_AttachedAuraSlot + color_mask * 0x5b20 + arg_2 * 0x120),0x83,1 - color_mask,
                          0xffffffff);
           }
@@ -735,7 +735,7 @@ int32_t FUN_0048dd43(void)
       }
       else {
         if (((((&DAT_006827d5)[color_mask * 0x5b20 + arg_2 * 0x120] & 2) == 0) &&
-            (Duel_PlayCardSoundEffect(color_mask,arg_2,0x86,1 - color_mask,0xffffffff),
+            (Magic_TriggerCardEvent(color_mask,arg_2,0x86,1 - color_mask,0xffffffff),
             *(int *)(&g_DuelCardSlot_CardId + color_mask * 0x5b20 + arg_2 * 0x120) != -1)) &&
            (((&DAT_006827d4)[color_mask * 0x5b20 + arg_2 * 0x120] & 2) != 0)) {
           Duel_DrawCardSprite(*(int *)(&g_DuelCardSlot_AttachedAuraPlayer + color_mask * 0x5b20 + arg_2 * 0x120),
@@ -1202,7 +1202,7 @@ int32_t FUN_0048ed18(int x,int arg2)
       uval_1 = 0;
     }
     else {
-      Duel_PlayCardSoundEffect(x,arg2,0x88,1 - x,0xffffffff);
+      Magic_TriggerCardEvent(x,arg2,0x88,1 - x,0xffffffff);
       if (DAT_0068edd8 == 0) {
         uval_1 = 1;
       }

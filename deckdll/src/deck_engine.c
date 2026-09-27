@@ -72,7 +72,7 @@ int Duel_RandomRange(int arg_1);
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
 bool Duel_CardIsTapped(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_PlayCardSoundEffect(int arg_1, int arg_2, int arg_3, undefined4 arg_4, undefined4 arg_5);
+int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
 void Duel_DrawCardSprite(int arg_1, int arg_2, int arg_3);
 int Duel_DrawString(int arg_1, uint arg_2, int arg_3);

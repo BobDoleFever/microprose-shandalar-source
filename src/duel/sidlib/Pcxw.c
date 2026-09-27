@@ -3005,12 +3005,12 @@ void FUN_00451760(void)
       if ((*(int *)(&DAT_004ff590 +
                    *(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34) == 0xee) &&
          (((&g_DuelCardSlot_Flags)[match_count * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
-        Duel_PlayCardSoundEffect(slot_idx,match_count,0x7f,0xffffffff,0xffffffff);
+        Magic_TriggerCardEvent(slot_idx,match_count,0x7f,0xffffffff,0xffffffff);
       }
       if ((*(int *)(&DAT_004ff590 +
                    *(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34) == 100) &&
          (((&g_DuelCardSlot_Flags)[match_count * 0x120 + slot_idx * 0x5b20] & 2) != 0)) {
-        Duel_PlayCardSoundEffect(slot_idx,match_count,0x7f,0xffffffff,0xffffffff);
+        Magic_TriggerCardEvent(slot_idx,match_count,0x7f,0xffffffff,0xffffffff);
       }
     }
   }

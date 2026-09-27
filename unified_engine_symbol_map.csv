@@ -251,7 +251,7 @@ Address,OldName,NewName
 00430252,FUN_00430252,Pic_Subsystem_00430252
 004305f1,FUN_004305f1,Pic_Subsystem_004305f1
 0043070c,FUN_0043070c,CardScript_Erosion
-0043071d,Ai_PeekPlannedSlot,Card_DispatchRulesEvent
+0043071d,Ai_PeekPlannedSlot,Ai_PeekPlannedSlot
 00430f0a,FUN_00430f0a,CardScript_CursedLand
 0043143d,FUN_0043143d,Pic_Subsystem_0043143d
 004316cc,FUN_004316cc,Pic_Subsystem_004316cc
@@ -756,7 +756,7 @@ Address,OldName,NewName
 0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
 0048c367,FUN_0048c367,Duel_ColorMaskToIndex
 0048c72a,FUN_0048c72a,SaveGame_LoadCampaignFile
-0048c907,FUN_0048c907,Duel_PlayCardSoundEffect
+0048c907,FUN_0048c907,Magic_TriggerCardEvent
 0048c970,FUN_0048c970,SaveGame_SaveCampaignFile
 0048d00c,FUN_0048d00c,Sound_PlayTrackById
 0048d087,FUN_0048d087,Overworld_SaveMapFile
