@@ -180,6 +180,22 @@ times in one game).
 | `Card_ColorMaskToColorIndex` | `0x00473cc5` | `0x0048c367` | | |
 | `Card_RemapColorIndexF9` | `0x0041d9d2` | `0x004af7bb` | | |
 | `Card_RemapColorIndexFF` | `0x0041d963` | `0x004af74c` | | |
+| `Ai_RecordChoice` | `0x004ab28b` | `0x0043064a` | | |
+| `Ai_ReplayChoice` | `0x004ab3f3` | `0x004307b2` | | |
+| `Ai_CommitBestPlan` | `0x004ab45f` | `0x0043081e` | | |
+| `Ai_ClearPlan` | `0x004ab1ef` | `0x004305ae` | | |
+| `Ai_GetPlanCursor` | `0x004ab510` | `0x004308cf` | | |
+| `Ai_PlanCursorBack` | `0x004ab525` | `0x004308e4` | | |
+| `Ai_PeekPlannedSlot` | `0x004ab35e` | `0x0043071d` | | |
+| `Ai_PeekPlannedChoice` | `0x004ab3a9` | `0x00430768` | | |
+| `Ai_GetLandColorMasks` | `0x004acb7f` | `0x00431f41` | | |
+
+The nine `Ai_` functions are the AI's recorded plan (the trial and best lists and their shared cursor; see
+`docs/SYMBOL_VERIFICATION.md`, "The AI"). `Ai_BeginTrial` (`0x004ab214` / `0x004305d3`) is deliberately not native
+yet: it calls the whole-game-state restore, which copies about 0xb640 bytes, so every vector of it would carry that much
+callee data. It should follow once the restore is native. `Ai_GetLandColorMasks` takes two out-pointers (guest
+addresses, in the original the caller's stack frame), so its vectors hold stack addresses as arguments and as written
+regions; that is deterministic in the emulator, and the harness treats them like any other address.
 
 The last six are the small helpers the first six used to replay from recorded calls; they are native now, so a
 recorded vector of a caller holds their reads and writes as its own (the recorder treats a native callee as

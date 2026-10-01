@@ -31,7 +31,9 @@ LAYOUT = {
                  mode=0x00681EB0, token_base=0x0068F104,
                  f_query=0x0048B81A, f_mana=0x0048CA2A, f_drop=0x0048E251, f_push=0x0048D878,
                  f_clear=0x0048D3BF, f_color=0x004521E2,
-                 c_find_free=0x004D695B, f_remap_f9=0x004AF7BB, f_remap_ff=0x004AF74C),
+                 c_find_free=0x004D695B, f_remap_f9=0x004AF7BB, f_remap_ff=0x004AF74C,
+                 ai_cursor=0x0050B37C, ai_best_choice=0x00511600, ai_peeked=0x00666410,
+                 f_peek_choice=0x00430768, f_cursor_back=0x004308E4),
     "MAGIC": dict(slot=0x006A5F30, master=0x0051AEB8, count=0x006A3F78, objects=0x006FECC0,
                   f_mana=0x00474389, f_clear=0x00474D1E),
 }
@@ -289,6 +291,36 @@ def main(out=None):
                 f"Remap byte at slot + 0x{table:x} + {index} is 0x{byte:02x}: returns {ret}"
                 + (" (the index comes back unchanged)" if byte == 0 else " (the byte as a signed char)"),
                 f"{DOC}, round 6 (`{fn}`; synthetic, decompiled body)", [0, 5, index], ret, mi, Snapshot()))
+
+
+    # ---------------------------------------------------------------------------------------------
+    # The AI's plan, cases no recorded game reached (synthetic, from the decompiled bodies): the planned-choice
+    # peek was never entered (static only), and the cursor-back was entered once.
+    L = LAYOUT["DUEL"]
+    for label, thinking, cursor, offset, planned, expect_peeked, wrote in [
+            ("none_planned_reads_zero", 0, 2, 1, 99, 0, True),
+            ("value_passes_through", 0, 2, 0, 5, 5, True),
+            ("thinking_does_nothing", 1, 2, 0, 5, None, False)]:
+        mi, mo = Snapshot(), Snapshot()
+        mi.u32(L["ai"], thinking)
+        if not thinking:
+            mi.u32(L["ai_cursor"], cursor)
+            mi.u32(L["ai_best_choice"] + 4 * (cursor + offset), planned)
+            mo.u32(L["ai_peeked"], expect_peeked)
+        write(f"ai_peek_planned_choice_{label}", vector(
+            "Ai_PeekPlannedChoice", "DUEL", L["f_peek_choice"],
+            f"Cursor {cursor}, offset {offset}, planned choice {planned}, thinking {thinking}: "
+            + (f"the peeked choice becomes {expect_peeked}" if wrote else "nothing is written; returns 0"),
+            f"{DOC}, round 3 (`Ai_PeekPlannedChoice`; never entered live, synthetic, decompiled body)",
+            [offset], 0, mi, mo))
+    for cursor, expect in ((0, 0), (1, 0), (3, 2)):
+        mi, mo = Snapshot(), Snapshot()
+        mi.u32(L["ai_cursor"], cursor)
+        mo.u32(L["ai_cursor"], expect)
+        write(f"ai_plan_cursor_back_from_{cursor}", vector(
+            "Ai_PlanCursorBack", "DUEL", L["f_cursor_back"],
+            f"Cursor {cursor} goes to {expect} (it never goes below 0)",
+            f"{DOC}, round 3 (`Ai_PlanCursorBack`; synthetic, decompiled body)", [], 0, mi, mo))
 
     # ---------------------------------------------------------------------------------------------
     # Spell stack (DUEL.EXE). "Play a Forest: PushSpellStack(0, 2, 113, 0, 0)", "Cast Llanowar Elves,

@@ -196,7 +196,9 @@ def test_layout_code_addresses_are_function_starts():
     for program, addrs in layout_addresses().items():
         with open(os.path.join(rv.REPO, program.lower(), "function_index.csv"), newline="") as f:
             starts = {int(r["Address"], 16) for r in csv.DictReader(f)}
-        assert len(addrs) == 16
+        # every FN_* entry and every remaining CALLEE_* of engine.h, in each program
+        import record_vectors as rec  # noqa: PLC0415
+        assert len(addrs) == len(rec.NATIVE_FUNCTIONS) + len(rec.CALLEES_INFO), len(addrs)
         missing = {k: hex(a) for k, a in addrs.items() if a not in starts}
         assert not missing, (program, missing)
 
