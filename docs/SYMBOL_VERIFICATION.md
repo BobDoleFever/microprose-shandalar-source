@@ -685,3 +685,21 @@ sprite-marking calls and the free-slot finder.
 Also found: `Card_IsTapped` was the third name this session whose body contradicted it once real calls were looked at
 (after `Magic_ResolveSpellStack` and `SpellChain_IsVisible`). The name was assigned by the bulk pass; nothing in the
 function ever looked at the tap bit.
+
+### Round 7: nine native functions for the AI's recorded plan (2026-10-01)
+
+`src/native/ai_plan.c` implements `Ai_RecordChoice`, `Ai_ReplayChoice`, `Ai_CommitBestPlan`, `Ai_ClearPlan`,
+`Ai_GetPlanCursor`, `Ai_PlanCursorBack`, `Ai_PeekPlannedSlot`, `Ai_PeekPlannedChoice` and `Ai_GetLandColorMasks`, in both
+programs, from the decompiled bodies. 46 calls recorded from two games (a mirror match and a game against the red AI
+deck, the latter stopped before its end) all pass, and six synthetic vectors cover the cases no game reached
+(`Ai_PeekPlannedChoice`, which was never entered live, and the edges of `Ai_PlanCursorBack`). The compares are signed
+(`jge`/`jle`/`jl` in the binary).
+
+One thing the disassembly showed that the decompiled C does not: `Ai_ReplayChoice` first executes
+`if (best_mode[cursor] != mode) mode |= 0x100` and then, at its end, sets `mode = 0`. The decompiler drops the first
+write as dead, correctly: the final memory is identical, and the recorded vectors (which record final values) confirm it.
+`Ai_GetLandColorMasks` writes through two out-pointers that point into the caller's stack frame, so its vectors hold stack
+addresses as arguments and as written regions; the emulator is deterministic, so that is stable.
+
+`Ai_BeginTrial` is not native yet: it calls the whole-game-state restore, which copies about 0xb640 bytes, so every vector
+of it would carry that much callee data. It should follow once the restore itself is native.

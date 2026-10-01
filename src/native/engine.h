@@ -81,6 +81,15 @@ typedef enum {
     FN_COLOR_MASK_TO_INDEX,
     FN_REMAP_COLOR_INDEX_FF,
     FN_REMAP_COLOR_INDEX_F9,
+    FN_AI_RECORD_CHOICE,
+    FN_AI_REPLAY_CHOICE,
+    FN_AI_COMMIT_BEST_PLAN,
+    FN_AI_CLEAR_PLAN,
+    FN_AI_GET_PLAN_CURSOR,
+    FN_AI_PLAN_CURSOR_BACK,
+    FN_AI_PEEK_PLANNED_SLOT,
+    FN_AI_PEEK_PLANNED_CHOICE,
+    FN_AI_GET_LAND_COLOR_MASKS,
     FN_COUNT
 } NativeFn;
 
@@ -115,6 +124,25 @@ typedef struct Layout {
     uint32_t card_event_result;    /* g_CardEventResult */
     uint32_t duel_mode_flags;      /* g_DuelModeFlags */
     uint32_t token_card_base;      /* DAT_006ff2e0 / g_DuelTargetCardId: first of 0x1d token card indexes */
+    /* The AI's plan lists: five arrays of 256 dwords per list, one shared cursor (docs, "The AI"). MAGIC / DUEL. */
+    uint32_t ai_cursor;            /* DAT_0054be44 / DAT_0050b37c: trial list length and replay cursor */
+    uint32_t ai_trial_choice;      /* DAT_005524c8 / DAT_00511a00 */
+    uint32_t ai_trial_slot;        /* DAT_0054fc38 / DAT_0050f170: packed slot (low byte slot, bit 8 player, mode bits) */
+    uint32_t ai_trial_card;        /* DAT_00553840 / DAT_00512d78: the slot's card index when recorded */
+    uint32_t ai_trial_mode;        /* DAT_00553c40 / DAT_00513178 */
+    uint32_t ai_best_choice;       /* DAT_005520c8 / DAT_00511600 */
+    uint32_t ai_best_slot;         /* DAT_0054f838 / DAT_0050ed70 */
+    uint32_t ai_best_card;         /* DAT_00553440 / DAT_00512978 */
+    uint32_t ai_best_mode;         /* DAT_005514f8 / DAT_00510a30 */
+    uint32_t ai_best_len;          /* DAT_00556928 / DAT_00515e60: set when the best list starts with "no choice" */
+    uint32_t ai_packed_slot;       /* DAT_006fefa8 / DAT_0068f0bc: the slot of the choice being made */
+    uint32_t ai_choice_value;      /* g_AiChoiceValue (DAT_006ff55c / DAT_0068f2c8) */
+    uint32_t ai_plan_mode;         /* DAT_0052ce1c / DAT_004f3c6c: 1 land, 2 cast or activate, 3 target, 4 response */
+    uint32_t ai_overflow_flag;     /* g_ActivePlayer / g_DuelHumanPlayerIndex: set to 1 when the list is full */
+    uint32_t ai_committed;         /* DAT_00633434 / DAT_0067650c: set to 1 by every commit of a best plan */
+    uint32_t ai_peeked_choice;     /* DAT_0062785c / DAT_00666410: written by the planned-choice peek */
+    uint32_t land_counts_x;        /* DAT_0063ee50 / DAT_0068ef70: five per-colour land counts (colour 1 to 5) */
+    uint32_t land_counts_y;        /* DAT_0063ee30 / DAT_0068ef50: the other player's */
     uint32_t callee[CALLEE_COUNT];
     uint32_t entry[FN_COUNT];      /* where the original functions start */
 } Layout;
@@ -157,6 +185,15 @@ uint32_t Native_Magic_PushSpellStack(Vm *vm, int32_t player, int32_t slot, int32
                                      int32_t target_slot, uint32_t flags);
 uint32_t Native_Magic_ClearSpellStack(Vm *vm);
 uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot);
+void Native_Ai_RecordChoice(Vm *vm);
+void Native_Ai_ReplayChoice(Vm *vm);
+void Native_Ai_CommitBestPlan(Vm *vm);
+void Native_Ai_ClearPlan(Vm *vm);
+uint32_t Native_Ai_GetPlanCursor(Vm *vm);
+void Native_Ai_PlanCursorBack(Vm *vm);
+uint32_t Native_Ai_PeekPlannedSlot(Vm *vm, int32_t offset);
+uint32_t Native_Ai_PeekPlannedChoice(Vm *vm, int32_t offset);
+void Native_Ai_GetLandColorMasks(Vm *vm, uint32_t out_x, uint32_t out_y);
 void Native_Magic_PushEventContext(Vm *vm);
 void Native_Magic_PopEventContext(Vm *vm);
 uint32_t Native_Card_IsInPlay(Vm *vm, int32_t player, int32_t slot);

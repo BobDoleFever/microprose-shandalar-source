@@ -103,6 +103,63 @@ static uint32_t run_remap_f9(Vm *vm, const uint32_t *a)
     return (uint32_t)Native_Card_RemapColorIndexF9(vm, (int32_t)a[0], (int32_t)a[1], (int32_t)a[2]);
 }
 
+static uint32_t run_ai_record(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_RecordChoice(vm);
+    return 0;
+}
+
+static uint32_t run_ai_replay(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_ReplayChoice(vm);
+    return 0;
+}
+
+static uint32_t run_ai_commit(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_CommitBestPlan(vm);
+    return 0;
+}
+
+static uint32_t run_ai_clear(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_ClearPlan(vm);
+    return 0;
+}
+
+static uint32_t run_ai_cursor(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    return Native_Ai_GetPlanCursor(vm);
+}
+
+static uint32_t run_ai_cursor_back(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_PlanCursorBack(vm);
+    return 0;
+}
+
+static uint32_t run_ai_peek_slot(Vm *vm, const uint32_t *a)
+{
+    return Native_Ai_PeekPlannedSlot(vm, (int32_t)a[0]);
+}
+
+static uint32_t run_ai_peek_choice(Vm *vm, const uint32_t *a)
+{
+    return Native_Ai_PeekPlannedChoice(vm, (int32_t)a[0]);
+}
+
+static uint32_t run_ai_land_masks(Vm *vm, const uint32_t *a)
+{
+    Native_Ai_GetLandColorMasks(vm, a[0], a[1]);
+    return 0;
+}
+
 const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_QUERY_CARD_ATTRIBUTE, "Magic_QueryCardAttribute", 4, 32, run_query},
     {FN_IS_MANA_SOURCE, "Magic_IsManaSource", 2, 8, run_is_mana_source},
@@ -116,6 +173,15 @@ const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_COLOR_MASK_TO_INDEX, "Card_ColorMaskToColorIndex", 1, 32, run_mask_to_index},
     {FN_REMAP_COLOR_INDEX_FF, "Card_RemapColorIndexFF", 3, 32, run_remap_ff},
     {FN_REMAP_COLOR_INDEX_F9, "Card_RemapColorIndexF9", 3, 32, run_remap_f9},
+    {FN_AI_RECORD_CHOICE, "Ai_RecordChoice", 0, 0, run_ai_record},
+    {FN_AI_REPLAY_CHOICE, "Ai_ReplayChoice", 0, 0, run_ai_replay},
+    {FN_AI_COMMIT_BEST_PLAN, "Ai_CommitBestPlan", 0, 0, run_ai_commit},
+    {FN_AI_CLEAR_PLAN, "Ai_ClearPlan", 0, 0, run_ai_clear},
+    {FN_AI_GET_PLAN_CURSOR, "Ai_GetPlanCursor", 0, 32, run_ai_cursor},
+    {FN_AI_PLAN_CURSOR_BACK, "Ai_PlanCursorBack", 0, 0, run_ai_cursor_back},
+    {FN_AI_PEEK_PLANNED_SLOT, "Ai_PeekPlannedSlot", 1, 32, run_ai_peek_slot},
+    {FN_AI_PEEK_PLANNED_CHOICE, "Ai_PeekPlannedChoice", 1, 32, run_ai_peek_choice},
+    {FN_AI_GET_LAND_COLOR_MASKS, "Ai_GetLandColorMasks", 2, 0, run_ai_land_masks},
 };
 
 const NativeInfo *native_find(const char *name)

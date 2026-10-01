@@ -72,10 +72,20 @@ NATIVE_FUNCTIONS = [
     ("FN_COLOR_MASK_TO_INDEX", "Card_ColorMaskToColorIndex", 1),
     ("FN_REMAP_COLOR_INDEX_FF", "Card_RemapColorIndexFF", 3),
     ("FN_REMAP_COLOR_INDEX_F9", "Card_RemapColorIndexF9", 3),
+    ("FN_AI_RECORD_CHOICE", "Ai_RecordChoice", 0),
+    ("FN_AI_REPLAY_CHOICE", "Ai_ReplayChoice", 0),
+    ("FN_AI_COMMIT_BEST_PLAN", "Ai_CommitBestPlan", 0),
+    ("FN_AI_CLEAR_PLAN", "Ai_ClearPlan", 0),
+    ("FN_AI_GET_PLAN_CURSOR", "Ai_GetPlanCursor", 0),
+    ("FN_AI_PLAN_CURSOR_BACK", "Ai_PlanCursorBack", 0),
+    ("FN_AI_PEEK_PLANNED_SLOT", "Ai_PeekPlannedSlot", 1),
+    ("FN_AI_PEEK_PLANNED_CHOICE", "Ai_PeekPlannedChoice", 1),
+    ("FN_AI_GET_LAND_COLOR_MASKS", "Ai_GetLandColorMasks", 2),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
-VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext"}
+VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext", "Ai_RecordChoice", "Ai_ReplayChoice",
+                  "Ai_CommitBestPlan", "Ai_ClearPlan", "Ai_PlanCursorBack", "Ai_GetLandColorMasks"}
 # Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c): the
 # functions the native code still calls through the hook because they are not native yet.
 CALLEES_INFO = [
@@ -150,6 +160,37 @@ class Recorder:
             return (name, args[2])
         if name in ("Magic_PushEventContext", "Magic_PopEventContext"):
             return (name, m.r32(m.L_event_context_depth))
+        if name.startswith("Ai_"):
+            return self.ai_key(name, args)
+        return (name,)
+
+    def ai_key(self, name, args):
+        """Buckets for the AI plan functions: what decides their branches (the cursor, the first choice of each
+        list, the thinking flag, the plan mode, the colour counts)."""
+        m = self.m
+        r = m.r32
+        try:
+            cursor = r(m.L_ai_cursor)
+            thinking = r(m.L_is_ai_thinking) == 1
+            trial0, best0 = r(m.L_ai_trial_choice) == 99, r(m.L_ai_best_choice) == 99
+            here = r(m.L_ai_best_choice + 4 * cursor) if 0 <= cursor < 0x100 else None
+            if name == "Ai_RecordChoice":
+                return (name, r(m.L_ai_plan_mode), min(cursor, 2), cursor >= 0x100, trial0, best0)
+            if name == "Ai_ReplayChoice":
+                return (name, here == 99, min(cursor, 2), r(m.L_ai_plan_mode) != 0)
+            if name == "Ai_CommitBestPlan":
+                return (name, min(cursor, 3), best0)
+            if name in ("Ai_PeekPlannedSlot", "Ai_PeekPlannedChoice"):
+                return (name, thinking, args[0], here == 99)
+            if name == "Ai_PlanCursorBack":
+                return (name, min(cursor, 2))
+            if name == "Ai_GetPlanCursor":
+                return (name, min(cursor, 3))
+            if name == "Ai_GetLandColorMasks":
+                bits = tuple(r(base + 4 * c) > 0 for base in (m.L_land_counts_x, m.L_land_counts_y) for c in range(1, 6))
+                return (name, bits, args[0] == 0, args[1] == 0)
+        except Exception:
+            return (name, "unreadable")
         return (name,)
 
     def on_entry(self, uc, address, size, user):
@@ -271,6 +312,8 @@ def main():
             self.L_is_ai_thinking = addr("is_ai_thinking")
             self.L_spell_stack_count = addr("spell_stack_count")
             self.L_event_context_depth = addr("event_context_depth")
+            for field in ("ai_cursor", "ai_trial_choice", "ai_best_choice", "ai_plan_mode", "land_counts_x", "land_counts_y"):
+                setattr(self, "L_" + field, addr(field))
             self.recorder = Recorder(self, outdir, cap, program, addr("duel_mode_flags"))
 
     runmod.Machine = RecordingMachine
