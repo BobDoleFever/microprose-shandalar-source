@@ -12203,7 +12203,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048a330,"LAB_0048a330",Label,true,false
 0048a335,"LAB_0048a335",Label,true,false
 0048a33a,"LAB_0048a33a",Label,true,false
-0048a33f,"FUN_0048a33f",Function,true,true
+0048a33f,"Card_IsInPlay",Function,true,true
 0048a372,"LAB_0048a372",Label,true,false
 0048a3a5,"LAB_0048a3a5",Label,true,false
 0048a3a7,"LAB_0048a3a7",Label,true,false
@@ -12364,7 +12364,7 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048c34d,"LAB_0048c34d",Label,true,false
 0048c352,"LAB_0048c352",Label,true,false
 0048c362,"LAB_0048c362",Label,true,false
-0048c367,"FUN_0048c367",Function,true,true
+0048c367,"Card_ColorMaskToColorIndex",Function,true,true
 0048c384,"LAB_0048c384",Label,true,false
 0048c398,"LAB_0048c398",Label,true,false
 0048c3ac,"LAB_0048c3ac",Label,true,false
@@ -12415,10 +12415,10 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 0048cab5,"LAB_0048cab5",Label,true,false
 0048cabc,"LAB_0048cabc",Label,true,false
 0048cac4,"LAB_0048cac4",Label,true,false
-0048cac9,"FUN_0048cac9",Function,true,true
+0048cac9,"Magic_PushEventContext",Function,true,true
 0048cae1,"LAB_0048cae1",Label,true,false
 0048cb7a,"LAB_0048cb7a",Label,true,false
-0048cb7f,"FUN_0048cb7f",Function,true,true
+0048cb7f,"Magic_PopEventContext",Function,true,true
 0048cb98,"LAB_0048cb98",Label,true,false
 0048cc29,"FUN_0048cc29",Function,true,true
 0048cc3e,"LAB_0048cc3e",Label,true,false
@@ -16085,10 +16085,10 @@ EXTERNAL:00000111,"DeckBuilderMain",Function,false,true
 004af70f,"LAB_004af70f",Label,true,false
 004af726,"LAB_004af726",Label,true,false
 004af72b,"Mem_AllocOrFree_004af72b",Function,true,true
-004af74c,"FUN_004af74c",Function,true,true
+004af74c,"Card_RemapColorIndexFF",Function,true,true
 004af78c,"LAB_004af78c",Label,true,false
 004af7b6,"LAB_004af7b6",Label,true,false
-004af7bb,"FUN_004af7bb",Function,true,true
+004af7bb,"Card_RemapColorIndexF9",Function,true,true
 004af7fb,"LAB_004af7fb",Label,true,false
 004af825,"LAB_004af825",Label,true,false
 004af82a,"Pic_Subsystem_0044895f",Function,true,true

@@ -6,12 +6,12 @@
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
   0,
-  2
+  0
  ],
  "expected_return": 1,
  "memory_in": [
   {
-   "addr": "0x004ff610",
+   "addr": "0x00500108",
    "bytes": "0010"
   },
   {
@@ -19,8 +19,8 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x00682904",
-   "bytes": "02000000"
+   "addr": "0x006826c4",
+   "bytes": "38000000"
   }
  ],
  "calls": [],

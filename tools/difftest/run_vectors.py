@@ -26,7 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 NATIVE = os.path.join(REPO, "src", "native")
 SOURCES = [os.path.join(HERE, "harness.c")] + [os.path.join(NATIVE, f) for f in (
-    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c")]
+    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c", "event_context.c", "card_util.c")]
 HEADERS = [os.path.join(NATIVE, f) for f in ("mem.h", "engine.h")]
 DEFAULT_HARNESS = os.path.join(HERE, "build", "harness")
 CFLAGS = ["-std=c99", "-O1", "-g", "-Wall", "-Wextra"]

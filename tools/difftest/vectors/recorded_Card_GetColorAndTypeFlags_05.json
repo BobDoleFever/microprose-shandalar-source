@@ -27,32 +27,15 @@
    "bytes": "10"
   },
   {
+   "addr": "0x0068875d",
+   "bytes": "00"
+  },
+  {
    "addr": "0x0068eee0",
    "bytes": "b5010000"
   }
  ],
- "calls": [
-  {
-   "callee": "0x0048c367",
-   "name": "Card_ColorMaskToColorIndex",
-   "args": [
-    16
-   ],
-   "return": 4,
-   "memory_writes": []
-  },
-  {
-   "callee": "0x004af7bb",
-   "name": "colour_override_F9",
-   "args": [
-    1,
-    4,
-    4
-   ],
-   "return": 4,
-   "memory_writes": []
-  }
- ],
+ "calls": [],
  "memory_out_expected": [],
  "memory_out_exhaustive": true
 }

@@ -31,8 +31,7 @@ LAYOUT = {
                  mode=0x00681EB0, token_base=0x0068F104,
                  f_query=0x0048B81A, f_mana=0x0048CA2A, f_drop=0x0048E251, f_push=0x0048D878,
                  f_clear=0x0048D3BF, f_color=0x004521E2,
-                 c_is_tapped=0x0048A33F, c_mask_to_index=0x0048C367, c_override_f9=0x004AF7BB,
-                 c_find_free=0x004D695B),
+                 c_find_free=0x004D695B, f_remap_f9=0x004AF7BB, f_remap_ff=0x004AF74C),
     "MAGIC": dict(slot=0x006A5F30, master=0x0051AEB8, count=0x006A3F78, objects=0x006FECC0,
                   f_mana=0x00474389, f_clear=0x00474D1E),
 }
@@ -124,7 +123,10 @@ def query(name, card, printed, code, expected, description, recompute_bit=0, cac
     mi.u32(L["depth"], 0)                 # not inside an event: no context push, no card scan
     mi.u32(slot(L, 0, s, 0x04), card)
     mi.u8(master(L, card, 0x06), printed.get("colour", GREEN))
-    mi.u32(slot(L, 0, s, 0x0C), 0x882)    # "0x882 = permanent in play untapped"
+    mi.u32(slot(L, 0, s, 0x0C), 0x882)    # "0x882 = permanent in play": Card_IsInPlay is true for it, tapped or not
+    # Because it is in play, a toughness query (0x33) reads the card's type byte and the slot's damage field.
+    mi.u8(master(L, card, 0x04), printed.get("type", 0x01 if card == FOREST else 0x02))
+    mi.u16(slot(L, 0, s, 0x10), 0)        # damage field: 0, so the toughness never trips the death check
     abilities2 = recompute_bit << 24
     mi.u32(slot(L, 0, s, 0x3C), abilities2)
     if extra_in:
@@ -142,9 +144,7 @@ def query(name, card, printed, code, expected, description, recompute_bit=0, cac
     return vector(
         "Magic_QueryCardAttribute", "DUEL", L["f_query"], description,
         f"{DOC}, `Magic_QueryCardAttribute` codes (emulator){source_note}",
-        [0, s, code, -1], expected, mi, mo,
-        calls=[{"callee": f"0x{L['c_is_tapped']:08x}", "name": "Duel_CardIsTapped", "args": [0, s],
-                "return": 0}])
+        [0, s, code, -1], expected, mi, mo)
 
 
 def power_inputs(card, power, cache, recompute, modifier=0):
@@ -253,7 +253,7 @@ def main(out=None):
 
     # ---------------------------------------------------------------------------------------------
     # Card_GetColorAndTypeFlags: "green creatures return 0x2000, Forest 0, sorceries 0x102000,
-    # Aspect of Wolf 0x22000". The two callees are replayed with the values their bodies give.
+    # Aspect of Wolf 0x22000". The colour-mask lookup and the colour remap are native; the remap byte is given as 0.
     L = LAYOUT["DUEL"]
     for name, card, type_byte, mask, index, ret in [
             ("green_creature_elves", ELVES, 0x02, GREEN, 3, 0x2000),
@@ -266,18 +266,29 @@ def main(out=None):
         mi.u8(master(L, card, 0x04), type_byte)
         mi.u8(slot(L, 0, 5, 0x1D), mask)
         illustrative = card >= 400 or name == "forest"
-        calls = [
-            {"callee": f"0x{L['c_mask_to_index']:08x}", "name": "Duel_ColorMaskToIndex", "args": [mask],
-             "return": index},
-            {"callee": f"0x{L['c_override_f9']:08x}", "name": "Duel_GetCardColorOverride",
-             "args": [0, 5, index], "return": index},       # no override: the index comes back
-        ]
+        mi.u8(slot(L, 0, 5, 0xF9 + index), 0)               # no colour remap for this index: it comes back unchanged
         write(f"color_type_flags_{name}", vector(
             "Card_GetColorAndTypeFlags", "DUEL", L["f_color"],
             f"{name.replace('_', ' ')}: type byte 0x{type_byte:02x}, colour mask 0x{mask:x}, returns 0x{ret:x}"
             + ("; card index and colour mask are illustrative, the result is the doc's" if illustrative else ""),
             f"{DOC}, spell-chain window family table (`Card_GetColorAndTypeFlags`, synthetic)",
-            [0, 5], ret, mi, Snapshot(), calls))
+            [0, 5], ret, mi, Snapshot()))
+
+
+    # ---------------------------------------------------------------------------------------------
+    # The two colour-remap lookups (Card_RemapColorIndexF9 / FF): the byte at slot + 0xf9 (or 0xff) + index,
+    # as a signed char, if it is non-zero, else the index. No recorded game ever had a non-zero byte (and the
+    # FF lookup was never called), so these cases come from the decompiled body, not from a run: synthetic.
+    L = LAYOUT["DUEL"]
+    for fn, table, key in (("Card_RemapColorIndexF9", 0xF9, "f_remap_f9"), ("Card_RemapColorIndexFF", 0xFF, "f_remap_ff")):
+        for label, byte, index, ret in [("no_remap", 0x00, 3, 3), ("remapped", 0x04, 3, 4), ("negative_byte", 0xFF, 2, -1)]:
+            mi = Snapshot()
+            mi.u8(slot(L, 0, 5, table + index), byte)
+            write(f"{fn.lower()}_{label}", vector(
+                fn, "DUEL", L[key],
+                f"Remap byte at slot + 0x{table:x} + {index} is 0x{byte:02x}: returns {ret}"
+                + (" (the index comes back unchanged)" if byte == 0 else " (the byte as a signed char)"),
+                f"{DOC}, round 6 (`{fn}`; synthetic, decompiled body)", [0, 5, index], ret, mi, Snapshot()))
 
     # ---------------------------------------------------------------------------------------------
     # Spell stack (DUEL.EXE). "Play a Forest: PushSpellStack(0, 2, 113, 0, 0)", "Cast Llanowar Elves,

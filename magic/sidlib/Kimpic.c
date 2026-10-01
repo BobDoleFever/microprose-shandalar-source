@@ -2796,7 +2796,7 @@ undefined4 Pic_Subsystem_00428320(int player,int card_slot,int arg_3)
                     && (((&g_MasterCardColorTable)[iVar4 * 0x34] & 2) != 0)) &&
                    (((&g_CardSlot_Abilities2)[local_c * 0x120 + g_CurrentTurnPhase * 0x5b20] & 0x20)
                     == 0)))) &&
-                 (((iVar5 = g_CurrentTurnPhase * 0x5b20, cVar2 = Card_UntapCard(player, card_slot, 2),
+                 (((iVar5 = g_CurrentTurnPhase * 0x5b20, cVar2 = Card_RemapColorIndexFF(player, card_slot, 2),
                    (*(uint *)(&g_CardSlot_Abilities2 + local_c * 0x120 + iVar5) &
                    1 << (cVar2 - 1U & 0x1f)) == 0 && ((&DAT_0051aebd)[iVar4 * 0x34] == '\0')) &&
                   (((&DAT_006a5f69)[local_c * 0x120 + g_CurrentTurnPhase * 0x5b20] & 8) == 0)))) {
@@ -2825,7 +2825,7 @@ undefined4 Pic_Subsystem_00428320(int player,int card_slot,int arg_3)
         if (iVar4 != -1) {
           *(uint *)(&g_CardSlot_Abilities1 + iVar4 * 0x120 + player * 0x5b20) =
                *(uint *)(&g_CardSlot_Abilities1 + iVar4 * 0x120 + player * 0x5b20) | 0x400020;
-          cVar2 = Card_UntapCard(player, card_slot, 2);
+          cVar2 = Card_RemapColorIndexFF(player, card_slot, 2);
           *(uint *)(&g_CardSlot_ConvertedManaCost + iVar4 * 0x120 + player * 0x5b20) =
                1 << (cVar2 - 1U & 0x1f) | 0x20;
           if (((&g_CardSlot_Abilities1)[card_slot * 0x120 + player * 0x5b20] & 2) != 0) {
@@ -2871,7 +2871,7 @@ undefined4 Pic_Subsystem_0042881e(int player,int card_slot,int arg_3)
   }
   else {
     if (arg_3 == 0x71) {
-      iVar2 = Card_UntapCard(player,card_slot,1);
+      iVar2 = Card_RemapColorIndexFF(player,card_slot,1);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120) = iVar2;
@@ -2899,7 +2899,7 @@ undefined4 Pic_Subsystem_0042881e(int player,int card_slot,int arg_3)
     if ((int)(char)(&DAT_006a6030)[player * 0x5b20 + card_slot * 0x120] !=
         *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120)) {
       Mem_AllocOrFree_0041d942(*(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120));
-      iVar2 = Card_UntapCard(player,card_slot,1);
+      iVar2 = Card_RemapColorIndexFF(player,card_slot,1);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120) = iVar2;
@@ -2924,15 +2924,15 @@ undefined4 Pic_Subsystem_0042881e(int player,int card_slot,int arg_3)
              1;
       }
     }
-    if ((arg_3 == 0x3c) && (iVar2 = Card_IsTapped(player,card_slot), iVar2 != 0)) {
+    if ((arg_3 == 0x3c) && (iVar2 = Card_IsInPlay(player,card_slot), iVar2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (((iVar2 != 0) &&
             (iVar3 = g_EventSourceSlot * 0x120, iVar4 = g_EventSourcePlayer * 0x5b20,
-            iVar2 = Card_UntapCard(player,card_slot,1),
+            iVar2 = Card_RemapColorIndexFF(player,card_slot,1),
             *(int *)(&g_CardSlot_CardId + iVar4 + iVar3) == iVar2 + -1)) &&
            ((((&g_CardSlot_Flags)[player * 0x5b20 + card_slot * 0x120] & 0x10) == 0 ||
             (((&g_MasterCardColorTable)
@@ -2973,7 +2973,7 @@ undefined4 Pic_Subsystem_00428d5a(int player,int card_slot,int arg_3)
   }
   else {
     if (arg_3 == 0x71) {
-      iVar2 = Card_UntapCard(player,card_slot,3);
+      iVar2 = Card_RemapColorIndexFF(player,card_slot,3);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120) = iVar2;
@@ -3001,7 +3001,7 @@ undefined4 Pic_Subsystem_00428d5a(int player,int card_slot,int arg_3)
     if ((int)(char)(&DAT_006a6032)[player * 0x5b20 + card_slot * 0x120] !=
         *(int *)(&g_CardSlot_ConvertedManaCost + player * 0x5b20 + card_slot * 0x120)) {
       Mem_AllocOrFree_0041d942(*(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120));
-      iVar2 = Card_UntapCard(player,card_slot,3);
+      iVar2 = Card_RemapColorIndexFF(player,card_slot,3);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120) = iVar2;
@@ -3026,15 +3026,15 @@ undefined4 Pic_Subsystem_00428d5a(int player,int card_slot,int arg_3)
              1;
       }
     }
-    if ((arg_3 == 0x3c) && (iVar2 = Card_IsTapped(player,card_slot), iVar2 != 0)) {
+    if ((arg_3 == 0x3c) && (iVar2 = Card_IsInPlay(player,card_slot), iVar2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if ((iVar2 != 0) &&
            (iVar3 = g_EventSourceSlot * 0x120, iVar4 = g_EventSourcePlayer * 0x5b20,
-           iVar2 = Card_UntapCard(player,card_slot,3),
+           iVar2 = Card_RemapColorIndexFF(player,card_slot,3),
            *(int *)(&g_CardSlot_CardId + iVar4 + iVar3) == iVar2 + -1)) {
           g_CardEventResult = *(undefined4 *)(&g_CardSlot_Controller + player * 0x5b20 + card_slot * 0x120)
           ;
@@ -3420,14 +3420,14 @@ void Pic_Subsystem_0042a0d6(int player,int card_slot,int arg_3)
   int iVar2;
   
   if (((arg_3 == 0x7f) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
-    iVar1 = Card_SetTapState(player, card_slot, 5);
+    iVar1 = Card_RemapColorIndexF9(player, card_slot, 5);
     *(int *)(&DAT_006330d0 + iVar1 * 4) = *(int *)(&DAT_006330d0 + iVar1 * 4) + 3;
   }
   if ((((arg_3 != 0x74) && ((arg_3 == 0x6c || (arg_3 == 199)))) && (g_EventSourceSlot == card_slot)) &&
      (g_EventSourcePlayer == player)) {
-    iVar1 = Card_SetTapState(player, card_slot, 5);
+    iVar1 = Card_RemapColorIndexF9(player, card_slot, 5);
     iVar1 = *(int *)(&DAT_0063ee30 + iVar1 * 4 + (1 - player) * 0x20);
-    iVar2 = Card_SetTapState(player, card_slot, 5);
+    iVar2 = Card_RemapColorIndexF9(player, card_slot, 5);
     g_SpellStackDepth =
          g_SpellStackDepth +
          ((iVar1 + *(int *)(&DAT_0063ee30 + iVar2 * 4 + player * 0x20) * -2) * 3 + 3) * 4;
@@ -3877,7 +3877,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
          g_EventSourceSlot &&
         ((((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)) &&
-         (iVar5 = Card_IsTapped(spell_id,target_id), iVar5 != 0)))))) {
+         (iVar5 = Card_IsInPlay(spell_id,target_id), iVar5 != 0)))))) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
       *(uint *)(&g_CardSlot_Abilities1 +
@@ -3920,7 +3920,7 @@ undefined4 Pic_Subsystem_0042b5f5(int player,int card_slot,int arg_3)
       Glue_Subsystem_004e65e1(Pic_Subsystem_0042baae,-1);
     }
     if ((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      iVar3 = Card_IsTapped(player,card_slot);
+      iVar3 = Card_IsInPlay(player,card_slot);
       if ((iVar3 != 0) &&
          ((g_EventSourceSlot != -1 &&
           (((&g_MasterCardColorTable)[g_CardEventResult * 0x34] & 0x42) == 0x40)))) {
@@ -6487,7 +6487,7 @@ undefined4 Pic_Subsystem_004316cc(int player,int card_slot,int arg_3)
   int iVar4;
   
   if ((arg_3 == 199) && (((&g_CardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 2) != 0)) {
-    iVar1 = Card_UntapCard(player,card_slot,1);
+    iVar1 = Card_RemapColorIndexFF(player,card_slot,1);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + g_CurrentTurnPhase * 0x20) != 0) {
       iVar1 = 0x18 - (int)(&g_PlayerCreatureCount)[g_CurrentTurnPhase] /
                      *(int *)(&DAT_0063ee30 + iVar1 * 4 + g_CurrentTurnPhase * 0x20);
@@ -6496,7 +6496,7 @@ undefined4 Pic_Subsystem_004316cc(int player,int card_slot,int arg_3)
       }
       g_SpellStackDepth = g_SpellStackDepth + iVar1 * 0x18;
     }
-    iVar1 = Card_UntapCard(player,card_slot,1);
+    iVar1 = Card_RemapColorIndexFF(player,card_slot,1);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + g_ActivePlayerPriority * 0x20) != 0) {
       iVar1 = 0x18 - (int)(&g_PlayerCreatureCount)[g_ActivePlayerPriority] /
                      *(int *)(&DAT_0063ee30 + iVar1 * 4 + g_ActivePlayerPriority * 0x20);
@@ -6513,7 +6513,7 @@ undefined4 Pic_Subsystem_004316cc(int player,int card_slot,int arg_3)
     if (((g_ScWillyScore == 4) &&
         (((&g_CardSlot_ConvertedManaCost)[card_slot * 0x120 + player * 0x5b20] & 1) == 0)) &&
        ((g_TurnPlayer == DAT_0063edc0 &&
-        (iVar1 = Card_UntapCard(player,card_slot,1),
+        (iVar1 = Card_RemapColorIndexFF(player,card_slot,1),
         *(int *)(&DAT_0063ee30 + iVar1 * 4 + DAT_0063edc0 * 0x20) != 0)))) {
       *(uint *)(&g_CardSlot_SpecialState + card_slot * 0x120 + player * 0x5b20) =
            *(uint *)(&g_CardSlot_SpecialState + card_slot * 0x120 + player * 0x5b20) | 0x101;
@@ -6532,7 +6532,7 @@ undefined4 Pic_Subsystem_004316cc(int player,int card_slot,int arg_3)
     if (arg_3 == 0x86) {
       iVar1 = player;
       iVar4 = card_slot;
-      iVar3 = Card_UntapCard(player,card_slot,1);
+      iVar3 = Card_RemapColorIndexFF(player,card_slot,1);
       Mem_AllocOrFree_0041df33
                 (g_TurnPlayer,*(int *)(&DAT_0063ee30 + iVar3 * 4 + g_TurnPlayer * 0x20),
                  iVar1,iVar4);
@@ -6543,7 +6543,7 @@ undefined4 Pic_Subsystem_004316cc(int player,int card_slot,int arg_3)
     }
     if (arg_3 == 199) {
       iVar1 = 1 - g_TurnPlayer;
-      iVar4 = Card_UntapCard(player,card_slot,1);
+      iVar4 = Card_RemapColorIndexFF(player,card_slot,1);
       Mem_AllocOrFree_0041df33(iVar1,*(int *)(&DAT_0063ee30 + iVar4 * 4 + iVar1 * 0x20),player,card_slot)
       ;
     }
@@ -6650,7 +6650,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
         *(undefined4 *)(&g_CardSlot_OriginalCardId + target_id * 0x120 + spell_id * 0x5b20) =
              *(undefined4 *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         *(undefined4 *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) = 1;
-        iVar2 = Card_UntapCard(spell_id,target_id,
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,
                              *(int *)(&g_CardSlot_ConvertedManaCost +
                                      target_id * 0x120 + spell_id * 0x5b20));
         *(int *)(&g_CardSlot_CardId +
@@ -6673,8 +6673,8 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
           g_EventSourceSlot &&
          (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)))))) &&
-       (iVar2 = Card_IsTapped(spell_id,target_id), iVar2 != 0)) {
-      iVar2 = Card_UntapCard(spell_id,target_id,
+       (iVar2 = Card_IsInPlay(spell_id,target_id), iVar2 != 0)) {
+      iVar2 = Card_RemapColorIndexFF(spell_id,target_id,
                            *(int *)(&g_CardSlot_ConvertedManaCost +
                                    target_id * 0x120 + spell_id * 0x5b20));
       g_CardEventResult = iVar2 + -1;
@@ -7283,14 +7283,14 @@ undefined4 Pic_Subsystem_00433232(int player,int card_slot,int arg_3)
     if ((arg_3 == 0x81) && (g_EventSourcePlayer != player)) {
       iVar3 = *(int *)(&g_CardSlot_CardId +
                       g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120);
-      iVar2 = Card_UntapCard(player,card_slot,3);
+      iVar2 = Card_RemapColorIndexFF(player,card_slot,3);
       if (*(int *)(&g_MasterCardTypeTable + iVar3 * 0x34) == *(int *)(&DAT_006ff2bc + iVar2 * 4)) {
         (&g_PlayerCreatureCount)[player] = (&g_PlayerCreatureCount)[player] + 1;
       }
     }
     if ((((arg_3 == 0x6c) || (arg_3 == 199)) && (g_EventSourceSlot == card_slot)) &&
        (g_EventSourcePlayer == player)) {
-      iVar3 = Card_UntapCard(player,card_slot,3);
+      iVar3 = Card_RemapColorIndexFF(player,card_slot,3);
       g_SpellStackDepth =
            g_SpellStackDepth +
            (*(int *)(&DAT_0063ee30 + iVar3 * 4 + g_CurrentTurnPhase * 0x20) * 3 + 3) * 8;
@@ -7360,7 +7360,7 @@ undefined4 Pic_Subsystem_00433466(int player,int card_slot,int arg_3)
                 (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)
         & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player,card_slot,2);
+      bVar2 = Card_RemapColorIndexF9(player,card_slot,2);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -7410,7 +7410,7 @@ undefined4 Pic_Subsystem_0043361c(int player,int card_slot,int arg_3)
                 (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)
         & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player,card_slot,1);
+      bVar2 = Card_RemapColorIndexF9(player,card_slot,1);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -7481,7 +7481,7 @@ undefined4 Pic_Subsystem_004336f8(int player,int card_slot,int arg_3)
                   (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120
                   ) & 0x22) == 2 &&
          (cVar1 = (&DAT_006a5f4c)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-         bVar3 = Card_SetTapState(player, card_slot, 5), (1 << (bVar3 & 0x1f) & (int)cVar1) != 0)))))) {
+         bVar3 = Card_RemapColorIndexF9(player, card_slot, 5), (1 << (bVar3 & 0x1f) & (int)cVar1) != 0)))))) {
       if (arg_3 == 0x32) {
         g_CardEventResult = g_CardEventResult + 2;
       }
@@ -7495,7 +7495,7 @@ undefined4 Pic_Subsystem_004336f8(int player,int card_slot,int arg_3)
       iVar5 = 1 - player;
       bVar3 = (&g_CardSlot_ConvertedManaCost)[card_slot * 0x120 + player * 0x5b20];
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[iVar5]; local_c = local_c + 1) {
-        iVar6 = Card_IsTapped(iVar5,local_c);
+        iVar6 = Card_IsInPlay(iVar5,local_c);
         if (((iVar6 != 0) &&
             (((&g_MasterCardColorTable)
               [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + iVar5 * 0x5b20) * 0x34] & 0x1e) != 0)
@@ -7575,7 +7575,7 @@ undefined4 Pic_Subsystem_00433b83(int player,int card_slot,int arg_3)
                    (&g_CardSlot_Flags +
                    g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player, card_slot, 5);
+      bVar2 = Card_RemapColorIndexF9(player, card_slot, 5);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -7679,12 +7679,12 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
        ((g_EventSourceSlot != -1 &&
         (((&g_CardSlot_Flags)[spell_id * 0x5b20 + target_id * 0x120] & 0x20) == 0)))) {
       if (flags == 0x32) {
-        iVar2 = Card_UntapCard(spell_id,target_id,3);
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult =
              g_CardEventResult + *(int *)(&DAT_0063ee30 + iVar2 * 4 + spell_id * 0x20) / 2;
       }
       if (flags == 0x33) {
-        iVar2 = Card_UntapCard(spell_id,target_id,3);
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult =
              g_CardEventResult + (*(int *)(&DAT_0063ee30 + iVar2 * 4 + spell_id * 0x20) + 1) / 2;
       }
@@ -9260,7 +9260,7 @@ undefined4 Pic_Subsystem_00437ac2(int spell_id,int target_id,int flags)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(spell_id,target_id,1);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,1);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -9369,7 +9369,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(spell_id,target_id,5);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,5);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -9644,7 +9644,7 @@ undefined4 Pic_Subsystem_00438995(int player,int card_slot,int arg_3)
     }
     if (arg_3 == 0x82) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player,card_slot,2);
+      bVar2 = Card_RemapColorIndexF9(player,card_slot,2);
       if (((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -9665,7 +9665,7 @@ undefined4 Pic_Subsystem_00438995(int player,int card_slot,int arg_3)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 2) != 0
          )))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player,card_slot,2);
+      bVar2 = Card_RemapColorIndexF9(player,card_slot,2);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         *(uint *)(&g_CardSlot_SpecialState +
                  g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) =
@@ -9678,7 +9678,7 @@ undefined4 Pic_Subsystem_00438995(int player,int card_slot,int arg_3)
     }
     if (arg_3 == 0x6c) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(player,card_slot,2);
+      bVar2 = Card_RemapColorIndexF9(player,card_slot,2);
       if (((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -9930,7 +9930,7 @@ undefined4 Pic_Subsystem_00439408(int player,int card_slot,int arg_3)
              *(uint *)(&DAT_006a6038 + local_10 * 0x5b20 + local_c * 0x120) | 2;
         for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[g_TurnPlayer];
             local_8 = local_8 + 1) {
-          iVar2 = Card_IsTapped(g_TurnPlayer,local_8);
+          iVar2 = Card_IsInPlay(g_TurnPlayer,local_8);
           if (((iVar2 != 0) &&
               (((&g_CardSlot_Flags)[local_8 * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) != 0)) &&
              ((((&g_MasterCardColorTable)
@@ -9977,7 +9977,7 @@ undefined4 Pic_Subsystem_004397e3(int player,int card_slot,int arg_3)
       *(undefined4 *)(&g_CardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20) = 0;
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[g_TurnPlayer];
           local_c = local_c + 1) {
-        iVar2 = Card_IsTapped(g_TurnPlayer,local_c);
+        iVar2 = Card_IsInPlay(g_TurnPlayer,local_c);
         if (((iVar2 != 0) &&
             (((&g_CardSlot_Flags)[local_c * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) == 0)) &&
            (((&g_MasterCardColorTable)
@@ -10022,7 +10022,7 @@ undefined4 Pic_Subsystem_004397e3(int player,int card_slot,int arg_3)
         local_8 = 0;
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[1 - g_TurnPlayer];
             local_c = local_c + 1) {
-          iVar2 = Card_IsTapped(1 - g_TurnPlayer,local_c);
+          iVar2 = Card_IsInPlay(1 - g_TurnPlayer,local_c);
           if (((iVar2 != 0) &&
               (((&g_CardSlot_Flags)[local_c * 0x120 + (1 - g_TurnPlayer) * 0x5b20] & 0x10) == 0
               )) && (((&g_MasterCardColorTable)
@@ -10124,7 +10124,7 @@ void Pic_Subsystem_00439d8b(int spell_id,int target_id,int flags)
      (g_EventSourcePlayer == spell_id)) {
     Pic_Subsystem_00424500(s_prompts_txt_0052167c,s_BURROWING_00521670);
   }
-  cVar1 = Card_UntapCard(spell_id,target_id,4);
+  cVar1 = Card_RemapColorIndexFF(spell_id,target_id,4);
   Pic_Subsystem_0043b7c9(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -10838,7 +10838,7 @@ undefined4 Pic_Subsystem_0043b424(int player,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar5 = Card_IsTapped(local_8,local_c);
+          iVar5 = Card_IsInPlay(local_8,local_c);
           if ((iVar5 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -10914,7 +10914,7 @@ void Pic_Subsystem_0043b74e(int spell_id,int target_id,int flags)
      (g_EventSourcePlayer == spell_id)) {
     Pic_Subsystem_00424500(s_prompts_txt_0052171c,s_FISHLIVEROIL_0052170c);
   }
-  cVar1 = Card_UntapCard(spell_id,target_id,2);
+  cVar1 = Card_RemapColorIndexFF(spell_id,target_id,2);
   Pic_Subsystem_0043b7c9(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -11322,7 +11322,7 @@ void Pic_Subsystem_0043c174(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,1);
+  height = Card_RemapColorIndexF9(player,card_slot,1);
   Pic_Subsystem_0043c287(player,card_slot,arg_3,height);
   return;
 }
@@ -11341,7 +11341,7 @@ void Pic_Subsystem_0043c1ab(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,3);
+  height = Card_RemapColorIndexF9(player,card_slot,3);
   Pic_Subsystem_0043c287(player,card_slot,arg_3,height);
   return;
 }
@@ -11360,7 +11360,7 @@ void Pic_Subsystem_0043c1e2(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,2);
+  height = Card_RemapColorIndexF9(player,card_slot,2);
   Pic_Subsystem_0043c287(player,card_slot,arg_3,height);
   return;
 }
@@ -11379,7 +11379,7 @@ void Pic_Subsystem_0043c219(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,4);
+  height = Card_RemapColorIndexF9(player,card_slot,4);
   Pic_Subsystem_0043c287(player,card_slot,arg_3,height);
   return;
 }
@@ -11398,7 +11398,7 @@ void Pic_Subsystem_0043c250(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player, card_slot, 5);
+  height = Card_RemapColorIndexF9(player, card_slot, 5);
   Pic_Subsystem_0043c287(player,card_slot,arg_3,height);
   return;
 }
@@ -11532,7 +11532,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
          ((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
           g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) &&
        ((((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0 &&
-        (height = Card_SetTapState(spell_id,target_id,height), flags == 0x34)))) {
+        (height = Card_RemapColorIndexF9(spell_id,target_id,height), flags == 0x34)))) {
       g_CardEventResult = g_CardEventResult | 0x800 << ((char)height - 1U & 0x1f);
     }
     if (((flags == 0x6c) &&
@@ -11968,7 +11968,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
     if ((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
         (g_EventSourceSlot == target_id)) &&
        ((g_EventSourcePlayer == spell_id &&
-        (iVar6 = Card_IsTapped(spell_id,target_id), iVar6 != 0)))) {
+        (iVar6 = Card_IsInPlay(spell_id,target_id), iVar6 != 0)))) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
     }
@@ -12405,7 +12405,7 @@ undefined4 Pic_Subsystem_0043e79c(int player,int card_slot,int arg_3)
       iVar6 = Pic_Subsystem_00451291(player,iVar6);
       if (iVar6 != -1) {
         Pic_Subsystem_0042ac1f(player,iVar6);
-        cVar2 = Card_SetTapState(player,card_slot,1);
+        cVar2 = Card_RemapColorIndexF9(player,card_slot,1);
         (&DAT_006a5f4d)[iVar6 * 0x120 + player * 0x5b20] = (char)(2 << (cVar2 - 1U & 0x1f));
         *(uint *)(&g_CardSlot_Abilities1 + iVar6 * 0x120 + player * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities1 + iVar6 * 0x120 + player * 0x5b20) | 0x10;
@@ -12438,7 +12438,7 @@ undefined4 Pic_Subsystem_0043e79c(int player,int card_slot,int arg_3)
                 '\x04' &&
                (cVar2 = (&DAT_006a5f4d)
                         [g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-               cVar3 = Card_SetTapState(player,card_slot,1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
+               cVar3 = Card_RemapColorIndexF9(player,card_slot,1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
              )) {
       Glue_Subsystem_004e66b3(player,card_slot);
     }
@@ -12921,7 +12921,7 @@ void Pic_Subsystem_0043fd7b(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,1);
+  height = Card_RemapColorIndexF9(player,card_slot,1);
   Pic_Subsystem_0043fe8e(player,card_slot,arg_3,height);
   return;
 }
@@ -12940,7 +12940,7 @@ void Pic_Subsystem_0043fdb2(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player, card_slot, 5);
+  height = Card_RemapColorIndexF9(player, card_slot, 5);
   Pic_Subsystem_0043fe8e(player,card_slot,arg_3,height);
   return;
 }
@@ -12959,7 +12959,7 @@ void Pic_Subsystem_0043fde9(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,4);
+  height = Card_RemapColorIndexF9(player,card_slot,4);
   Pic_Subsystem_0043fe8e(player,card_slot,arg_3,height);
   return;
 }
@@ -12978,7 +12978,7 @@ void Pic_Subsystem_0043fe20(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,2);
+  height = Card_RemapColorIndexF9(player,card_slot,2);
   Pic_Subsystem_0043fe8e(player,card_slot,arg_3,height);
   return;
 }
@@ -12997,7 +12997,7 @@ void Pic_Subsystem_0043fe57(int player,int card_slot,int arg_3)
 {
   int height;
   
-  height = Card_SetTapState(player,card_slot,3);
+  height = Card_RemapColorIndexF9(player,card_slot,3);
   Pic_Subsystem_0043fe8e(player,card_slot,arg_3,height);
   return;
 }
@@ -13324,7 +13324,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
           g_EventSourceSlot &&
          (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)))))) &&
-       (iVar2 = Card_IsTapped(spell_id,target_id), iVar2 != 0)) {
+       (iVar2 = Card_IsInPlay(spell_id,target_id), iVar2 != 0)) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
     }
@@ -13377,14 +13377,14 @@ undefined4 Pic_Subsystem_00440b49(int player,int card_slot,int arg_3)
       Pic_Subsystem_0044867e(g_DialogPromptHwnd,g_DuelArenaHwnd,1);
     }
     if ((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      iVar2 = Card_IsTapped(player,card_slot);
+      iVar2 = Card_IsInPlay(player,card_slot);
       if (iVar2 != 0) {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (iVar2 != 0) {
-          iVar2 = Card_UntapCard(player,card_slot,4);
+          iVar2 = Card_RemapColorIndexFF(player,card_slot,4);
           if (*(int *)(&DAT_006ff2bc + iVar2 * 4) ==
               *(int *)(&g_MasterCardTypeTable + g_CardEventResult * 0x34)) {
-            iVar2 = Card_UntapCard(player,card_slot,
+            iVar2 = Card_RemapColorIndexFF(player,card_slot,
                                  *(int *)(&g_CardSlot_ConvertedManaCost +
                                          card_slot * 0x120 + player * 0x5b20));
             g_CardEventResult = iVar2 + -1;
@@ -13663,7 +13663,7 @@ undefined4 Pic_Subsystem_004414dc(int player,int card_slot,int arg_3)
           iVar5 = -1;
           iVar3 = -1;
           uVar4 = 0;
-          bVar1 = Card_SetTapState(player,card_slot,1);
+          bVar1 = Card_RemapColorIndexF9(player,card_slot,1);
           iVar3 = Rules_ParseFilter_0040360b
                             (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,player,2,2,0,0,0,0,0,
                              1 << (bVar1 & 0x1f),uVar4,iVar3,iVar5,uVar6,uVar7,uVar8,uVar9,uVar10);
@@ -13689,7 +13689,7 @@ undefined4 Pic_Subsystem_004414dc(int player,int card_slot,int arg_3)
         iVar5 = -1;
         iVar3 = -1;
         uVar4 = 0;
-        bVar1 = Card_SetTapState(player,card_slot,1);
+        bVar1 = Card_RemapColorIndexF9(player,card_slot,1);
         iVar3 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
                            *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20),
@@ -13756,7 +13756,7 @@ undefined4 Pic_Subsystem_0044178f(int player,int card_slot,int arg_3)
           iVar5 = -1;
           iVar3 = -1;
           uVar4 = 0;
-          bVar1 = Card_SetTapState(player,card_slot,3);
+          bVar1 = Card_RemapColorIndexF9(player,card_slot,3);
           iVar3 = Rules_ParseFilter_0040360b
                             (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,player,2,2,0,0,0,0,0,
                              1 << (bVar1 & 0x1f),uVar4,iVar3,iVar5,uVar6,uVar7,uVar8,uVar9,uVar10);
@@ -13782,7 +13782,7 @@ undefined4 Pic_Subsystem_0044178f(int player,int card_slot,int arg_3)
         iVar5 = -1;
         iVar3 = -1;
         uVar4 = 0;
-        bVar1 = Card_SetTapState(player,card_slot,3);
+        bVar1 = Card_RemapColorIndexF9(player,card_slot,3);
         iVar3 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + card_slot * 0x120 + player * 0x5b20),
                            *(int *)(&g_CardSlot_AttachedAura + card_slot * 0x120 + player * 0x5b20),
@@ -16120,7 +16120,7 @@ int Pic_Subsystem_00447b57(int arg1,int arg2)
   DAT_0063ee88 = 1;
   *(uint *)(&g_CardSlot_Flags + arg2 * 0x120 + arg1 * 0x5b20) =
        *(uint *)(&g_CardSlot_Flags + arg2 * 0x120 + arg1 * 0x5b20) | 0x800;
-  iVar1 = Card_IsTapped(arg1,arg2);
+  iVar1 = Card_IsInPlay(arg1,arg2);
   if (((((iVar1 == 0) || (g_ScWillyScore != 0x15)) || (g_TurnPlayer != arg1)) ||
       ((((&DAT_006a5f3d)[arg2 * 0x120 + arg1 * 0x5b20] & 0x80) == 0 ||
        (((&g_CardSlot_Flags)[arg2 * 0x120 + arg1 * 0x5b20] & 4) != 0)))) ||

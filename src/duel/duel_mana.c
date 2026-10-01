@@ -39,18 +39,18 @@ extern int DAT_0068ee64;
 
 typedef int (*GhidraCall)(void *, ...);
 
-int Duel_ColorMaskToIndex(byte arg_1);
+int Card_ColorMaskToColorIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
-int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexF9(int arg_1, int arg_2, int arg_3);
 
 int Duel_ApplyCombatDamage(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_GetCardModifiedPower(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexFF(int arg_1, int arg_2, int arg_3);
 int Duel_RandomRange(int arg_1);
 
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
-bool Duel_CardIsTapped(int arg1, int arg2);
+bool Card_IsInPlay(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
@@ -227,9 +227,9 @@ int Mem_AllocOrFree_0050f740();
 uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
-int FUN_0048cb7f();
+int Magic_PopEventContext();
 int Magic_IsManaSource();
-int FUN_0048cac9();
+int Magic_PushEventContext();
 int FUN_0048caf4();
 int FUN_00432c2a();
 int FUN_00447114();
@@ -276,31 +276,31 @@ uint Card_GetColorAndTypeFlags(int player,int card_slot)
     if (((&g_DuelMasterCardTable)[local_8 * 0x34] & 0x10) == 0) {
       if (((&g_DuelMasterCardTable)[local_8 * 0x34] & 0x20) == 0) {
         if (((&g_DuelMasterCardTable)[local_8 * 0x34] & 8) == 0) {
-          iVar2 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
-          cVar1 = Duel_GetCardColorOverride(player, card_slot, iVar2);
+          iVar2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
+          cVar1 = Card_RemapColorIndexF9(player, card_slot, iVar2);
           uVar3 = 0x800 << (cVar1 - 1U & 0x1f);
         }
         else {
-          iVar2 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
-          cVar1 = Duel_GetCardColorOverride(player, card_slot, iVar2);
+          iVar2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
+          cVar1 = Card_RemapColorIndexF9(player, card_slot, iVar2);
           uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x100000;
         }
       }
       else {
-        iVar2 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
-        cVar1 = Duel_GetCardColorOverride(player, card_slot, iVar2);
+        iVar2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
+        cVar1 = Card_RemapColorIndexF9(player, card_slot, iVar2);
         uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x80000;
       }
     }
     else {
-      iVar2 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
-      cVar1 = Duel_GetCardColorOverride(player, card_slot, iVar2);
+      iVar2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
+      cVar1 = Card_RemapColorIndexF9(player, card_slot, iVar2);
       uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x40000;
     }
   }
   else {
-    iVar2 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
-    cVar1 = Duel_GetCardColorOverride(player, card_slot, iVar2);
+    iVar2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]);
+    cVar1 = Card_RemapColorIndexF9(player, card_slot, iVar2);
     uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x20000;
   }
   return uVar3;
@@ -330,7 +330,7 @@ uint Duel_QueryCardAttribute(int x,int y,int width,undefined4 flags)
   uVar3 = DAT_005ef980;
   DAT_006663e0 = DAT_006663e0 + 1;
   if (DAT_0068eed8 != 0) {
-    FUN_0048cac9();
+    Magic_PushEventContext();
   }
   g_EventSourcePlayer = x;
   g_EventSourceSlot = y;
@@ -376,11 +376,11 @@ uint Duel_QueryCardAttribute(int x,int y,int width,undefined4 flags)
       local_1c = 0;
       for (local_18 = 0; local_18 < 5; local_18 = local_18 + 1) {
         if ((local_8 & 1 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Duel_GetCardModifiedPower(x, y, local_18 + 1);
+          cVar4 = Card_RemapColorIndexFF(x, y, local_18 + 1);
           local_1c = local_1c | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((local_8 & 0x800 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Duel_GetCardColorOverride(x, y, local_18 + 1);
+          cVar4 = Card_RemapColorIndexF9(x, y, local_18 + 1);
           local_1c = local_1c | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
@@ -439,7 +439,7 @@ LAB_0048be41:
     }
   }
   uVar1 = g_CardEventResult;
-  iVar5 = Duel_CardIsTapped(x, y);
+  iVar5 = Card_IsInPlay(x, y);
   if (((iVar5 != 0) && (width == 0x33)) &&
      ((((&g_DuelMasterCardTable)[DAT_00681ecc * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 || ((int)uVar1 <= (int)*(short *)(&DAT_006826d0 + y * 0x120 + x * 0x5b20)))
@@ -448,7 +448,7 @@ LAB_0048be41:
     Pic_Subsystem_004488a0();
   }
   if (DAT_0068eed8 != 0) {
-    FUN_0048cb7f();
+    Magic_PopEventContext();
   }
   if (width == 0x32) {
     *(short *)(&DAT_006826d4 + y * 0x120 + x * 0x5b20) = (short)uVar1;
@@ -562,13 +562,13 @@ bool CardTarget_PromptTargetCreature(int player,uint cost_mask,int card_slot)
 }
 
 /*
- * Decompiled function: Duel_ColorMaskToIndex
+ * Decompiled function: Card_ColorMaskToColorIndex
  * Entry Point: 0048c367
  * Size: 121 bytes
  */
 
 
-undefined4 Duel_ColorMaskToIndex(byte color_mask)
+undefined4 Card_ColorMaskToColorIndex(byte color_mask)
 
 {
   undefined4 uVar1;
@@ -603,13 +603,13 @@ undefined4 Duel_ColorMaskToIndex(byte color_mask)
 }
 
 /*
- * Decompiled function: Duel_GetCardColorOverride
+ * Decompiled function: Card_RemapColorIndexF9
  * Entry Point: 004af7bb
  * Size: 106 bytes
  */
 
 
-int Duel_GetCardColorOverride(int player,int card_slot,int base_color)
+int Card_RemapColorIndexF9(int player,int card_slot,int base_color)
 
 {
   if ((&g_DuelCardSlot_SpecialState)[base_color + player * 0x5b20 + card_slot * 0x120] != '\0') {

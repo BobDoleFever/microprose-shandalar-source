@@ -37,7 +37,8 @@ uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot)
 {
     Mem *m = vm->mem;
     int32_t card = (int32_t)mem_rd32(m, slot_addr(vm, player, slot, SLOT_CARD));
-    uint32_t type_bit, args[3] = {0, 0, 0};
+    uint32_t type_bit;
+    int32_t index;
     uint8_t type;
     int8_t colour;
 
@@ -57,11 +58,8 @@ uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot)
     else
         type_bit = 0;
 
-    args[0] = mem_rd8(m, slot_addr(vm, player, slot, SLOT_COLOR_MASK));
-    args[2] = vm_call(vm, CALLEE_COLOR_MASK_TO_INDEX, 1, args);
-    args[0] = (uint32_t)player;
-    args[1] = (uint32_t)slot;
-    colour = (int8_t)vm_call(vm, CALLEE_COLOR_OVERRIDE_F9, 3, args);
+    index = (int32_t)Native_Card_ColorMaskToColorIndex(mem_rd8(m, slot_addr(vm, player, slot, SLOT_COLOR_MASK)));
+    colour = (int8_t)Native_Card_RemapColorIndexF9(vm, player, slot, index);
     return colour_bit(0x800u, colour) | type_bit;
 }
 
@@ -79,7 +77,7 @@ uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, i
     saved = mem_rd32(m, L->query_saved);
     mem_wr32(m, L->query_counter, mem_rd32(m, L->query_counter) + 1);
     if (mem_rd32(m, L->event_depth) != 0)
-        vm_call(vm, CALLEE_PUSH_EVENT_CONTEXT, 0, args);
+        Native_Magic_PushEventContext(vm);
     mem_wr32(m, L->event_source_player, (uint32_t)player);
     mem_wr32(m, L->event_source_slot, (uint32_t)slot);
     mem_wr32(m, L->event_card_id, mem_rd32(m, SLOT(SLOT_CARD)));
@@ -127,18 +125,10 @@ uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, i
             uint32_t remapped = 0;
             int32_t i;
             for (i = 0; i < 5; i++) {
-                if (local & (1u << (i & 0x1f))) {
-                    args[0] = (uint32_t)player;
-                    args[1] = (uint32_t)slot;
-                    args[2] = (uint32_t)(i + 1);
-                    remapped |= colour_bit(1u, (int8_t)vm_call(vm, CALLEE_COLOR_OVERRIDE_FF, 3, args));
-                }
-                if (local & (0x800u << (i & 0x1f))) {
-                    args[0] = (uint32_t)player;
-                    args[1] = (uint32_t)slot;
-                    args[2] = (uint32_t)(i + 1);
-                    remapped |= colour_bit(0x800u, (int8_t)vm_call(vm, CALLEE_COLOR_OVERRIDE_F9, 3, args));
-                }
+                if (local & (1u << (i & 0x1f)))
+                    remapped |= colour_bit(1u, (int8_t)Native_Card_RemapColorIndexFF(vm, player, slot, i + 1));
+                if (local & (0x800u << (i & 0x1f)))
+                    remapped |= colour_bit(0x800u, (int8_t)Native_Card_RemapColorIndexF9(vm, player, slot, i + 1));
             }
             local = (current & 0x7000000u) | (printed & 0xffe007e0u) | remapped;
         }
@@ -208,8 +198,7 @@ uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, i
     /* A tapped creature whose toughness no longer exceeds the damage field is marked (0x33 only). */
     args[0] = (uint32_t)player;
     args[1] = (uint32_t)slot;
-    /* Card_IsTapped returns a bool in AL; the rest of EAX is not part of its result. */
-    if ((uint8_t)vm_call(vm, CALLEE_IS_TAPPED, 2, args) != 0 && event_code == 0x33) {
+    if (Native_Card_IsInPlay(vm, player, slot) != 0 && event_code == 0x33) {
         card = (int32_t)mem_rd32(m, L->event_card_id);
         if ((mem_rd8(m, master_addr(vm, card, MASTER_TYPE)) & 2) != 0 &&
             ((int32_t)result < 1 || (int32_t)result <= (int32_t)rd_s16(vm, SLOT(SLOT_S16_10))) &&
@@ -223,7 +212,7 @@ uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, i
         }
     }
     if (mem_rd32(m, L->event_depth) != 0)
-        vm_call(vm, CALLEE_POP_EVENT_CONTEXT, 0, args);
+        Native_Magic_PopEventContext(vm);
 
     if (event_code == 0x32)
         mem_wr16(m, SLOT(SLOT_POWER_CACHE), (uint16_t)result);

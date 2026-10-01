@@ -119,13 +119,16 @@ def test_unlisted_write_fails_when_exhaustive(tmp_path, harness):
 
 
 def test_call_mismatches(tmp_path, harness):
-    base = load("doc_color_type_flags_green_creature_elves.json")
+    # The stand-in push calls the free-slot finder once; the colour/type-flags vectors no longer have
+    # calls (their helpers are native), so this vector is the one that exercises the call replay.
+    base = load("doc_push_stand_in_object.json")
+    assert len(base["calls"]) == 1
     v = copy.deepcopy(base)
-    v["calls"][1]["args"][2] = 4
+    v["calls"][0]["args"][1] = 0x1C1
     status, messages, _ = run(tmp_path, harness, v)
     assert status == "FAIL" and "args" in messages[0]
     v = copy.deepcopy(base)
-    v["calls"] = v["calls"][:1]
+    v["calls"] = []
     status, messages, _ = run(tmp_path, harness, v)
     assert status == "FAIL" and "unexpected call" in messages[0]
     v = copy.deepcopy(base)

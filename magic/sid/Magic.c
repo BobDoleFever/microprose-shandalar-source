@@ -297,7 +297,7 @@ void Magic_UntapTurnPhase(void)
     (&DAT_006b3008)[local_c] = 0;
     for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_c]; local_10 = local_10 + 1)
     {
-      iVar1 = Card_IsTapped(local_c, local_10);
+      iVar1 = Card_IsInPlay(local_c, local_10);
       if (iVar1 == 0) {
         if (*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_c * 0x5b20) != -1) {
           (&DAT_006b3008)[local_c] = (&DAT_006b3008)[local_c] + 1;
@@ -1428,7 +1428,7 @@ void FUN_00476a80(void)
   
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      iVar1 = Card_IsTapped(local_8,local_c);
+      iVar1 = Card_IsInPlay(local_8,local_c);
       if (iVar1 != 0) {
         *(int *)(&g_CardSlot_SpecialState + local_c * 0x120 + local_8 * 0x5b20) = 0;
       }
@@ -1458,7 +1458,7 @@ void FUN_00476b0e(void)
     for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_8]; local_10 = local_10 + 1)
     {
       if (((&g_CardSlot_SpecialState)[local_10 * 0x120 + local_8 * 0x5b20] & 4) == 0) {
-        iVar1 = Card_IsTapped(local_8,local_10);
+        iVar1 = Card_IsInPlay(local_8,local_10);
         if (iVar1 != 0) {
           for (local_c = 0; local_c < 7; local_c = local_c + 1) {
             (&DAT_006a603c)[local_c + local_8 * 0x5b20 + local_10 * 0x120] = 0;

@@ -2,11 +2,11 @@
  "function": "Magic_PushSpellStack",
  "program": "DUEL",
  "address": "0x0048d878",
- "description": "recorded from DUEL at virtual 119.907s",
+ "description": "recorded from DUEL at virtual 66.899s",
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
   1,
-  8,
+  5,
   114,
   1,
   0
@@ -14,28 +14,28 @@
  "expected_return": 0,
  "memory_in": [
   {
+   "addr": "0x004d99e8",
+   "bytes": "209a4d00"
+  },
+  {
    "addr": "0x0066aaf4",
    "bytes": "01000000"
   },
   {
    "addr": "0x006764b8",
-   "bytes": "02000000"
+   "bytes": "00000000"
   },
   {
    "addr": "0x00681eb0",
    "bytes": "01000000"
   },
   {
-   "addr": "0x00688ae4",
-   "bytes": "03000000"
+   "addr": "0x00688780",
+   "bytes": "dd000000dd00000000000000821441000000ffff01000100000000001010ff000000000000000000ffffffffffffffff00000000100000000000000000000000090000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000"
   },
   {
-   "addr": "0x00688af2",
-   "bytes": "ff"
-  },
-  {
-   "addr": "0x00688b08",
-   "bytes": "ffffffff"
+   "addr": "0x0068eee0",
+   "bytes": "b5010000"
   },
   {
    "addr": "0x0068f230",
@@ -43,30 +43,82 @@
   },
   {
    "addr": "0x0068f2c4",
-   "bytes": "14000000"
+   "bytes": "1e000000"
   }
  ],
- "calls": [],
+ "calls": [
+  {
+   "callee": "0x004d695b",
+   "name": "find_free_slot",
+   "args": [
+    1,
+    437
+   ],
+   "return": 8,
+   "memory_writes": [
+    {
+     "addr": "0x0066640c",
+     "bytes": "09000000"
+    },
+    {
+     "addr": "0x00681f24",
+     "bytes": "08000000"
+    },
+    {
+     "addr": "0x00688ae0",
+     "bytes": "dd000000b501000000000000821441000000ffff01000100000000001010ff0000"
+    },
+    {
+     "addr": "0x00688b04",
+     "bytes": "00000000ffffffffffffffff0000000011000000000000000000000009000000"
+    },
+    {
+     "addr": "0x00688b2c",
+     "bytes": "0000000000000000"
+    },
+    {
+     "addr": "0x00688b38",
+     "bytes": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff010000000500000000000000000000000000000000"
+    },
+    {
+     "addr": "0x00688be8",
+     "bytes": "0000000000000000000000"
+    },
+    {
+     "addr": "0x00688bf4",
+     "bytes": "0000000000000000000000"
+    },
+    {
+     "addr": "0x00690364",
+     "bytes": "01000000"
+    }
+   ]
+  }
+ ],
  "memory_out_expected": [
   {
-   "addr": "0x00666968",
-   "bytes": "14000000"
+   "addr": "0x00666960",
+   "bytes": "1e000000"
   },
   {
    "addr": "0x006764b8",
-   "bytes": "03000000"
+   "bytes": "01000000"
   },
   {
-   "addr": "0x0068efc0",
+   "addr": "0x00688ae0",
+   "bytes": "dd000000b501000000000000821441000000ffff01000100000000001010ff000000000000000000ffffffffffffffff00000000110000000000000000000000090000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff010000000500000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+   "addr": "0x0068efb0",
    "bytes": "0100000008000000ffffffff"
   },
   {
-   "addr": "0x0068f130",
+   "addr": "0x0068f120",
    "bytes": "ffffffffffffffff"
   },
   {
-   "addr": "0x0068f248",
-   "bytes": "03007201"
+   "addr": "0x0068f240",
+   "bytes": "dd007201"
   }
  ],
  "memory_out_exhaustive": true

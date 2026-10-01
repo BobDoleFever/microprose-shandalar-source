@@ -8845,15 +8845,15 @@ undefined4 Palette_Subsystem_004a8111(int player,int card_slot,int arg_3)
       }
       break;
     case 3:
-      bVar1 = Card_SetTapState(player,card_slot,3);
+      bVar1 = Card_RemapColorIndexF9(player,card_slot,3);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 4:
-      bVar1 = Card_SetTapState(player,card_slot,5);
+      bVar1 = Card_RemapColorIndexF9(player,card_slot,5);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 5:
-      bVar1 = Card_SetTapState(player,card_slot,4);
+      bVar1 = Card_RemapColorIndexF9(player,card_slot,4);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 6:
@@ -8881,11 +8881,11 @@ undefined4 Palette_Subsystem_004a8111(int player,int card_slot,int arg_3)
       *(undefined4 *)(&g_CardSlot_Abilities2 + iVar4 * 0x5b20 + iVar5 * 0x120) = 0x8000000;
       break;
     case 10:
-      bVar1 = Card_SetTapState(player,card_slot,1);
+      bVar1 = Card_RemapColorIndexF9(player,card_slot,1);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xb:
-      bVar1 = Card_SetTapState(player,card_slot,2);
+      bVar1 = Card_RemapColorIndexF9(player,card_slot,2);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xc:

@@ -143,8 +143,8 @@ Address,OldName,NewName
 0041c22f,FUN_0041c22f,File_Load_Prompts
 0041c8e1,FUN_0041c8e1,CardScript_EyeForEye
 0041d1ab,FUN_0041d1ab,CardScript_Fissure
-0041d963,FUN_0041d963,Card_UntapCard
-0041d9d2,FUN_0041d9d2,Card_SetTapState
+0041d963,Card_RemapColorIndexFF,Card_RemapColorIndexFF
+0041d9d2,Card_RemapColorIndexF9,Card_RemapColorIndexF9
 0041db67,FUN_0041db67,Card_ApplyCombatDamage
 0041df60,FUN_0041df60,UI_RegisterClass_0041df60
 0041dfe4,FUN_0041dfe4,UI_WndProc_0041dfe4
@@ -684,7 +684,7 @@ Address,OldName,NewName
 00471395,FUN_00471395,GDI_DestroyDIBSection
 00471971,FUN_00471971,Magic_ExecuteTapCardAction
 00471aba,FUN_00471aba,Magic_ExecuteProcessTriggers
-00471c32,FUN_00471c32,Card_IsTapped
+00471c32,Card_IsInPlay,Card_IsInPlay
 00471d16,FUN_00471d16,Magic_ExecuteDeclareBlockersPhase
 00471df6,FUN_00471df6,UI_WndProc_00471df6
 004728c3,FUN_004728c3,Rules_ValidateCardTargetSlot
@@ -693,7 +693,7 @@ Address,OldName,NewName
 00473060,FUN_00473060,Rules_TriggerEndOfTurnPhase
 00473179,FUN_00473179,Magic_QueryCardAttribute
 004738a0,FUN_004738a0,Rules_ResolveSpellEffect
-00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
+00473cc5,Card_ColorMaskToColorIndex,Card_ColorMaskToColorIndex
 00473ce8,FUN_00473ce8,Rules_CalculateColorCost
 00473d09,FUN_00473d09,Rules_GetCardConvertedManaCost
 00473e69,FUN_00473e69,Magic_BroadcastCardEvent
@@ -752,9 +752,9 @@ Address,OldName,NewName
 0048794d,FUN_0048794d,UI_WndProc_0048794d
 00488150,FUN_00488150,File_Load_Prompts
 00489188,FUN_00489188,Pic_Load_Advfac64
-0048a33f,FUN_0048a33f,Duel_CardIsTapped
+0048a33f,Card_IsInPlay,Card_IsInPlay
 0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
-0048c367,FUN_0048c367,Duel_ColorMaskToIndex
+0048c367,Card_ColorMaskToColorIndex,Card_ColorMaskToColorIndex
 0048c72a,FUN_0048c72a,SaveGame_LoadCampaignFile
 0048c907,FUN_0048c907,Magic_TriggerCardEvent
 0048c970,FUN_0048c970,SaveGame_SaveCampaignFile
@@ -992,9 +992,9 @@ Address,OldName,NewName
 004af4fd,Pic_Load_s_WINBK_EndDuel_004af4fd,Pic_Load_WinbkEndduel
 004af5e3,FUN_004af5e3,Ai_FindOptimalSpellTarget
 004af640,FUN_004af640,Ai_EvaluateInstantSpells
-004af74c,FUN_004af74c,Duel_GetCardModifiedPower
+004af74c,Card_RemapColorIndexFF,Card_RemapColorIndexFF
 004af765,FUN_004af765,Ai_ScoreAttackerCombination
-004af7bb,FUN_004af7bb,Duel_GetCardColorOverride
+004af7bb,Card_RemapColorIndexF9,Card_RemapColorIndexF9
 004af950,FUN_004af950,Duel_ApplyCombatDamage
 004afa46,FUN_004afa46,Ai_GetHighestPriorityMove
 004afa69,UI_CreateWindow_004afa69,UI_RegisterClass_004afa69

@@ -86,8 +86,8 @@ Address,OldName,NewName
 0041a6c6,FUN_0041a6c6,UI_WndProc_0041a6c6
 0041bcf0,FUN_0041bcf0,UI_SelectTargetCardDialog
 0041c0ab,FUN_0041c0ab,Rules_ParseFilter_0041c0ab
-0041d963,FUN_0041d963,Card_UntapCard
-0041d9d2,FUN_0041d9d2,Card_SetTapState
+0041d963,Card_RemapColorIndexFF,Card_RemapColorIndexFF
+0041d9d2,Card_RemapColorIndexF9,Card_RemapColorIndexF9
 0041db67,FUN_0041db67,Card_ApplyCombatDamage
 0041de10,FUN_0041de10,Action_PromptTarget_0041de10
 0041e2a2,FUN_0041e2a2,Duel_ChooseTarget
@@ -233,11 +233,11 @@ Address,OldName,NewName
 004707a4,FUN_004707a4,GDI_RealizeAndFlushPalette
 004709ae,FUN_004709ae,GDI_DrawBitmapToHDC
 00471395,FUN_00471395,GDI_DestroyDIBSection
-00471c32,FUN_00471c32,Card_IsTapped
+00471c32,Card_IsInPlay,Card_IsInPlay
 00471df6,FUN_00471df6,UI_WndProc_00471df6
 00472b60,FUN_00472b60,GDI_RealizePaletteTree
 00473179,FUN_00473179,Card_TapForMana
-00473cc5,FUN_00473cc5,Card_ColorMaskToColorIndex
+00473cc5,Card_ColorMaskToColorIndex,Card_ColorMaskToColorIndex
 0047740d,FUN_0047740d,Action_ValidateTarget_0047740d
 0047a090,FUN_0047a090,Sound_PlaySpatialSound
 0047a283,FUN_0047a283,Mem_AllocOrFree_0047a283
@@ -275,9 +275,9 @@ Address,OldName,NewName
 00487924,FUN_00487924,Mem_AllocOrFree_00487924
 0048794d,FUN_0048794d,UI_WndProc_0048794d
 00488150,FUN_00488150,Prompts_Load_00488150
-0048a33f,FUN_0048a33f,Duel_CardIsTapped
+0048a33f,Card_IsInPlay,Card_IsInPlay
 0048b81a,FUN_0048b81a,Duel_QueryCardAttribute
-0048c367,FUN_0048c367,Duel_ColorMaskToIndex
+0048c367,Card_ColorMaskToColorIndex,Card_ColorMaskToColorIndex
 0048c420,FUN_0048c420,Mem_AllocOrFree_0048c420
 0048c907,FUN_0048c907,Magic_TriggerCardEvent
 0048d00c,FUN_0048d00c,Sound_PlayTrackById
@@ -401,8 +401,8 @@ Address,OldName,NewName
 004ae6cc,FUN_004ae6cc,Prompts_Load_004ae6cc
 004aef94,FUN_004aef94,Prompts_Load_004aef94
 004af72b,FUN_004af72b,Mem_AllocOrFree_004af72b
-004af74c,FUN_004af74c,Duel_GetCardModifiedPower
-004af7bb,FUN_004af7bb,Duel_GetCardColorOverride
+004af74c,Card_RemapColorIndexFF,Card_RemapColorIndexFF
+004af7bb,Card_RemapColorIndexF9,Card_RemapColorIndexF9
 004af950,FUN_004af950,Duel_ApplyCombatDamage
 004afd1c,FUN_004afd1c,Mem_AllocOrFree_004afd1c
 004afd50,FUN_004afd50,UI_CreateWindow_004afd50

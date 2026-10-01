@@ -269,8 +269,8 @@ Address,FunctionName,SourceFile,ModuleGroup
 0041d411,FUN_0041d411,unattributed/magic_core.c,unattributed
 0041d8a6,FUN_0041d8a6,unattributed/magic_core.c,unattributed
 0041d942,Mem_AllocOrFree_0041d942,unattributed/magic_core.c,unattributed
-0041d963,FUN_0041d963,unattributed/magic_core.c,unattributed
-0041d9d2,FUN_0041d9d2,unattributed/magic_core.c,unattributed
+0041d963,Card_RemapColorIndexFF,unattributed/magic_core.c,unattributed
+0041d9d2,Card_RemapColorIndexF9,unattributed/magic_core.c,unattributed
 0041da41,FUN_0041da41,unattributed/magic_core.c,unattributed
 0041db67,FUN_0041db67,unattributed/magic_core.c,unattributed
 0041df33,Mem_AllocOrFree_0041df33,unattributed/magic_core.c,unattributed
@@ -784,7 +784,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 00471971,FUN_00471971,unattributed/magic_core.c,unattributed
 00471aba,FUN_00471aba,unattributed/magic_core.c,unattributed
 00471bc0,FUN_00471bc0,unattributed/magic_core.c,unattributed
-00471c32,FUN_00471c32,unattributed/magic_core.c,unattributed
+00471c32,Card_IsInPlay,unattributed/magic_core.c,unattributed
 00471ca4,FUN_00471ca4,unattributed/magic_core.c,unattributed
 00471d16,FUN_00471d16,unattributed/magic_core.c,unattributed
 00472616,FUN_00472616,unattributed/magic_core.c,unattributed
@@ -798,7 +798,7 @@ Address,FunctionName,SourceFile,ModuleGroup
 00472f0c,FUN_00472f0c,unattributed/magic_core.c,unattributed
 00472fae,FUN_00472fae,unattributed/magic_core.c,unattributed
 00473179,Magic_QueryCardAttribute,unattributed/magic_core.c,unattributed
-00473cc5,FUN_00473cc5,unattributed/magic_core.c,unattributed
+00473cc5,Card_ColorMaskToColorIndex,unattributed/magic_core.c,unattributed
 00473d7e,Mem_AllocOrFree_00473d7e,unattributed/magic_core.c,unattributed
 00473d98,FUN_00473d98,unattributed/magic_core.c,unattributed
 00473e69,Magic_BroadcastCardEvent,unattributed/magic_core.c,unattributed

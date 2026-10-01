@@ -658,3 +658,30 @@ name fits and the `MAGIC.EXE` one does not), `Card_UntapCard` / `Duel_GetCardMod
 (`0x00410cc0` / `0x004a2b00`) and `FileIo_ReadStream` / `FileIo_ReadDataBlock` (`0x0048e01d` / `0x00433bb6`). 21
 `MAGIC.EXE` and 20 `DUEL.EXE` index rows still say `FUN_...` for functions their C file already names. None of these was
 changed here.
+
+### Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)
+
+Phase B (`tools/difftest`, `src/native`) gained six small helpers that the first six natives used to *replay* from
+recorded calls: the event-context push and pop, the in-play check, the colour-mask-to-index function and the two
+colour-remap lookups. Each was written from the decompiled body (identical in `MAGIC.EXE` and `DUEL.EXE` apart from
+addresses), then checked against calls recorded from the original running in the emulator
+(`tools/difftest/record_vectors.py`): 974 recorded calls across both scripted games, all passing, with the callers'
+vectors now holding these helpers' reads and writes as their own instead of replayed calls. For the push and pop the
+signedness of the depth compares was read off the real instructions (`jl` and `jle`, signed), not the decompiler's `< 0x20`.
+
+| MAGIC.EXE / DUEL.EXE | Old name | New name | Evidence |
+|---|---|---|---|
+| `0x474428` / `0x48cac9` | `Magic_PushEventContext` / `FUN_0048cac9` | `Magic_PushEventContext` | natural; the `DUEL.EXE` index and source still said `FUN_` |
+| `0x4744de` / `0x48cb7f` | `Magic_PopEventContext` / `FUN_0048cb7f` | `Magic_PopEventContext` | natural, same |
+| `0x473cc5` / `0x48c367` | `Card_ColorMaskToColorIndex` / `Duel_ColorMaskToIndex` | `Card_ColorMaskToColorIndex` | natural: lowest set colour-mask bit among bits 1 to 5 as an index 1 to 5, else 0 |
+| `0x471c32` / `0x48a33f` | `Card_IsTapped` / `Duel_CardIsTapped` | **`Card_IsInPlay`** | natural. It returns 1 for flags `0x30882` and for `0x30892` (the same flags plus the tap bit) and 0 only for cards in the hand or otherwise not in play (`0x800`, `0x1001`, `0x1801`): it ignores tapping. Its formula also requires bit `0x20` clear; that bit never appeared together with bit `0x2` in the recorded games, so that half is static only |
+| `0x41d9d2` / `0x4af7bb` | `Card_SetTapState` / `Duel_GetCardColorOverride` | **`Card_RemapColorIndexF9`** | behaviour natural, meaning static: returns the byte at slot `+0xf9 + index` (as a signed char) if non-zero, else the index. The remap byte was zero in every recorded call, so no real remapping was ever seen |
+| `0x41d963` / `0x4af74c` | `Card_UntapCard` / `Duel_GetCardModifiedPower` | **`Card_RemapColorIndexFF`** | the same lookup at `+0xff`; never called in the recorded games (its callers are the ability-bit loop of query code `0x34`, reached only for cards with colour-keyed abilities), so static only |
+
+Both programs now use the one name for each (the `DUEL.EXE` prefix `Duel_` is dropped for these helpers, as it was for the
+other engine twins). Only four functions are still reached through the replay hook: `Magic_ScanCards`, the two
+sprite-marking calls and the free-slot finder.
+
+Also found: `Card_IsTapped` was the third name this session whose body contradicted it once real calls were looked at
+(after `Magic_ResolveSpellStack` and `SpellChain_IsVisible`). The name was assigned by the bulk pass; nothing in the
+function ever looked at the tap bit.

@@ -38,7 +38,7 @@ int CardQuery_PlayerControlsColor(int player,byte arg2)
     if ((int)(&g_PlayerActiveCardCount)[player] <= local_8) {
       return 0;
     }
-    status = Card_IsTapped(player,local_8);
+    status = Card_IsInPlay(player,local_8);
     if ((status != 0) &&
        ((arg2 & (&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + player * 0x5b20) * 0x34]) != 0))

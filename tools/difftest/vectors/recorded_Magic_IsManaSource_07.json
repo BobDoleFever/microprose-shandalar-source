@@ -5,13 +5,13 @@
  "description": "recorded from DUEL at virtual 18.547s",
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
-  1,
-  2
+  0,
+  6
  ],
  "expected_return": 1,
  "memory_in": [
   {
-   "addr": "0x00500108",
+   "addr": "0x004ff610",
    "bytes": "0010"
   },
   {
@@ -19,8 +19,8 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x00688424",
-   "bytes": "38000000"
+   "addr": "0x00682d84",
+   "bytes": "02000000"
   }
  ],
  "calls": [],

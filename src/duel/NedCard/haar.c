@@ -2322,7 +2322,7 @@ LRESULT Card_Setup_00467a68(HWND hwnd,uint32_t uMsg,HWND wParam,int *lParam)
           if (DAT_00601618 != 0) {
             local_40c = *(int *)(&g_DuelCardSlot_CardId + match_count * 0x5b20 + card_idx * 0x120);
             val_5 = (int)(char)(&g_DuelMasterCardSubType)[local_40c * 0x34];
-            iVar13 = Duel_ColorMaskToIndex((&DAT_004ff596)
+            iVar13 = Card_ColorMaskToColorIndex((&DAT_004ff596)
                                   [*(int *)(&g_DuelCardSlot_CardId + match_count * 0x5b20 + card_idx * 0x120) *
                                    0x34]);
             FUN_0049b235(match_count,iVar13,val_5);

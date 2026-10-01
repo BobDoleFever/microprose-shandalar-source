@@ -6,7 +6,7 @@ CFLAGS ?= -std=c99 -O1 -g
 WARN = -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wno-sign-conversion
 NATIVE = ../../src/native
 SRCS = harness.c $(NATIVE)/mem.c $(NATIVE)/engine.c $(NATIVE)/layout.c $(NATIVE)/spell_stack.c \
-       $(NATIVE)/card_query.c
+       $(NATIVE)/card_query.c $(NATIVE)/event_context.c $(NATIVE)/card_util.c
 HDRS = $(NATIVE)/mem.h $(NATIVE)/engine.h
 
 build/harness: $(SRCS) $(HDRS) | build

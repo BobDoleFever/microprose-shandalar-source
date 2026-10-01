@@ -8845,15 +8845,15 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       }
       break;
     case 3:
-      flag_1 = Card_SetTapState(player,card_slot,3);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,3);
       (&g_CardSlot_MinusOneCounters)[val_4 * 0x5b20 + val_5 * 0x120] = (char)(1 << (flag_1 & 0x1f));
       break;
     case 4:
-      flag_1 = Card_SetTapState(player,card_slot,5);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,5);
       (&g_CardSlot_MinusOneCounters)[val_4 * 0x5b20 + val_5 * 0x120] = (char)(1 << (flag_1 & 0x1f));
       break;
     case 5:
-      flag_1 = Card_SetTapState(player,card_slot,4);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,4);
       (&g_CardSlot_MinusOneCounters)[val_4 * 0x5b20 + val_5 * 0x120] = (char)(1 << (flag_1 & 0x1f));
       break;
     case 6:
@@ -8881,11 +8881,11 @@ int32_t Palette_Subsystem_004a8111(int player_id,int card_slot,int event_type)
       *(int32_t *)(&g_CardSlot_Abilities2 + val_4 * 0x5b20 + val_5 * 0x120) = 0x8000000;
       break;
     case 10:
-      flag_1 = Card_SetTapState(player,card_slot,1);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
       (&g_CardSlot_MinusOneCounters)[val_4 * 0x5b20 + val_5 * 0x120] = (char)(1 << (flag_1 & 0x1f));
       break;
     case 0xb:
-      flag_1 = Card_SetTapState(player,card_slot,2);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,2);
       (&g_CardSlot_MinusOneCounters)[val_4 * 0x5b20 + val_5 * 0x120] = (char)(1 << (flag_1 & 0x1f));
       break;
     case 0xc:

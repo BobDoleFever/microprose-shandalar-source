@@ -24,18 +24,18 @@ extern int DAT_004ff5a0;
 
 typedef int (*GhidraCall)(void *, ...);
 
-int Duel_ColorMaskToIndex(byte arg_1);
+int Card_ColorMaskToColorIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
-int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexF9(int arg_1, int arg_2, int arg_3);
 
 int Duel_ApplyCombatDamage(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_GetCardModifiedPower(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexFF(int arg_1, int arg_2, int arg_3);
 int Duel_RandomRange(int arg_1);
 
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
-bool Duel_CardIsTapped(int arg1, int arg2);
+bool Card_IsInPlay(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
@@ -212,9 +212,9 @@ int Mem_AllocOrFree_0050f740();
 uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
-int FUN_0048cb7f();
+int Magic_PopEventContext();
 int Magic_IsManaSource();
-int FUN_0048cac9();
+int Magic_PushEventContext();
 int FUN_0048caf4();
 int FUN_00432c2a();
 int FUN_00447114();
@@ -298,13 +298,13 @@ void Duel_UpdateBoardState(undefined4 arg1,undefined4 arg2)
 }
 
 /*
- * Decompiled function: Duel_CardIsTapped
+ * Decompiled function: Card_IsInPlay
  * Entry Point: 0048a33f
  * Size: 114 bytes
  */
 
 
-bool Duel_CardIsTapped(int player,int card_slot)
+bool Card_IsInPlay(int player,int card_slot)
 
 {
   bool bVar1;
@@ -376,7 +376,7 @@ int Magic_TriggerCardEvent(int arg_1,int arg_2,int arg_3,int arg_4,int arg_5)
     iVar2 = 0;
   }
   else {
-    FUN_0048cac9();
+    Magic_PushEventContext();
     uVar1 = DAT_00676500;
     g_CardEventResult = 0;
     g_EventSourcePlayer = arg_1;
@@ -389,11 +389,11 @@ int Magic_TriggerCardEvent(int arg_1,int arg_2,int arg_3,int arg_4,int arg_5)
     if ((((iVar2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
        && (iVar3 = Magic_IsManaSource(arg_1,arg_2), iVar3 == 0)) {
       DAT_00676500 = uVar1;
-      FUN_0048cb7f();
+      Magic_PopEventContext();
       return 0;
     }
     DAT_0068edd8 = g_CardEventResult;
-    FUN_0048cb7f();
+    Magic_PopEventContext();
   }
   return iVar2;
 }

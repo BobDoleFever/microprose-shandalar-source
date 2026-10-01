@@ -3010,7 +3010,7 @@ int32_t FUN_0048a1c7(int max_val,int point,int hBitmap);;
 bool FUN_0048a2cd(int player,int card_slot);;
 
 /* Function at 0048a33f (Size: 114 bytes) */
-bool Duel_CardIsTapped(int player,int card_slot);;
+bool Card_IsInPlay(int player,int card_slot);;
 
 /* Function at 0048a3b1 (Size: 114 bytes) */
 int32_t FUN_0048a3b1(int player,int card_slot);;
@@ -3052,7 +3052,7 @@ void FUN_0048b64f(void);;
 uint32_t Duel_QueryCardAttribute(int player, int slot, int event_code, int32_t target_slot);;
 
 /* Function at 0048c367 (Size: 121 bytes) */
-int32_t Duel_ColorMaskToIndex(uint8_t max_val);;
+int32_t Card_ColorMaskToColorIndex(uint8_t max_val);;
 
 /* Function at 0048c420 (Size: 26 bytes) */
 uint8_t * Mem_AllocOrFree_0048c420(int max_val);;
@@ -3073,10 +3073,10 @@ int Magic_TriggerCardEvent(int max_val,int point,int hBitmap,int32_t flags,int32
 bool Magic_IsManaSource(int player,int slot);;
 
 /* Function at 0048cac9 (Size: 182 bytes) */
-void FUN_0048cac9(void);;
+void Magic_PushEventContext(void);;
 
 /* Function at 0048cb7f (Size: 170 bytes) */
-void FUN_0048cb7f(void);;
+void Magic_PopEventContext(void);;
 
 /* Function at 0048cc29 (Size: 945 bytes) */
 void FUN_0048cc29(void);;
@@ -3865,10 +3865,10 @@ int FUN_004af68f(int max_val);;
 void Mem_AllocOrFree_004af72b(int max_val);;
 
 /* Function at 004af74c (Size: 106 bytes) */
-int Duel_GetCardModifiedPower(int max_val, int point, int hBitmap);;
+int Card_RemapColorIndexFF(int max_val, int point, int hBitmap);;
 
 /* Function at 004af7bb (Size: 106 bytes) */
-int Duel_GetCardColorOverride(int max_val, int point, int hBitmap);;
+int Card_RemapColorIndexF9(int max_val, int point, int hBitmap);;
 
 /* Function at 004af82a (Size: 294 bytes) */
 void Rules_CardLeavingPlay(int player,int card_slot);;

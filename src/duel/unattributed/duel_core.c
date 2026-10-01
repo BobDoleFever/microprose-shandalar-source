@@ -354,12 +354,12 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
             val_2 = DAT_0066640c;
           }
           if (val_2 <= slot_idx) break;
-          val_2 = Duel_CardIsTapped(0, slot_idx);
+          val_2 = Card_IsInPlay(0, slot_idx);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x120) * 0x34] & 1) != 0)) {
             local_108 = local_108 + 1;
           }
-          val_2 = Duel_CardIsTapped(1,slot_idx);
+          val_2 = Card_IsInPlay(1,slot_idx);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&DAT_006881e4 + slot_idx * 0x120) * 0x34] & 1) != 0)) {
             local_110 = local_110 + 1;
@@ -392,13 +392,13 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
             val_2 = DAT_0066640c;
           }
           if (val_2 <= slot_idx) break;
-          val_2 = Duel_CardIsTapped(0, slot_idx);
+          val_2 = Card_IsInPlay(0, slot_idx);
           if (((val_2 != 0) &&
               (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x120) * 0x34] & 2) != 0)) &&
              ((&DAT_006826e0)[slot_idx * 0x120] != '\x03')) {
             local_108 = local_108 + 1;
           }
-          val_2 = Duel_CardIsTapped(1,slot_idx);
+          val_2 = Card_IsInPlay(1,slot_idx);
           if (((val_2 != 0) &&
               (((&g_DuelMasterCardTable)[*(int *)(&DAT_006881e4 + slot_idx * 0x120) * 0x34] & 2) != 0)) &&
              ((&DAT_006826e0)[slot_idx * 0x120] != '\x03')) {
@@ -1094,7 +1094,7 @@ int32_t FUN_00402efd(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 4) != 0)) {
@@ -1180,7 +1180,7 @@ int32_t Glue_Subsystem_004dec09(int spell_id,int target_id,int flags)
     target_idx = 0;
     card_idx = 0;
     while (((target_idx < g_DuelTurnCounter && (card_idx == 0)) && (g_DuelHumanPlayerIndex != 1))) {
-      player_idx = Duel_GetCardModifiedPower(spell_id, target_id, 4);
+      player_idx = Card_RemapColorIndexFF(spell_id, target_id, 4);
       player_idx = player_idx + -1;
       Catalog_ParseCsvLine(s_prompts_txt_004f2160,s_VOLCANIC_ERUPTION_004f214c);
       _sprintf(&g_DuelCardNameBuffer,&g_DuelCardNameBuffer,target_idx + 1,g_DuelTurnCounter);
@@ -1254,7 +1254,7 @@ int32_t Glue_Subsystem_004dec09(int spell_id,int target_id,int flags)
     }
   }
   if (flags == 0x71) {
-    player_idx = Duel_GetCardModifiedPower(spell_id, target_id, 4);
+    player_idx = Card_RemapColorIndexFF(spell_id, target_id, 4);
     player_idx = player_idx + -1;
     slot_idx = 0;
     for (target_idx = 0; target_idx < (char)(&g_DuelCardSlot_TapState)[spell_id * 0x5b20 + target_id * 0x120];
@@ -1340,7 +1340,7 @@ int32_t FUN_00403725(int player_id,int card_slot,int event_type)
         Mem_AllocOrFree_004afd1c
                   (slot_idx,*(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120),player,card_slot);
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_1 = Duel_CardIsTapped(slot_idx,match_count);
+          val_1 = Card_IsInPlay(slot_idx,match_count);
           if (((val_1 != 0) &&
               (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
                & 2) != 0)) &&
@@ -1392,7 +1392,7 @@ int32_t FUN_00403943(int player_id,int card_slot,int event_type)
         Mem_AllocOrFree_004afd1c
                   (slot_idx,*(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120),player,card_slot);
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_1 = Duel_CardIsTapped(slot_idx,match_count);
+          val_1 = Card_IsInPlay(slot_idx,match_count);
           if (((val_1 != 0) &&
               (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
                & 2) != 0)) &&
@@ -1433,7 +1433,7 @@ int32_t FUN_00403b5f(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 1) != 0)) {
@@ -1473,12 +1473,12 @@ int32_t FUN_00403c4c(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 1) != 0)) {
             val_2 = *(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20);
-            val_3 = Duel_GetCardModifiedPower(player,card_slot,2);
+            val_3 = Card_RemapColorIndexFF(player,card_slot,2);
             if (*(int *)(&DAT_004ff590 + val_2 * 0x34) == *(int *)(&DAT_0068f0dc + val_3 * 4)) {
               Duel_DrawCardSprite(slot_idx,match_count,2);
             }
@@ -3565,7 +3565,7 @@ int32_t FUN_0040839a(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 2) != 0)) {
@@ -3605,12 +3605,12 @@ int32_t FUN_00408487(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 1) != 0)) {
             val_2 = *(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20);
-            val_3 = Duel_GetCardModifiedPower(player,card_slot,5);
+            val_3 = Card_RemapColorIndexFF(player,card_slot,5);
             if (*(int *)(&DAT_004ff590 + val_2 * 0x34) == *(int *)(&DAT_0068f0dc + val_3 * 4)) {
               Duel_DrawCardSprite(slot_idx,match_count,2);
             }
@@ -3648,7 +3648,7 @@ int32_t FUN_004085c1(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 0x40) != 0)) {
@@ -3894,12 +3894,12 @@ int32_t FUN_00408f50(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       val_3 = player;
       val_4 = card_slot;
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,4);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,4);
       Mem_AllocOrFree_004afd1c
                 (1 - player,*(int *)(&DAT_0068ef50 + val_2 * 4 + player * 0x20),val_3,val_4);
       val_3 = player;
       val_4 = card_slot;
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,4);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,4);
       Mem_AllocOrFree_004afd1c
                 (player,(*(int *)(&DAT_0068ef50 + val_2 * 4 + player * 0x20) + 1) / 2,val_3,val_4);
       Duel_DrawCardSprite(player,card_slot,1);
@@ -4964,8 +4964,8 @@ int32_t FUN_0040b626(int player_id,int card_slot,int event_type)
        ((player == g_EventSourcePlayer &&
         ((val_2 = Duel_DrawString(player,7,2), val_2 != 0 &&
          (Ai_CalcManaRequirement_004ba890(player,0,2), target_idx != -1)))))) {
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,1);
-      uval_1 = Duel_GetCardModifiedPower(player,card_slot,1);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,1);
+      uval_1 = Card_RemapColorIndexFF(player,card_slot,1);
       *(int32_t *)
        (&g_DuelCardSlot_Counters +
        *(int *)(&g_DuelCardSlot_CombatTargetSlot + player * 0x5b20 + card_slot * 0x120) * 0x120 +
@@ -5261,7 +5261,7 @@ int32_t CardScript_PrimalClay(int spell_id,int target_id,int flags)
   }
   if (((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
      ((target_id == g_EventSourceSlot &&
-      ((spell_id == g_EventSourcePlayer && (val_1 = Duel_CardIsTapped(spell_id,target_id), val_1 != 0)))))) {
+      ((spell_id == g_EventSourcePlayer && (val_1 = Card_IsInPlay(spell_id,target_id), val_1 != 0)))))) {
     g_CardEventResult = *(int32_t *)(&DAT_006826c8 + spell_id * 0x5b20 + target_id * 0x120);
   }
   if (((flags == 0x77) && (target_id == g_EventSourceSlot)) && (spell_id == g_EventSourcePlayer)) {
@@ -5315,7 +5315,7 @@ int32_t CardScript_Shapeshifter(int spell_id,int target_id,int flags)
   }
   if (((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
      ((g_EventSourceSlot == target_id && (spell_id == g_EventSourcePlayer)))) {
-    val_2 = Duel_CardIsTapped(spell_id,target_id);
+    val_2 = Card_IsInPlay(spell_id,target_id);
     if (val_2 != 0) {
       g_CardEventResult = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
     }
@@ -5481,7 +5481,7 @@ int FUN_0040cea5(int arg1,int arg2)
   match_count = 0;
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (player_idx = 0; player_idx < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; player_idx = player_idx + 1) {
-      val_1 = Duel_CardIsTapped(slot_idx,player_idx);
+      val_1 = Card_IsInPlay(slot_idx,player_idx);
       if ((((val_1 != 0) &&
            (*(int *)(&DAT_004ff590 +
                     *(int *)(&g_DuelCardSlot_CardId + player_idx * 0x120 + slot_idx * 0x5b20) * 0x34) == 0x37b))
@@ -7529,7 +7529,7 @@ int32_t FUN_00411fe0(int player_id,int card_slot,int event_type)
   if (((arg_3 == 0x33) || (arg_3 == 0x32)) &&
      (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0)) {
     cVar1 = (&DAT_006826dc)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20];
-    flag_2 = Duel_GetCardColorOverride(player,card_slot,4);
+    flag_2 = Card_RemapColorIndexF9(player,card_slot,4);
     if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
       g_CardEventResult = g_CardEventResult + 1;
     }
@@ -7538,10 +7538,10 @@ int32_t FUN_00411fe0(int player_id,int card_slot,int event_type)
      (((&g_DuelMasterCardTable)
        [*(int *)(&g_DuelCardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20) * 0x34] & 1) != 0)) {
     cVar1 = (&DAT_006826dc)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20];
-    flag_2 = Duel_GetCardModifiedPower(player,card_slot,4);
+    flag_2 = Card_RemapColorIndexFF(player,card_slot,4);
     if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
       arg_3_00 = 1;
-      arg_2_00 = Duel_GetCardModifiedPower(player,card_slot,4);
+      arg_2_00 = Card_RemapColorIndexFF(player,card_slot,4);
       FUN_0049b235(g_EventSourcePlayer,arg_2_00,arg_3_00);
     }
   }
@@ -7667,7 +7667,7 @@ int32_t FUN_00412237(int x,int y,int width,int height)
       ((DAT_00681ec4 == x && (((&g_DuelCardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x20) == 0)))))) {
     val_2 = Duel_DrawString(x,7,1);
     if (val_2 != 0) {
-      flag_1 = Duel_GetCardColorOverride(x,y,height);
+      flag_1 = Card_RemapColorIndexF9(x,y,height);
       if (((1 << (flag_1 & 0x1f) &
            (int)(char)(&DAT_006826dd)[DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20]) != 0) &&
          ((&g_DuelMasterCardTable)
@@ -9545,7 +9545,7 @@ int32_t Pic_Subsystem_00439408(int player_id,int card_slot,int event_type)
       *(uint32_t *)(&DAT_006827c8 + card_idx * 0x5b20 + match_count * 0x120) =
            *(uint32_t *)(&DAT_006827c8 + card_idx * 0x5b20 + match_count * 0x120) | 2;
       for (slot_idx = 0; slot_idx < (int)(&g_DuelPlayerCreatureCount)[g_TurnPlayer]; slot_idx = slot_idx + 1) {
-        val_1 = Duel_CardIsTapped(g_TurnPlayer,slot_idx);
+        val_1 = Card_IsInPlay(g_TurnPlayer,slot_idx);
         if ((((val_1 != 0) &&
              (((&g_DuelCardSlot_Flags)[g_TurnPlayer * 0x5b20 + slot_idx * 0x120] & 0x10) != 0)) &&
             (((&g_DuelMasterCardTable)
@@ -10026,7 +10026,7 @@ int32_t FUN_00418380(int player_id,int card_slot,int event_type)
                            (int)(char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120],
                            *(int *)(&g_DuelCardSlot_TargetSlot + player * 0x5b20 + card_slot * 0x120));
       if (val_2 != -1) {
-        cVar1 = Duel_GetCardModifiedPower(player,card_slot,2);
+        cVar1 = Card_RemapColorIndexFF(player,card_slot,2);
         *(int *)(&g_DuelCardSlot_Counters + val_2 * 0x120 + player * 0x5b20) = 1 << (cVar1 - 1U & 0x1f);
       }
       *(int32_t *)
@@ -10734,7 +10734,7 @@ int32_t FUN_00419cde(int player_id,int card_slot,int event_type)
        (Ai_CalcManaRequirement_004ba890(player,0,1), g_DuelHumanPlayerIndex != 1)) {
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_1 = Duel_CardIsTapped(slot_idx,match_count);
+          val_1 = Card_IsInPlay(slot_idx,match_count);
           if ((val_1 != 0) && (val_1 = Duel_RandomRange(3), val_1 == 0)) {
             Duel_DrawCardSprite(slot_idx,match_count,2);
           }
@@ -10962,8 +10962,8 @@ int32_t FUN_0041a52d(int player_id,int card_slot,int event_type)
      ((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0 ||
       (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) * 0x34] & 2) != 0))
      )) {
-    arg_3_00 = Duel_GetCardColorOverride(player,card_slot,4);
-    arg_2_00 = Duel_GetCardColorOverride(player,card_slot,5);
+    arg_3_00 = Card_RemapColorIndexF9(player,card_slot,4);
+    arg_2_00 = Card_RemapColorIndexF9(player,card_slot,5);
     FUN_0049b0eb(player,arg_2_00,arg_3_00);
   }
   return 0;
@@ -11110,7 +11110,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint32_t uMsg,int *wParam,int *lPar
       }
       else {
         flag_1 = FUN_0044781f(card_idx,target_idx);
-        local_298 = Duel_ColorMaskToIndex(flag_1);
+        local_298 = Card_ColorMaskToColorIndex(flag_1);
       }
       if (local_284 != player_idx) {
         InvalidateRect(hwnd,(RECT *)0x0,0);
@@ -11443,7 +11443,7 @@ LRESULT Palette_Subsystem_004997e6(HWND hwnd,uint32_t uMsg,int *wParam,int *lPar
       }
       else {
         flag_1 = FUN_0044781f(card_idx,target_idx);
-        local_24 = Duel_ColorMaskToIndex(flag_1);
+        local_24 = Card_ColorMaskToColorIndex(flag_1);
       }
       if (loop_idx != player_idx) {
         InvalidateRect(hwnd,(RECT *)0x0,0);
@@ -13612,7 +13612,7 @@ int32_t FUN_004215c2(HDC hdc,int *card_slot,int event_type,int arg_4,int arg_5,u
       FID_conflict__memcpy(local_a4,&DAT_00618ac0 + slot_idx * 0x98,0x98);
       local_ac = local_94;
       player = FUN_0044781f(arg_4,arg_5);
-      local_a8 = Duel_ColorMaskToIndex(player);
+      local_a8 = Card_ColorMaskToColorIndex(player);
       if (((((local_ac == 1) || (local_ac == 8)) ||
            ((local_ac == 7 || ((local_ac == 5 || (local_ac == 2)))))) ||
           ((local_ac == 6 && (local_a8 != 0)))) || ((local_ac == 3 && (local_a8 != 0)))) {
@@ -14426,7 +14426,7 @@ void Palette_Subsystem_0049eda9(HDC hdc,int *card_slot,int event_type,int arg_4,
       uval_1 = FUN_00446ea2(arg_4,arg_5);
       _sprintf(&DAT_0050b180,s_Damage___d_004f3470,uval_1);
       player = FUN_0044781f(arg_4,arg_5);
-      local_b4 = Duel_ColorMaskToIndex(player);
+      local_b4 = Card_ColorMaskToColorIndex(player);
       if (local_b4 == 1) {
         Str_CopyFast((uint32_t *)&DAT_0050b180,(uint32_t *)s__Black__004f347c);
       }
@@ -15582,7 +15582,7 @@ void Palette_Subsystem_0049eda9(HDC hdc,int *card_slot,int event_type,int arg_4,
       uval_1 = FUN_00446ea2(arg_4,arg_5);
       _sprintf(&DAT_0050abe8,s_Damage___d_004f361c,uval_1);
       player = FUN_0044781f(arg_4,arg_5);
-      local_b4 = Duel_ColorMaskToIndex(player);
+      local_b4 = Card_ColorMaskToColorIndex(player);
       if (local_b4 == 1) {
         Str_CopyFast((uint32_t *)&DAT_0050abe8,(uint32_t *)s__Black__004f3628);
       }
@@ -15837,7 +15837,7 @@ void Palette_Subsystem_004a155f(HDC hdc,int *y,int width,int arg_4)
     FID_conflict__memcpy(&local_a4,&DAT_00618ac0 + slot_idx * 0x98,0x98);
     local_b0 = local_94;
     player = FUN_0044781f(width,arg_4);
-    local_ac = Duel_ColorMaskToIndex(player);
+    local_ac = Card_ColorMaskToColorIndex(player);
     if (((((local_b0 == 1) || (local_b0 == 8)) ||
          ((local_b0 == 7 || ((local_b0 == 5 || (local_b0 == 2)))))) ||
         ((local_b0 == 6 && (local_ac != 0)))) || ((local_b0 == 3 && (local_ac != 0)))) {
@@ -16497,7 +16497,7 @@ LAB_004270a4:
       Mem_AllocOrFree_00431fe0(player);
       _DAT_0068f0cc = 0;
       for (local_2ec = 0; local_2ec < (&g_DuelPlayerCreatureCount)[player]; local_2ec = local_2ec + 1) {
-        val_1 = Duel_CardIsTapped(player,local_2ec);
+        val_1 = Card_IsInPlay(player,local_2ec);
         if ((val_1 != 0) && (((&g_DuelCardSlot_Flags)[local_2ec * 0x120 + player * 0x5b20] & 0x10) != 0)) {
           *(int32_t *)(&DAT_006827c8 + local_2ec * 0x120 + player * 0x5b20) = 3;
           FUN_0048c50b(player,local_2ec,0x82);
@@ -16617,7 +16617,7 @@ LAB_004270a4:
         }
       }
       for (local_2ec = 0; local_2ec < (&g_DuelPlayerCreatureCount)[player]; local_2ec = local_2ec + 1) {
-        val_1 = Duel_CardIsTapped(player,local_2ec);
+        val_1 = Card_IsInPlay(player,local_2ec);
         if (val_1 != 0) {
           *(int32_t *)(&DAT_006827c8 + local_2ec * 0x120 + player * 0x5b20) = 0;
         }
@@ -16963,14 +16963,14 @@ LAB_00428424:
           if ((((player == g_DuelTargetPlayer) && (((&g_DuelMasterCardTable)[local_158 * 0x34] & 2) != 0)) &&
               ((*(uint32_t *)(&g_DuelCardSlot_Flags + local_2dc * 0x120 + player * 0x5b20) & 0x10014) == 0)) &&
              ((-1 < DAT_006826b0 && (val_1 = FUN_0048ad82(player,local_2dc), val_1 != 0)))) {
-            FUN_0048cac9();
+            Magic_PushEventContext();
             Mem_AllocOrFree_004d9630(local_108,(uint32_t *)&g_DuelCardChoicePrompt);
             DAT_00666754 = player;
             DAT_0068edd0 = local_2dc;
             DAT_00666428 = 0;
             Magic_RunTurnStep(player,0xdc,s_Pay_for_attacker_004f3910,1);
             Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,local_108);
-            FUN_0048cb7f();
+            Magic_PopEventContext();
             if (DAT_00666428 == 0) {
               (&DAT_006826de)[local_2dc * 0x120 + player * 0x5b20] = 0xff;
               val_1 = DAT_006826b0;
@@ -17044,12 +17044,12 @@ LAB_00428fa9:
           if ((*(int *)(&g_DuelCardSlot_CardId + DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20) != -1) &&
              (((uint8_t)*(int32_t *)(&g_DuelCardSlot_Flags + DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20) &
               6) == 6)) {
-            FUN_0048cac9();
+            Magic_PushEventContext();
             Mem_AllocOrFree_004d9630(local_108,(uint32_t *)&g_DuelCardChoicePrompt);
             DAT_00666428 = 0;
             Magic_RunTurnStep(player,0xdc,s_Pay_for_attacker_004f3958,1);
             Mem_AllocOrFree_004d9630((uint32_t *)&g_DuelCardChoicePrompt,local_108);
-            FUN_0048cb7f();
+            Magic_PopEventContext();
             if ((DAT_00666428 != 0) &&
                (*(uint32_t *)(&g_DuelCardSlot_Flags + DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20) =
                      *(uint32_t *)(&g_DuelCardSlot_Flags + DAT_0068edd0 * 0x120 + DAT_00666754 * 0x5b20) &
@@ -18000,7 +18000,7 @@ int32_t FUN_0042b120(int arg1,int arg2)
   int val_1;
   int32_t uval_2;
   
-  val_1 = Duel_CardIsTapped(arg1,arg2);
+  val_1 = Card_IsInPlay(arg1,arg2);
   if ((((val_1 == 0) ||
        (((&DAT_004ff5a9)[*(int *)(&g_DuelCardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20) * 0x34] & 0x10) == 0
        )) || (((&g_DuelCardSlot_Flags)[arg2 * 0x120 + arg1 * 0x5b20] & 0x10) != 0)) ||
@@ -18453,7 +18453,7 @@ int Ai_CalcManaRequirement_004ba890(int player_id,int card_slot,int event_type)
                     }
                   }
                   if (local_74 == 1) {
-                    local_88 = Duel_ColorMaskToIndex((uint8_t)local_78);
+                    local_88 = Card_ColorMaskToColorIndex((uint8_t)local_78);
                   }
                   else {
                     local_88 = FUN_004513fa(player,s_Which_color_to_use_that_choice_a_004f3b30,1,
@@ -19582,10 +19582,10 @@ int FUN_0042ecaf(int x,int y,int width,int height)
   int val_1;
   int val_2;
   
-  val_1 = Duel_ColorMaskToIndex((&DAT_006826dd)[x * 0x5b20 + y * 0x120]);
+  val_1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[x * 0x5b20 + y * 0x120]);
   DAT_0068ece0 = DAT_0068ece0 + *(int *)(&DAT_00676150 + val_1 * 4);
   val_2 = Ai_CalcManaRequirement_004ba890(x,width,height);
-  val_1 = Duel_ColorMaskToIndex((&DAT_006826dd)[x * 0x5b20 + y * 0x120]);
+  val_1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[x * 0x5b20 + y * 0x120]);
   val_2 = val_2 - *(int *)(&DAT_00676150 + val_1 * 4);
   if (g_DuelHumanPlayerIndex == 1) {
     val_2 = 0;
@@ -19815,7 +19815,7 @@ uint32_t Ai_ChooseCardToPlay(int player_id)
         if (((&g_DuelCardSlot_Flags)[player * 0x5b20 + local_2c * 0x120] & 2) == 0) {
           if (((_DAT_0050cb78 & (int)(char)(&DAT_004ff5ad)[loop_idx * 0x34]) != 0) &&
              (((&g_DuelMasterCardTable)[loop_idx * 0x34] & 0x7e) != 0)) {
-            local_40 = Duel_ColorMaskToIndex((&DAT_004ff596)[loop_idx * 0x34]);
+            local_40 = Card_ColorMaskToColorIndex((&DAT_004ff596)[loop_idx * 0x34]);
             val_2 = FUN_004895b4(player,player,local_2c);
             if ((val_2 != 0) &&
                ((((&g_DuelMasterCardTable)[loop_idx * 0x34] & 0x3c) == 0 ||
@@ -21609,7 +21609,7 @@ int32_t FUN_00488662(int player_id,int card_slot,int event_type)
   int target_idx;
   
   val_5 = *(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20);
-  val_3 = Duel_ColorMaskToIndex((&DAT_004ff596)[val_5 * 0x34]);
+  val_3 = Card_ColorMaskToColorIndex((&DAT_004ff596)[val_5 * 0x34]);
   val_2 = DAT_0068ecd0;
   val_1 = DAT_0068eccc;
   val_4 = DAT_0066644c;
@@ -21863,7 +21863,7 @@ int32_t Ai_FormatPlanDebugText(int arg1,int arg2)
   int32_t uval_3;
   
   val_1 = *(int *)(&g_DuelCardSlot_CardId + arg2 * 0x120 + arg1 * 0x5b20);
-  Duel_ColorMaskToIndex((&DAT_004ff596)[val_1 * 0x34]);
+  Card_ColorMaskToColorIndex((&DAT_004ff596)[val_1 * 0x34]);
   if (val_1 == -1) {
     Magic_DropTopSpell();
     uval_3 = 0;
@@ -21964,7 +21964,7 @@ bool FUN_004895b4(int player_id,int card_slot,int event_type)
       flag_3 = false;
     }
     else if (((&g_DuelMasterCardTable)[val_1 * 0x34] & 0x40) == 0) {
-      width = Duel_ColorMaskToIndex((&DAT_004ff596)[val_1 * 0x34]);
+      width = Card_ColorMaskToColorIndex((&DAT_004ff596)[val_1 * 0x34]);
       val_2 = FUN_0049b68d(player,arg_3,width,(int)(char)(&g_DuelMasterCardSubType)[val_1 * 0x34]);
       flag_3 = val_2 != 0;
       if (('\0' < (char)(&DAT_004ff598)[val_1 * 0x34]) &&
@@ -22289,13 +22289,13 @@ bool FUN_0048a2cd(int arg1,int arg2)
 
 
 /*
- * Decompiled function: Duel_CardIsTapped
+ * Decompiled function: Card_IsInPlay
  * Entry Point: 0048a33f
  * Size: 114 bytes
  */
 
 
-bool Duel_CardIsTapped(int arg1,int arg2)
+bool Card_IsInPlay(int arg1,int arg2)
 
 {
   bool flag_1;
@@ -22486,13 +22486,13 @@ int32_t FUN_0048ad82(int arg1,int arg2)
       g_CardEventResult = val_3;
       g_DuelHumanPlayerIndex = uval_1;
       if (g_DuelTargetCardSlot == arg1) {
-        FUN_0048cac9();
+        Magic_PushEventContext();
         g_CardEventResult = 0;
         g_EventSourcePlayer = arg1;
         g_EventSourceSlot = arg2;
         FUN_00467d65(FUN_004c1610,-1);
         val_3 = g_CardEventResult;
-        FUN_0048cb7f();
+        Magic_PopEventContext();
         if (val_3 != 0) {
           return 0;
         }
@@ -22546,7 +22546,7 @@ int32_t FUN_0048afc2(int player_id)
   DAT_006826b0 = 0;
   DAT_006c1218 = 0;
   for (slot_idx = 0; slot_idx < (int)(&g_DuelPlayerCreatureCount)[player]; slot_idx = slot_idx + 1) {
-    val_1 = Duel_CardIsTapped(player,slot_idx);
+    val_1 = Card_IsInPlay(player,slot_idx);
     if (val_1 != 0) {
       if (((&g_DuelCardSlot_Flags)[slot_idx * 0x120 + player * 0x5b20] & 4) == 0) {
         if (((&DAT_006826cd)[slot_idx * 0x120 + player * 0x5b20] & 0x80) != 0) {
@@ -22680,10 +22680,10 @@ bool FUN_0048b2c9(int player_id,int card_slot,int32_t arg_3,int32_t arg_4,uint32
     if (((arg_5 & 0x20) == 0) ||
        (uval_4 = Duel_QueryCardAttribute(player,card_slot,0x34,0xffffffff), (uval_4 & 0x420) != 0)) {
       if (((arg_5 & 0x1ff800) == 0) ||
-         (cVar1 = Duel_ColorMaskToIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]),
+         (cVar1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[card_slot * 0x120 + player * 0x5b20]),
          (arg_5 & 0x800 << (cVar1 - 1U & 0x1f)) == 0)) {
         if ((arg_6 & arg_5 & 0x1f) == 0) {
-          FUN_0048cac9();
+          Magic_PushEventContext();
           g_EventSourcePlayer = player;
           g_EventSourceSlot = card_slot;
           DAT_00690310 = arg_3;
@@ -22691,7 +22691,7 @@ bool FUN_0048b2c9(int player_id,int card_slot,int32_t arg_3,int32_t arg_4,uint32
           g_CardEventResult = 0;
           Magic_ScanCards(0x78);
           flag_2 = g_CardEventResult < 1;
-          FUN_0048cb7f();
+          Magic_PopEventContext();
         }
         else {
           flag_2 = false;
@@ -22804,7 +22804,7 @@ void FUN_0048b64f(void)
   FUN_00451760();
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-      val_2 = Duel_CardIsTapped(slot_idx,match_count);
+      val_2 = Card_IsInPlay(slot_idx,match_count);
       if (((val_2 != 0) &&
           (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x5b20 + match_count * 0x120) * 0x34] & 2
            ) != 0)) &&
@@ -22843,7 +22843,7 @@ uint32_t Duel_QueryCardAttribute(int x,int y,int width,int32_t arg_4)
   uval_3 = DAT_005ef980;
   DAT_006663e0 = DAT_006663e0 + 1;
   if (DAT_0068eed8 != 0) {
-    FUN_0048cac9();
+    Magic_PushEventContext();
   }
   g_EventSourcePlayer = x;
   g_EventSourceSlot = y;
@@ -22889,11 +22889,11 @@ uint32_t Duel_QueryCardAttribute(int x,int y,int width,int32_t arg_4)
       color_idx = 0;
       for (target_idx = 0; target_idx < 5; target_idx = target_idx + 1) {
         if ((slot_idx & 1 << ((uint8_t)target_idx & 0x1f)) != 0) {
-          cVar4 = Duel_GetCardModifiedPower(x,y,target_idx + 1);
+          cVar4 = Card_RemapColorIndexFF(x,y,target_idx + 1);
           color_idx = color_idx | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((slot_idx & 0x800 << ((uint8_t)target_idx & 0x1f)) != 0) {
-          cVar4 = Duel_GetCardColorOverride(x,y,target_idx + 1);
+          cVar4 = Card_RemapColorIndexF9(x,y,target_idx + 1);
           color_idx = color_idx | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
@@ -22952,7 +22952,7 @@ LAB_0048be41:
     }
   }
   uval_1 = g_CardEventResult;
-  val_5 = Duel_CardIsTapped(x,y);
+  val_5 = Card_IsInPlay(x,y);
   if (((val_5 != 0) && (width == 0x33)) &&
      ((((&g_DuelMasterCardTable)[DAT_00681ecc * 0x34] & 2) != 0 &&
       (((((int)uval_1 < 1 || ((int)uval_1 <= (int)*(short *)(&DAT_006826d0 + y * 0x120 + x * 0x5b20)))
@@ -22961,7 +22961,7 @@ LAB_0048be41:
     Rules_SendCardsToGraveyard();
   }
   if (DAT_0068eed8 != 0) {
-    FUN_0048cb7f();
+    Magic_PopEventContext();
   }
   if (width == 0x32) {
     *(short *)(&DAT_006826d4 + y * 0x120 + x * 0x5b20) = (short)uval_1;
@@ -23018,13 +23018,13 @@ LAB_0048c17d:
 
 
 /*
- * Decompiled function: Duel_ColorMaskToIndex
+ * Decompiled function: Card_ColorMaskToColorIndex
  * Entry Point: 0048c367
  * Size: 121 bytes
  */
 
 
-int32_t Duel_ColorMaskToIndex(uint8_t player)
+int32_t Card_ColorMaskToColorIndex(uint8_t player)
 
 {
   int32_t uval_1;
@@ -23115,7 +23115,7 @@ int32_t FUN_0048c50b(int player_id,int32_t card_slot,int event_type)
   int32_t uval_1;
   int32_t uval_2;
   
-  FUN_0048cac9();
+  Magic_PushEventContext();
   uval_2 = g_DuelCurrentEventCode;
   g_CardEventResult = 0;
   g_EventSourcePlayer = player;
@@ -23129,7 +23129,7 @@ int32_t FUN_0048c50b(int player_id,int32_t card_slot,int event_type)
   uval_1 = g_CardEventResult;
   g_EventSourcePlayer = 0xffffffff;
   g_DuelCurrentEventCode = uval_2;
-  FUN_0048cb7f();
+  Magic_PopEventContext();
   return uval_1;
 }
 
@@ -25140,12 +25140,12 @@ int FUN_0049b68d(int x,int y,uint32_t width,int height)
   int val_2;
   
   if (height == 0) {
-    val_1 = Duel_ColorMaskToIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
+    val_1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
     if (*(int *)(&DAT_00676150 + val_1 * 4) < 1) {
       val_1 = 1;
     }
     else {
-      val_1 = Duel_ColorMaskToIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
+      val_1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
       val_1 = Duel_DrawString(x,7,*(int *)(&DAT_00676150 + val_1 * 4));
     }
   }
@@ -25155,9 +25155,9 @@ int FUN_0049b68d(int x,int y,uint32_t width,int height)
       val_1 = 0;
     }
     else {
-      val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
+      val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
       if (0 < *(int *)(&DAT_00676150 + val_2 * 4)) {
-        val_1 = Duel_ColorMaskToIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
+        val_1 = Card_ColorMaskToColorIndex((&DAT_006826dd)[y * 0x120 + x * 0x5b20]);
         val_1 = Duel_DrawString(x,7,*(int *)(&DAT_00676150 + val_1 * 4) + height);
       }
     }
@@ -29711,7 +29711,7 @@ int32_t FUN_004a36e8(int player_id,int card_slot,int event_type)
     uval_2 = Duel_QueryCardAttribute((int)(char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20),0x34,0xffffffff);
     if ((uval_2 & 0x1ff800) != 0) {
-      cVar1 = Duel_ColorMaskToIndex((&DAT_006826dd)
+      cVar1 = Card_ColorMaskToColorIndex((&DAT_006826dd)
                            [*(int *)(&DAT_006826ec + card_slot * 0x120 + player * 0x5b20) * 0x120 +
                             (char)(&g_DuelCardSlot_Controller)[card_slot * 0x120 + player * 0x5b20] * 0x5b20]);
       if ((uval_2 & 0x800 << (cVar1 - 1U & 0x1f)) != 0) {
@@ -29770,7 +29770,7 @@ int32_t FUN_004a36e8(int player_id,int card_slot,int event_type)
            *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + player * 0x5b20);
     }
     else {
-      val_3 = Duel_CardIsTapped((int)(char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20],
+      val_3 = Card_IsInPlay((int)(char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20],
                            *(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20));
       if ((val_3 != 0) &&
          (*(short *)(&DAT_006826d0 +
@@ -29922,7 +29922,7 @@ int32_t FUN_004a4251(int player_id,int card_slot,int event_type)
        (*(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20) == g_EventSourceSlot)) &&
       ((char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20] == g_EventSourcePlayer)) &&
      (g_EventSourceSlot != -1)) {
-    val_1 = Duel_CardIsTapped((int)(char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20],
+    val_1 = Card_IsInPlay((int)(char)(&g_DuelCardSlot_ColorMask)[card_slot * 0x120 + player * 0x5b20],
                          *(int *)(&g_DuelCardSlot_TargetSlot + card_slot * 0x120 + player * 0x5b20));
     if ((val_1 != 0) &&
        (((&g_DuelMasterCardTable)
@@ -30067,7 +30067,7 @@ int32_t FUN_004a467d(int player_id,int card_slot,int event_type)
        (*(int *)(&g_DuelCardSlot_CardId +
                 *(int *)(&DAT_006826ec + player * 0x5b20 + card_slot * 0x120) * 0x120 +
                 (char)(&g_DuelCardSlot_Controller)[player * 0x5b20 + card_slot * 0x120] * 0x5b20) != -1)) {
-      val_1 = Duel_GetCardModifiedPower(player,card_slot,
+      val_1 = Card_RemapColorIndexFF(player,card_slot,
                            *(int *)(&g_DuelCardSlot_Counters +
                                    *(int *)(&DAT_006826ec + player * 0x5b20 + card_slot * 0x120) * 0x120
                                    + (char)(&g_DuelCardSlot_Controller)[player * 0x5b20 + card_slot * 0x120] * 0x5b20)
@@ -30174,7 +30174,7 @@ int32_t FUN_004a4d51(int player_id,int card_slot,int event_type)
       }
       else if (uval_1 == 0x100) {
         if (((&g_DuelCardSlot_DisplayIndex)[player * 0x5b20 + card_slot * 0x120] & 1) != 0) {
-          val_2 = Duel_GetCardModifiedPower((int)(char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120],
+          val_2 = Card_RemapColorIndexFF((int)(char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120],
                                *(int *)(&g_DuelCardSlot_TargetSlot + player * 0x5b20 + card_slot * 0x120),
                                *(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120));
           match_count = *(uint32_t *)(&DAT_0068ef50 +
@@ -30182,7 +30182,7 @@ int32_t FUN_004a4d51(int player_id,int card_slot,int event_type)
                              (char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120] * 0x20);
         }
         if (((&g_DuelCardSlot_DisplayIndex)[player * 0x5b20 + card_slot * 0x120] & 2) != 0) {
-          val_2 = Duel_GetCardModifiedPower((int)(char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120],
+          val_2 = Card_RemapColorIndexFF((int)(char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120],
                                *(int *)(&g_DuelCardSlot_TargetSlot + player * 0x5b20 + card_slot * 0x120),
                                *(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120));
           match_count = match_count + *(int *)(&DAT_0068ef50 +
@@ -30207,7 +30207,7 @@ int32_t FUN_004a4d51(int player_id,int card_slot,int event_type)
            (((char)(&g_DuelCardSlot_ColorMask)[player * 0x5b20 + card_slot * 0x120] != player_idx &&
             (((&g_DuelCardSlot_DisplayIndex)[player * 0x5b20 + card_slot * 0x120] & 2) != 0)))) {
           for (slot_idx = 0; slot_idx < (int)(&g_DuelPlayerCreatureCount)[player_idx]; slot_idx = slot_idx + 1) {
-            val_2 = Duel_CardIsTapped(player_idx,slot_idx);
+            val_2 = Card_IsInPlay(player_idx,slot_idx);
             if (((val_2 != 0) &&
                 (((&g_DuelMasterCardTable)
                   [*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x120 + player_idx * 0x5b20) * 0x34] & 2) != 0))
@@ -30376,7 +30376,7 @@ int32_t FUN_004a59e6(int player_id,int card_slot,int event_type)
     arg1 = 1 - player;
     for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[arg1]; match_count = match_count + 1) {
       val_1 = *(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + arg1 * 0x5b20);
-      val_2 = Duel_CardIsTapped(arg1,match_count);
+      val_2 = Card_IsInPlay(arg1,match_count);
       if (((val_2 != 0) && (((&g_DuelMasterCardTable)[val_1 * 0x34] & 2) != 0)) &&
          (((&DAT_004ff595)[val_1 * 0x34] != '\0' &&
           ((*(uint32_t *)(&g_DuelCardSlot_Flags + match_count * 0x120 + arg1 * 0x5b20) & 0x30040) == 0)))) {
@@ -30550,7 +30550,7 @@ int32_t FUN_004a60aa(int player_id,int card_slot,int event_type)
           Mem_AllocOrFree_004afd1c
                     (slot_idx,*(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120),player,card_slot);
           for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-            val_1 = Duel_CardIsTapped(slot_idx,match_count);
+            val_1 = Card_IsInPlay(slot_idx,match_count);
             if ((val_1 != 0) &&
                (((&g_DuelMasterCardTable)
                  [*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 2) != 0)) {
@@ -31536,7 +31536,7 @@ int32_t FUN_004a7f64(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x71) {
       for (match_count = 0; match_count < 2; match_count = match_count + 1) {
         for (slot_idx = 0; slot_idx < (int)(&g_DuelPlayerCreatureCount)[match_count]; slot_idx = slot_idx + 1) {
-          val_2 = Duel_CardIsTapped(match_count,slot_idx);
+          val_2 = Card_IsInPlay(match_count,slot_idx);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + slot_idx * 0x120 + match_count * 0x5b20) * 0x34]
               & 2) != 0)) {
@@ -32251,7 +32251,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       }
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if (((val_2 != 0) &&
               (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
                & 0x40) != 0)) &&
@@ -32576,7 +32576,7 @@ int32_t FUN_004a9ad1(int player_id,int card_slot,int event_type)
     arg_15 = 0xffffffff;
     arg_14 = 0xffffffff;
     arg_13 = 0xffffffff;
-    flag_1 = Duel_GetCardColorOverride(player,card_slot,1);
+    flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
     val_4 = 1 << (flag_1 & 0x1f);
     arg_11 = 0;
     uval_2 = Card_GetColorAndTypeFlags(player,card_slot);
@@ -32595,7 +32595,7 @@ int32_t FUN_004a9ad1(int player_id,int card_slot,int event_type)
       uval_8 = 0xffffffff;
       val_7 = -1;
       val_4 = -1;
-      flag_1 = Duel_GetCardColorOverride(player,card_slot,1);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
       uval_5 = 1 << (flag_1 & 0x1f);
       uval_6 = 0;
       uval_3 = Card_GetColorAndTypeFlags(player,card_slot);
@@ -32621,7 +32621,7 @@ int32_t FUN_004a9ad1(int player_id,int card_slot,int event_type)
       uval_8 = 0xffffffff;
       val_7 = -1;
       val_4 = -1;
-      flag_1 = Duel_GetCardColorOverride(player,card_slot,1);
+      flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
       uval_5 = 1 << (flag_1 & 0x1f);
       uval_6 = 0;
       uval_3 = Card_GetColorAndTypeFlags(player,card_slot);
@@ -33161,10 +33161,10 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       else {
         player_idx = *(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20);
         card_idx = *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20);
-        match_count = Duel_ColorMaskToIndex((&DAT_004ff596)
+        match_count = Card_ColorMaskToColorIndex((&DAT_004ff596)
                                [*(int *)(&g_DuelCardSlot_CardId + target_id * 0x120 + spell_id * 0x5b20) *
                                 0x34]);
-        flag_1 = Duel_GetCardColorOverride(spell_id,target_id,match_count);
+        flag_1 = Card_RemapColorIndexF9(spell_id,target_id,match_count);
         (&DAT_006826dd)[player_idx * 0x5b20 + card_idx * 0x120] = (char)(1 << (flag_1 & 0x1f));
         if (g_IsAiThinking != 1) {
           Sound_PlayTrackById(0x1d);
@@ -33305,9 +33305,9 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           }
           else {
             bStack_e7 = (uint8_t)((uint32_t)val_3 >> 8);
-            val_4 = Duel_ColorMaskToIndex(bStack_e7);
+            val_4 = Card_ColorMaskToColorIndex(bStack_e7);
             local_e8 = (uint8_t)val_3;
-            val_3 = Duel_ColorMaskToIndex(local_e8);
+            val_3 = Card_ColorMaskToColorIndex(local_e8);
             *(int *)(&g_DuelCardSlot_Counters + spell_id * 0x5b20 + target_id * 0x120) = val_4 * 0x100 + val_3;
           }
         }
@@ -33328,8 +33328,8 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
                  [*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120) * 0x5b20 +
                   *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120) * 0x120] & 2) != 0
                ) {
-              val_3 = Duel_ColorMaskToIndex((uint8_t)local_e4);
-              flag_1 = Duel_GetCardModifiedPower(*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
+              val_3 = Card_ColorMaskToColorIndex((uint8_t)local_e4);
+              flag_1 = Card_RemapColorIndexFF(*(int *)(&g_DuelCardSlot_TargetPlayer + spell_id * 0x5b20 + target_id * 0x120),
                                    *(int *)(&g_DuelCardSlot_CombatTargetSlot + spell_id * 0x5b20 + target_id * 0x120),
                                    val_3);
               local_e4 = 1 << (flag_1 & 0x1f);
@@ -33520,9 +33520,9 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
           }
           else {
             bStack_e7 = (uint8_t)((uint32_t)val_3 >> 8);
-            val_4 = Duel_ColorMaskToIndex(bStack_e7);
+            val_4 = Card_ColorMaskToColorIndex(bStack_e7);
             local_e8 = (uint8_t)val_3;
-            val_3 = Duel_ColorMaskToIndex(local_e8);
+            val_3 = Card_ColorMaskToColorIndex(local_e8);
             *(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) = val_4 * 0x100 + val_3;
           }
         }
@@ -33543,8 +33543,8 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
                  [*(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120 +
                   *(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) * 0x5b20] & 4) !=
                 0) {
-              val_3 = Duel_ColorMaskToIndex((uint8_t)local_e4);
-              flag_1 = Duel_GetCardColorOverride(*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
+              val_3 = Card_ColorMaskToColorIndex((uint8_t)local_e4);
+              flag_1 = Card_RemapColorIndexF9(*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                                    *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
                                    val_3);
               local_e4 = 1 << (flag_1 & 0x1f);
@@ -33659,7 +33659,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       val_4 = 1 << (flag_2 & 0x1f);
       uval_3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uval_3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uval_3,val_4,arg_12,arg_13,
@@ -33674,7 +33674,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       val_6 = -1;
       val_4 = -1;
       uval_5 = 0;
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       val_4 = Rules_ParseFilter_0041c0ab
                         (DAT_0068ecd0,DAT_0068eccc,(uint8_t *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (flag_2 & 0x1f),uval_5,val_4,val_6,uval_7,uval_8,uVar9,uVar10,uVar12);
@@ -33701,7 +33701,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         val_4 = Duel_ChooseTarget
@@ -33733,7 +33733,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         val_4 = Rules_ParseFilter_0041c0ab
@@ -33754,7 +33754,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_5 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         val_4 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -33771,7 +33771,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         card_idx = *(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20);
         match_count = *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006826dd)[match_count * 0x120 + card_idx * 0x5b20];
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
           Duel_DrawCardSprite(card_idx,match_count,2);
         }
@@ -34011,7 +34011,7 @@ int32_t FUN_004ac56d(int player_id,int card_slot,int event_type)
           target_idx = 0;
           while ((target_idx < (int)(&g_DuelPlayerCreatureCount)[val_1] &&
                  (slot_idx < *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + player * 0x5b20)))) {
-            val_3 = Duel_CardIsTapped(val_1,target_idx);
+            val_3 = Card_IsInPlay(val_1,target_idx);
             if (((val_3 != 0) &&
                 ((((&g_DuelMasterCardTable)
                    [*(int *)(&g_DuelCardSlot_CardId + target_idx * 0x120 + val_1 * 0x5b20) * 0x34] & 1) != 0 &&
@@ -34183,7 +34183,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       val_4 = 1 << (flag_2 & 0x1f);
       uval_3 = Card_GetColorAndTypeFlags(spell_id, target_id);
       uval_3 = UI_SelectTargetCardDialog((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uval_3,val_4,arg_12,arg_13,
@@ -34198,7 +34198,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
       val_6 = -1;
       val_4 = -1;
       uval_5 = 0;
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       val_4 = Rules_ParseFilter_0041c0ab
                         (DAT_0068ecd0,DAT_0068eccc,(uint8_t *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (flag_2 & 0x1f),uval_5,val_4,val_6,uval_7,uval_8,uVar9,uVar10,uVar12);
@@ -34225,7 +34225,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         val_4 = Duel_ChooseTarget
@@ -34257,7 +34257,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Card_GetColorAndTypeFlags(spell_id, target_id);
         val_4 = Rules_ParseFilter_0041c0ab
@@ -34278,7 +34278,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_5 = 0;
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         val_4 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20),
@@ -34295,7 +34295,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
         card_idx = *(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20);
         match_count = *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006826dd)[card_idx * 0x5b20 + match_count * 0x120];
-        flag_2 = Duel_GetCardColorOverride(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
           Duel_DrawCardSprite(card_idx,match_count,2);
         }
@@ -34959,7 +34959,7 @@ int32_t FUN_004aee02(int player_id,int card_slot,int event_type)
         Mem_AllocOrFree_004afd1c
                   (slot_idx,*(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + player * 0x5b20),player,card_slot);
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(slot_idx,match_count);
+          val_2 = Card_IsInPlay(slot_idx,match_count);
           if ((val_2 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 2) != 0)) {
@@ -35282,13 +35282,13 @@ void Mem_AllocOrFree_004af72b(int player_id)
 
 
 /*
- * Decompiled function: Duel_GetCardModifiedPower
+ * Decompiled function: Card_RemapColorIndexFF
  * Entry Point: 004af74c
  * Size: 106 bytes
  */
 
 
-int Duel_GetCardModifiedPower(int player_id,int card_slot,int event_type)
+int Card_RemapColorIndexFF(int player_id,int card_slot,int event_type)
 
 {
   if ((&DAT_006827bf)[arg_3 + player * 0x5b20 + card_slot * 0x120] != '\0') {
@@ -35300,13 +35300,13 @@ int Duel_GetCardModifiedPower(int player_id,int card_slot,int event_type)
 
 
 /*
- * Decompiled function: Duel_GetCardColorOverride
+ * Decompiled function: Card_RemapColorIndexF9
  * Entry Point: 004af7bb
  * Size: 106 bytes
  */
 
 
-int Duel_GetCardColorOverride(int player_id,int card_slot,int event_type)
+int Card_RemapColorIndexF9(int player_id,int card_slot,int event_type)
 
 {
   if ((&g_DuelCardSlot_SpecialState)[arg_3 + player * 0x5b20 + card_slot * 0x120] != '\0') {
@@ -40125,7 +40125,7 @@ int32_t FUN_004bb120(int player_id,int card_slot,int event_type)
                   (((((&g_DuelCardSlot_Flags)[match_count * 0x120 + g_DuelTargetPlayer * 0x5b20] & 2) != 0 &&
                     (((&g_DuelMasterCardTable)[val_4 * 0x34] & 2) != 0)) &&
                    (((&g_DuelCardSlot_Abilities2)[match_count * 0x120 + g_DuelTargetPlayer * 0x5b20] & 0x20) == 0)))) &&
-                 (((val_5 = g_DuelTargetPlayer * 0x5b20, cVar2 = Duel_GetCardModifiedPower(player,card_slot,2),
+                 (((val_5 = g_DuelTargetPlayer * 0x5b20, cVar2 = Card_RemapColorIndexFF(player,card_slot,2),
                    (*(uint32_t *)(&g_DuelCardSlot_Abilities2 + match_count * 0x120 + val_5) & 1 << (cVar2 - 1U & 0x1f))
                    == 0 && ((&DAT_004ff595)[val_4 * 0x34] == '\0')) &&
                   (((&DAT_006826f9)[match_count * 0x120 + g_DuelTargetPlayer * 0x5b20] & 8) == 0)))) {
@@ -40154,7 +40154,7 @@ int32_t FUN_004bb120(int player_id,int card_slot,int event_type)
         if (val_4 != -1) {
           *(uint32_t *)(&g_DuelCardSlot_Abilities1 + val_4 * 0x120 + player * 0x5b20) =
                *(uint32_t *)(&g_DuelCardSlot_Abilities1 + val_4 * 0x120 + player * 0x5b20) | 0x400020;
-          cVar2 = Duel_GetCardModifiedPower(player,card_slot,2);
+          cVar2 = Card_RemapColorIndexFF(player,card_slot,2);
           *(uint32_t *)(&g_DuelCardSlot_Counters + val_4 * 0x120 + player * 0x5b20) =
                1 << (cVar2 - 1U & 0x1f) | 0x20;
           if (((&g_DuelCardSlot_Abilities1)[card_slot * 0x120 + player * 0x5b20] & 2) != 0) {
@@ -40200,7 +40200,7 @@ int32_t FUN_004bb61e(int player_id,int card_slot,int event_type)
   }
   else {
     if (arg_3 == 0x71) {
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,1);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,1);
       val_2 = FUN_004af68f(val_2 + -1);
       if (val_2 != -1) {
         *(int *)(&DAT_006826c8 + card_slot * 0x120 + player * 0x5b20) = val_2;
@@ -40221,7 +40221,7 @@ int32_t FUN_004bb61e(int player_id,int card_slot,int event_type)
     if ((int)(char)(&DAT_006827c0)[card_slot * 0x120 + player * 0x5b20] !=
         *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + player * 0x5b20)) {
       Mem_AllocOrFree_004af72b(*(int *)(&DAT_006826c8 + card_slot * 0x120 + player * 0x5b20));
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,1);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,1);
       val_2 = FUN_004af68f(val_2 + -1);
       if (val_2 != -1) {
         *(int *)(&DAT_006826c8 + card_slot * 0x120 + player * 0x5b20) = val_2;
@@ -40239,15 +40239,15 @@ int32_t FUN_004bb61e(int player_id,int card_slot,int event_type)
         (&g_DuelMasterCardSubType)[*(int *)(&DAT_006826c8 + card_slot * 0x120 + player * 0x5b20) * 0x34] = 1;
       }
     }
-    if ((arg_3 == 0x3c) && (val_2 = Duel_CardIsTapped(player,card_slot), val_2 != 0)) {
+    if ((arg_3 == 0x3c) && (val_2 = Card_IsInPlay(player,card_slot), val_2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        val_2 = Duel_CardIsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        val_2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (((val_2 != 0) &&
             (val_3 = g_EventSourceSlot * 0x120, val_4 = g_EventSourcePlayer * 0x5b20,
-            val_2 = Duel_GetCardModifiedPower(player,card_slot,1),
+            val_2 = Card_RemapColorIndexFF(player,card_slot,1),
             *(int *)(&g_DuelCardSlot_CardId + val_4 + val_3) == val_2 + -1)) &&
            ((((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 0x10) == 0 ||
             (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + card_slot * 0x120 + player * 0x5b20) * 0x34] & 2)
@@ -40285,7 +40285,7 @@ int32_t FUN_004bbb5a(int player_id,int card_slot,int event_type)
   }
   else {
     if (arg_3 == 0x71) {
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,3);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,3);
       val_2 = FUN_004af68f(val_2 + -1);
       if (val_2 != -1) {
         *(int *)(&DAT_006826c8 + player * 0x5b20 + card_slot * 0x120) = val_2;
@@ -40306,7 +40306,7 @@ int32_t FUN_004bbb5a(int player_id,int card_slot,int event_type)
     if ((int)(char)(&DAT_006827c2)[player * 0x5b20 + card_slot * 0x120] !=
         *(int *)(&g_DuelCardSlot_Counters + player * 0x5b20 + card_slot * 0x120)) {
       Mem_AllocOrFree_004af72b(*(int *)(&DAT_006826c8 + player * 0x5b20 + card_slot * 0x120));
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,3);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,3);
       val_2 = FUN_004af68f(val_2 + -1);
       if (val_2 != -1) {
         *(int *)(&DAT_006826c8 + player * 0x5b20 + card_slot * 0x120) = val_2;
@@ -40324,15 +40324,15 @@ int32_t FUN_004bbb5a(int player_id,int card_slot,int event_type)
         (&g_DuelMasterCardSubType)[*(int *)(&DAT_006826c8 + player * 0x5b20 + card_slot * 0x120) * 0x34] = 1;
       }
     }
-    if ((arg_3 == 0x3c) && (val_2 = Duel_CardIsTapped(player,card_slot), val_2 != 0)) {
+    if ((arg_3 == 0x3c) && (val_2 = Card_IsInPlay(player,card_slot), val_2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        val_2 = Duel_CardIsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        val_2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if ((val_2 != 0) &&
            (val_3 = g_EventSourceSlot * 0x120, val_4 = g_EventSourcePlayer * 0x5b20,
-           val_2 = Duel_GetCardModifiedPower(player,card_slot,3),
+           val_2 = Card_RemapColorIndexFF(player,card_slot,3),
            *(int *)(&g_DuelCardSlot_CardId + val_4 + val_3) == val_2 + -1)) {
           g_CardEventResult = *(int32_t *)(&DAT_006826c8 + player * 0x5b20 + card_slot * 0x120);
           *(uint32_t *)(&g_DuelCardSlot_Abilities1 + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) =
@@ -40377,7 +40377,7 @@ int32_t CardScript_SylvanLibrary(int spell_id,int target_id,int flags)
     if ((((flags == 0x73) && (g_TurnPlayer == spell_id)) &&
         (*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0)) &&
        (g_DuelCombatPhaseState == 10)) {
-      val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+      val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
       if ((*(int *)(&DAT_00676150 + val_2 * 4) == 0) ||
          (val_2 = FUN_0049b68d(spell_id,target_id,7,0), val_2 != 0)) {
         if (spell_id == g_DuelTargetCardSlot) {
@@ -40392,7 +40392,7 @@ int32_t CardScript_SylvanLibrary(int spell_id,int target_id,int flags)
     else {
       if ((flags == 0x6d) && (*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0))
       {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) != 0) {
           FUN_0042ecaf(spell_id,target_id,0,0);
         }
@@ -40501,7 +40501,7 @@ int32_t CardScript_LandTax(int spell_id,int target_id,int flags)
          ((*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0 &&
           (*(int *)(&DAT_0068ef6c + spell_id * 0x20) <
            *(int *)(&DAT_0068ef6c + (1 - spell_id) * 0x20))))) {
-        val_3 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_3 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if ((*(int *)(&DAT_00676150 + val_3 * 4) == 0) ||
            (val_3 = FUN_0049b68d(spell_id,target_id,7,0), val_3 != 0)) {
           if ((g_DuelTargetPlayer != spell_id) && (*(int *)(&DAT_00666a00 + spell_id * 2000) != -1)) {
@@ -40519,7 +40519,7 @@ int32_t CardScript_LandTax(int spell_id,int target_id,int flags)
     }
     else {
       if (((flags == 0x6d) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
-        val_3 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_3 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_3 * 4) != 0) {
           FUN_0042ecaf(spell_id,target_id,0,0);
         }
@@ -40702,14 +40702,14 @@ void FUN_004bced7(int player_id,int card_slot,int event_type)
   int val_2;
   
   if (((arg_3 == 0x7f) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player)) {
-    val_1 = Duel_GetCardColorOverride(player,card_slot,5);
+    val_1 = Card_RemapColorIndexF9(player,card_slot,5);
     *(int *)(&DAT_00676150 + val_1 * 4) = *(int *)(&DAT_00676150 + val_1 * 4) + 3;
   }
   if ((((arg_3 != 0x74) && ((arg_3 == 0x6c || (arg_3 == 199)))) && (g_EventSourceSlot == card_slot)) &&
      (g_EventSourcePlayer == player)) {
-    val_1 = Duel_GetCardColorOverride(player,card_slot,5);
+    val_1 = Card_RemapColorIndexF9(player,card_slot,5);
     val_1 = *(int *)(&DAT_0068ef50 + val_1 * 4 + (1 - player) * 0x20);
-    val_2 = Duel_GetCardColorOverride(player,card_slot,5);
+    val_2 = Card_RemapColorIndexF9(player,card_slot,5);
     g_DuelDamageAccumulator = g_DuelDamageAccumulator +
                    ((val_1 + *(int *)(&DAT_0068ef50 + val_2 * 4 + player * 0x20) * -2) * 3 + 3) * 4;
   }
@@ -41135,7 +41135,7 @@ int32_t CardScript_AnimateArtifact(int spell_id,int target_id,int flags)
     if (((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
        ((*(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) == g_EventSourceSlot &&
         ((((char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] == g_EventSourcePlayer &&
-          (g_EventSourceSlot != -1)) && (val_5 = Duel_CardIsTapped(spell_id,target_id), val_5 != 0)))))) {
+          (g_EventSourceSlot != -1)) && (val_5 = Card_IsInPlay(spell_id,target_id), val_5 != 0)))))) {
       g_CardEventResult = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
       *(uint32_t *)(&g_DuelCardSlot_Abilities1 +
                *(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120 +
@@ -41176,7 +41176,7 @@ int32_t FUN_004be3f6(int player_id,int card_slot,int event_type)
       FUN_00467d65(FUN_004be8ae,-1);
     }
     if ((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      val_3 = Duel_CardIsTapped(player,card_slot);
+      val_3 = Card_IsInPlay(player,card_slot);
       if ((val_3 != 0) &&
          ((g_EventSourceSlot != -1 && (((&g_DuelMasterCardTable)[g_CardEventResult * 0x34] & 0x42) == 0x40)))) {
         card_idx = 0;
@@ -43260,7 +43260,7 @@ int32_t CardScript_Erosion(int spell_id,int target_id,int flags)
       g_DuelHumanPlayerIndex = (uint32_t)(val_3 == 0);
       if (g_DuelHumanPlayerIndex != 1) {
         if (*(int *)(&g_DuelCardSlot_TargetPlayer + target_id * 0x120 + spell_id * 0x5b20) == g_DuelTargetPlayer) {
-          val_3 = Duel_ColorMaskToIndex((&DAT_004ff596)
+          val_3 = Card_ColorMaskToColorIndex((&DAT_004ff596)
                                [*(int *)(&g_DuelCardSlot_CardId +
                                         *(int *)(&g_DuelCardSlot_CombatTargetSlot +
                                                 target_id * 0x120 + spell_id * 0x5b20) * 0x120 +
@@ -43325,7 +43325,7 @@ int32_t CardScript_Erosion(int spell_id,int target_id,int flags)
       }
       if (flags == 0x86) {
         val_3 = 1;
-        uval_4 = Duel_ColorMaskToIndex((&DAT_006826dc)
+        uval_4 = Card_ColorMaskToColorIndex((&DAT_006826dc)
                              [*(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) *
                               0x120 + (char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] *
                                       0x5b20]);
@@ -43633,7 +43633,7 @@ int32_t FUN_004c44d3(int player_id,int card_slot,int event_type)
   int val_4;
   
   if ((arg_3 == 199) && (((&g_DuelCardSlot_Flags)[card_slot * 0x120 + player * 0x5b20] & 2) != 0)) {
-    val_1 = Duel_GetCardModifiedPower(player,card_slot,1);
+    val_1 = Card_RemapColorIndexFF(player,card_slot,1);
     if (*(int *)(&DAT_0068ef50 + val_1 * 4 + g_DuelTargetPlayer * 0x20) != 0) {
       val_1 = 0x18 - (int)(&g_DuelPlayerLifeTotals)[g_DuelTargetPlayer] /
                      *(int *)(&DAT_0068ef50 + val_1 * 4 + g_DuelTargetPlayer * 0x20);
@@ -43642,7 +43642,7 @@ int32_t FUN_004c44d3(int player_id,int card_slot,int event_type)
       }
       g_DuelDamageAccumulator = g_DuelDamageAccumulator + val_1 * 0x18;
     }
-    val_1 = Duel_GetCardModifiedPower(player,card_slot,1);
+    val_1 = Card_RemapColorIndexFF(player,card_slot,1);
     if (*(int *)(&DAT_0068ef50 + val_1 * 4 + g_DuelTargetCardSlot * 0x20) != 0) {
       val_1 = 0x18 - (int)(&g_DuelPlayerLifeTotals)[g_DuelTargetCardSlot] /
                      *(int *)(&DAT_0068ef50 + val_1 * 4 + g_DuelTargetCardSlot * 0x20);
@@ -43658,7 +43658,7 @@ int32_t FUN_004c44d3(int player_id,int card_slot,int event_type)
   else if (arg_3 == 0x73) {
     if (((g_DuelCombatPhaseState == 4) && (((&g_DuelCardSlot_Counters)[card_slot * 0x120 + player * 0x5b20] & 1) == 0)) &&
        ((g_TurnPlayer == DAT_00681eb4 &&
-        (val_1 = Duel_GetCardModifiedPower(player,card_slot,1),
+        (val_1 = Card_RemapColorIndexFF(player,card_slot,1),
         *(int *)(&DAT_0068ef50 + val_1 * 4 + DAT_00681eb4 * 0x20) != 0)))) {
       *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + player * 0x5b20) =
            *(uint32_t *)(&DAT_006827d4 + card_slot * 0x120 + player * 0x5b20) | 0x101;
@@ -43677,7 +43677,7 @@ int32_t FUN_004c44d3(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x86) {
       val_1 = player;
       val_4 = card_slot;
-      val_3 = Duel_GetCardModifiedPower(player,card_slot,1);
+      val_3 = Card_RemapColorIndexFF(player,card_slot,1);
       Mem_AllocOrFree_004afd1c
                 (g_TurnPlayer,*(int *)(&DAT_0068ef50 + val_3 * 4 + g_TurnPlayer * 0x20),val_1,val_4)
       ;
@@ -43688,7 +43688,7 @@ int32_t FUN_004c44d3(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 199) {
       val_1 = 1 - g_TurnPlayer;
-      val_4 = Duel_GetCardModifiedPower(player,card_slot,1);
+      val_4 = Card_RemapColorIndexFF(player,card_slot,1);
       Mem_AllocOrFree_004afd1c(val_1,*(int *)(&DAT_0068ef50 + val_4 * 4 + val_1 * 0x20),player,card_slot)
       ;
     }
@@ -43791,7 +43791,7 @@ int32_t CardScript_EvilPresence(int spell_id,int target_id,int flags)
         *(int32_t *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) =
              *(int32_t *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20);
         *(int32_t *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) = 1;
-        val_2 = Duel_GetCardModifiedPower(spell_id,target_id,
+        val_2 = Card_RemapColorIndexFF(spell_id,target_id,
                              *(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20));
         *(int *)(&g_DuelCardSlot_CardId +
                 *(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) * 0x120 +
@@ -43809,8 +43809,8 @@ int32_t CardScript_EvilPresence(int spell_id,int target_id,int flags)
     if ((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
         ((*(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) == g_EventSourceSlot &&
          (((char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] == g_EventSourcePlayer &&
-          (g_EventSourceSlot != -1)))))) && (val_2 = Duel_CardIsTapped(spell_id,target_id), val_2 != 0)) {
-      val_2 = Duel_GetCardModifiedPower(spell_id,target_id,
+          (g_EventSourceSlot != -1)))))) && (val_2 = Card_IsInPlay(spell_id,target_id), val_2 != 0)) {
+      val_2 = Card_RemapColorIndexFF(spell_id,target_id,
                            *(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20));
       g_CardEventResult = val_2 + -1;
     }
@@ -43948,7 +43948,7 @@ int32_t CardScript_LivingArtifact(int spell_id,int target_id,int flags)
       if ((((g_DuelCombatPhaseState == 4) && (g_TurnPlayer == spell_id)) && (spell_id == DAT_00681eb4)) &&
          ((*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0 &&
           (val_2 = FUN_004680fc(spell_id,target_id), val_2 != 0)))) {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if ((*(int *)(&DAT_00676150 + val_2 * 4) == 0) ||
            (val_2 = FUN_0049b68d(spell_id,target_id,7,0), val_2 != 0)) {
           if (g_DuelTargetCardSlot == spell_id) {
@@ -43966,7 +43966,7 @@ int32_t CardScript_LivingArtifact(int spell_id,int target_id,int flags)
     }
     else {
       if (((flags == 0x6d) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) != 0) {
           FUN_0042ecaf(spell_id,target_id,0,0);
         }
@@ -44067,7 +44067,7 @@ int32_t CardScript_Blight(int spell_id,int target_id,int flags)
         *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20) = match_count;
         (&g_DuelCardSlot_TapState)[target_id * 0x120 + spell_id * 0x5b20] = 1;
         if (card_idx == g_DuelTargetPlayer) {
-          val_5 = Duel_ColorMaskToIndex((&DAT_004ff596)
+          val_5 = Card_ColorMaskToColorIndex((&DAT_004ff596)
                                [*(int *)(&g_DuelCardSlot_CardId + card_idx * 0x5b20 + match_count * 0x120) * 0x34
                                ]);
           g_DuelDamageAccumulator = g_DuelDamageAccumulator +
@@ -44215,7 +44215,7 @@ int32_t CardScript_TargetLand(int spell_id,int target_id,int flags)
         *(int *)(&g_DuelCardSlot_CombatTargetSlot + target_id * 0x120 + spell_id * 0x5b20) = slot_idx;
         (&g_DuelCardSlot_TapState)[target_id * 0x120 + spell_id * 0x5b20] = 1;
         if (match_count == g_DuelTargetPlayer) {
-          val_5 = Duel_ColorMaskToIndex((&DAT_004ff596)
+          val_5 = Card_ColorMaskToColorIndex((&DAT_004ff596)
                                [*(int *)(&g_DuelCardSlot_CardId + match_count * 0x5b20 + slot_idx * 0x120) * 0x34]
                               );
           g_DuelDamageAccumulator = g_DuelDamageAccumulator +
@@ -44357,7 +44357,7 @@ int32_t FUN_004c5e5f(int player_id,int card_slot,int event_type)
       }
       if (slot_idx < 1) {
         arg_3_00 = 1;
-        arg_2_00 = Duel_ColorMaskToIndex(arg_1_00);
+        arg_2_00 = Card_ColorMaskToColorIndex(arg_1_00);
         FUN_0049b1a9(g_EventSourcePlayer,arg_2_00,arg_3_00);
       }
       else {
@@ -44391,14 +44391,14 @@ int32_t FUN_004c6039(int player_id,int card_slot,int event_type)
   else {
     if ((arg_3 == 0x81) && (g_EventSourcePlayer != player)) {
       val_3 = *(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120);
-      val_2 = Duel_GetCardModifiedPower(player,card_slot,3);
+      val_2 = Card_RemapColorIndexFF(player,card_slot,3);
       if (*(int *)(&DAT_004ff590 + val_3 * 0x34) == *(int *)(&DAT_0068f0dc + val_2 * 4)) {
         (&g_DuelPlayerLifeTotals)[player] = (&g_DuelPlayerLifeTotals)[player] + 1;
       }
     }
     if ((((arg_3 == 0x6c) || (arg_3 == 199)) && (g_EventSourceSlot == card_slot)) && (g_EventSourcePlayer == player))
     {
-      val_3 = Duel_GetCardModifiedPower(player,card_slot,3);
+      val_3 = Card_RemapColorIndexFF(player,card_slot,3);
       g_DuelDamageAccumulator = g_DuelDamageAccumulator +
                      (*(int *)(&DAT_0068ef50 + val_3 * 4 + g_DuelTargetPlayer * 0x20) * 3 + 3) * 8;
     }
@@ -44462,7 +44462,7 @@ int32_t FUN_004c626d(int player_id,int card_slot,int event_type)
        (((uint8_t)*(int32_t *)(&g_DuelCardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) & 0x22)
         == 2)) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,2);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,2);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -44510,7 +44510,7 @@ int32_t FUN_004c6423(int player_id,int card_slot,int event_type)
        (((uint8_t)*(int32_t *)(&g_DuelCardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) & 0x22)
         == 2)) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,1);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,1);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -44580,7 +44580,7 @@ int32_t Pic_Subsystem_004336f8(int player_id,int card_slot,int event_type)
         ((((uint8_t)*(int32_t *)(&g_DuelCardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) &
           0x22) == 2 &&
          (cVar1 = (&DAT_006826dc)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-         flag_3 = Duel_GetCardColorOverride(player,card_slot,5), (1 << (flag_3 & 0x1f) & (int)cVar1) != 0)))))) {
+         flag_3 = Card_RemapColorIndexF9(player,card_slot,5), (1 << (flag_3 & 0x1f) & (int)cVar1) != 0)))))) {
       if (arg_3 == 0x32) {
         g_CardEventResult = g_CardEventResult + 2;
       }
@@ -44594,7 +44594,7 @@ int32_t Pic_Subsystem_004336f8(int player_id,int card_slot,int event_type)
       val_5 = 1 - player;
       flag_3 = (&g_DuelCardSlot_Counters)[card_slot * 0x120 + player * 0x5b20];
       for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[val_5]; match_count = match_count + 1) {
-        val_6 = Duel_CardIsTapped(val_5,match_count);
+        val_6 = Card_IsInPlay(val_5,match_count);
         if (((val_6 != 0) &&
             (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + val_5 * 0x5b20) * 0x34] &
              0x1e) != 0)) &&
@@ -44673,7 +44673,7 @@ int32_t FUN_004c698a(int player_id,int card_slot,int event_type)
        (((uint8_t)*(int32_t *)(&g_DuelCardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) & 0x22)
         == 2)) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,5);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,5);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -44773,11 +44773,11 @@ int32_t CardScript_AspectOfWolf(int spell_id,int target_id,int flags)
        ((g_EventSourceSlot != -1 &&
         (((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0)))) {
       if (flags == 0x32) {
-        val_2 = Duel_GetCardModifiedPower(spell_id,target_id,3);
+        val_2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult = g_CardEventResult + *(int *)(&DAT_0068ef50 + val_2 * 4 + spell_id * 0x20) / 2;
       }
       if (flags == 0x33) {
-        val_2 = Duel_GetCardModifiedPower(spell_id,target_id,3);
+        val_2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult = g_CardEventResult +
                        (*(int *)(&DAT_0068ef50 + val_2 * 4 + spell_id * 0x20) + 1) / 2;
       }
@@ -45558,7 +45558,7 @@ int32_t CardScript_HolyArmor(int spell_id,int target_id,int flags)
     }
     else if (flags == 0x90) {
       if (spell_id == g_TurnPlayer) {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
           Ai_PeekPlannedChoice(0);
         }
@@ -45576,7 +45576,7 @@ int32_t CardScript_HolyArmor(int spell_id,int target_id,int flags)
     else {
       if ((flags == 0x6d) && (val_2 = FUN_0049b68d(spell_id,target_id,5,1), val_2 != 0)) {
         if (spell_id == g_TurnPlayer) {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,5,-1);
           }
@@ -45591,7 +45591,7 @@ int32_t CardScript_HolyArmor(int spell_id,int target_id,int flags)
           }
         }
         else {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,5,1);
           }
@@ -45771,7 +45771,7 @@ int32_t CardScript_Blessing(int spell_id,int target_id,int flags)
     }
     else if (flags == 0x90) {
       if (g_TurnPlayer == spell_id) {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
           Ai_PeekPlannedChoice(0);
         }
@@ -45789,7 +45789,7 @@ int32_t CardScript_Blessing(int spell_id,int target_id,int flags)
     else {
       if ((flags == 0x6d) && (val_2 = FUN_0049b68d(spell_id,target_id,5,1), val_2 != 0)) {
         if (g_TurnPlayer == spell_id) {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,5,-1);
           }
@@ -45804,7 +45804,7 @@ int32_t CardScript_Blessing(int spell_id,int target_id,int flags)
           }
         }
         else {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,5,1);
           }
@@ -45994,7 +45994,7 @@ int32_t CardScript_Firebreathing(int spell_id,int target_id,int flags)
     }
     else if (flags == 0x90) {
       if (spell_id == g_TurnPlayer) {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
           Ai_PeekPlannedChoice(0);
         }
@@ -46012,7 +46012,7 @@ int32_t CardScript_Firebreathing(int spell_id,int target_id,int flags)
     else {
       if ((flags == 0x6d) && (val_2 = FUN_0049b68d(spell_id,target_id,4,1), val_2 != 0)) {
         if (spell_id == g_TurnPlayer) {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,4,-1);
           }
@@ -46027,7 +46027,7 @@ int32_t CardScript_Firebreathing(int spell_id,int target_id,int flags)
           }
         }
         else {
-          val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
+          val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[spell_id * 0x5b20 + target_id * 0x120]);
           if (*(int *)(&DAT_00676150 + val_2 * 4) == 0) {
             Ai_CalcManaRequirement_004ba890(spell_id,4,1);
           }
@@ -46244,7 +46244,7 @@ int32_t Palette_Color_0049ae00(int spell_id,int target_id,int flags)
            [*(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,1);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,1);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -46350,7 +46350,7 @@ int32_t CardScript_Seeker(int spell_id,int target_id,int flags)
            [*(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(spell_id,target_id,5);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,5);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -46617,7 +46617,7 @@ int32_t FUN_004cb79c(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x82) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,2);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,2);
       if (((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_DuelMasterCardTable)
            [*(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 2) != 0
@@ -46634,7 +46634,7 @@ int32_t FUN_004cb79c(int player_id,int card_slot,int event_type)
            [*(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 2) != 0
          )))))) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,2);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,2);
       if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
         *(uint32_t *)(&DAT_006827d4 + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) =
              *(uint32_t *)(&DAT_006827d4 + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) | 0x10;
@@ -46644,7 +46644,7 @@ int32_t FUN_004cb79c(int player_id,int card_slot,int event_type)
     }
     if (arg_3 == 0x6c) {
       cVar1 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      flag_2 = Duel_GetCardColorOverride(player,card_slot,2);
+      flag_2 = Card_RemapColorIndexF9(player,card_slot,2);
       if (((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_DuelMasterCardTable)
            [*(int *)(&g_DuelCardSlot_CardId + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 2) != 0
@@ -46875,7 +46875,7 @@ int32_t Pic_Subsystem_00439408(int player_id,int card_slot,int event_type)
         *(uint32_t *)(&DAT_006827c8 + card_idx * 0x5b20 + match_count * 0x120) =
              *(uint32_t *)(&DAT_006827c8 + card_idx * 0x5b20 + match_count * 0x120) | 2;
         for (slot_idx = 0; slot_idx < (int)(&g_DuelPlayerCreatureCount)[g_TurnPlayer]; slot_idx = slot_idx + 1) {
-          val_2 = Duel_CardIsTapped(g_TurnPlayer,slot_idx);
+          val_2 = Card_IsInPlay(g_TurnPlayer,slot_idx);
           if (((val_2 != 0) &&
               (((&g_DuelCardSlot_Flags)[slot_idx * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) != 0)) &&
              ((((&g_DuelMasterCardTable)
@@ -46919,7 +46919,7 @@ int32_t FUN_004cc5eb(int player_id,int card_slot,int event_type)
     if (arg_3 == 0x6a) {
       *(int32_t *)(&g_DuelCardSlot_DisplayIndex + card_slot * 0x120 + player * 0x5b20) = 0;
       for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[g_TurnPlayer]; match_count = match_count + 1) {
-        val_2 = Duel_CardIsTapped(g_TurnPlayer,match_count);
+        val_2 = Card_IsInPlay(g_TurnPlayer,match_count);
         if (((val_2 != 0) &&
             (((&g_DuelCardSlot_Flags)[match_count * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) == 0)) &&
            (((&g_DuelMasterCardTable)
@@ -46962,7 +46962,7 @@ int32_t FUN_004cc5eb(int player_id,int card_slot,int event_type)
       if (arg_3 == 199) {
         slot_idx = 0;
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[1 - g_TurnPlayer]; match_count = match_count + 1) {
-          val_2 = Duel_CardIsTapped(1 - g_TurnPlayer,match_count);
+          val_2 = Card_IsInPlay(1 - g_TurnPlayer,match_count);
           if (((val_2 != 0) &&
               (((&g_DuelCardSlot_Flags)[match_count * 0x120 + (1 - g_TurnPlayer) * 0x5b20] & 0x10) == 0)) &&
              (((&g_DuelMasterCardTable)
@@ -47061,7 +47061,7 @@ void CardScript_Burrowing(int spell_id,int target_id,int flags)
   if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     Catalog_ParseCsvLine(s_prompts_txt_00508d04,s_BURROWING_00508cf8);
   }
-  cVar1 = Duel_GetCardModifiedPower(spell_id, target_id, 4);
+  cVar1 = Card_RemapColorIndexFF(spell_id, target_id, 4);
   FUN_004ce5ce(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -47320,7 +47320,7 @@ int32_t CardScript_InstillEnergy(int spell_id,int target_id,int flags)
       (&g_DuelCardSlot_TapState)[target_id * 0x120 + spell_id * 0x5b20] = 0;
     }
     if (flags == 0x73) {
-      val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+      val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
       if ((*(int *)(&DAT_00676150 + val_2 * 4) == 0) ||
          (val_2 = FUN_0049b68d(spell_id,target_id,7,0), val_2 != 0)) {
         if (((*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0) &&
@@ -47342,7 +47342,7 @@ int32_t CardScript_InstillEnergy(int spell_id,int target_id,int flags)
     else {
       if ((flags == 0x6d) && (*(int *)(&g_DuelCardSlot_Counters + target_id * 0x120 + spell_id * 0x5b20) == 0))
       {
-        val_2 = Duel_ColorMaskToIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
+        val_2 = Card_ColorMaskToColorIndex((&DAT_006826dd)[target_id * 0x120 + spell_id * 0x5b20]);
         if (*(int *)(&DAT_00676150 + val_2 * 4) != 0) {
           FUN_0042ecaf(spell_id,target_id,0,0);
         }
@@ -47740,7 +47740,7 @@ int32_t Pic_Subsystem_0043b424(int player_id,int card_slot,int event_type)
       player_idx = 0xffffffff;
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-          val_5 = Duel_CardIsTapped(slot_idx,match_count);
+          val_5 = Card_IsInPlay(slot_idx,match_count);
           if ((val_5 != 0) &&
              (((&g_DuelMasterCardTable)[*(int *)(&g_DuelCardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34]
               & 2) != 0)) {
@@ -47813,7 +47813,7 @@ void CardScript_FishliverOil(int spell_id,int target_id,int flags)
   if (((flags == 0x6c) && (g_EventSourceSlot == target_id)) && (g_EventSourcePlayer == spell_id)) {
     Catalog_ParseCsvLine(s_prompts_txt_00508da4,s_FISHLIVEROIL_00508d94);
   }
-  cVar1 = Duel_GetCardModifiedPower(spell_id,target_id,2);
+  cVar1 = Card_RemapColorIndexFF(spell_id,target_id,2);
   FUN_004ce5ce(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -48210,7 +48210,7 @@ void FUN_004cef78(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,1);
+  height = Card_RemapColorIndexF9(player,card_slot,1);
   CardScript_AnyWard(player,card_slot,arg_3,height);
   return;
 }
@@ -48229,7 +48229,7 @@ void FUN_004cefaf(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,3);
+  height = Card_RemapColorIndexF9(player,card_slot,3);
   CardScript_AnyWard(player,card_slot,arg_3,height);
   return;
 }
@@ -48248,7 +48248,7 @@ void FUN_004cefe6(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,2);
+  height = Card_RemapColorIndexF9(player,card_slot,2);
   CardScript_AnyWard(player,card_slot,arg_3,height);
   return;
 }
@@ -48267,7 +48267,7 @@ void FUN_004cf01d(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,4);
+  height = Card_RemapColorIndexF9(player,card_slot,4);
   CardScript_AnyWard(player,card_slot,arg_3,height);
   return;
 }
@@ -48286,7 +48286,7 @@ void FUN_004cf054(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,5);
+  height = Card_RemapColorIndexF9(player,card_slot,5);
   CardScript_AnyWard(player,card_slot,arg_3,height);
   return;
 }
@@ -48413,7 +48413,7 @@ int32_t CardScript_AnyWard(int spell_id,int target_id,int flags,int height)
          ((char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] == g_EventSourcePlayer)) &&
         (g_EventSourceSlot != -1)) &&
        ((((&g_DuelCardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0 &&
-        (height = Duel_GetCardColorOverride(spell_id,target_id,height), flags == 0x34)))) {
+        (height = Card_RemapColorIndexF9(spell_id,target_id,height), flags == 0x34)))) {
       g_CardEventResult = g_CardEventResult | 0x800 << ((char)height - 1U & 0x1f);
     }
     if (((flags == 0x6c) &&
@@ -48815,7 +48815,7 @@ int32_t CardScript_CopyArtifact(int spell_id,int target_id,int flags)
       (&g_DuelCardSlot_TapState)[target_id * 0x120 + spell_id * 0x5b20] = 0;
     }
     if ((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) && (g_EventSourceSlot == target_id)) &&
-       ((g_EventSourcePlayer == spell_id && (val_6 = Duel_CardIsTapped(spell_id,target_id), val_6 != 0)))) {
+       ((g_EventSourcePlayer == spell_id && (val_6 = Card_IsInPlay(spell_id,target_id), val_6 != 0)))) {
       g_CardEventResult = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
     }
     uval_2 = 0;
@@ -49237,7 +49237,7 @@ int32_t FUN_004d1597(int player_id,int card_slot,int event_type)
       val_6 = Deck_AddCardToDeck(player,val_6);
       if (val_6 != -1) {
         Pic_Subsystem_0042ac1f(player,val_6);
-        cVar2 = Duel_GetCardColorOverride(player,card_slot,1);
+        cVar2 = Card_RemapColorIndexF9(player,card_slot,1);
         (&DAT_006826dd)[val_6 * 0x120 + player * 0x5b20] = (char)(2 << (cVar2 - 1U & 0x1f));
         *(uint32_t *)(&g_DuelCardSlot_Abilities1 + val_6 * 0x120 + player * 0x5b20) =
              *(uint32_t *)(&g_DuelCardSlot_Abilities1 + val_6 * 0x120 + player * 0x5b20) | 0x10;
@@ -49265,7 +49265,7 @@ int32_t FUN_004d1597(int player_id,int card_slot,int event_type)
         ) && ((((&g_DuelCardSlot_Flags)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] & 0x20) == 0 &&
               (((&DAT_006826e0)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120] != '\x04' &&
                (cVar2 = (&DAT_006826dd)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-               cVar3 = Duel_GetCardColorOverride(player,card_slot,1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
+               cVar3 = Card_RemapColorIndexF9(player,card_slot,1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
              )) {
       FUN_00467e37(player,card_slot);
     }
@@ -49732,7 +49732,7 @@ void FUN_004d2b76(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,1);
+  height = Card_RemapColorIndexF9(player,card_slot,1);
   CardScript_CircleOfProtection(player,card_slot,arg_3,height);
   return;
 }
@@ -49751,7 +49751,7 @@ void FUN_004d2bad(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,5);
+  height = Card_RemapColorIndexF9(player,card_slot,5);
   CardScript_CircleOfProtection(player,card_slot,arg_3,height);
   return;
 }
@@ -49770,7 +49770,7 @@ void FUN_004d2be4(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,4);
+  height = Card_RemapColorIndexF9(player,card_slot,4);
   CardScript_CircleOfProtection(player,card_slot,arg_3,height);
   return;
 }
@@ -49789,7 +49789,7 @@ void FUN_004d2c1b(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,2);
+  height = Card_RemapColorIndexF9(player,card_slot,2);
   CardScript_CircleOfProtection(player,card_slot,arg_3,height);
   return;
 }
@@ -49808,7 +49808,7 @@ void FUN_004d2c52(int player_id,int card_slot,int event_type)
 {
   int height;
   
-  height = Duel_GetCardColorOverride(player,card_slot,3);
+  height = Card_RemapColorIndexF9(player,card_slot,3);
   CardScript_CircleOfProtection(player,card_slot,arg_3,height);
   return;
 }
@@ -50114,7 +50114,7 @@ int32_t CardScript_PhantasmalTerrain(int spell_id,int target_id,int flags)
     if ((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
         ((*(int *)(&g_DuelCardSlot_TargetSlot + target_id * 0x120 + spell_id * 0x5b20) == g_EventSourceSlot &&
          (((char)(&g_DuelCardSlot_ColorMask)[target_id * 0x120 + spell_id * 0x5b20] == g_EventSourcePlayer &&
-          (g_EventSourceSlot != -1)))))) && (val_2 = Duel_CardIsTapped(spell_id,target_id), val_2 != 0)) {
+          (g_EventSourceSlot != -1)))))) && (val_2 = Card_IsInPlay(spell_id,target_id), val_2 != 0)) {
       g_CardEventResult = *(int32_t *)(&DAT_006826c8 + target_id * 0x120 + spell_id * 0x5b20);
     }
     uval_1 = 0;
@@ -50164,14 +50164,14 @@ int32_t FUN_004d3945(int player_id,int card_slot,int event_type)
       Duel_DrawCardSprite(g_DuelCombatAttackerPlayer,g_DuelCombatBlockerSlot,1);
     }
     if ((arg_3 == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      val_2 = Duel_CardIsTapped(player,card_slot);
+      val_2 = Card_IsInPlay(player,card_slot);
       if (val_2 != 0) {
-        val_2 = Duel_CardIsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        val_2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (val_2 != 0) {
-          val_2 = Duel_GetCardModifiedPower(player,card_slot,4);
+          val_2 = Card_RemapColorIndexFF(player,card_slot,4);
           if (*(int *)(&DAT_0068f0dc + val_2 * 4) == *(int *)(&DAT_004ff590 + g_CardEventResult * 0x34))
           {
-            val_2 = Duel_GetCardModifiedPower(player,card_slot,
+            val_2 = Card_RemapColorIndexFF(player,card_slot,
                                  *(int *)(&g_DuelCardSlot_Counters + card_slot * 0x120 + player * 0x5b20));
             g_CardEventResult = val_2 + -1;
           }
@@ -50439,7 +50439,7 @@ int32_t FUN_004d42d8(int player_id,int card_slot,int event_type)
           val_5 = -1;
           val_3 = -1;
           uval_4 = 0;
-          flag_1 = Duel_GetCardColorOverride(player,card_slot,1);
+          flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
           val_3 = Rules_ParseFilter_0041c0ab
                             (DAT_0068ecd0,DAT_0068eccc,(uint8_t *)0x0,player,2,2,0,0,0,0,0,
                              1 << (flag_1 & 0x1f),uval_4,val_3,val_5,uval_6,uval_7,uval_8,uVar9,uVar10);
@@ -50465,7 +50465,7 @@ int32_t FUN_004d42d8(int player_id,int card_slot,int event_type)
         val_5 = -1;
         val_3 = -1;
         uval_4 = 0;
-        flag_1 = Duel_GetCardColorOverride(player,card_slot,1);
+        flag_1 = Card_RemapColorIndexF9(player,card_slot,1);
         val_3 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + player * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + player * 0x5b20),
@@ -50530,7 +50530,7 @@ int32_t FUN_004d458b(int player_id,int card_slot,int event_type)
           val_5 = -1;
           val_3 = -1;
           uval_4 = 0;
-          flag_1 = Duel_GetCardColorOverride(player,card_slot,3);
+          flag_1 = Card_RemapColorIndexF9(player,card_slot,3);
           val_3 = Rules_ParseFilter_0041c0ab
                             (DAT_0068ecd0,DAT_0068eccc,(uint8_t *)0x0,player,2,2,0,0,0,0,0,
                              1 << (flag_1 & 0x1f),uval_4,val_3,val_5,uval_6,uval_7,uval_8,uVar9,uVar10);
@@ -50556,7 +50556,7 @@ int32_t FUN_004d458b(int player_id,int card_slot,int event_type)
         val_5 = -1;
         val_3 = -1;
         uval_4 = 0;
-        flag_1 = Duel_GetCardColorOverride(player,card_slot,3);
+        flag_1 = Card_RemapColorIndexF9(player,card_slot,3);
         val_3 = Rules_ParseFilter_0041c0ab
                           (*(int *)(&g_DuelCardSlot_TargetPlayer + card_slot * 0x120 + player * 0x5b20),
                            *(int *)(&g_DuelCardSlot_CombatTargetSlot + card_slot * 0x120 + player * 0x5b20),
@@ -51745,7 +51745,7 @@ int Ai_Subsystem_004cc1e8(uint32_t player)
   if (2 < val_4) {
     Mem_AllocOrFree_0049f57d(((int)(player + ((int)player >> 0x1f & 0xffU)) >> 8) + 8,player & 0xff);
   }
-  val_4 = Duel_ColorMaskToIndex((&DAT_004ff596)[player * 0x34]);
+  val_4 = Card_ColorMaskToColorIndex((&DAT_004ff596)[player * 0x34]);
   flag_1 = (&g_DuelMasterCardTable)[player * 0x34];
   cVar2 = s_Swamp_004ff581[player * 0x34];
   flag_3 = false;
@@ -51758,7 +51758,7 @@ int Ai_Subsystem_004cc1e8(uint32_t player)
     for (player_idx = 0x1f2; -1 < player_idx; player_idx = player_idx + -1) {
       if (*(int *)(&deck + player_idx * 4) != -1) {
         uval_5 = *(uint32_t *)(&deck + player_idx * 4) & 0xfff;
-        val_6 = Duel_ColorMaskToIndex((&DAT_004ff596)[uval_5 * 0x34]);
+        val_6 = Card_ColorMaskToColorIndex((&DAT_004ff596)[uval_5 * 0x34]);
         if ((int)(val_4 * 0x20 + (uint32_t)flag_1 * 0x100 + (int)cVar2) <=
             (int)(val_6 * 0x20 + (uint32_t)(uint8_t)(&g_DuelMasterCardTable)[uval_5 * 0x34] * 0x100 +
                  (int)s_Swamp_004ff581[uval_5 * 0x34])) {
@@ -51880,8 +51880,8 @@ int32_t FUN_004d7876(int player_id,int card_slot,int event_type)
     uval_1 = 1;
   }
   else {
-    val_2 = Duel_ColorMaskToIndex((uint8_t)player);
-    val_3 = Duel_ColorMaskToIndex((uint8_t)card_slot);
+    val_2 = Card_ColorMaskToColorIndex((uint8_t)player);
+    val_3 = Card_ColorMaskToColorIndex((uint8_t)card_slot);
     if ((char)(&DAT_00509058)[val_3 * 3] == val_2) {
       uval_1 = 1;
     }
