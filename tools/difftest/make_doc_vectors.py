@@ -33,7 +33,11 @@ LAYOUT = {
                  f_clear=0x0048D3BF, f_color=0x004521E2,
                  c_find_free=0x004D695B, f_remap_f9=0x004AF7BB, f_remap_ff=0x004AF74C,
                  ai_cursor=0x0050B37C, ai_best_choice=0x00511600, ai_peeked=0x00666410,
-                 f_peek_choice=0x00430768, f_cursor_back=0x004308E4),
+                 f_peek_choice=0x00430768, f_cursor_back=0x004308E4,
+                 f_scan=0x0048C5A8, c_scan_check=0x0048AF80, c_broadcast=0x0048C50B, c_combat=0x0048B64F,
+                 scan_event=0x0068DD04, scan_counter=0x00666728, scan_depth=0x0068EF48, scan_order_p=0x00690320,
+                 scan_order_s=0x00681EE0, scan_current=0x00666448, master_count=0x00665ED0, turn_player=0x00666458,
+                 scan_flag=0x0068F0F4, global_handler=0x00666418, player_card_count=0x00666408),
     "MAGIC": dict(slot=0x006A5F30, master=0x0051AEB8, count=0x006A3F78, objects=0x006FECC0,
                   f_mana=0x00474389, f_clear=0x00474D1E),
 }
@@ -321,6 +325,89 @@ def main(out=None):
             "Ai_PlanCursorBack", "DUEL", L["f_cursor_back"],
             f"Cursor {cursor} goes to {expect} (it never goes below 0)",
             f"{DOC}, round 3 (`Ai_PlanCursorBack`; synthetic, decompiled body)", [], 0, mi, mo))
+
+
+    # ---------------------------------------------------------------------------------------------
+    # Magic_ScanCards branches no recorded game reached (synthetic, from the decompiled body and the disassembly): the
+    # turn-start marking path, the global handler, an empty list at a turn start, the variable that leaks out of the loop,
+    # and the skip rules. Handler addresses are real DUEL.EXE ones (Forest, Llanowar Elves).
+    L = LAYOUT["DUEL"]
+    FOREST_H, ELVES_H = 0x0047A2CF, 0x0046388D
+
+    def scan(name, description, event, entries, turn_player, calls_for, global_card=None, check=0, final_flags=None):
+        """entries: [(player, slot, card, display_index, flags)] in play order; calls_for: expected calls."""
+        mi, mo = Snapshot(), Snapshot()
+        mi.u32(L["saved"], 0x1234)
+        mi.u32(L["scan_counter"], 7)
+        mi.u32(L["scan_depth"], 0)
+        mi.u32(L["master_count"], 447)
+        mi.u32(L["turn_player"], turn_player)
+        mi.u32(L["global_handler"], 0xFFFFFFFF if global_card is None else global_card)
+        used = {(p, sl): card for p, sl, card, _, _ in entries}
+        for p in range(2):
+            for sl in range(0x50):
+                mi.u32(slot(L, p, sl, 0x04), used.get((p, sl), 0xFFFFFFFF))
+        for i, (p, sl, card, display, flags) in enumerate(entries):
+            mi.u32(L["scan_order_p"] + 4 * i, p)
+            mi.u32(L["scan_order_s"] + 4 * i, sl)
+            mi.u32(slot(L, p, sl, 0x34), display)
+            mi.u32(slot(L, p, sl, 0x0C), flags)
+            mi.u32(master(L, card, 0x10), ELVES_H if card == ELVES else FOREST_H)
+        mi.u32(L["scan_order_p"] + 4 * len(entries), 0xFFFFFFFF)
+        if global_card is not None:
+            mi.u32(master(L, global_card, 0x10), ELVES_H if global_card == ELVES else FOREST_H)
+        # What the scan leaves: the event and counters, the saved word, each player's highest used slot + 1.
+        mo.u32(L["scan_event"], event)
+        mo.u32(L["scan_counter"], 8)
+        mo.u32(L["scan_depth"], 0)
+        mo.u32(L["saved"], 0x1234)
+        for p in range(2):
+            top = [sl + 1 for (pp, sl) in used if pp == p]
+            if top:
+                mo.u32(L["player_card_count"] + 4 * p, max(top))
+        ran = [e for e in entries if e[3] == entries.index(e) and (e[4] & 2 or e[4] & 0x20)]
+        if ran:
+            last = ran[-1]
+            mo.u32(L["scan_current"], last[0] * 0x80 + last[1])
+        if final_flags is not None:                       # the marking path: flags | 0x10, and the flag word set to -1
+            fp, fs, fv = final_flags
+            mo.u32(slot(L, fp, fs, 0x0C), fv)
+            mo.u32(L["scan_flag"], 0xFFFFFFFF)
+        write(f"scan_{name}", vector("Magic_ScanCards", "DUEL", L["f_scan"], description,
+                                     f"{DOC}, round 8 (`Magic_ScanCards`; synthetic, decompiled body and disassembly)",
+                                     [event], 0, mi, mo, calls_for))
+
+    def call(addr, name, args, ret=0):
+        return {"callee": f"0x{addr:08x}", "name": name, "args": args, "return": ret, "memory_writes": []}
+
+    handler = lambda addr, p, sl, ev: call(addr, "card_handler", [p, sl, ev])
+    # 1. Turn start, the turn player's card has flags & 0x14 == 4, the check returns 0: the card is marked (flags |= 0x10,
+    #    the flag word set to -1) and the card event 0x81 is broadcast; then the combat damage step runs.
+    scan("turn_start_marks_card", "Event 0x15, turn player 0, a card with flags 0x6: the check returns 0, so it is marked "
+         "(flags 0x16, flag word -1) and 0x81 is broadcast, then the combat damage step runs",
+         0x15, [(0, 0, FOREST, 0, 0x6)], 0,
+         [handler(FOREST_H, 0, 0, 0x15), call(L["c_scan_check"], "scan_check", [0, 0], 0),
+          call(L["c_broadcast"], "Magic_BroadcastCardEvent", [0, 0, 0x81]), call(L["c_combat"], "combat_damage_step", [])],
+         final_flags=(0, 0, 0x16))
+    # 2. The same, but the check returns non-zero: no marking, no broadcast (the combat step still runs).
+    scan("turn_start_check_blocks_mark", "As above but the check returns 1: the card is not marked and nothing is broadcast",
+         0x15, [(0, 0, FOREST, 0, 0x6)], 0,
+         [handler(FOREST_H, 0, 0, 0x15), call(L["c_scan_check"], "scan_check", [0, 0], 1), call(L["c_combat"], "combat_damage_step", [])])
+    # 3. The global handler runs after every scan, even of an empty list, with (0, 0x4e, event).
+    scan("global_handler_runs", "An empty play order and a global handler card (Llanowar Elves' record): its handler is called "
+         "with (0, 0x4e, event) after the scan", 0x32, [], 0, [handler(ELVES_H, 0, 0x4e, 0x32)], global_card=ELVES)
+    # 4. Event 0x15 over an empty list: the leaked loop variable is 2, which is nobody's turn, so no combat step.
+    scan("turn_start_empty_list_no_combat_step", "Event 0x15, empty play order, turn player 0: the leaked loop variable is 2, "
+         "not the turn player, so the combat damage step is not run", 0x15, [], 0, [])
+    # 5. The leaked variable comes from the last entry examined even if it was skipped: entry 1 is player 1's but its
+    #    display index does not match, so no handler runs for it, yet the turn-player test (player 1) passes.
+    scan("leaked_player_from_skipped_entry", "Event 0x15, turn player 1: entry 1 (player 1) is skipped (display index 9), "
+         "but its player still reaches the turn-player test, so the combat damage step runs",
+         0x15, [(0, 0, FOREST, 0, 0x2), (1, 3, FOREST, 9, 0x2)], 1,
+         [handler(FOREST_H, 0, 0, 0x15), call(L["c_combat"], "combat_damage_step", [])])
+    # 6. The skip rules: a card in the hand (neither bit 0x2 nor 0x20) is skipped, a card with only bit 0x20 runs.
+    scan("skip_rules", "Event 0x32: entry 0 has flags 0x1 (in hand) and is skipped; entry 1 has only bit 0x20 and runs",
+         0x32, [(0, 0, FOREST, 0, 0x1), (0, 1, ELVES, 1, 0x20)], 0, [handler(ELVES_H, 0, 1, 0x32)])
 
     # ---------------------------------------------------------------------------------------------
     # Spell stack (DUEL.EXE). "Play a Forest: PushSpellStack(0, 2, 113, 0, 0)", "Cast Llanowar Elves,

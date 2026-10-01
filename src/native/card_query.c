@@ -174,14 +174,12 @@ uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, i
         mem_wr32(m, L->card_event_result, local);
         if (mem_rd32(m, L->event_depth) != 0) {
             /* Inside an event every card may adjust the value (g_CardEventResult). */
-            args[0] = (uint32_t)event_code;
-            vm_call(vm, CALLEE_SCAN_CARDS, 1, args);
+            Native_Magic_ScanCards(vm, event_code);
             if (mem_rd32(m, L->duel_mode_flags) & 0x10000u) {
                 mem_wr32(m, L->duel_mode_flags, mem_rd32(m, L->duel_mode_flags) & 0xfffeffffu);
                 mem_wr32(m, SLOT(SLOT_CARD), mem_rd32(m, L->card_event_result));
                 mem_wr32(m, L->duel_mode_flags, mem_rd32(m, L->duel_mode_flags) | 0x20000u);
-                args[0] = (uint32_t)event_code;
-                vm_call(vm, CALLEE_SCAN_CARDS, 1, args);
+                Native_Magic_ScanCards(vm, event_code);
                 mem_wr32(m, L->duel_mode_flags, mem_rd32(m, L->duel_mode_flags) & 0xfffdffffu);
             }
         }

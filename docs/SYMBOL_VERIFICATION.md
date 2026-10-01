@@ -703,3 +703,32 @@ addresses as arguments and as written regions; the emulator is deterministic, so
 
 `Ai_BeginTrial` is not native yet: it calls the whole-game-state restore, which copies about 0xb640 bytes, so every vector
 of it would carry that much callee data. It should follow once the restore itself is native.
+
+### Round 8: the card scan is native (2026-10-01)
+
+`Magic_ScanCards` (`MAGIC.EXE 0x00473f06`, `DUEL.EXE 0x0048c5a8`), the duel engine's dispatcher, now has a native version
+(`src/native/card_scan.c`). It recomputes each player's highest used slot, then walks the ordered list of up to 500
+(player, slot) entries and, for every live in-play card, calls that card's own handler, whose address is read from the master
+record (`+0x10`); after a turn-start scan it may mark a card and runs the combat damage step; finally it runs one global
+handler. The handlers are the hundreds of per-card scripts and are **not** native: the native reaches them through a new
+hook that takes the callee's address as an argument (`vm_call_at`), so cards can be converted one handler at a time while
+the rest keeps running as the original.
+
+What was checked: 724 recorded calls from two scripted games (a mono-green mirror, and against the red AI deck for 330 virtual
+seconds), all passing: 88 standalone scans over 25 event codes (`0x15`, `0x1a`, `0x1f`, `0x21`, `0x25`, `0x32`, `0x33`,
+`0x34`, `0x3c`, `0x6a`, ...), and 108 card-attribute queries that now carry their handler calls inline. All compares are signed
+in the binary (`jl`, `jge`, `jle`). **The limits are real:** only 7 distinct handler functions were ever called (two early-game
+decks), at most 5 per scan, and only 14 of 193 handler calls wrote any memory. Three branches no recorded game reached are
+covered by six **synthetic** vectors, written from the decompiled body and the disassembly, not from a run: the turn-start
+marking path (`flags & 0x14 == 4`, the check, the `0x81` broadcast), the global handler, and the loop variable that leaks out.
+That last one is a quirk worth knowing: after the card loop the original compares the turn player with the player of the
+**last list entry examined**, even a skipped one, or with 2 if the list was empty (so an empty turn-start scan never runs the
+combat step). The synthetic vectors confirm the native matches that reading; they do not prove the reading against the running
+game. Not implemented (the original asserts or reports a fatal error): a scan nested ten deep, and a card index out of range.
+
+Two recorder bugs the scan exposed, both fixed in `tools/difftest/record_vectors.py`, and worth recording because they would
+have produced wrong vectors silently: (1) a callee's reads of a function pointer made by the call instruction itself were
+dropped because the recorder had already switched to "inside the callee"; (2) a callee's written bytes were stored with their
+values at the end of the whole call, not at the end of the callee, so a callee write that the function then changed again
+(here, a nested scan's depth counter, which the outer scan decrements afterwards) replayed one step too far. Both were found
+because the first recordings failed (102 of 104 scans, then 4 of 210), and fixed before the vectors were committed.

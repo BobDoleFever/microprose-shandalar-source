@@ -9,7 +9,10 @@
 #include "engine.h"
 
 static const char *const CALLEE_NAMES[CALLEE_COUNT] = {
-    [CALLEE_SCAN_CARDS] = "Magic_ScanCards",
+    [CALLEE_CARD_HANDLER] = "a card's event handler",
+    [CALLEE_SCAN_CHECK] = "FUN_004728c3 (turn-start scan check)",
+    [CALLEE_BROADCAST_CARD_EVENT] = "Magic_BroadcastCardEvent",
+    [CALLEE_COMBAT_DAMAGE_STEP] = "FUN_00472fae (combat damage step)",
     [CALLEE_MARK_CARD] = "Pic_Subsystem_0044867e",
     [CALLEE_AFTER_MARK] = "Pic_Subsystem_004488a0",
     [CALLEE_FIND_FREE_SLOT] = "Pic_Subsystem_00451291 (find free slot)",
@@ -27,6 +30,15 @@ uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args)
         abort();
     }
     return vm->call(vm->call_ctx, callee, vm->L->callee[callee], nargs, args);
+}
+
+uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args)
+{
+    if (!vm->call) {
+        fprintf(stderr, "native: call to %s with no call hook\n", callee_name(callee));
+        abort();
+    }
+    return vm->call(vm->call_ctx, callee, addr, nargs, args);
 }
 
 void native_unimplemented(const char *what, const char *file, int line)
@@ -160,6 +172,12 @@ static uint32_t run_ai_land_masks(Vm *vm, const uint32_t *a)
     return 0;
 }
 
+static uint32_t run_scan_cards(Vm *vm, const uint32_t *a)
+{
+    Native_Magic_ScanCards(vm, (int32_t)a[0]);
+    return 0;
+}
+
 const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_QUERY_CARD_ATTRIBUTE, "Magic_QueryCardAttribute", 4, 32, run_query},
     {FN_IS_MANA_SOURCE, "Magic_IsManaSource", 2, 8, run_is_mana_source},
@@ -182,6 +200,7 @@ const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_AI_PEEK_PLANNED_SLOT, "Ai_PeekPlannedSlot", 1, 32, run_ai_peek_slot},
     {FN_AI_PEEK_PLANNED_CHOICE, "Ai_PeekPlannedChoice", 1, 32, run_ai_peek_choice},
     {FN_AI_GET_LAND_COLOR_MASKS, "Ai_GetLandColorMasks", 2, 0, run_ai_land_masks},
+    {FN_SCAN_CARDS, "Magic_ScanCards", 1, 0, run_scan_cards},
 };
 
 const NativeInfo *native_find(const char *name)

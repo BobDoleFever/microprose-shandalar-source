@@ -168,7 +168,7 @@ times in one game).
 
 | Function | MAGIC.EXE | DUEL.EXE | Not covered | Callees replayed |
 |---|---|---|---|---|
-| `Magic_QueryCardAttribute` | `0x00473179` | `0x0048b81a` | codes 0x35, 0x36 and any code other than 0x32, 0x33, 0x34, 0x3c assert | `Magic_ScanCards`, `Pic_Subsystem_0044867e`, `Pic_Subsystem_004488a0` |
+| `Magic_QueryCardAttribute` | `0x00473179` | `0x0048b81a` | codes 0x35, 0x36 and any code other than 0x32, 0x33, 0x34, 0x3c assert | the card handlers (through `Magic_ScanCards`), `Pic_Subsystem_0044867e`, `Pic_Subsystem_004488a0` |
 | `Magic_IsManaSource` | `0x00474389` | `0x0048ca2a` | | |
 | `Magic_DropTopSpell` | `0x00475bb0` | `0x0048e251` | | |
 | `Magic_PushSpellStack` | `0x004751d7` | `0x0048d878` | | the free-slot finder `Pic_Subsystem_00451291` |
@@ -189,6 +189,7 @@ times in one game).
 | `Ai_PeekPlannedSlot` | `0x004ab35e` | `0x0043071d` | | |
 | `Ai_PeekPlannedChoice` | `0x004ab3a9` | `0x00430768` | | |
 | `Ai_GetLandColorMasks` | `0x004acb7f` | `0x00431f41` | | |
+| `Magic_ScanCards` | `0x00473f06` | `0x0048c5a8` | a scan nested ten deep and a card index out of range assert (the original asserts or reports a fatal error) | each card's handler, `FUN_004728c3`, `Magic_BroadcastCardEvent`, `FUN_00472fae` |
 
 The nine `Ai_` functions are the AI's recorded plan (the trial and best lists and their shared cursor; see
 `docs/SYMBOL_VERIFICATION.md`, "The AI"). `Ai_BeginTrial` (`0x004ab214` / `0x004305d3`) is deliberately not native
@@ -197,12 +198,22 @@ callee data. It should follow once the restore is native. `Ai_GetLandColorMasks`
 addresses, in the original the caller's stack frame), so its vectors hold stack addresses as arguments and as written
 regions; that is deterministic in the emulator, and the harness treats them like any other address.
 
+`Magic_ScanCards` is the duel engine's dispatcher: it runs every in-play card's own handler for one event code. The
+handlers are the hundreds of per-card scripts and are not native, so they are reached through `vm_call_at`, which takes
+the callee address as an argument because it is read from the card's master record (`+0x10`) and differs per call. A
+vector lists each handler call in order with its address, its three arguments (player, slot, event) and the memory it
+wrote; the harness replays them exactly like any other callee. The recorder finds them by hooking the two
+`call [reg*4 + master + 0x10]` instructions inside the scan (it searches the function's bytes for them), so a recorded
+vector of anything that runs a scan (`Magic_QueryCardAttribute` inside an event, for one) holds its handler calls
+inline. After the card loop the original compares the turn player with the player of the *last list entry examined*
+(a variable reused across loops, or 2 if the list was empty); the native reproduces that.
+
 The last six are the small helpers the first six used to replay from recorded calls; they are native now, so a
 recorded vector of a caller holds their reads and writes as its own (the recorder treats a native callee as
 transparent). `Magic_PushEventContext` and `Magic_PopEventContext` return nothing, so the harness does not compare
-their return value (`ret_bits` 0 in `NATIVE_FUNCTIONS`; the recorder writes `expected_return` 0). Only four functions
-are still reached through the hook (the table's last column): `Magic_ScanCards`, the two sprite-marking calls and the
-free-slot finder.
+their return value (`ret_bits` 0 in `NATIVE_FUNCTIONS`; the recorder writes `expected_return` 0). Beyond the card handlers, only a handful of functions
+are still reached through the hook (the table's last column): the three the scan calls, the two sprite-marking calls
+and the free-slot finder.
 
 The original's default case of the query (any other code returns 0 through the card scan) is not in the
 verified set and asserts too; no call site passes such a code.

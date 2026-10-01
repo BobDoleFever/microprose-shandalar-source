@@ -198,7 +198,7 @@ def test_layout_code_addresses_are_function_starts():
             starts = {int(r["Address"], 16) for r in csv.DictReader(f)}
         # every FN_* entry and every remaining CALLEE_* of engine.h, in each program
         import record_vectors as rec  # noqa: PLC0415
-        assert len(addrs) == len(rec.NATIVE_FUNCTIONS) + len(rec.CALLEES_INFO), len(addrs)
+        assert len(addrs) == len(rec.NATIVE_FUNCTIONS) + len(rec.CALLEES_INFO) - len(rec.DYNAMIC_CALLEES), len(addrs)
         missing = {k: hex(a) for k, a in addrs.items() if a not in starts}
         assert not missing, (program, missing)
 
@@ -217,4 +217,4 @@ def test_record_vectors_tables_match_native_code():
         assert set(fn_order) == fn_names, (program, "FN_* mismatch", set(fn_order) ^ fn_names)
         assert set(callee_order) == callee_names, (program, "CALLEE_* mismatch", set(callee_order) ^ callee_names)
         assert set(entries) == set(fn_order), (program, "layout.c .entry vs engine.h NativeFn")
-        assert set(callees) == set(callee_order), (program, "layout.c .callee vs engine.h Callee")
+        assert set(callees) == set(callee_order) - rec.DYNAMIC_CALLEES, (program, "layout.c .callee vs engine.h Callee")
