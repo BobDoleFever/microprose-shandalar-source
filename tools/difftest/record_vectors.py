@@ -66,19 +66,23 @@ NATIVE_FUNCTIONS = [
     ("FN_PUSH_SPELL_STACK", "Magic_PushSpellStack", 5),
     ("FN_CLEAR_SPELL_STACK", "Magic_ClearSpellStack", 0),
     ("FN_GET_COLOR_AND_TYPE_FLAGS", "Card_GetColorAndTypeFlags", 2),
+    ("FN_PUSH_EVENT_CONTEXT", "Magic_PushEventContext", 0),
+    ("FN_POP_EVENT_CONTEXT", "Magic_PopEventContext", 0),
+    ("FN_CARD_IS_IN_PLAY", "Card_IsInPlay", 2),
+    ("FN_COLOR_MASK_TO_INDEX", "Card_ColorMaskToColorIndex", 1),
+    ("FN_REMAP_COLOR_INDEX_FF", "Card_RemapColorIndexFF", 3),
+    ("FN_REMAP_COLOR_INDEX_F9", "Card_RemapColorIndexF9", 3),
 ]
-# Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c).
+# Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
+# (the harness does not compare a void function's return value).
+VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext"}
+# Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c): the
+# functions the native code still calls through the hook because they are not native yet.
 CALLEES_INFO = [
     ("CALLEE_SCAN_CARDS", "Magic_ScanCards", 1),
-    ("CALLEE_IS_TAPPED", "Card_IsTapped", 2),
-    ("CALLEE_COLOR_OVERRIDE_FF", "colour_override_FF", 3),
-    ("CALLEE_COLOR_OVERRIDE_F9", "colour_override_F9", 3),
-    ("CALLEE_COLOR_MASK_TO_INDEX", "Card_ColorMaskToColorIndex", 1),
     ("CALLEE_MARK_CARD", "mark_card", 3),
     ("CALLEE_AFTER_MARK", "after_mark", 0),
     ("CALLEE_FIND_FREE_SLOT", "find_free_slot", 2),
-    ("CALLEE_PUSH_EVENT_CONTEXT", "Magic_PushEventContext", 0),
-    ("CALLEE_POP_EVENT_CONTEXT", "Magic_PopEventContext", 0),
 ]
 # Slot table base for the recorded program is read from layout.c at runtime (slot_base); the mode-flags
 # dword the query function's caller reads a byte of (see PAD_DWORDS) is duel_mode_flags.
@@ -134,6 +138,18 @@ class Recorder:
             return (name, args[2], m.r32(m.L_is_ai_thinking), m.r32(m.L_spell_stack_count))
         if name == "Magic_DropTopSpell":
             return (name, m.r32(m.L_spell_stack_count))
+        if name == "Card_IsInPlay":   # bucket by the flags the answer depends on, and by the answer itself
+            try:
+                a = m.L_slot_base + args[0] * SLOT_PLAYER_STRIDE + args[1] * SLOT_STRIDE
+                return (name, m.r32(a + 4) == 0xFFFFFFFF, m.r32(a + 0xC) & 0xFF)
+            except Exception:
+                return (name, "unreadable-slot")
+        if name in ("Card_ColorMaskToColorIndex",):
+            return (name, args[0] & 0xFF)
+        if name in ("Card_RemapColorIndexFF", "Card_RemapColorIndexF9"):
+            return (name, args[2])
+        if name in ("Magic_PushEventContext", "Magic_PopEventContext"):
+            return (name, m.r32(m.L_event_context_depth))
         return (name,)
 
     def on_entry(self, uc, address, size, user):
@@ -217,7 +233,8 @@ class Recorder:
         v = {"function": r["name"], "program": self.program, "address": "0x%08x" % r["addr"],
              "description": "recorded from %s at virtual %.3fs" % (self.program, r["t"]),
              "source": "tools/difftest/record_vectors.py (emulator recording)",
-             "args": [S32(x) for x in r["args"]], "expected_return": S32(eax),
+             "args": [S32(x) for x in r["args"]],
+             "expected_return": 0 if r["name"] in VOID_FUNCTIONS else S32(eax),
              "memory_in": regions({**r["pad"], **r["reads"]}), "calls": calls,
              "memory_out_expected": regions(out), "memory_out_exhaustive": True}
         self.n += 1
@@ -253,6 +270,7 @@ def main():
             self.L_event_depth = addr("event_depth")
             self.L_is_ai_thinking = addr("is_ai_thinking")
             self.L_spell_stack_count = addr("spell_stack_count")
+            self.L_event_context_depth = addr("event_context_depth")
             self.recorder = Recorder(self, outdir, cap, program, addr("duel_mode_flags"))
 
     runmod.Machine = RecordingMachine

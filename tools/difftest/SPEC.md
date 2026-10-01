@@ -29,16 +29,22 @@ vector also lists every other byte the function reads; see `vectors/doc_query_po
     {"addr": "0x00682a24", "dwords": ["0x00000038"]},
     {"addr": "0x005000fa", "bytes": "0100"}
   ],
-  "calls": [
-    {"callee": "0x0048a33f", "name": "Duel_CardIsTapped", "args": [0, 3], "return": 0,
-     "memory_writes": []}
-  ],
+  "calls": [],
   "expected_return": 1,
   "memory_out_expected": [
     {"addr": "0x0066642c", "dwords": [1]}
   ],
   "memory_out_exhaustive": true
 }
+```
+
+A function that reaches a function that is not native yet lists the call, for example the stand-in push
+(`vectors/doc_push_stand_in_object.json`) asking the free-slot finder for a slot:
+
+```json
+"calls": [
+  {"callee": "0x004d695b", "name": "Pic_Subsystem_00451291", "args": [0, 448], "return": 8, "memory_writes": []}
+]
 ```
 
 | Field | Required | Meaning |
@@ -162,12 +168,25 @@ times in one game).
 
 | Function | MAGIC.EXE | DUEL.EXE | Not covered | Callees replayed |
 |---|---|---|---|---|
-| `Magic_QueryCardAttribute` | `0x00473179` | `0x0048b81a` | codes 0x35, 0x36 and any code other than 0x32, 0x33, 0x34, 0x3c assert | `Magic_ScanCards`, `Card_IsTapped`, the two colour overrides, `Pic_Subsystem_0044867e`, `Pic_Subsystem_004488a0`, the event-context push and pop |
+| `Magic_QueryCardAttribute` | `0x00473179` | `0x0048b81a` | codes 0x35, 0x36 and any code other than 0x32, 0x33, 0x34, 0x3c assert | `Magic_ScanCards`, `Pic_Subsystem_0044867e`, `Pic_Subsystem_004488a0` |
 | `Magic_IsManaSource` | `0x00474389` | `0x0048ca2a` | | |
 | `Magic_DropTopSpell` | `0x00475bb0` | `0x0048e251` | | |
 | `Magic_PushSpellStack` | `0x004751d7` | `0x0048d878` | | the free-slot finder `Pic_Subsystem_00451291` |
 | `Magic_ClearSpellStack` | `0x00474d1e` | `0x0048d3bf` | | |
-| `Card_GetColorAndTypeFlags` | `0x004d0a42` | `0x004521e2` | | `Card_ColorMaskToColorIndex`, the `+0xf9` colour override |
+| `Card_GetColorAndTypeFlags` | `0x004d0a42` | `0x004521e2` | | |
+| `Magic_PushEventContext` | `0x00474428` | `0x0048cac9` | | |
+| `Magic_PopEventContext` | `0x004744de` | `0x0048cb7f` | | |
+| `Card_IsInPlay` | `0x00471c32` | `0x0048a33f` | | |
+| `Card_ColorMaskToColorIndex` | `0x00473cc5` | `0x0048c367` | | |
+| `Card_RemapColorIndexF9` | `0x0041d9d2` | `0x004af7bb` | | |
+| `Card_RemapColorIndexFF` | `0x0041d963` | `0x004af74c` | | |
+
+The last six are the small helpers the first six used to replay from recorded calls; they are native now, so a
+recorded vector of a caller holds their reads and writes as its own (the recorder treats a native callee as
+transparent). `Magic_PushEventContext` and `Magic_PopEventContext` return nothing, so the harness does not compare
+their return value (`ret_bits` 0 in `NATIVE_FUNCTIONS`; the recorder writes `expected_return` 0). Only four functions
+are still reached through the hook (the table's last column): `Magic_ScanCards`, the two sprite-marking calls and the
+free-slot finder.
 
 The original's default case of the query (any other code returns 0 through the card scan) is not in the
 verified set and asserts too; no call site passes such a code.

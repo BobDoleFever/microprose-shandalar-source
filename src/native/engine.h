@@ -61,15 +61,9 @@
 /* ---- Functions the native code calls but does not implement ---------------------------------- */
 typedef enum {
     CALLEE_SCAN_CARDS,          /* Magic_ScanCards(event_code): runs every card's handler */
-    CALLEE_IS_TAPPED,           /* Card_IsTapped(player, slot) / Duel_CardIsTapped */
-    CALLEE_COLOR_OVERRIDE_FF,   /* "Card_UntapCard" / Duel_GetCardModifiedPower: byte slot+0xff+i or i */
-    CALLEE_COLOR_OVERRIDE_F9,   /* "Card_SetTapState" / Duel_GetCardColorOverride: byte slot+0xf9+i or i */
-    CALLEE_COLOR_MASK_TO_INDEX, /* Card_ColorMaskToColorIndex / Duel_ColorMaskToIndex */
     CALLEE_MARK_CARD,           /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
     CALLEE_AFTER_MARK,          /* Pic_Subsystem_004488a0() */
     CALLEE_FIND_FREE_SLOT,      /* Pic_Subsystem_00451291(player, card): allocate a slot */
-    CALLEE_PUSH_EVENT_CONTEXT,  /* Magic_PushEventContext() */
-    CALLEE_POP_EVENT_CONTEXT,   /* Magic_PopEventContext() */
     CALLEE_COUNT
 } Callee;
 
@@ -81,6 +75,12 @@ typedef enum {
     FN_PUSH_SPELL_STACK,
     FN_CLEAR_SPELL_STACK,
     FN_GET_COLOR_AND_TYPE_FLAGS,
+    FN_PUSH_EVENT_CONTEXT,
+    FN_POP_EVENT_CONTEXT,
+    FN_CARD_IS_IN_PLAY,
+    FN_COLOR_MASK_TO_INDEX,
+    FN_REMAP_COLOR_INDEX_FF,
+    FN_REMAP_COLOR_INDEX_F9,
     FN_COUNT
 } NativeFn;
 
@@ -108,7 +108,10 @@ typedef struct Layout {
     uint32_t event_source_slot;    /* g_EventSourceSlot */
     uint32_t event_card_id;        /* g_EventCardId */
     uint32_t event_card_color;     /* g_EventCardColorMask */
+    uint32_t event_target_player;  /* g_EventTargetPlayer (DAT_007006c8 / DAT_00690310) */
     uint32_t event_target_slot;    /* g_EventTargetSlot */
+    uint32_t event_context_depth;  /* DAT_0052577c / DAT_004fab4c: frames saved by the event-context push */
+    uint32_t event_context_stack;  /* DAT_00676e40 / DAT_00665ee0: 32 frames of 0x28 bytes (7 dwords used) */
     uint32_t card_event_result;    /* g_CardEventResult */
     uint32_t duel_mode_flags;      /* g_DuelModeFlags */
     uint32_t token_card_base;      /* DAT_006ff2e0 / g_DuelTargetCardId: first of 0x1d token card indexes */
@@ -154,13 +157,21 @@ uint32_t Native_Magic_PushSpellStack(Vm *vm, int32_t player, int32_t slot, int32
                                      int32_t target_slot, uint32_t flags);
 uint32_t Native_Magic_ClearSpellStack(Vm *vm);
 uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot);
+void Native_Magic_PushEventContext(Vm *vm);
+void Native_Magic_PopEventContext(Vm *vm);
+uint32_t Native_Card_IsInPlay(Vm *vm, int32_t player, int32_t slot);
+uint32_t Native_Card_ColorMaskToColorIndex(uint32_t mask);
+/* The two per-slot colour-remap lookups: the byte at slot + 0xf9 + index (F9) or + 0xff + index (FF) if it is
+ * non-zero (as a signed char), else the index itself. */
+int32_t Native_Card_RemapColorIndexF9(Vm *vm, int32_t player, int32_t slot, int32_t index);
+int32_t Native_Card_RemapColorIndexFF(Vm *vm, int32_t player, int32_t slot, int32_t index);
 
 /* Name, argument count and return width of each native function, for harnesses. */
 typedef struct NativeInfo {
     NativeFn id;
     const char *name;
     int nargs;
-    int ret_bits; /* 8 for a bool returned in AL, else 32 */
+    int ret_bits; /* 8 for a bool returned in AL, 32 otherwise, 0 for a void function (EAX is not compared) */
     uint32_t (*run)(Vm *vm, const uint32_t *args);
 } NativeInfo;
 

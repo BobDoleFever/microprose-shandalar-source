@@ -13,6 +13,10 @@
   "expected_return": 32,
   "memory_in": [
     {
+      "addr": "0x00503730",
+      "bytes": "02"
+    },
+    {
       "addr": "0x00503732",
       "bytes": "08"
     },
@@ -42,9 +46,7 @@
     },
     {
       "addr": "0x00682a2c",
-      "dwords": [
-        "0x00000882"
-      ]
+      "bytes": "820800000000"
     },
     {
       "addr": "0x00682a5c",
@@ -59,17 +61,7 @@
       ]
     }
   ],
-  "calls": [
-    {
-      "callee": "0x0048a33f",
-      "name": "Duel_CardIsTapped",
-      "args": [
-        0,
-        3
-      ],
-      "return": 0
-    }
-  ],
+  "calls": [],
   "memory_out_expected": [
     {
       "addr": "0x006663e0",

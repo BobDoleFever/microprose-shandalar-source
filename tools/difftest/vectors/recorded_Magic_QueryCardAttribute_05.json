@@ -2,167 +2,122 @@
  "function": "Magic_QueryCardAttribute",
  "program": "DUEL",
  "address": "0x0048b81a",
- "description": "recorded from DUEL at virtual 62.285s",
+ "description": "recorded from DUEL at virtual 18.271s",
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
-  0,
-  0,
-  52,
+  1,
+  2,
+  60,
   -1
  ],
- "expected_return": 0,
+ "expected_return": 56,
  "memory_in": [
   {
-   "addr": "0x0048be22",
-   "bytes": "a4ba4800"
+   "addr": "0x0048be2e",
+   "bytes": "05bc4800"
   },
   {
-   "addr": "0x0048be38",
-   "bytes": "02"
+   "addr": "0x0048be40",
+   "bytes": "05"
+  },
+  {
+   "addr": "0x004fab4c",
+   "bytes": "00000000"
+  },
+  {
+   "addr": "0x005000f0",
+   "bytes": "95000000"
   },
   {
    "addr": "0x005000f6",
    "bytes": "08"
   },
   {
-   "addr": "0x00500104",
-   "bytes": "00000000"
+   "addr": "0x00500109",
+   "bytes": "10"
   },
   {
    "addr": "0x005ef980",
-   "bytes": "00000000"
+   "bytes": "ffffffff"
   },
   {
    "addr": "0x006663e0",
-   "bytes": "cad30000"
+   "bytes": "04000000"
+  },
+  {
+   "addr": "0x0066642c",
+   "bytes": "00000000"
   },
   {
    "addr": "0x00681eb0",
-   "bytes": "81000000"
+   "bytes": "00000000"
   },
   {
-   "addr": "0x006826c4",
-   "bytes": "38000000"
+   "addr": "0x00681ecc",
+   "bytes": "00000000"
   },
   {
-   "addr": "0x006826fc",
-   "bytes": "00000008"
+   "addr": "0x00688420",
+   "bytes": "3800000038000000"
+  },
+  {
+   "addr": "0x0068842c",
+   "bytes": "00100000"
+  },
+  {
+   "addr": "0x00688458",
+   "bytes": "00"
+  },
+  {
+   "addr": "0x0068845f",
+   "bytes": "08"
+  },
+  {
+   "addr": "0x0068ecb0",
+   "bytes": "00000000"
+  },
+  {
+   "addr": "0x0068ecfc",
+   "bytes": "00000000"
+  },
+  {
+   "addr": "0x0068ee64",
+   "bytes": "00000000"
   },
   {
    "addr": "0x0068eed8",
    "bytes": "01000000"
-  }
- ],
- "calls": [
-  {
-   "callee": "0x0048cac9",
-   "name": "Magic_PushEventContext",
-   "args": [],
-   "return": 0,
-   "memory_writes": [
-    {
-     "addr": "0x004fab4c",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00665ee0",
-     "bytes": "0000000002000000000000000000000000000000ffffffff00000000"
-    }
-   ]
   },
   {
-   "callee": "0x0048c5a8",
-   "name": "Magic_ScanCards",
-   "args": [
-    52
-   ],
-   "return": 0,
-   "memory_writes": [
-    {
-     "addr": "0x005ef980",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00666408",
-     "bytes": "0700000007000000"
-    },
-    {
-     "addr": "0x00666448",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00666728",
-     "bytes": "1a000000"
-    },
-    {
-     "addr": "0x0068dd04",
-     "bytes": "34000000"
-    },
-    {
-     "addr": "0x0068ef48",
-     "bytes": "00000000"
-    }
-   ]
+   "addr": "0x0068f104",
+   "bytes": "a2010000"
   },
   {
-   "callee": "0x0048a33f",
-   "name": "Card_IsTapped",
-   "args": [
-    0,
-    0
-   ],
-   "return": 1,
-   "memory_writes": []
-  },
-  {
-   "callee": "0x0048cb7f",
-   "name": "Magic_PopEventContext",
-   "args": [],
-   "return": 0,
-   "memory_writes": [
-    {
-     "addr": "0x004fab4c",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x0066642c",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00681ecc",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x0068ecb0",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x0068ecfc",
-     "bytes": "ffffffff"
-    },
-    {
-     "addr": "0x0068ee64",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00690310",
-     "bytes": "00000000"
-    },
-    {
-     "addr": "0x00690c48",
-     "bytes": "02000000"
-    }
-   ]
-  }
- ],
- "memory_out_expected": [
-  {
-   "addr": "0x005ef980",
+   "addr": "0x00690310",
    "bytes": "00000000"
   },
   {
+   "addr": "0x00690c48",
+   "bytes": "00000000"
+  }
+ ],
+ "calls": [],
+ "memory_out_expected": [
+  {
+   "addr": "0x004fab4c",
+   "bytes": "00000000"
+  },
+  {
+   "addr": "0x005ef980",
+   "bytes": "ffffffff"
+  },
+  {
+   "addr": "0x00665ee0",
+   "bytes": "00000000000000000000000000000000000000000000000000000000"
+  },
+  {
    "addr": "0x006663e0",
-   "bytes": "cbd30000"
+   "bytes": "05000000"
   },
   {
    "addr": "0x0066642c",
@@ -173,8 +128,12 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x006826fc",
-   "bytes": "00000000"
+   "addr": "0x00688424",
+   "bytes": "38000000"
+  },
+  {
+   "addr": "0x0068843c",
+   "bytes": "08"
   },
   {
    "addr": "0x0068ecb0",
@@ -182,15 +141,19 @@
   },
   {
    "addr": "0x0068ecfc",
-   "bytes": "ffffffff"
+   "bytes": "00000000"
   },
   {
    "addr": "0x0068ee64",
    "bytes": "00000000"
   },
   {
+   "addr": "0x00690310",
+   "bytes": "00000000"
+  },
+  {
    "addr": "0x00690c48",
-   "bytes": "02000000"
+   "bytes": "00000000"
   }
  ],
  "memory_out_exhaustive": true
