@@ -3500,10 +3500,10 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 0041d926,"LAB_0041d926",Label,true,false
 0041d93d,"LAB_0041d93d",Label,true,false
 0041d942,"Mem_AllocOrFree_0041d942",Function,true,true
-0041d963,"FUN_0041d963",Function,true,true
+0041d963,"Card_RemapColorIndexFF",Function,true,true
 0041d9a3,"LAB_0041d9a3",Label,true,false
 0041d9cd,"LAB_0041d9cd",Label,true,false
-0041d9d2,"FUN_0041d9d2",Function,true,true
+0041d9d2,"Card_RemapColorIndexF9",Function,true,true
 0041da12,"LAB_0041da12",Label,true,false
 0041da3c,"LAB_0041da3c",Label,true,false
 0041da41,"FUN_0041da41",Function,true,true
@@ -10083,7 +10083,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00471c23,"LAB_00471c23",Label,true,false
 00471c28,"LAB_00471c28",Label,true,false
 00471c2d,"LAB_00471c2d",Label,true,false
-00471c32,"FUN_00471c32",Function,true,true
+00471c32,"Card_IsInPlay",Function,true,true
 00471c65,"LAB_00471c65",Label,true,false
 00471c98,"LAB_00471c98",Label,true,false
 00471c9a,"LAB_00471c9a",Label,true,false
@@ -10244,7 +10244,7 @@ EXTERNAL:00000145,"_fileno",Function,false,true
 00473cab,"LAB_00473cab",Label,true,false
 00473cb0,"LAB_00473cb0",Label,true,false
 00473cc0,"LAB_00473cc0",Label,true,false
-00473cc5,"FUN_00473cc5",Function,true,true
+00473cc5,"Card_ColorMaskToColorIndex",Function,true,true
 00473ce2,"LAB_00473ce2",Label,true,false
 00473cf6,"LAB_00473cf6",Label,true,false
 00473d0a,"LAB_00473d0a",Label,true,false

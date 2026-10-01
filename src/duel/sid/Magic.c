@@ -105,7 +105,7 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int32_t ar
     val_2 = 0;
   }
   else {
-    FUN_0048cac9();
+    Magic_PushEventContext();
     uval_1 = DAT_00676500;
     g_CardEventResult = 0;
     g_EventSourcePlayer = color_mask;
@@ -118,11 +118,11 @@ int Magic_TriggerCardEvent(int player_id,int card_slot,int event_type,int32_t ar
     if ((((val_2 != 99) && ((g_DuelModeFlags & 0x224) != 0)) && ((arg_3 == 0x74 || (arg_3 == 0x73))))
        && (val_3 = Magic_IsManaSource(color_mask,arg_2), val_3 == 0)) {
       DAT_00676500 = uval_1;
-      FUN_0048cb7f();
+      Magic_PopEventContext();
       return 0;
     }
     DAT_0068edd8 = g_CardEventResult;
-    FUN_0048cb7f();
+    Magic_PopEventContext();
   }
   return val_2;
 }
@@ -155,13 +155,13 @@ bool Magic_IsManaSource(int x,int arg2)
 
 
 /*
- * Decompiled function: FUN_0048cac9
+ * Decompiled function: Magic_PushEventContext
  * Entry Point: 0048cac9
  * Size: 182 bytes
  */
 
 
-void FUN_0048cac9(void)
+void Magic_PushEventContext(void)
 
 {
   if (DAT_004fab4c < 0x20) {
@@ -180,13 +180,13 @@ void FUN_0048cac9(void)
 
 
 /*
- * Decompiled function: FUN_0048cb7f
+ * Decompiled function: Magic_PopEventContext
  * Entry Point: 0048cb7f
  * Size: 170 bytes
  */
 
 
-void FUN_0048cb7f(void)
+void Magic_PopEventContext(void)
 
 {
   if (0 < DAT_004fab4c) {
@@ -246,7 +246,7 @@ void FUN_0048cc29(void)
   for (match_count = 0; match_count < 2; match_count = match_count + 1) {
     (&DAT_0068ee78)[match_count] = 0;
     for (card_idx = 0; card_idx < (int)(&g_DuelPlayerCreatureCount)[match_count]; card_idx = card_idx + 1) {
-      val_1 = Duel_CardIsTapped(match_count, card_idx);
+      val_1 = Card_IsInPlay(match_count, card_idx);
       if (val_1 == 0) {
         if (*(int *)(&g_DuelCardSlot_CardId + match_count * 0x5b20 + card_idx * 0x120) != -1) {
           (&DAT_0068ee78)[match_count] = (&DAT_0068ee78)[match_count] + 1;
@@ -258,12 +258,12 @@ void FUN_0048cc29(void)
         if (((&g_DuelMasterCardTable)[val_1 * 0x34] & 2) != 0) {
           val_2 = Duel_QueryCardAttribute(match_count, card_idx, 0x32, 0xffffffff);
           val_3 = Duel_QueryCardAttribute(match_count,card_idx,0x33,0xffffffff);
-          val_4 = Duel_ColorMaskToIndex(color_mask);
+          val_4 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_0068ede0 + val_4 * 4 + match_count * 0x20) =
                *(int *)(&DAT_0068ede0 + val_4 * 4 + match_count * 0x20) + val_2;
           *(int *)(&DAT_0068edfc + match_count * 0x20) =
                *(int *)(&DAT_0068edfc + match_count * 0x20) + val_2;
-          val_2 = Duel_ColorMaskToIndex(color_mask);
+          val_2 = Card_ColorMaskToColorIndex(color_mask);
           *(int *)(&DAT_0068ee20 + val_2 * 4 + match_count * 0x20) =
                *(int *)(&DAT_0068ee20 + val_2 * 4 + match_count * 0x20) + val_3;
           *(int *)(&DAT_0068ee3c + match_count * 0x20) =
@@ -1312,7 +1312,7 @@ void FUN_0048f123(void)
   
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (match_count = 0; match_count < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; match_count = match_count + 1) {
-      val_1 = Duel_CardIsTapped(slot_idx,match_count);
+      val_1 = Card_IsInPlay(slot_idx,match_count);
       if (val_1 != 0) {
         *(int32_t *)(&DAT_006827d4 + match_count * 0x120 + slot_idx * 0x5b20) = 0;
       }
@@ -1341,7 +1341,7 @@ void FUN_0048f1b1(void)
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (card_idx = 0; card_idx < (int)(&g_DuelPlayerCreatureCount)[slot_idx]; card_idx = card_idx + 1) {
       if (((&DAT_006827d4)[slot_idx * 0x5b20 + card_idx * 0x120] & 4) == 0) {
-        val_1 = Duel_CardIsTapped(slot_idx,card_idx);
+        val_1 = Card_IsInPlay(slot_idx,card_idx);
         if (val_1 != 0) {
           for (match_count = 0; match_count < 7; match_count = match_count + 1) {
             (&DAT_006827cc)[match_count + card_idx * 0x120 + slot_idx * 0x5b20] = 0;

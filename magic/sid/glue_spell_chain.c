@@ -1505,30 +1505,30 @@ uint Card_GetColorAndTypeFlags(int player,int card_slot)
       if (((&g_MasterCardColorTable)[local_8 * 0x34] & 0x20) == 0) {
         if (((&g_MasterCardColorTable)[local_8 * 0x34] & 8) == 0) {
           val_result = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[card_slot * 0x120 + player * 0x5b20]);
-          c_res = Card_SetTapState(player,card_slot,val_result);
+          c_res = Card_RemapColorIndexF9(player,card_slot,val_result);
           uVar3 = 0x800 << (c_res - 1U & 0x1f);
         }
         else {
           val_result = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[card_slot * 0x120 + player * 0x5b20]);
-          c_res = Card_SetTapState(player,card_slot,val_result);
+          c_res = Card_RemapColorIndexF9(player,card_slot,val_result);
           uVar3 = 0x800 << (c_res - 1U & 0x1f) | 0x100000;
         }
       }
       else {
         val_result = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[card_slot * 0x120 + player * 0x5b20]);
-        c_res = Card_SetTapState(player,card_slot,val_result);
+        c_res = Card_RemapColorIndexF9(player,card_slot,val_result);
         uVar3 = 0x800 << (c_res - 1U & 0x1f) | 0x80000;
       }
     }
     else {
       val_result = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[card_slot * 0x120 + player * 0x5b20]);
-      c_res = Card_SetTapState(player,card_slot,val_result);
+      c_res = Card_RemapColorIndexF9(player,card_slot,val_result);
       uVar3 = 0x800 << (c_res - 1U & 0x1f) | 0x40000;
     }
   }
   else {
     val_result = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[card_slot * 0x120 + player * 0x5b20]);
-    c_res = Card_SetTapState(player,card_slot,val_result);
+    c_res = Card_RemapColorIndexF9(player,card_slot,val_result);
     uVar3 = 0x800 << (c_res - 1U & 0x1f) | 0x20000;
   }
   return uVar3;

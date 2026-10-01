@@ -22,18 +22,18 @@ extern int DAT_006827bf;
 
 typedef int (*GhidraCall)(void *, ...);
 
-int Duel_ColorMaskToIndex(byte arg_1);
+int Card_ColorMaskToColorIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
-int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexF9(int arg_1, int arg_2, int arg_3);
 
 int Duel_ApplyCombatDamage(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_GetCardModifiedPower(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexFF(int arg_1, int arg_2, int arg_3);
 int Duel_RandomRange(int arg_1);
 
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
-bool Duel_CardIsTapped(int arg1, int arg2);
+bool Card_IsInPlay(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
@@ -210,9 +210,9 @@ int Mem_AllocOrFree_0050f740();
 uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
-int FUN_0048cb7f();
+int Magic_PopEventContext();
 int Magic_IsManaSource();
-int FUN_0048cac9();
+int Magic_PushEventContext();
 int FUN_0048caf4();
 int FUN_00432c2a();
 int FUN_00447114();
@@ -306,13 +306,13 @@ int Duel_ApplyCombatDamage(int attacker_player,int attacker_slot,int defender_pl
 }
 
 /*
- * Decompiled function: Duel_GetCardModifiedPower
+ * Decompiled function: Card_RemapColorIndexFF
  * Entry Point: 004af74c
  * Size: 106 bytes
  */
 
 
-int Duel_GetCardModifiedPower(int player,int card_slot,int base_power)
+int Card_RemapColorIndexFF(int player,int card_slot,int base_power)
 
 {
   if ((&DAT_006827bf)[base_power + player * 0x5b20 + card_slot * 0x120] != '\0') {

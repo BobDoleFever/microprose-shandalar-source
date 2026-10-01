@@ -297,7 +297,7 @@ void Magic_UntapTurnPhase(void)
     (&g_ActivePlayerSpellPriority)[match_count] = 0;
     for (card_idx = 0; card_idx < (int)(&g_PlayerActiveCardCount)[match_count]; card_idx = card_idx + 1)
     {
-      val_1 = Card_IsTapped(match_count, card_idx);
+      val_1 = Card_IsInPlay(match_count, card_idx);
       if (val_1 == 0) {
         if (*(int *)(&g_CardSlot_CardId + card_idx * 0x120 + match_count * 0x5b20) != -1) {
           (&g_ActivePlayerSpellPriority)[match_count] = (&g_ActivePlayerSpellPriority)[match_count] + 1;
@@ -1428,7 +1428,7 @@ void FUN_00476a80(void)
   
   for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
     for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[slot_idx]; match_count = match_count + 1) {
-      val_1 = Card_IsTapped(slot_idx,match_count);
+      val_1 = Card_IsInPlay(slot_idx,match_count);
       if (val_1 != 0) {
         *(int *)(&g_CardSlot_SpecialState + match_count * 0x120 + slot_idx * 0x5b20) = 0;
       }
@@ -1458,7 +1458,7 @@ void FUN_00476b0e(void)
     for (card_idx = 0; card_idx < (int)(&g_PlayerActiveCardCount)[slot_idx]; card_idx = card_idx + 1)
     {
       if (((&g_CardSlot_SpecialState)[card_idx * 0x120 + slot_idx * 0x5b20] & 4) == 0) {
-        val_1 = Card_IsTapped(slot_idx,card_idx);
+        val_1 = Card_IsInPlay(slot_idx,card_idx);
         if (val_1 != 0) {
           for (match_count = 0; match_count < 7; match_count = match_count + 1) {
             (&DAT_006a603c)[match_count + slot_idx * 0x5b20 + card_idx * 0x120] = 0;

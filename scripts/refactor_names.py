@@ -297,7 +297,7 @@ FUNCTION_RENAMES = {
     "FUN_004728c3": "Rules_ValidateCardTargetSlot",
     "FUN_00473e69": "Magic_BroadcastCardEvent",
     "FUN_00472fae": "Rules_ProcessCombatDamageStep",
-    "FUN_00473cc5": "Rules_CalculateManaCostReduction",
+    "Card_ColorMaskToColorIndex": "Rules_CalculateManaCostReduction",
     "FUN_00473ce8": "Rules_CalculateColorCost",
     "FUN_00473d09": "Rules_GetCardConvertedManaCost",
     "FUN_00473060": "Rules_TriggerEndOfTurnPhase",

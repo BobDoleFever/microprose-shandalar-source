@@ -1,12 +1,16 @@
 program,address,name,kind,evidence,section,notes
 MAGIC,0x00405802,Duel_ChooseTarget,function,natural,"The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; confidence medium-high; was Action_ValidateTarget_*; old name given as a pattern
+MAGIC,0x0041d963,Card_RemapColorIndexFF,function,static,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_UntapCard, Duel_GetCardModifiedPower"
+MAGIC,0x0041d9d2,Card_RemapColorIndexF9,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_SetTapState, Duel_GetCardColorOverride"
 MAGIC,0x004468dc,Ai_ChooseChainResponse,function,natural,"The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; confidence medium-high; was Pic_Subsystem_004468dc
 MAGIC,0x004485d6,Magic_BroadcastCardEventInStep,function,static,The step code and the other event-context writers (MAGIC.EXE),evidence: default; no live observation stated for the row; was Pic_Subsystem_004485d6
 MAGIC,0x0046f5d1,Magic_ExecuteDrawPhase,function,qemu,Renames applied (MAGIC.EXE),was FUN_0046f5d1
+MAGIC,0x00471c32,Card_IsInPlay,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_IsTapped, Duel_CardIsTapped"
 MAGIC,0x00473179,Magic_QueryCardAttribute,function,qemu,Two more mislabels found by the same run (renamed) | The step code and the other event-context writers (MAGIC.EXE),was Card_TapForMana
+MAGIC,0x00473cc5,Card_ColorMaskToColorIndex,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)",was Duel_ColorMaskToIndex
 MAGIC,0x00473e69,Magic_BroadcastCardEvent,function,static,The step code and the other event-context writers (MAGIC.EXE),"evidence: default; no live observation stated for the row; was FUN_00473e69, Rules_ApplyContinuousDamage"
-MAGIC,0x00474428,Magic_PushEventContext,function,static,Two more mislabels found by the same run (renamed),evidence: default; no live observation stated for the row; was Magic_PayManaCost
-MAGIC,0x004744de,Magic_PopEventContext,function,qemu,Two more mislabels found by the same run (renamed),"evidence: prose: ""The pop ran 98 times and always restored `g_CardEventResult` to 0""; was Magic_TapCardForMana"
+MAGIC,0x00474428,Magic_PushEventContext,function,natural,"Two more mislabels found by the same run (renamed) | Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)",was FUN_0048cac9
+MAGIC,0x004744de,Magic_PopEventContext,function,qemu,"Two more mislabels found by the same run (renamed) | Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","evidence: prose: ""The pop ran 98 times and always restored `g_CardEventResult` to 0""; was Magic_TapCardForMana"
 MAGIC,0x0047496b,Duel_PlaySoundById,function,qemu,Renames applied (MAGIC.EXE),was Magic_UpkeepPhase
 MAGIC,0x00474c7f,Duel_PreloadSoundEffects,function,qemu,Renames applied (MAGIC.EXE),was Magic_DrawCardPhase
 MAGIC,0x00474d1e,Magic_ClearSpellStack,function,qemu,"The spell stack (MAGIC.EXE): push and resolve seen live, the rest static","evidence: prose: ""`Magic_ClearSpellStack` is entered once at the start of every turn ... Its name is confirmed.""; was Mem_AllocOrFree_00474d1e"
@@ -86,7 +90,11 @@ DUEL,0x004521d0,Card_DefaultEventHandler,function,natural,"The spell-chain windo
 DUEL,0x004521e2,Card_GetColorAndTypeFlags,function,synthetic,"The spell-chain window family (emulator, 2026-09-26) | Round 5: the `Mana_GetCardColorRequirement` anomaly and the remaining twin conflicts (static evidence only, 2026-09-27)",was SpellChain_ProcessTriggerEvent
 DUEL,0x0046c7d0,Ai_ChooseChainResponse,function,natural,"The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; confidence medium-high
 DUEL,0x00487ce1,Magic_ExecuteDrawPhase,function,qemu,Renames applied (MAGIC.EXE),was FUN_00487ce1
+DUEL,0x0048a33f,Card_IsInPlay,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_IsTapped, Duel_CardIsTapped"
+DUEL,0x0048c367,Card_ColorMaskToColorIndex,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)",was Duel_ColorMaskToIndex
 DUEL,0x0048c907,Magic_TriggerCardEvent,function,static,"Round 5: the `Mana_GetCardColorRequirement` anomaly and the remaining twin conflicts (static evidence only, 2026-09-27)",was Duel_PlayCardSoundEffect
+DUEL,0x0048cac9,Magic_PushEventContext,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)",was FUN_0048cac9
+DUEL,0x0048cb7f,Magic_PopEventContext,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)",was FUN_0048cb7f
 DUEL,0x0048d00c,Sound_PlayTrackById,function,qemu,Renames applied (MAGIC.EXE),name unchanged
 DUEL,0x0048d320,Duel_PreloadSoundEffects,function,qemu,Renames applied (MAGIC.EXE),was FUN_0048d320
 DUEL,0x004a197e,SpellChain_FindEntryIndex,function,natural,"The spell-chain window family (emulator, 2026-09-26)",was SpellChain_GetCardCount
@@ -96,6 +104,8 @@ DUEL,0x004a1e30,SpellChain_ClearEntryTargets,function,synthetic,"The spell-chain
 DUEL,0x004a26ac,SpellChain_GetContentRect,function,synthetic,"The spell-chain window family (emulator, 2026-09-26)",was SpellChain_SetWindowRect
 DUEL,0x004a2a2f,SpellChain_MinimizeIfShown,function,synthetic,"The spell-chain window family (emulator, 2026-09-26)",was SpellChain_IsVisible
 DUEL,0x004a2a87,SpellChain_RestoreIfMinimized,function,synthetic,"The spell-chain window family (emulator, 2026-09-26)",was SpellChain_IsMinimized
+DUEL,0x004af74c,Card_RemapColorIndexFF,function,static,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_UntapCard, Duel_GetCardModifiedPower"
+DUEL,0x004af7bb,Card_RemapColorIndexF9,function,natural,"Round 6: six more native functions, and three misnamed ones they exposed (2026-10-01)","was Card_SetTapState, Duel_GetCardColorOverride"
 DUEL,0x0066642c,g_CardEventResult,global,natural,"Globals checked with write watches (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; was g_DuelCurrentTurnPhase
 DUEL,0x00666458,g_TurnPlayer,global,natural,"Globals checked with write watches (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; was g_DuelDefendingPlayer
 DUEL,0x00681eb0,g_DuelModeFlags,global,natural,"Globals checked with write watches (emulator, 2026-09-26)",evidence: an emulator section; the row names no grade; was g_DuelPlayerManaPool

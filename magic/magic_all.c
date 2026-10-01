@@ -8049,7 +8049,7 @@ undefined4 FUN_004118a8(int value,int min_val,int max_val)
            *(int *)(&g_CardSlot_ConvertedManaCost + min_val * 0x120 + value * 0x5b20);
     }
     else {
-      iVar3 = Card_IsTapped((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+      iVar3 = Card_IsInPlay((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                            *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20));
       if ((iVar3 != 0) &&
          (*(short *)(&g_CardSlot_Power +
@@ -8197,7 +8197,7 @@ undefined4 FUN_00412413(int value,int min_val,int max_val)
        (*(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20] ==
              g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) {
-    iVar1 = Card_IsTapped((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+    iVar1 = Card_IsInPlay((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20));
     if ((iVar1 != 0) &&
        (((&g_MasterCardColorTable)
@@ -8343,7 +8343,7 @@ undefined4 FUN_0041283f(int value,int min_val,int max_val)
                 *(int *)(&g_CardSlot_TypeFlags + min_val * 0x120 + value * 0x5b20) * 0x120 +
                 (char)(&g_CardSlot_DamageReceived)[min_val * 0x120 + value * 0x5b20] * 0x5b20) != -1))
     {
-      iVar1 = Card_UntapCard(value, min_val, *(int *)(&g_CardSlot_ConvertedManaCost +
+      iVar1 = Card_RemapColorIndexFF(value, min_val, *(int *)(&g_CardSlot_ConvertedManaCost +
                                    *(int *)(&g_CardSlot_TypeFlags + min_val * 0x120 + value * 0x5b20)
                                    * 0x120 + (char)(&g_CardSlot_DamageReceived)
                                                    [min_val * 0x120 + value * 0x5b20] * 0x5b20));
@@ -8453,7 +8453,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
       }
       else if (uVar1 == 0x100) {
         if (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 1) != 0) {
-          iVar2 = Card_UntapCard((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+          iVar2 = Card_RemapColorIndexFF((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20)
                                ,*(int *)(&g_CardSlot_ConvertedManaCost +
                                         min_val * 0x120 + value * 0x5b20));
@@ -8462,7 +8462,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
                              (char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20] * 0x20);
         }
         if (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 2) != 0) {
-          iVar2 = Card_UntapCard((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+          iVar2 = Card_RemapColorIndexFF((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20)
                                ,*(int *)(&g_CardSlot_ConvertedManaCost +
                                         min_val * 0x120 + value * 0x5b20));
@@ -8489,7 +8489,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
             (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 2) != 0)))) {
           for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_14];
               local_8 = local_8 + 1) {
-            iVar2 = Card_IsTapped(local_14,local_8);
+            iVar2 = Card_IsInPlay(local_14,local_8);
             if (((iVar2 != 0) &&
                 (((&g_MasterCardColorTable)
                   [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + local_14 * 0x5b20) * 0x34] & 2)
@@ -8651,7 +8651,7 @@ undefined4 FUN_00413baa(int value,int min_val,int max_val)
     x = 1 - value;
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
       iVar1 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + x * 0x5b20);
-      iVar2 = Card_IsTapped(x,local_c);
+      iVar2 = Card_IsInPlay(x,local_c);
       if (((iVar2 != 0) && (((&g_MasterCardColorTable)[iVar1 * 0x34] & 2) != 0)) &&
          (((&DAT_0051aebd)[iVar1 * 0x34] != '\0' &&
           ((*(uint *)(&g_CardSlot_Flags + local_c * 0x120 + x * 0x5b20) & 0x30040) == 0)))) {
@@ -8827,7 +8827,7 @@ undefined4 FUN_00414270(int value,int min_val,int max_val)
                                      ),value,min_val);
           for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8];
               local_c = local_c + 1) {
-            iVar1 = Card_IsTapped(local_8,local_c);
+            iVar1 = Card_IsInPlay(local_8,local_c);
             if ((iVar1 != 0) &&
                (((&g_MasterCardColorTable)
                  [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) !=
@@ -9783,7 +9783,7 @@ undefined4 FUN_00416129(int value,int min_val,int max_val)
       for (local_c = 0; local_c < 2; local_c = local_c + 1) {
         for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_c]; local_8 = local_8 + 1)
         {
-          iVar2 = Card_IsTapped(local_c,local_8);
+          iVar2 = Card_IsInPlay(local_c,local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x5b20 + local_8 * 0x120) * 0x34] & 2) != 0)
@@ -10491,7 +10491,7 @@ undefined4 Prompts_Load_004172a6(int spell_id,int target_id,int flags)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 0x40)
@@ -10799,7 +10799,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
     arg_15 = 0xffffffff;
     arg_14 = 0xffffffff;
     arg_13 = 0xffffffff;
-    bVar1 = Card_SetTapState(value, min_val, 1);
+    bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
     iVar4 = 1 << (bVar1 & 0x1f);
     arg_11 = 0;
     uVar2 = Card_GetColorAndTypeFlags(value,min_val);
@@ -10818,7 +10818,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       uVar8 = 0xffffffff;
       iVar7 = -1;
       iVar4 = -1;
-      bVar1 = Card_SetTapState(value, min_val, 1);
+      bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
       uVar3 = Card_GetColorAndTypeFlags(value,min_val);
@@ -10844,7 +10844,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       uVar8 = 0xffffffff;
       iVar7 = -1;
       iVar4 = -1;
-      bVar1 = Card_SetTapState(value, min_val, 1);
+      bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
       uVar3 = Card_GetColorAndTypeFlags(value,min_val);
@@ -11375,7 +11375,7 @@ undefined4 Prompts_Load_00418785(int spell_id,int target_id,int flags)
         local_c = Card_ColorMaskToColorIndex((&DAT_0051aebe)
                                [*(int *)(&g_CardSlot_CardId + spell_id * 0x5b20 + target_id * 0x120)
                                 * 0x34]);
-        bVar1 = Card_SetTapState(spell_id,target_id,local_c);
+        bVar1 = Card_RemapColorIndexF9(spell_id,target_id,local_c);
         (&DAT_006a5f4d)[local_14 * 0x5b20 + local_10 * 0x120] = (char)(1 << (bVar1 & 0x1f));
         if (g_IsAiThinking != 1) {
           Duel_PlaySoundById(0x1d);
@@ -11534,7 +11534,7 @@ undefined4 Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120
                                    ) * 0x120] & 2) != 0) {
               iVar3 = Card_ColorMaskToColorIndex((byte)local_e4);
-              bVar1 = Card_UntapCard(*(int *)(&g_CardSlot_CombatTarget +
+              bVar1 = Card_RemapColorIndexFF(*(int *)(&g_CardSlot_CombatTarget +
                                            spell_id * 0x5b20 + target_id * 0x120),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            spell_id * 0x5b20 + target_id * 0x120),iVar3);
@@ -11748,7 +11748,7 @@ undefined4 Prompts_Load_004195a4(int spell_id,int target_id,int flags)
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20
                                    ) * 0x120] & 4) != 0) {
               iVar3 = Card_ColorMaskToColorIndex((byte)local_e4);
-              bVar1 = Card_SetTapState(*(int *)(&g_CardSlot_CombatTarget +
+              bVar1 = Card_RemapColorIndexF9(*(int *)(&g_CardSlot_CombatTarget +
                                            target_id * 0x120 + spell_id * 0x5b20),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            target_id * 0x120 + spell_id * 0x5b20),iVar3);
@@ -11864,7 +11864,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      bVar2 = Card_SetTapState(spell_id,target_id,4);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       iVar4 = 1 << (bVar2 & 0x1f);
       uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
@@ -11879,7 +11879,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       iVar6 = -1;
       iVar4 = -1;
       uVar5 = 0;
-      bVar2 = Card_SetTapState(spell_id,target_id,4);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       iVar4 = Rules_ParseFilter_0040360b
                         (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (bVar2 & 0x1f),uVar5,iVar4,iVar6,uVar7,uVar8,uVar9,uVar10,uVar12);
@@ -11907,7 +11907,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,4);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Duel_ChooseTarget
@@ -11939,7 +11939,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,4);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
@@ -11961,7 +11961,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar5 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,4);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -11979,7 +11979,7 @@ undefined4 Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         local_10 = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         local_c = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006a5f4d)[local_c * 0x120 + local_10 * 0x5b20];
-        bVar2 = Card_SetTapState(spell_id,target_id,4);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(local_10,local_c,2);
         }
@@ -12218,7 +12218,7 @@ undefined4 FUN_0041a782(int value,int min_val,int max_val)
           while ((local_18 < (int)(&g_PlayerActiveCardCount)[iVar1] &&
                  (local_8 < *(int *)(&g_CardSlot_ConvertedManaCost + min_val * 0x120 + value * 0x5b20)
                  ))) {
-            iVar3 = Card_IsTapped(iVar1,local_18);
+            iVar3 = Card_IsInPlay(iVar1,local_18);
             if (((iVar3 != 0) &&
                 ((((&g_MasterCardColorTable)
                    [*(int *)(&g_CardSlot_CardId + local_18 * 0x120 + iVar1 * 0x5b20) * 0x34] & 1) !=
@@ -12388,7 +12388,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      bVar2 = Card_SetTapState(spell_id,target_id,2);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       iVar4 = 1 << (bVar2 & 0x1f);
       uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar4,arg_12,arg_13,
@@ -12403,7 +12403,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       iVar6 = -1;
       iVar4 = -1;
       uVar5 = 0;
-      bVar2 = Card_SetTapState(spell_id,target_id,2);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       iVar4 = Rules_ParseFilter_0040360b
                         (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (bVar2 & 0x1f),uVar5,iVar4,iVar6,uVar7,uVar8,uVar9,uVar10,uVar12);
@@ -12431,7 +12431,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,2);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Duel_ChooseTarget
@@ -12463,7 +12463,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar8 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,2);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uVar7 = 1 << (bVar2 & 0x1f);
         uVar5 = Card_GetColorAndTypeFlags(spell_id,target_id);
         iVar4 = Rules_ParseFilter_0040360b
@@ -12485,7 +12485,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         iVar6 = -1;
         iVar4 = -1;
         uVar5 = 0;
-        bVar2 = Card_SetTapState(spell_id,target_id,2);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         iVar4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -12503,7 +12503,7 @@ undefined4 Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         local_10 = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         local_c = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&DAT_006a5f4d)[local_10 * 0x5b20 + local_c * 0x120];
-        bVar2 = Card_SetTapState(spell_id,target_id,2);
+        bVar2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(local_10,local_c,2);
         }
@@ -13168,7 +13168,7 @@ undefined4 FUN_0041d019(int value,int min_val,int max_val)
                    value,min_val);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -13489,10 +13489,10 @@ void Mem_AllocOrFree_0041d942(int value)
 
 
 /* ==========================================================================
- * Function: Card_UntapCard @ 0041d963
+ * Function: Card_RemapColorIndexFF @ 0041d963
  * ========================================================================== */
 
-int Card_UntapCard(int value,int min_val,int max_val)
+int Card_RemapColorIndexFF(int value,int min_val,int max_val)
 
 {
   if ((&DAT_006a602f)[max_val + value * 0x5b20 + min_val * 0x120] != '\0') {
@@ -13504,10 +13504,10 @@ int Card_UntapCard(int value,int min_val,int max_val)
 
 
 /* ==========================================================================
- * Function: Card_SetTapState @ 0041d9d2
+ * Function: Card_RemapColorIndexF9 @ 0041d9d2
  * ========================================================================== */
 
-int Card_SetTapState(int value,int min_val,int max_val)
+int Card_RemapColorIndexF9(int value,int min_val,int max_val)
 
 {
   if ((&DAT_006a6029)[max_val + value * 0x5b20 + min_val * 0x120] != '\0') {
@@ -18624,7 +18624,7 @@ undefined4 Pic_Subsystem_00428320(int value,int min_val,int max_val)
                     && (((&g_MasterCardColorTable)[iVar4 * 0x34] & 2) != 0)) &&
                    (((&g_CardSlot_Abilities2)[local_c * 0x120 + g_CurrentTurnPhase * 0x5b20] & 0x20)
                     == 0)))) &&
-                 (((iVar5 = g_CurrentTurnPhase * 0x5b20, cVar2 = Card_UntapCard(value,min_val,2),
+                 (((iVar5 = g_CurrentTurnPhase * 0x5b20, cVar2 = Card_RemapColorIndexFF(value,min_val,2),
                    (*(uint *)(&g_CardSlot_Abilities2 + local_c * 0x120 + iVar5) &
                    1 << (cVar2 - 1U & 0x1f)) == 0 && ((&DAT_0051aebd)[iVar4 * 0x34] == '\0')) &&
                   (((&DAT_006a5f69)[local_c * 0x120 + g_CurrentTurnPhase * 0x5b20] & 8) == 0)))) {
@@ -18653,7 +18653,7 @@ undefined4 Pic_Subsystem_00428320(int value,int min_val,int max_val)
         if (iVar4 != -1) {
           *(uint *)(&g_CardSlot_Abilities1 + iVar4 * 0x120 + value * 0x5b20) =
                *(uint *)(&g_CardSlot_Abilities1 + iVar4 * 0x120 + value * 0x5b20) | 0x400020;
-          cVar2 = Card_UntapCard(value,min_val,2);
+          cVar2 = Card_RemapColorIndexFF(value,min_val,2);
           *(uint *)(&g_CardSlot_ConvertedManaCost + iVar4 * 0x120 + value * 0x5b20) =
                1 << (cVar2 - 1U & 0x1f) | 0x20;
           if (((&g_CardSlot_Abilities1)[min_val * 0x120 + value * 0x5b20] & 2) != 0) {
@@ -18696,7 +18696,7 @@ undefined4 Pic_Subsystem_0042881e(int value,int min_val,int max_val)
   }
   else {
     if (max_val == 0x71) {
-      iVar2 = Card_UntapCard(value,min_val,1);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,1);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120) = iVar2;
@@ -18724,7 +18724,7 @@ undefined4 Pic_Subsystem_0042881e(int value,int min_val,int max_val)
     if ((int)(char)(&DAT_006a6030)[value * 0x5b20 + min_val * 0x120] !=
         *(int *)(&g_CardSlot_ConvertedManaCost + value * 0x5b20 + min_val * 0x120)) {
       Mem_AllocOrFree_0041d942(*(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120));
-      iVar2 = Card_UntapCard(value,min_val,1);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,1);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120) = iVar2;
@@ -18749,15 +18749,15 @@ undefined4 Pic_Subsystem_0042881e(int value,int min_val,int max_val)
              1;
       }
     }
-    if ((max_val == 0x3c) && (iVar2 = Card_IsTapped(value,min_val), iVar2 != 0)) {
+    if ((max_val == 0x3c) && (iVar2 = Card_IsInPlay(value,min_val), iVar2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (((iVar2 != 0) &&
             (iVar3 = g_EventSourceSlot * 0x120, iVar4 = g_EventSourcePlayer * 0x5b20,
-            iVar2 = Card_UntapCard(value,min_val,1),
+            iVar2 = Card_RemapColorIndexFF(value,min_val,1),
             *(int *)(&g_CardSlot_CardId + iVar4 + iVar3) == iVar2 + -1)) &&
            ((((&g_CardSlot_Flags)[value * 0x5b20 + min_val * 0x120] & 0x10) == 0 ||
             (((&g_MasterCardColorTable)
@@ -18795,7 +18795,7 @@ undefined4 Pic_Subsystem_00428d5a(int value,int min_val,int max_val)
   }
   else {
     if (max_val == 0x71) {
-      iVar2 = Card_UntapCard(value,min_val,3);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,3);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120) = iVar2;
@@ -18823,7 +18823,7 @@ undefined4 Pic_Subsystem_00428d5a(int value,int min_val,int max_val)
     if ((int)(char)(&DAT_006a6032)[value * 0x5b20 + min_val * 0x120] !=
         *(int *)(&g_CardSlot_ConvertedManaCost + value * 0x5b20 + min_val * 0x120)) {
       Mem_AllocOrFree_0041d942(*(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120));
-      iVar2 = Card_UntapCard(value,min_val,3);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,3);
       iVar2 = FUN_0041d8a6(iVar2 + -1);
       if (iVar2 != -1) {
         *(int *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120) = iVar2;
@@ -18848,15 +18848,15 @@ undefined4 Pic_Subsystem_00428d5a(int value,int min_val,int max_val)
              1;
       }
     }
-    if ((max_val == 0x3c) && (iVar2 = Card_IsTapped(value,min_val), iVar2 != 0)) {
+    if ((max_val == 0x3c) && (iVar2 = Card_IsInPlay(value,min_val), iVar2 != 0)) {
       if ((g_DuelModeFlags & 0x20000) == 0) {
         g_DuelModeFlags = g_DuelModeFlags | 0x10000;
       }
       else {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if ((iVar2 != 0) &&
            (iVar3 = g_EventSourceSlot * 0x120, iVar4 = g_EventSourcePlayer * 0x5b20,
-           iVar2 = Card_UntapCard(value,min_val,3),
+           iVar2 = Card_RemapColorIndexFF(value,min_val,3),
            *(int *)(&g_CardSlot_CardId + iVar4 + iVar3) == iVar2 + -1)) {
           g_CardEventResult = *(undefined4 *)(&g_CardSlot_Controller + value * 0x5b20 + min_val * 0x120)
           ;
@@ -19230,14 +19230,14 @@ void Pic_Subsystem_0042a0d6(int value,int min_val,int max_val)
   int iVar2;
   
   if (((max_val == 0x7f) && (g_EventSourceSlot == min_val)) && (g_EventSourcePlayer == value)) {
-    iVar1 = Card_SetTapState(value,min_val,5);
+    iVar1 = Card_RemapColorIndexF9(value,min_val,5);
     *(int *)(&DAT_006330d0 + iVar1 * 4) = *(int *)(&DAT_006330d0 + iVar1 * 4) + 3;
   }
   if ((((max_val != 0x74) && ((max_val == 0x6c || (max_val == 199)))) && (g_EventSourceSlot == min_val)) &&
      (g_EventSourcePlayer == value)) {
-    iVar1 = Card_SetTapState(value,min_val,5);
+    iVar1 = Card_RemapColorIndexF9(value,min_val,5);
     iVar1 = *(int *)(&DAT_0063ee30 + iVar1 * 4 + (1 - value) * 0x20);
-    iVar2 = Card_SetTapState(value,min_val,5);
+    iVar2 = Card_RemapColorIndexF9(value,min_val,5);
     g_SpellStackDepth =
          g_SpellStackDepth +
          ((iVar1 + *(int *)(&DAT_0063ee30 + iVar2 * 4 + value * 0x20) * -2) * 3 + 3) * 4;
@@ -19678,7 +19678,7 @@ undefined4 Pic_Subsystem_0042ae1d(int spell_id,int target_id,int flags)
          g_EventSourceSlot &&
         ((((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)) &&
-         (iVar5 = Card_IsTapped(spell_id,target_id), iVar5 != 0)))))) {
+         (iVar5 = Card_IsInPlay(spell_id,target_id), iVar5 != 0)))))) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
       *(uint *)(&g_CardSlot_Abilities1 +
@@ -19718,7 +19718,7 @@ undefined4 Pic_Subsystem_0042b5f5(int value,int min_val,int max_val)
       CardQuery_ForEachPermanent(Pic_Subsystem_0042baae,-1);
     }
     if ((max_val == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      iVar3 = Card_IsTapped(value,min_val);
+      iVar3 = Card_IsInPlay(value,min_val);
       if ((iVar3 != 0) &&
          ((g_EventSourceSlot != -1 &&
           (((&g_MasterCardColorTable)[g_CardEventResult * 0x34] & 0x42) == 0x40)))) {
@@ -22195,7 +22195,7 @@ undefined4 Pic_Subsystem_004316cc(int value,int min_val,int max_val)
   int iVar4;
   
   if ((max_val == 199) && (((&g_CardSlot_Flags)[min_val * 0x120 + value * 0x5b20] & 2) != 0)) {
-    iVar1 = Card_UntapCard(value,min_val,1);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,1);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + g_CurrentTurnPhase * 0x20) != 0) {
       iVar1 = 0x18 - (int)(&g_PlayerCreatureCount)[g_CurrentTurnPhase] /
                      *(int *)(&DAT_0063ee30 + iVar1 * 4 + g_CurrentTurnPhase * 0x20);
@@ -22204,7 +22204,7 @@ undefined4 Pic_Subsystem_004316cc(int value,int min_val,int max_val)
       }
       g_SpellStackDepth = g_SpellStackDepth + iVar1 * 0x18;
     }
-    iVar1 = Card_UntapCard(value,min_val,1);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,1);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + g_ActivePlayerPriority * 0x20) != 0) {
       iVar1 = 0x18 - (int)(&g_PlayerCreatureCount)[g_ActivePlayerPriority] /
                      *(int *)(&DAT_0063ee30 + iVar1 * 4 + g_ActivePlayerPriority * 0x20);
@@ -22221,7 +22221,7 @@ undefined4 Pic_Subsystem_004316cc(int value,int min_val,int max_val)
     if (((g_ScWillyScore == 4) &&
         (((&g_CardSlot_ConvertedManaCost)[min_val * 0x120 + value * 0x5b20] & 1) == 0)) &&
        ((g_TurnPlayer == DAT_0063edc0 &&
-        (iVar1 = Card_UntapCard(value,min_val,1),
+        (iVar1 = Card_RemapColorIndexFF(value,min_val,1),
         *(int *)(&DAT_0063ee30 + iVar1 * 4 + DAT_0063edc0 * 0x20) != 0)))) {
       *(uint *)(&g_CardSlot_SpecialState + min_val * 0x120 + value * 0x5b20) =
            *(uint *)(&g_CardSlot_SpecialState + min_val * 0x120 + value * 0x5b20) | 0x101;
@@ -22240,7 +22240,7 @@ undefined4 Pic_Subsystem_004316cc(int value,int min_val,int max_val)
     if (max_val == 0x86) {
       iVar1 = value;
       iVar4 = min_val;
-      iVar3 = Card_UntapCard(value,min_val,1);
+      iVar3 = Card_RemapColorIndexFF(value,min_val,1);
       Mem_AllocOrFree_0041df33
                 (g_TurnPlayer,*(int *)(&DAT_0063ee30 + iVar3 * 4 + g_TurnPlayer * 0x20),
                  iVar1,iVar4);
@@ -22251,7 +22251,7 @@ undefined4 Pic_Subsystem_004316cc(int value,int min_val,int max_val)
     }
     if (max_val == 199) {
       iVar1 = 1 - g_TurnPlayer;
-      iVar4 = Card_UntapCard(value,min_val,1);
+      iVar4 = Card_RemapColorIndexFF(value,min_val,1);
       Mem_AllocOrFree_0041df33(iVar1,*(int *)(&DAT_0063ee30 + iVar4 * 4 + iVar1 * 0x20),value,min_val)
       ;
     }
@@ -22355,7 +22355,7 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
         *(undefined4 *)(&g_CardSlot_OriginalCardId + target_id * 0x120 + spell_id * 0x5b20) =
              *(undefined4 *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         *(undefined4 *)(&g_CardSlot_ConvertedManaCost + target_id * 0x120 + spell_id * 0x5b20) = 1;
-        iVar2 = Card_UntapCard(spell_id,target_id,
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,
                              *(int *)(&g_CardSlot_ConvertedManaCost +
                                      target_id * 0x120 + spell_id * 0x5b20));
         *(int *)(&g_CardSlot_CardId +
@@ -22378,8 +22378,8 @@ undefined4 Pic_Subsystem_004319c5(int spell_id,int target_id,int flags)
           g_EventSourceSlot &&
          (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)))))) &&
-       (iVar2 = Card_IsTapped(spell_id,target_id), iVar2 != 0)) {
-      iVar2 = Card_UntapCard(spell_id,target_id,
+       (iVar2 = Card_IsInPlay(spell_id,target_id), iVar2 != 0)) {
+      iVar2 = Card_RemapColorIndexFF(spell_id,target_id,
                            *(int *)(&g_CardSlot_ConvertedManaCost +
                                    target_id * 0x120 + spell_id * 0x5b20));
       g_CardEventResult = iVar2 + -1;
@@ -22969,14 +22969,14 @@ undefined4 Pic_Subsystem_00433232(int value,int min_val,int max_val)
     if ((max_val == 0x81) && (g_EventSourcePlayer != value)) {
       iVar3 = *(int *)(&g_CardSlot_CardId +
                       g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120);
-      iVar2 = Card_UntapCard(value,min_val,3);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,3);
       if (*(int *)(&g_MasterCardTypeTable + iVar3 * 0x34) == *(int *)(&DAT_006ff2bc + iVar2 * 4)) {
         (&g_PlayerCreatureCount)[value] = (&g_PlayerCreatureCount)[value] + 1;
       }
     }
     if ((((max_val == 0x6c) || (max_val == 199)) && (g_EventSourceSlot == min_val)) &&
        (g_EventSourcePlayer == value)) {
-      iVar3 = Card_UntapCard(value,min_val,3);
+      iVar3 = Card_RemapColorIndexFF(value,min_val,3);
       g_SpellStackDepth =
            g_SpellStackDepth +
            (*(int *)(&DAT_0063ee30 + iVar3 * 4 + g_CurrentTurnPhase * 0x20) * 3 + 3) * 8;
@@ -23040,7 +23040,7 @@ undefined4 Pic_Subsystem_00433466(int value,int min_val,int max_val)
                 (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)
         & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value,min_val,2);
+      bVar2 = Card_RemapColorIndexF9(value,min_val,2);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -23087,7 +23087,7 @@ undefined4 Pic_Subsystem_0043361c(int value,int min_val,int max_val)
                 (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120)
         & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value, min_val, 1);
+      bVar2 = Card_RemapColorIndexF9(value, min_val, 1);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -23155,7 +23155,7 @@ undefined4 Pic_Subsystem_004336f8(int value,int min_val,int max_val)
                   (&g_CardSlot_Flags + g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120
                   ) & 0x22) == 2 &&
          (cVar1 = (&DAT_006a5f4c)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-         bVar3 = Card_SetTapState(value,min_val,5), (1 << (bVar3 & 0x1f) & (int)cVar1) != 0)))))) {
+         bVar3 = Card_RemapColorIndexF9(value,min_val,5), (1 << (bVar3 & 0x1f) & (int)cVar1) != 0)))))) {
       if (max_val == 0x32) {
         g_CardEventResult = g_CardEventResult + 2;
       }
@@ -23169,7 +23169,7 @@ undefined4 Pic_Subsystem_004336f8(int value,int min_val,int max_val)
       iVar5 = 1 - value;
       bVar3 = (&g_CardSlot_ConvertedManaCost)[min_val * 0x120 + value * 0x5b20];
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[iVar5]; local_c = local_c + 1) {
-        iVar6 = Card_IsTapped(iVar5,local_c);
+        iVar6 = Card_IsInPlay(iVar5,local_c);
         if (((iVar6 != 0) &&
             (((&g_MasterCardColorTable)
               [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + iVar5 * 0x5b20) * 0x34] & 0x1e) != 0)
@@ -23243,7 +23243,7 @@ undefined4 Pic_Subsystem_00433b83(int value,int min_val,int max_val)
                    (&g_CardSlot_Flags +
                    g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) & 0x22) == 2)) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value,min_val,5);
+      bVar2 = Card_RemapColorIndexF9(value,min_val,5);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -23344,12 +23344,12 @@ undefined4 Pic_Subsystem_00433c62(int spell_id,int target_id,int flags)
        ((g_EventSourceSlot != -1 &&
         (((&g_CardSlot_Flags)[spell_id * 0x5b20 + target_id * 0x120] & 0x20) == 0)))) {
       if (flags == 0x32) {
-        iVar2 = Card_UntapCard(spell_id,target_id,3);
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult =
              g_CardEventResult + *(int *)(&DAT_0063ee30 + iVar2 * 4 + spell_id * 0x20) / 2;
       }
       if (flags == 0x33) {
-        iVar2 = Card_UntapCard(spell_id,target_id,3);
+        iVar2 = Card_RemapColorIndexFF(spell_id,target_id,3);
         g_CardEventResult =
              g_CardEventResult + (*(int *)(&DAT_0063ee30 + iVar2 * 4 + spell_id * 0x20) + 1) / 2;
       }
@@ -24892,7 +24892,7 @@ undefined4 Pic_Subsystem_00437ac2(int spell_id,int target_id,int flags)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(spell_id,target_id,1);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,1);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -24998,7 +24998,7 @@ undefined4 Pic_Subsystem_00437df6(int spell_id,int target_id,int flags)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 0x40)
           == 0)))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(spell_id,target_id,5);
+      bVar2 = Card_RemapColorIndexF9(spell_id,target_id,5);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) == 0) {
         g_CardEventResult = g_CardEventResult + 1;
       }
@@ -25261,7 +25261,7 @@ undefined4 Pic_Subsystem_00438995(int value,int min_val,int max_val)
     }
     if (max_val == 0x82) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value,min_val,2);
+      bVar2 = Card_RemapColorIndexF9(value,min_val,2);
       if (((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -25282,7 +25282,7 @@ undefined4 Pic_Subsystem_00438995(int value,int min_val,int max_val)
                     g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) * 0x34] & 2) != 0
          )))))) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value,min_val,2);
+      bVar2 = Card_RemapColorIndexF9(value,min_val,2);
       if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
         *(uint *)(&g_CardSlot_SpecialState +
                  g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120) =
@@ -25295,7 +25295,7 @@ undefined4 Pic_Subsystem_00438995(int value,int min_val,int max_val)
     }
     if (max_val == 0x6c) {
       cVar1 = (&DAT_006a5f4d)[g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120];
-      bVar2 = Card_SetTapState(value,min_val,2);
+      bVar2 = Card_RemapColorIndexF9(value,min_val,2);
       if (((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) &&
          (((&g_MasterCardColorTable)
            [*(int *)(&g_CardSlot_CardId +
@@ -25541,7 +25541,7 @@ undefined4 Pic_Subsystem_00439408(int value,int min_val,int max_val)
              *(uint *)(&DAT_006a6038 + local_10 * 0x5b20 + local_c * 0x120) | 2;
         for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[g_TurnPlayer];
             local_8 = local_8 + 1) {
-          iVar2 = Card_IsTapped(g_TurnPlayer,local_8);
+          iVar2 = Card_IsInPlay(g_TurnPlayer,local_8);
           if (((iVar2 != 0) &&
               (((&g_CardSlot_Flags)[local_8 * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) != 0)) &&
              ((((&g_MasterCardColorTable)
@@ -25585,7 +25585,7 @@ undefined4 Pic_Subsystem_004397e3(int value,int min_val,int max_val)
       *(undefined4 *)(&g_CardSlot_TargetSlot + min_val * 0x120 + value * 0x5b20) = 0;
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[g_TurnPlayer];
           local_c = local_c + 1) {
-        iVar2 = Card_IsTapped(g_TurnPlayer,local_c);
+        iVar2 = Card_IsInPlay(g_TurnPlayer,local_c);
         if (((iVar2 != 0) &&
             (((&g_CardSlot_Flags)[local_c * 0x120 + g_TurnPlayer * 0x5b20] & 0x10) == 0)) &&
            (((&g_MasterCardColorTable)
@@ -25630,7 +25630,7 @@ undefined4 Pic_Subsystem_004397e3(int value,int min_val,int max_val)
         local_8 = 0;
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[1 - g_TurnPlayer];
             local_c = local_c + 1) {
-          iVar2 = Card_IsTapped(1 - g_TurnPlayer,local_c);
+          iVar2 = Card_IsInPlay(1 - g_TurnPlayer,local_c);
           if (((iVar2 != 0) &&
               (((&g_CardSlot_Flags)[local_c * 0x120 + (1 - g_TurnPlayer) * 0x5b20] & 0x10) == 0
               )) && (((&g_MasterCardColorTable)
@@ -25726,7 +25726,7 @@ void Pic_Subsystem_00439d8b(int spell_id,int target_id,int flags)
      (g_EventSourcePlayer == spell_id)) {
     Pic_Subsystem_00424500(s_prompts_txt_0052167c,s_BURROWING_00521670);
   }
-  cVar1 = Card_UntapCard(spell_id,target_id,4);
+  cVar1 = Card_RemapColorIndexFF(spell_id,target_id,4);
   Pic_Subsystem_0043b7c9(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -26416,7 +26416,7 @@ undefined4 Pic_Subsystem_0043b424(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar5 = Card_IsTapped(local_8,local_c);
+          iVar5 = Card_IsInPlay(local_8,local_c);
           if ((iVar5 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -26486,7 +26486,7 @@ void Pic_Subsystem_0043b74e(int spell_id,int target_id,int flags)
      (g_EventSourcePlayer == spell_id)) {
     Pic_Subsystem_00424500(s_prompts_txt_0052171c,s_FISHLIVEROIL_0052170c);
   }
-  cVar1 = Card_UntapCard(spell_id,target_id,2);
+  cVar1 = Card_RemapColorIndexFF(spell_id,target_id,2);
   Pic_Subsystem_0043b7c9(spell_id,target_id,flags,1 << (cVar1 - 1U & 0x1f));
   return;
 }
@@ -26864,7 +26864,7 @@ void Pic_Subsystem_0043c174(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value, min_val, 1);
+  height = Card_RemapColorIndexF9(value, min_val, 1);
   Pic_Subsystem_0043c287(value,min_val,max_val,height);
   return;
 }
@@ -26880,7 +26880,7 @@ void Pic_Subsystem_0043c1ab(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,3);
+  height = Card_RemapColorIndexF9(value,min_val,3);
   Pic_Subsystem_0043c287(value,min_val,max_val,height);
   return;
 }
@@ -26896,7 +26896,7 @@ void Pic_Subsystem_0043c1e2(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,2);
+  height = Card_RemapColorIndexF9(value,min_val,2);
   Pic_Subsystem_0043c287(value,min_val,max_val,height);
   return;
 }
@@ -26912,7 +26912,7 @@ void Pic_Subsystem_0043c219(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,4);
+  height = Card_RemapColorIndexF9(value,min_val,4);
   Pic_Subsystem_0043c287(value,min_val,max_val,height);
   return;
 }
@@ -26928,7 +26928,7 @@ void Pic_Subsystem_0043c250(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,5);
+  height = Card_RemapColorIndexF9(value,min_val,5);
   Pic_Subsystem_0043c287(value,min_val,max_val,height);
   return;
 }
@@ -27059,7 +27059,7 @@ undefined4 Pic_Subsystem_0043c287(int spell_id,int target_id,int flags,int heigh
          ((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
           g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) &&
        ((((&g_CardSlot_Flags)[target_id * 0x120 + spell_id * 0x5b20] & 0x20) == 0 &&
-        (height = Card_SetTapState(spell_id,target_id,height), flags == 0x34)))) {
+        (height = Card_RemapColorIndexF9(spell_id,target_id,height), flags == 0x34)))) {
       g_CardEventResult = g_CardEventResult | 0x800 << ((char)height - 1U & 0x1f);
     }
     if (((flags == 0x6c) &&
@@ -27489,7 +27489,7 @@ undefined4 Pic_Subsystem_0043d1c3(int spell_id,int target_id,int flags)
     if ((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
         (g_EventSourceSlot == target_id)) &&
        ((g_EventSourcePlayer == spell_id &&
-        (iVar6 = Card_IsTapped(spell_id,target_id), iVar6 != 0)))) {
+        (iVar6 = Card_IsInPlay(spell_id,target_id), iVar6 != 0)))) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
     }
@@ -27914,7 +27914,7 @@ undefined4 Pic_Subsystem_0043e79c(int value,int min_val,int max_val)
       iVar6 = Pic_Subsystem_00451291(value,iVar6);
       if (iVar6 != -1) {
         Pic_Subsystem_0042ac1f(value,iVar6);
-        cVar2 = Card_SetTapState(value, min_val, 1);
+        cVar2 = Card_RemapColorIndexF9(value, min_val, 1);
         (&DAT_006a5f4d)[iVar6 * 0x120 + value * 0x5b20] = (char)(2 << (cVar2 - 1U & 0x1f));
         *(uint *)(&g_CardSlot_Abilities1 + iVar6 * 0x120 + value * 0x5b20) =
              *(uint *)(&g_CardSlot_Abilities1 + iVar6 * 0x120 + value * 0x5b20) | 0x10;
@@ -27947,7 +27947,7 @@ undefined4 Pic_Subsystem_0043e79c(int value,int min_val,int max_val)
                 '\x04' &&
                (cVar2 = (&DAT_006a5f4d)
                         [g_EventSourcePlayer * 0x5b20 + g_EventSourceSlot * 0x120],
-               cVar3 = Card_SetTapState(value, min_val, 1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
+               cVar3 = Card_RemapColorIndexF9(value, min_val, 1), (2 << (cVar3 - 1U & 0x1f) & (int)cVar2) == 0))))
              )) {
       Card_IncrementCounter(value,min_val);
     }
@@ -28415,7 +28415,7 @@ void Pic_Subsystem_0043fd7b(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value, min_val, 1);
+  height = Card_RemapColorIndexF9(value, min_val, 1);
   Pic_Subsystem_0043fe8e(value,min_val,max_val,height);
   return;
 }
@@ -28431,7 +28431,7 @@ void Pic_Subsystem_0043fdb2(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,5);
+  height = Card_RemapColorIndexF9(value,min_val,5);
   Pic_Subsystem_0043fe8e(value,min_val,max_val,height);
   return;
 }
@@ -28447,7 +28447,7 @@ void Pic_Subsystem_0043fde9(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,4);
+  height = Card_RemapColorIndexF9(value,min_val,4);
   Pic_Subsystem_0043fe8e(value,min_val,max_val,height);
   return;
 }
@@ -28463,7 +28463,7 @@ void Pic_Subsystem_0043fe20(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,2);
+  height = Card_RemapColorIndexF9(value,min_val,2);
   Pic_Subsystem_0043fe8e(value,min_val,max_val,height);
   return;
 }
@@ -28479,7 +28479,7 @@ void Pic_Subsystem_0043fe57(int value,int min_val,int max_val)
 {
   int height;
   
-  height = Card_SetTapState(value,min_val,3);
+  height = Card_RemapColorIndexF9(value,min_val,3);
   Pic_Subsystem_0043fe8e(value,min_val,max_val,height);
   return;
 }
@@ -28797,7 +28797,7 @@ undefined4 Pic_Subsystem_0044068c(int spell_id,int target_id,int flags)
           g_EventSourceSlot &&
          (((char)(&g_CardSlot_Toughness)[target_id * 0x120 + spell_id * 0x5b20] ==
            g_EventSourcePlayer && (g_EventSourceSlot != -1)))))) &&
-       (iVar2 = Card_IsTapped(spell_id,target_id), iVar2 != 0)) {
+       (iVar2 = Card_IsInPlay(spell_id,target_id), iVar2 != 0)) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
     }
@@ -28847,14 +28847,14 @@ undefined4 Pic_Subsystem_00440b49(int value,int min_val,int max_val)
       Pic_Subsystem_0044867e(g_DialogPromptHwnd,g_DuelArenaHwnd,1);
     }
     if ((max_val == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) {
-      iVar2 = Card_IsTapped(value,min_val);
+      iVar2 = Card_IsInPlay(value,min_val);
       if (iVar2 != 0) {
-        iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+        iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
         if (iVar2 != 0) {
-          iVar2 = Card_UntapCard(value,min_val,4);
+          iVar2 = Card_RemapColorIndexFF(value,min_val,4);
           if (*(int *)(&DAT_006ff2bc + iVar2 * 4) ==
               *(int *)(&g_MasterCardTypeTable + g_CardEventResult * 0x34)) {
-            iVar2 = Card_UntapCard(value,min_val,
+            iVar2 = Card_RemapColorIndexFF(value,min_val,
                                  *(int *)(&g_CardSlot_ConvertedManaCost +
                                          min_val * 0x120 + value * 0x5b20));
             g_CardEventResult = iVar2 + -1;
@@ -29124,7 +29124,7 @@ undefined4 Pic_Subsystem_004414dc(int value,int min_val,int max_val)
           iVar5 = -1;
           iVar3 = -1;
           uVar4 = 0;
-          bVar1 = Card_SetTapState(value, min_val, 1);
+          bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
           iVar3 = Rules_ParseFilter_0040360b
                             (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,value,2,2,0,0,0,0,0,
                              1 << (bVar1 & 0x1f),uVar4,iVar3,iVar5,uVar6,uVar7,uVar8,uVar9,uVar10);
@@ -29150,7 +29150,7 @@ undefined4 Pic_Subsystem_004414dc(int value,int min_val,int max_val)
         iVar5 = -1;
         iVar3 = -1;
         uVar4 = 0;
-        bVar1 = Card_SetTapState(value, min_val, 1);
+        bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
         iVar3 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20),
                            *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20),
@@ -29214,7 +29214,7 @@ undefined4 Pic_Subsystem_0044178f(int value,int min_val,int max_val)
           iVar5 = -1;
           iVar3 = -1;
           uVar4 = 0;
-          bVar1 = Card_SetTapState(value,min_val,3);
+          bVar1 = Card_RemapColorIndexF9(value,min_val,3);
           iVar3 = Rules_ParseFilter_0040360b
                             (DAT_006b2d3c,DAT_006b2d2c,(char *)0x0,value,2,2,0,0,0,0,0,
                              1 << (bVar1 & 0x1f),uVar4,iVar3,iVar5,uVar6,uVar7,uVar8,uVar9,uVar10);
@@ -29240,7 +29240,7 @@ undefined4 Pic_Subsystem_0044178f(int value,int min_val,int max_val)
         iVar5 = -1;
         iVar3 = -1;
         uVar4 = 0;
-        bVar1 = Card_SetTapState(value,min_val,3);
+        bVar1 = Card_RemapColorIndexF9(value,min_val,3);
         iVar3 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + min_val * 0x120 + value * 0x5b20),
                            *(int *)(&g_CardSlot_AttachedAura + min_val * 0x120 + value * 0x5b20),
@@ -31530,7 +31530,7 @@ int Pic_Subsystem_00447b57(int x,int y)
   DAT_0063ee88 = 1;
   *(uint *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) =
        *(uint *)(&g_CardSlot_Flags + y * 0x120 + x * 0x5b20) | 0x800;
-  iVar1 = Card_IsTapped(x,y);
+  iVar1 = Card_IsInPlay(x,y);
   if (((((iVar1 == 0) || (g_ScWillyScore != 0x15)) || (g_TurnPlayer != x)) ||
       ((((&DAT_006a5f3d)[y * 0x120 + x * 0x5b20] & 0x80) == 0 ||
        (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 4) != 0)))) ||
@@ -37433,7 +37433,7 @@ undefined4 Mana_Init_004549ea(int spell_id,int target_id,int flags)
     if (((((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
          (target_id == g_EventSourceSlot)) &&
         ((spell_id == g_EventSourcePlayer &&
-         (iVar3 = Card_IsTapped(spell_id,target_id), iVar3 != 0)))) &&
+         (iVar3 = Card_IsInPlay(spell_id,target_id), iVar3 != 0)))) &&
        (*(int *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20) != 0)) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
@@ -38915,8 +38915,8 @@ undefined4 Minit_Subsystem_00458895(int value,int min_val,int max_val)
        ((value == g_EventSourcePlayer &&
         ((iVar2 = Font_DrawString(value,7,2), iVar2 != 0 &&
          (Ai_CalcManaRequirement_004ba890(value,0,2), local_18 != -1)))))) {
-      iVar2 = Card_UntapCard(value,min_val,1);
-      uVar1 = Card_UntapCard(value,min_val,1);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,1);
+      uVar1 = Card_RemapColorIndexFF(value,min_val,1);
       *(undefined4 *)
        (&g_CardSlot_ConvertedManaCost +
        *(int *)(&g_CardSlot_CombatTarget + value * 0x5b20 + min_val * 0x120) * 0x5b20 +
@@ -39199,7 +39199,7 @@ undefined4 Minit_Subsystem_004594d8(int spell_id,int target_id,int flags)
   if (((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
      ((g_EventSourceSlot == target_id &&
       ((spell_id == g_EventSourcePlayer &&
-       (iVar1 = Card_IsTapped(spell_id,target_id), iVar1 != 0)))))) {
+       (iVar1 = Card_IsInPlay(spell_id,target_id), iVar1 != 0)))))) {
     g_CardEventResult =
          *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
   }
@@ -39256,7 +39256,7 @@ undefined4 Minit_Subsystem_004597d4(int spell_id,int target_id,int flags)
   }
   if (((flags == 0x3c) && ((g_DuelModeFlags._2_1_ & 2) == 0)) &&
      ((g_EventSourceSlot == target_id && (g_EventSourcePlayer == spell_id)))) {
-    iVar2 = Card_IsTapped(spell_id,target_id);
+    iVar2 = Card_IsInPlay(spell_id,target_id);
     if (iVar2 != 0) {
       g_CardEventResult =
            *(undefined4 *)(&g_CardSlot_Controller + target_id * 0x120 + spell_id * 0x5b20);
@@ -39422,7 +39422,7 @@ int Minit_Subsystem_0045a120(int x,int y)
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_14 = 0; local_14 < (int)(&g_PlayerActiveCardCount)[local_8]; local_14 = local_14 + 1)
     {
-      iVar1 = Card_IsTapped(local_8,local_14);
+      iVar1 = Card_IsInPlay(local_8,local_14);
       if ((((iVar1 != 0) &&
            (*(int *)(&g_MasterCardTypeTable +
                     *(int *)(&g_CardSlot_CardId + local_14 * 0x120 + local_8 * 0x5b20) * 0x34) ==
@@ -41454,7 +41454,7 @@ undefined4 Minit_Subsystem_0045f258(int value,int min_val,int max_val)
   if (((max_val == 0x33) || (max_val == 0x32)) &&
      (((&g_CardSlot_Flags)[min_val * 0x120 + value * 0x5b20] & 0x10) == 0)) {
     cVar1 = (&DAT_006a5f4c)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20];
-    bVar2 = Card_SetTapState(value,min_val,4);
+    bVar2 = Card_RemapColorIndexF9(value,min_val,4);
     if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
       g_CardEventResult = g_CardEventResult + 1;
     }
@@ -41464,10 +41464,10 @@ undefined4 Minit_Subsystem_0045f258(int value,int min_val,int max_val)
        [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
         * 0x34] & 1) != 0)) {
     cVar1 = (&DAT_006a5f4c)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20];
-    bVar2 = Card_UntapCard(value,min_val,4);
+    bVar2 = Card_RemapColorIndexFF(value,min_val,4);
     if ((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) {
       arg_3_00 = 1;
-      arg_2_00 = Card_UntapCard(value,min_val,4);
+      arg_2_00 = Card_RemapColorIndexFF(value,min_val,4);
       FUN_0040d875(g_EventSourcePlayer,arg_2_00,arg_3_00);
     }
   }
@@ -41574,7 +41574,7 @@ undefined4 Minit_Subsystem_0045f4af(int x,int y,int width,int height)
       ((DAT_006a4b5c == x && (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x20) == 0)))))) {
     iVar2 = Font_DrawString(x,7,1);
     if (iVar2 != 0) {
-      bVar1 = Card_SetTapState(x,y,height);
+      bVar1 = Card_RemapColorIndexF9(x,y,height);
       if (((1 << (bVar1 & 0x1f) &
            (int)(char)(&DAT_006a5f4d)[DAT_006b2e14 * 0x120 + DAT_00695f08 * 0x5b20]) != 0) &&
          ((&g_MasterCardColorTable)
@@ -43454,7 +43454,7 @@ undefined4 Minit_Subsystem_0046410a(int value,int min_val,int max_val)
            *(uint *)(&DAT_006a6038 + local_10 * 0x5b20 + local_c * 0x120) | 2;
       for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[g_TurnPlayer];
           local_8 = local_8 + 1) {
-        iVar1 = Card_IsTapped(g_TurnPlayer,local_8);
+        iVar1 = Card_IsInPlay(g_TurnPlayer,local_8);
         if ((((iVar1 != 0) &&
              (((&g_CardSlot_Flags)[g_TurnPlayer * 0x5b20 + local_8 * 0x120] & 0x10) != 0)) &&
             (((&g_MasterCardColorTable)
@@ -43923,7 +43923,7 @@ undefined4 Minit_Subsystem_00465602(int value,int min_val,int max_val)
                            (int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                            *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20));
       if (iVar2 != -1) {
-        cVar1 = Card_UntapCard(value,min_val,2);
+        cVar1 = Card_RemapColorIndexFF(value,min_val,2);
         *(int *)(&g_CardSlot_ConvertedManaCost + iVar2 * 0x120 + value * 0x5b20) =
              1 << (cVar1 - 1U & 0x1f);
       }
@@ -44618,7 +44618,7 @@ undefined4 Minit_Subsystem_00466f5c(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar1 = Card_IsTapped(local_8,local_c);
+          iVar1 = Card_IsInPlay(local_8,local_c);
           if ((iVar1 != 0) && (iVar1 = Math_RandomRange(3), iVar1 == 0)) {
             Pic_Subsystem_0044867e(local_8,local_c,2);
           }
@@ -44834,8 +44834,8 @@ undefined4 Minit_Subsystem_004677ae(int value,int min_val,int max_val)
      ((((&g_CardSlot_Flags)[min_val * 0x120 + value * 0x5b20] & 0x10) == 0 ||
       (((&g_MasterCardColorTable)
         [*(int *)(&g_CardSlot_CardId + min_val * 0x120 + value * 0x5b20) * 0x34] & 2) != 0)))) {
-    arg_3_00 = Card_SetTapState(value,min_val,4);
-    arg_2_00 = Card_SetTapState(value,min_val,5);
+    arg_3_00 = Card_RemapColorIndexF9(value,min_val,4);
+    arg_2_00 = Card_RemapColorIndexF9(value,min_val,5);
     FUN_0040d72b(value,arg_2_00,arg_3_00);
   }
   return 0;
@@ -48977,10 +48977,10 @@ bool FUN_00471bc0(int x,int y)
 
 
 /* ==========================================================================
- * Function: Card_IsTapped @ 00471c32
+ * Function: Card_IsInPlay @ 00471c32
  * ========================================================================== */
 
-bool Card_IsTapped(int x,int y)
+bool Card_IsInPlay(int x,int y)
 
 {
   bool bVar1;
@@ -49214,7 +49214,7 @@ undefined4 FUN_00472905(int value)
   DAT_006a5f20 = 0;
   DAT_00626810 = 0;
   for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[value]; local_8 = local_8 + 1) {
-    iVar1 = Card_IsTapped(value,local_8);
+    iVar1 = Card_IsInPlay(value,local_8);
     if (iVar1 != 0) {
       if (((&g_CardSlot_Flags)[value * 0x5b20 + local_8 * 0x120] & 4) == 0) {
         if (((&DAT_006a5f3d)[value * 0x5b20 + local_8 * 0x120] & 0x80) != 0) {
@@ -49460,7 +49460,7 @@ void FUN_00472fae(void)
   Ai_Subsystem_004ccca3();
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      iVar2 = Card_IsTapped(local_8,local_c);
+      iVar2 = Card_IsInPlay(local_8,local_c);
       if (((iVar2 != 0) &&
           (((&g_MasterCardColorTable)
             [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0))
@@ -49542,11 +49542,11 @@ uint Magic_QueryCardAttribute(int player,int slot,int event_code,undefined4 targ
       local_1c = 0;
       for (local_18 = 0; local_18 < 5; local_18 = local_18 + 1) {
         if ((local_8 & 1 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_UntapCard(player,slot,local_18 + 1);
+          cVar4 = Card_RemapColorIndexFF(player,slot,local_18 + 1);
           local_1c = local_1c | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((local_8 & 0x800 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_SetTapState(player,slot,local_18 + 1);
+          cVar4 = Card_RemapColorIndexF9(player,slot,local_18 + 1);
           local_1c = local_1c | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
@@ -49605,7 +49605,7 @@ LAB_004737a0:
     }
   }
   uVar1 = g_CardEventResult;
-  iVar5 = Card_IsTapped(player,slot);
+  iVar5 = Card_IsInPlay(player,slot);
   if (((iVar5 != 0) && (event_code == 0x33)) &&
      ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 ||
@@ -49999,7 +49999,7 @@ void Magic_UntapTurnPhase(void)
     (&DAT_006b3008)[local_c] = 0;
     for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_c]; local_10 = local_10 + 1)
     {
-      iVar1 = Card_IsTapped(local_c,local_10);
+      iVar1 = Card_IsInPlay(local_c,local_10);
       if (iVar1 == 0) {
         if (*(int *)(&g_CardSlot_CardId + local_10 * 0x120 + local_c * 0x5b20) != -1) {
           (&DAT_006b3008)[local_c] = (&DAT_006b3008)[local_c] + 1;
@@ -51007,7 +51007,7 @@ void FUN_00476a80(void)
   
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      iVar1 = Card_IsTapped(local_8,local_c);
+      iVar1 = Card_IsInPlay(local_8,local_c);
       if (iVar1 != 0) {
         *(undefined4 *)(&g_CardSlot_SpecialState + local_c * 0x120 + local_8 * 0x5b20) = 0;
       }
@@ -51034,7 +51034,7 @@ void FUN_00476b0e(void)
     for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_8]; local_10 = local_10 + 1)
     {
       if (((&g_CardSlot_SpecialState)[local_10 * 0x120 + local_8 * 0x5b20] & 4) == 0) {
-        iVar1 = Card_IsTapped(local_8,local_10);
+        iVar1 = Card_IsInPlay(local_8,local_10);
         if (iVar1 != 0) {
           for (local_c = 0; local_c < 7; local_c = local_c + 1) {
             (&DAT_006a603c)[local_c + local_8 * 0x5b20 + local_10 * 0x120] = 0;
@@ -72133,15 +72133,15 @@ undefined4 Palette_Subsystem_004a8111(int value,int min_val,int max_val)
       }
       break;
     case 3:
-      bVar1 = Card_SetTapState(value,min_val,3);
+      bVar1 = Card_RemapColorIndexF9(value,min_val,3);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 4:
-      bVar1 = Card_SetTapState(value,min_val,5);
+      bVar1 = Card_RemapColorIndexF9(value,min_val,5);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 5:
-      bVar1 = Card_SetTapState(value,min_val,4);
+      bVar1 = Card_RemapColorIndexF9(value,min_val,4);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 6:
@@ -72169,11 +72169,11 @@ undefined4 Palette_Subsystem_004a8111(int value,int min_val,int max_val)
       *(undefined4 *)(&g_CardSlot_Abilities2 + iVar4 * 0x5b20 + iVar5 * 0x120) = 0x8000000;
       break;
     case 10:
-      bVar1 = Card_SetTapState(value, min_val, 1);
+      bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xb:
-      bVar1 = Card_SetTapState(value,min_val,2);
+      bVar1 = Card_RemapColorIndexF9(value,min_val,2);
       (&DAT_006a5f4d)[iVar4 * 0x5b20 + iVar5 * 0x120] = (char)(1 << (bVar1 & 0x1f));
       break;
     case 0xc:
@@ -89724,30 +89724,30 @@ uint Card_GetColorAndTypeFlags(int x,int y)
       if (((&g_MasterCardColorTable)[local_8 * 0x34] & 0x20) == 0) {
         if (((&g_MasterCardColorTable)[local_8 * 0x34] & 8) == 0) {
           iVar2 = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
-          cVar1 = Card_SetTapState(x,y,iVar2);
+          cVar1 = Card_RemapColorIndexF9(x,y,iVar2);
           uVar3 = 0x800 << (cVar1 - 1U & 0x1f);
         }
         else {
           iVar2 = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
-          cVar1 = Card_SetTapState(x,y,iVar2);
+          cVar1 = Card_RemapColorIndexF9(x,y,iVar2);
           uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x100000;
         }
       }
       else {
         iVar2 = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
-        cVar1 = Card_SetTapState(x,y,iVar2);
+        cVar1 = Card_RemapColorIndexF9(x,y,iVar2);
         uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x80000;
       }
     }
     else {
       iVar2 = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
-      cVar1 = Card_SetTapState(x,y,iVar2);
+      cVar1 = Card_RemapColorIndexF9(x,y,iVar2);
       uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x40000;
     }
   }
   else {
     iVar2 = Card_ColorMaskToColorIndex((&DAT_006a5f4d)[y * 0x120 + x * 0x5b20]);
-    cVar1 = Card_SetTapState(x,y,iVar2);
+    cVar1 = Card_RemapColorIndexF9(x,y,iVar2);
     uVar3 = 0x800 << (cVar1 - 1U & 0x1f) | 0x20000;
   }
   return uVar3;
@@ -90157,7 +90157,7 @@ undefined4 Card_Kudzu_LandDestruction(int value,int min_val,int max_val)
       for (local_c = 0; local_c < 2; local_c = local_c + 1) {
         for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_c];
             local_10 = local_10 + 1) {
-          iVar1 = Card_IsTapped(local_c,local_10);
+          iVar1 = Card_IsInPlay(local_c,local_10);
           if (iVar1 != 0) {
             uVar3 = Magic_QueryCardAttribute(local_c,local_10,0x34,0xffffffff);
             if ((uVar3 & 0x20) != 0) {
@@ -91783,7 +91783,7 @@ undefined4 Card_ClockworkBeast_ResetCounters(int value,int min_val,int max_val)
   char cVar2;
   
   if (((max_val == 0x34) && (min_val == g_EventSourceSlot)) && (value == g_EventSourcePlayer)) {
-    cVar2 = Card_SetTapState(value, min_val, 1);
+    cVar2 = Card_RemapColorIndexF9(value, min_val, 1);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     uVar1 = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(value,min_val,1);
@@ -91837,19 +91837,19 @@ undefined4 Card_ClockworkBeast_CombatTrigger(int value,int min_val,int max_val)
   int local_8;
   
   if (((max_val == 0x34) && (min_val == g_EventSourceSlot)) && (value == g_EventSourcePlayer)) {
-    cVar1 = Card_UntapCard(value,min_val,4);
+    cVar1 = Card_RemapColorIndexFF(value,min_val,4);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar1 - 1U & 0x1f);
   }
   if (((max_val == 0x32) || (max_val == 0x33)) &&
      ((min_val == g_EventSourceSlot && (value == g_EventSourcePlayer)))) {
-    iVar3 = Card_SetTapState(value,min_val,5);
+    iVar3 = Card_RemapColorIndexF9(value,min_val,5);
     bVar4 = *(int *)(&DAT_0063ee30 + iVar3 * 4 + (1 - value) * 0x20) != 0;
     if (!bVar4) {
       for (local_8 = 0; local_8 < 0x50; local_8 = local_8 + 1) {
-        iVar3 = Card_IsTapped(1 - value,local_8);
+        iVar3 = Card_IsInPlay(1 - value,local_8);
         if ((iVar3 != 0) &&
            (cVar1 = (&DAT_006a5f4c)[local_8 * 0x120 + (1 - value) * 0x5b20],
-           bVar2 = Card_SetTapState(value,min_val,5), (1 << (bVar2 & 0x1f) & (int)cVar1) != 0)) {
+           bVar2 = Card_RemapColorIndexF9(value,min_val,5), (1 << (bVar2 & 0x1f) & (int)cVar1) != 0)) {
           bVar4 = true;
           break;
         }
@@ -92246,7 +92246,7 @@ undefined4 Card_SedgeTroll_CheckSwamp(int value,int min_val,int max_val)
   int iVar1;
   
   if ((min_val == g_EventSourceSlot) && (value == g_EventSourcePlayer)) {
-    iVar1 = Card_UntapCard(value,min_val,3);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,3);
     if (0 < *(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20)) {
       if (max_val == 0x32) {
         g_CardEventResult = g_CardEventResult + 1;
@@ -92282,20 +92282,20 @@ undefined4 Card_SedgeTroll_Regenerate(int value,int min_val,int max_val)
     }
   }
   if (max_val == 1) {
-    iVar1 = Card_UntapCard(value,min_val,1);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,1);
     *(int *)(&DAT_006ff690 + iVar1 * 4 + value * 0x20) =
          *(int *)(&DAT_006ff690 + iVar1 * 4 + value * 0x20) + 2;
   }
   if (((max_val == 0x70) && (min_val == g_EventSourceSlot)) && (value == g_EventSourcePlayer)) {
     iVar1 = 1;
-    arg_2_00 = Card_UntapCard(value,min_val,1);
+    arg_2_00 = Card_RemapColorIndexFF(value,min_val,1);
     iVar1 = Font_DrawString(value,arg_2_00,iVar1);
     if (iVar1 != 0) {
       iVar1 = Ai_Subsystem_004cc56d
                         (value,value,min_val,-1,-1,s_Regenerate_Sedge_Troll__Don_t_re_0052eaa4,0);
       if (iVar1 == 0) {
         arg_3_00 = 1;
-        iVar1 = Card_UntapCard(value,min_val,1);
+        iVar1 = Card_RemapColorIndexFF(value,min_val,1);
         Ai_CalcManaRequirement_004ba890(value,iVar1,arg_3_00);
         if (g_ActivePlayer == 1) {
           g_ActivePlayer = -1;
@@ -92429,7 +92429,7 @@ undefined4 Card_GenericCreature_CanRegenerate(int x,int y)
   while ((local_c < 2 && (!bVar1))) {
     local_8 = 0;
     while ((local_8 < (int)(&g_PlayerActiveCardCount)[local_c] && (!bVar1))) {
-      iVar2 = Card_IsTapped(local_c,local_8);
+      iVar2 = Card_IsInPlay(local_c,local_8);
       if ((((iVar2 != 0) &&
            ((char)(&g_CardSlot_Toughness)[local_c * 0x5b20 + local_8 * 0x120] == x)) &&
           (*(int *)(&g_CardSlot_OriginalCardId + local_c * 0x5b20 + local_8 * 0x120) == y)) &&
@@ -93280,7 +93280,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      bVar1 = Card_SetTapState(spell_id,target_id,1);
+      bVar1 = Card_RemapColorIndexF9(spell_id,target_id,1);
       iVar2 = 1 << (bVar1 & 0x1f);
       uVar3 = Card_GetColorAndTypeFlags(spell_id,target_id);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uVar3,iVar2,arg_12,arg_13,
@@ -93307,7 +93307,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       iVar8 = -1;
       iVar2 = -1;
       uVar7 = 0;
-      bVar1 = Card_SetTapState(spell_id,target_id,1);
+      bVar1 = Card_RemapColorIndexF9(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Duel_ChooseTarget
@@ -93335,7 +93335,7 @@ undefined4 Card_NorthernPaladin_DestroyBlack(int spell_id,int target_id,int flag
       iVar8 = -1;
       iVar2 = -1;
       uVar7 = 0;
-      bVar1 = Card_SetTapState(spell_id,target_id,1);
+      bVar1 = Card_RemapColorIndexF9(spell_id,target_id,1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar4 = Card_GetColorAndTypeFlags(spell_id,target_id);
       iVar2 = Rules_ParseFilter_0040360b
@@ -93790,7 +93790,7 @@ undefined4 Card_NettlingImp_IsTargetEligible(int value,int min_val,int max_val)
     iVar2 = 1 - value;
     bVar1 = true;
     for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[iVar2]; local_8 = local_8 + 1) {
-      iVar3 = Card_IsTapped(iVar2,local_8);
+      iVar3 = Card_IsInPlay(iVar2,local_8);
       if ((iVar3 != 0) && ((char)(&g_CardSlot_ColorMask)[local_8 * 0x120 + iVar2 * 0x5b20] == min_val)
          ) {
         bVar1 = false;
@@ -94389,7 +94389,7 @@ undefined4 Card_CavePeople_Mountainwalk(int spell_id,int target_id,int flags)
       else {
         local_8 = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,local_10,local_c);
         if (local_8 != -1) {
-          cVar1 = Card_UntapCard(spell_id,target_id,4);
+          cVar1 = Card_RemapColorIndexFF(spell_id,target_id,4);
           *(int *)(&g_CardSlot_ConvertedManaCost + local_8 * 0x120 + spell_id * 0x5b20) =
                1 << (cVar1 - 1U & 0x1f);
         }
@@ -94883,7 +94883,7 @@ undefined4 Card_DamagePrevention_ClearAtCleanup(int value,int min_val,int max_va
   if (((&DAT_0051aebd)
        [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
         * 0x34] == '\x02') && (max_val == 0x34)) {
-    cVar1 = Card_UntapCard(value,min_val,1);
+    cVar1 = Card_RemapColorIndexFF(value,min_val,1);
     g_CardEventResult = g_CardEventResult | (1 << (cVar1 - 1U & 0x1f)) + 0x200U;
   }
   if (((max_val == 0x77) && (g_EventSourceSlot == min_val)) && (g_EventSourcePlayer == value)) {
@@ -94946,7 +94946,7 @@ undefined4 Card_DamagePrevention_CheckSource(int value,int min_val,int max_val)
      (((&g_CardSlot_Flags)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] & 2) != 0)
      ) {
     if (max_val == 0x34) {
-      cVar1 = Card_UntapCard(value,min_val,4);
+      cVar1 = Card_RemapColorIndexFF(value,min_val,4);
       g_CardEventResult = g_CardEventResult | 1 << (cVar1 - 1U & 0x1f);
     }
     if ((max_val == 0x32) || (max_val == 0x33)) {
@@ -95115,7 +95115,7 @@ undefined4 Card_Leviathan_SacrificeLands(int value,int min_val,int max_val)
          *(uint *)(&g_CardSlot_SpecialState + min_val * 0x120 + value * 0x5b20) | 0x10;
   }
   if ((max_val == 0x88) &&
-     (iVar1 = Card_UntapCard(value,min_val,2), *(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20) < 2))
+     (iVar1 = Card_RemapColorIndexFF(value,min_val,2), *(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20) < 2))
   {
     g_CardEventResult = g_CardEventResult | 1;
   }
@@ -95130,7 +95130,7 @@ undefined4 Card_Leviathan_SacrificeLands(int value,int min_val,int max_val)
     }
   }
   if ((max_val == 0x79) && (*(int *)(&g_CardSlot_TargetSlot + min_val * 0x120 + value * 0x5b20) == 0)) {
-    iVar1 = Card_UntapCard(value,min_val,2);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,2);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20) < 2) {
       g_CardEventResult = 1;
     }
@@ -95142,7 +95142,7 @@ undefined4 Card_Leviathan_SacrificeLands(int value,int min_val,int max_val)
           ((DAT_006a4b5c == g_TurnPlayer &&
            (*(int *)(&g_CardSlot_TargetSlot + min_val * 0x120 + value * 0x5b20) == 0)))))) &&
         (value == DAT_00695f08)) && (DAT_006b2e14 == min_val)) {
-      iVar1 = Card_UntapCard(value,min_val,2);
+      iVar1 = Card_RemapColorIndexFF(value,min_val,2);
       if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20) < 2) {
         DAT_0068a65c = 1;
       }
@@ -95184,7 +95184,7 @@ undefined4 Card_Leviathan_PromptLandSacrifice(int spell_id,int target_id,int fla
   undefined4 uVar2;
   int aiStack_20 [7];
   
-  iVar1 = Card_UntapCard(spell_id,target_id,2);
+  iVar1 = Card_RemapColorIndexFF(spell_id,target_id,2);
   aiStack_20[6] = iVar1 + -1;
   aiStack_20[5] = 0;
   while ((aiStack_20[5] < 2 && (g_ActivePlayer != 1))) {
@@ -95818,7 +95818,7 @@ undefined4 Card_PirateShip_CheckIslandwalk(int value,int min_val,int max_val)
     bVar1 = true;
     x = 1 - value;
     for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[x]; local_8 = local_8 + 1) {
-      iVar2 = Card_IsTapped(x,local_8);
+      iVar2 = Card_IsInPlay(x,local_8);
       if ((iVar2 != 0) && ((char)(&g_CardSlot_ColorMask)[local_8 * 0x120 + x * 0x5b20] == min_val))
       {
         bVar1 = false;
@@ -95845,13 +95845,13 @@ undefined4 Card_PirateShip_HasIsland(int value,int min_val,int max_val)
   int iVar1;
   
   if (((&g_CardSlot_Flags)[min_val * 0x120 + value * 0x5b20] & 2) != 0) {
-    iVar1 = Card_UntapCard(value,min_val,2);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,2);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + value * 0x20) == 0) {
       Pic_Subsystem_0044867e(value,min_val,2);
     }
   }
   if (max_val == 0x79) {
-    iVar1 = Card_UntapCard(value,min_val,2);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,2);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + (1 - value) * 0x20) == 0) {
       g_CardEventResult = 1;
     }
@@ -95950,13 +95950,13 @@ undefined4 Card_IslandFishJasconius_CheckIslands(int value,int min_val,int max_v
   char cVar1;
   int iVar2;
   
-  iVar2 = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+  iVar2 = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
   if ((iVar2 != 0) &&
      ((&DAT_0051aebd)
       [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
        * 0x34] == '\x01')) {
     if (max_val == 0x34) {
-      cVar1 = Card_UntapCard(value,min_val,2);
+      cVar1 = Card_RemapColorIndexFF(value,min_val,2);
       g_CardEventResult = g_CardEventResult | 1 << (cVar1 - 1U & 0x1f);
     }
     if ((max_val == 0x32) || (max_val == 0x33)) {
@@ -95985,7 +95985,7 @@ undefined4 Card_IslandFishJasconius_DestroyIfNoIslands(int value,int min_val,int
   int iVar1;
   
   if (max_val == 0x79) {
-    iVar1 = Card_UntapCard(value,min_val,4);
+    iVar1 = Card_RemapColorIndexFF(value,min_val,4);
     if (*(int *)(&DAT_0063ee30 + iVar1 * 4 + (1 - value) * 0x20) == 0) {
       g_CardEventResult = 1;
     }
@@ -96215,7 +96215,7 @@ bool Card_PsionicEntity_ShootTarget(int spell_id,int target_id,int flags)
   int iVar1;
   bool bVar2;
   
-  if (((flags == 199) && (iVar1 = Card_IsTapped(spell_id,target_id), iVar1 != 0)) &&
+  if (((flags == 199) && (iVar1 = Card_IsInPlay(spell_id,target_id), iVar1 != 0)) &&
      (3 < *(short *)(&DAT_006a5f46 + target_id * 0x120 + spell_id * 0x5b20))) {
     if (spell_id == g_ActivePlayerPriority) {
       g_SpellStackDepth = g_SpellStackDepth + 200;
@@ -97175,7 +97175,7 @@ undefined4 Card_RockHydra_DecrementHead(int value,int min_val,int max_val)
   char cVar2;
   
   if (((max_val == 0x34) && (min_val == g_EventSourceSlot)) && (value == g_EventSourcePlayer)) {
-    cVar2 = Card_SetTapState(value, min_val, 1);
+    cVar2 = Card_RemapColorIndexF9(value, min_val, 1);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     uVar1 = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(value,min_val,1);
@@ -97197,7 +97197,7 @@ undefined4 Card_RockHydra_DamageTrigger(int value,int min_val,int max_val)
   char cVar2;
   
   if (((max_val == 0x34) && (g_EventSourceSlot == min_val)) && (g_EventSourcePlayer == value)) {
-    cVar2 = Card_SetTapState(value,min_val,5);
+    cVar2 = Card_RemapColorIndexF9(value,min_val,5);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     uVar1 = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(value,min_val,5);
@@ -97223,12 +97223,12 @@ void Card_RockHydra_UpdateStatsFromHeads(int value,int min_val,int max_val)
   
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      iVar3 = Card_IsTapped(local_8,local_c);
+      iVar3 = Card_IsInPlay(local_8,local_c);
       if (((iVar3 != 0) &&
           ((char)(&g_CardSlot_Toughness)[local_c * 0x120 + local_8 * 0x5b20] == value)) &&
          (*(int *)(&g_CardSlot_OriginalCardId + local_c * 0x120 + local_8 * 0x5b20) == min_val)) {
         cVar1 = (&DAT_006a5f4d)[local_c * 0x120 + local_8 * 0x5b20];
-        bVar2 = Card_SetTapState(value,min_val,max_val);
+        bVar2 = Card_RemapColorIndexF9(value,min_val,max_val);
         if (((1 << (bVar2 & 0x1f) & (int)cVar1) != 0) &&
            (((&g_MasterCardColorTable)
              [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 4) != 0))
@@ -97253,7 +97253,7 @@ undefined4 Card_RockHydra_InitHeads(int value,int min_val,int max_val)
   char cVar1;
   
   if (((max_val == 0x34) && (g_EventSourceSlot == min_val)) && (value == g_EventSourcePlayer)) {
-    cVar1 = Card_SetTapState(value,min_val,4);
+    cVar1 = Card_RemapColorIndexF9(value,min_val,4);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar1 - 1U & 0x1f);
   }
   return 0;
@@ -97895,7 +97895,7 @@ undefined4 Card_Venom_DestroyCombatBlocker(int spell_id,int target_id,int flags)
         else {
           for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[iVar3];
               local_10 = local_10 + 1) {
-            iVar4 = Card_IsTapped(iVar3,local_10);
+            iVar4 = Card_IsInPlay(iVar3,local_10);
             if ((iVar4 != 0) &&
                ((&g_CardSlot_ColorMask)[iVar3 * 0x5b20 + local_10 * 0x120] == cVar1)) {
               Card_ApplyTriggerEffect(spell_id,target_id,DAT_006a48e4,iVar3,local_10);
@@ -97972,7 +97972,7 @@ undefined4 Card_Venom_AttachToCreature(int value,int min_val,int max_val)
       else {
         for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[x]; local_10 = local_10 + 1
             ) {
-          iVar2 = Card_IsTapped(x,local_10);
+          iVar2 = Card_IsInPlay(x,local_10);
           if (((iVar2 != 0) && ((&g_CardSlot_ColorMask)[x * 0x5b20 + local_10 * 0x120] == cVar1))
              && (((&DAT_0051aebd)
                   [*(int *)(&g_CardSlot_CardId + x * 0x5b20 + local_10 * 0x120) * 0x34] != '\0'
@@ -98021,7 +98021,7 @@ undefined4 Card_Venom_CombatDamageTrigger(int value,int min_val,int max_val)
     }
     else {
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
-        iVar2 = Card_IsTapped(x,local_c);
+        iVar2 = Card_IsInPlay(x,local_c);
         if ((iVar2 != 0) && ((&g_CardSlot_ColorMask)[local_c * 0x120 + x * 0x5b20] == cVar1)) {
           Card_ApplyTriggerEffect(value,min_val,DAT_006b2d84,x,local_c);
           *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + x * 0x5b20) =
@@ -98073,7 +98073,7 @@ undefined4 Card_Venom_DestroyAtEndOfCombat(int value,int min_val,int max_val)
       }
       else {
         for (local_10 = 0; local_10 < 0x50; local_10 = local_10 + 1) {
-          iVar2 = Card_IsTapped(x,local_10);
+          iVar2 = Card_IsInPlay(x,local_10);
           if ((iVar2 != 0) && ((&g_CardSlot_ColorMask)[local_10 * 0x120 + x * 0x5b20] == cVar1))
           {
             Pic_Subsystem_0044867e(x,local_10,4);
@@ -98172,14 +98172,14 @@ undefined4 Card_Venom_ClearAuraFlags(int value,int min_val,int max_val)
   x = 1 - value;
   if (max_val == 0x3c) {
     bVar4 = (&DAT_006a604f)[min_val * 0x120 + value * 0x5b20];
-    bVar2 = Card_SetTapState(value,min_val,3);
-    bVar3 = Card_SetTapState(value,min_val,5);
+    bVar2 = Card_RemapColorIndexF9(value,min_val,3);
+    bVar3 = Card_RemapColorIndexF9(value,min_val,5);
     (&DAT_006a604f)[min_val * 0x120 + value * 0x5b20] =
          bVar4 | (byte)(1 << (bVar2 & 0x1f)) | (byte)(1 << (bVar3 & 0x1f)) | 0x80;
   }
   if (max_val == 0x1a) {
-    bVar4 = Card_SetTapState(value,min_val,3);
-    bVar2 = Card_SetTapState(value,min_val,5);
+    bVar4 = Card_RemapColorIndexF9(value,min_val,3);
+    bVar2 = Card_RemapColorIndexF9(value,min_val,5);
     uVar6 = 1 << (bVar4 & 0x1f) | 1 << (bVar2 & 0x1f);
     if ((value == g_TurnPlayer) &&
        (((&g_CardSlot_Flags)[min_val * 0x120 + value * 0x5b20] & 0x44) != 0)) {
@@ -98216,7 +98216,7 @@ undefined4 Card_Venom_ClearAuraFlags(int value,int min_val,int max_val)
       else {
         for (local_14 = 0; local_14 < (int)(&g_PlayerActiveCardCount)[x]; local_14 = local_14 + 1
             ) {
-          iVar5 = Card_IsTapped(x,local_14);
+          iVar5 = Card_IsInPlay(x,local_14);
           if (((iVar5 != 0) && ((&g_CardSlot_ColorMask)[local_14 * 0x120 + x * 0x5b20] == cVar1))
              && ((uVar6 & (int)(char)(&DAT_006a5f4d)[local_14 * 0x120 + x * 0x5b20]) != 0)) {
             Card_ApplyTriggerEffect(value,min_val,DAT_006a48e4,x,local_14);
@@ -98494,7 +98494,7 @@ undefined4 CardQuery_PlayerControlsColor(int x,byte y)
     if ((int)(&g_PlayerActiveCardCount)[x] <= local_8) {
       return 0;
     }
-    iVar1 = Card_IsTapped(x,local_8);
+    iVar1 = Card_IsInPlay(x,local_8);
     if ((iVar1 != 0) &&
        ((y & (&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + x * 0x5b20) * 0x34]) != 0))
@@ -107633,13 +107633,13 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
             iVar2 = g_PlayerActiveCardCount;
           }
           if (iVar2 <= local_8) break;
-          iVar2 = Card_IsTapped(0,local_8);
+          iVar2 = Card_IsInPlay(0,local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + local_8 * 0x120) * 0x34] & 1)
               != 0)) {
             local_108 = local_108 + 1;
           }
-          iVar2 = Card_IsTapped(1,local_8);
+          iVar2 = Card_IsInPlay(1,local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)[*(int *)(&DAT_006aba54 + local_8 * 0x120) * 0x34] & 1) != 0
              )) {
@@ -107673,13 +107673,13 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
             iVar2 = g_PlayerActiveCardCount;
           }
           if (iVar2 <= local_8) break;
-          iVar2 = Card_IsTapped(0,local_8);
+          iVar2 = Card_IsInPlay(0,local_8);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + local_8 * 0x120) * 0x34] & 2
                ) != 0)) && ((&DAT_006a5f50)[local_8 * 0x120] != '\x03')) {
             local_108 = local_108 + 1;
           }
-          iVar2 = Card_IsTapped(1,local_8);
+          iVar2 = Card_IsInPlay(1,local_8);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)[*(int *)(&DAT_006aba54 + local_8 * 0x120) * 0x34] & 2) !=
                0)) && ((&DAT_006a5f50)[local_8 * 0x120] != '\x03')) {
@@ -108357,7 +108357,7 @@ undefined4 FUN_004f88ae(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 4) != 0)
@@ -108443,7 +108443,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     local_18 = 0;
     local_10 = 0;
     while (((local_18 < g_TurnCounter && (local_10 == 0)) && (g_ActivePlayer != 1))) {
-      local_14 = Card_UntapCard(spell_id,target_id,4);
+      local_14 = Card_RemapColorIndexFF(spell_id,target_id,4);
       local_14 = local_14 + -1;
       Pic_Subsystem_00424500(s_prompts_txt_00530458,s_VOLCANIC_ERUPTION_00530444);
       sprintf(&g_OverworldGoldAmount,&g_OverworldGoldAmount,local_18 + 1,g_TurnCounter);
@@ -108522,7 +108522,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     }
   }
   if (flags == 0x71) {
-    local_14 = Card_UntapCard(spell_id,target_id,4);
+    local_14 = Card_RemapColorIndexFF(spell_id,target_id,4);
     local_14 = local_14 + -1;
     local_8 = 0;
     for (local_18 = 0;
@@ -108611,7 +108611,7 @@ undefined4 FUN_004f90d7(int value,int min_val,int max_val)
                    value,min_val);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar1 = Card_IsTapped(local_8,local_c);
+          iVar1 = Card_IsInPlay(local_8,local_c);
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
@@ -108664,7 +108664,7 @@ undefined4 FUN_004f92f3(int value,int min_val,int max_val)
                    value,min_val);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar1 = Card_IsTapped(local_8,local_c);
+          iVar1 = Card_IsInPlay(local_8,local_c);
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
@@ -108704,7 +108704,7 @@ undefined4 FUN_004f9510(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
@@ -108743,13 +108743,13 @@ undefined4 FUN_004f95fd(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
              ) {
             iVar2 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20);
-            iVar3 = Card_UntapCard(value,min_val,2);
+            iVar3 = Card_RemapColorIndexFF(value,min_val,2);
             if (*(int *)(&g_MasterCardTypeTable + iVar2 * 0x34) ==
                 *(int *)(&DAT_006ff2bc + iVar3 * 4)) {
               Pic_Subsystem_0044867e(local_8,local_c,2);
@@ -110822,7 +110822,7 @@ undefined4 FUN_004fdd4b(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -110861,13 +110861,13 @@ undefined4 FUN_004fde38(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
              ) {
             iVar2 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20);
-            iVar3 = Card_UntapCard(value,min_val,5);
+            iVar3 = Card_RemapColorIndexFF(value,min_val,5);
             if (*(int *)(&g_MasterCardTypeTable + iVar2 * 0x34) ==
                 *(int *)(&DAT_006ff2bc + iVar3 * 4)) {
               Pic_Subsystem_0044867e(local_8,local_c,2);
@@ -110904,7 +110904,7 @@ undefined4 FUN_004fdf72(int value,int min_val,int max_val)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 0x40) !=
@@ -111157,12 +111157,12 @@ undefined4 FUN_004fe901(int value,int min_val,int max_val)
     if (max_val == 0x71) {
       iVar3 = value;
       iVar4 = min_val;
-      iVar2 = Card_UntapCard(value,min_val,4);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,4);
       Mem_AllocOrFree_0041df33
                 (1 - value,*(int *)(&DAT_0063ee30 + iVar2 * 4 + value * 0x20),iVar3,iVar4);
       iVar3 = value;
       iVar4 = min_val;
-      iVar2 = Card_UntapCard(value,min_val,4);
+      iVar2 = Card_RemapColorIndexFF(value,min_val,4);
       Mem_AllocOrFree_0041df33
                 (value,(*(int *)(&DAT_0063ee30 + iVar2 * 4 + value * 0x20) + 1) / 2,iVar3,iVar4);
       Pic_Subsystem_0044867e(value,min_val,1);
@@ -113014,7 +113014,7 @@ LAB_00502384:
       _DAT_006ff198 = 0;
       for (local_2ec = 0; local_2ec < (&g_PlayerActiveCardCount)[value]; local_2ec = local_2ec + 1)
       {
-        iVar1 = Card_IsTapped(value,local_2ec);
+        iVar1 = Card_IsInPlay(value,local_2ec);
         if ((iVar1 != 0) && (((&g_CardSlot_Flags)[local_2ec * 0x120 + value * 0x5b20] & 0x10) != 0))
         {
           *(undefined4 *)(&DAT_006a6038 + local_2ec * 0x120 + value * 0x5b20) = 3;
@@ -113139,7 +113139,7 @@ LAB_00502384:
       }
       for (local_2ec = 0; local_2ec < (&g_PlayerActiveCardCount)[value]; local_2ec = local_2ec + 1)
       {
-        iVar1 = Card_IsTapped(value,local_2ec);
+        iVar1 = Card_IsInPlay(value,local_2ec);
         if (iVar1 != 0) {
           *(undefined4 *)(&DAT_006a6038 + local_2ec * 0x120 + value * 0x5b20) = 0;
         }
@@ -114508,7 +114508,7 @@ undefined4 FUN_005063f6(int x,int y)
   int iVar1;
   undefined4 uVar2;
   
-  iVar1 = Card_IsTapped(x,y);
+  iVar1 = Card_IsInPlay(x,y);
   if ((((iVar1 == 0) ||
        (((&DAT_0051aed1)[*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 0x10)
         == 0)) || (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) != 0)) ||

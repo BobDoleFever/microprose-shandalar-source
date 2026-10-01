@@ -823,10 +823,10 @@ int FUN_0041d8a6(int value);;
 void Mem_AllocOrFree_0041d942(int value);;
 
 /* Function at 0041d963 (Size: 106 bytes) */
-int Card_UntapCard(int value, int min_val, int max_val);;
+int Card_RemapColorIndexFF(int value, int min_val, int max_val);;
 
 /* Function at 0041d9d2 (Size: 106 bytes) */
-int Card_SetTapState(int value, int min_val, int max_val);;
+int Card_RemapColorIndexF9(int value, int min_val, int max_val);;
 
 /* Function at 0041da41 (Size: 294 bytes) */
 void FUN_0041da41(int player,int card_slot);;
@@ -2371,7 +2371,7 @@ int32_t Magic_ExecuteProcessTriggers(int value,int min_val,int max_val);;
 bool FUN_00471bc0(int player,int card_slot);;
 
 /* Function at 00471c32 (Size: 114 bytes) */
-bool Card_IsTapped(int player,int card_slot);;
+bool Card_IsInPlay(int player,int card_slot);;
 
 /* Function at 00471ca4 (Size: 114 bytes) */
 int32_t FUN_00471ca4(int player,int card_slot);;

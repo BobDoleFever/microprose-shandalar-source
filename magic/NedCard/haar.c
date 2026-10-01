@@ -3720,13 +3720,13 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
             iVar2 = g_PlayerActiveCardCount;
           }
           if (iVar2 <= local_8) break;
-          iVar2 = Card_IsTapped(0, local_8);
+          iVar2 = Card_IsInPlay(0, local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + local_8 * 0x120) * 0x34] & 1)
               != 0)) {
             local_108 = local_108 + 1;
           }
-          iVar2 = Card_IsTapped(1,local_8);
+          iVar2 = Card_IsInPlay(1,local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)[*(int *)(&DAT_006aba54 + local_8 * 0x120) * 0x34] & 1) != 0
              )) {
@@ -3760,13 +3760,13 @@ undefined4 Prompts_Load_004f72b0(int spell_id,int target_id,int flags)
             iVar2 = g_PlayerActiveCardCount;
           }
           if (iVar2 <= local_8) break;
-          iVar2 = Card_IsTapped(0, local_8);
+          iVar2 = Card_IsInPlay(0, local_8);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)[*(int *)(&g_CardSlot_CardId + local_8 * 0x120) * 0x34] & 2
                ) != 0)) && ((&DAT_006a5f50)[local_8 * 0x120] != '\x03')) {
             local_108 = local_108 + 1;
           }
-          iVar2 = Card_IsTapped(1,local_8);
+          iVar2 = Card_IsInPlay(1,local_8);
           if (((iVar2 != 0) &&
               (((&g_MasterCardColorTable)[*(int *)(&DAT_006aba54 + local_8 * 0x120) * 0x34] & 2) !=
                0)) && ((&DAT_006a5f50)[local_8 * 0x120] != '\x03')) {
@@ -4480,7 +4480,7 @@ undefined4 FUN_004f88ae(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 4) != 0)
@@ -4569,7 +4569,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     local_18 = 0;
     local_10 = 0;
     while (((local_18 < g_TurnCounter && (local_10 == 0)) && (g_ActivePlayer != 1))) {
-      local_14 = Card_UntapCard(spell_id, target_id, 4);
+      local_14 = Card_RemapColorIndexFF(spell_id, target_id, 4);
       local_14 = local_14 + -1;
       Pic_Subsystem_00424500(s_prompts_txt_00530458,s_VOLCANIC_ERUPTION_00530444);
       sprintf(&g_OverworldGoldAmount,&g_OverworldGoldAmount,local_18 + 1,g_TurnCounter);
@@ -4648,7 +4648,7 @@ undefined4 Prompts_Load_004f899b(int spell_id,int target_id,int flags)
     }
   }
   if (flags == 0x71) {
-    local_14 = Card_UntapCard(spell_id, target_id, 4);
+    local_14 = Card_RemapColorIndexFF(spell_id, target_id, 4);
     local_14 = local_14 + -1;
     local_8 = 0;
     for (local_18 = 0;
@@ -4740,7 +4740,7 @@ undefined4 FUN_004f90d7(int hDIBSection,int card_slot,int arg_3)
                    hDIBSection,card_slot);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar1 = Card_IsTapped(local_8,local_c);
+          iVar1 = Card_IsInPlay(local_8,local_c);
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
@@ -4795,7 +4795,7 @@ undefined4 FUN_004f92f3(int hDIBSection,int card_slot,int arg_3)
                    hDIBSection,card_slot);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar1 = Card_IsTapped(local_8,local_c);
+          iVar1 = Card_IsInPlay(local_8,local_c);
           if (((iVar1 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0
@@ -4837,7 +4837,7 @@ undefined4 FUN_004f9510(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
@@ -4879,13 +4879,13 @@ undefined4 FUN_004f95fd(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
              ) {
             iVar2 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20);
-            iVar3 = Card_UntapCard(hDIBSection,card_slot,2);
+            iVar3 = Card_RemapColorIndexFF(hDIBSection,card_slot,2);
             if (*(int *)(&g_MasterCardTypeTable + iVar2 * 0x34) ==
                 *(int *)(&DAT_006ff2bc + iVar3 * 4)) {
               Pic_Subsystem_0044867e(local_8,local_c,2);
@@ -7030,7 +7030,7 @@ undefined4 FUN_004fdd4b(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -7072,13 +7072,13 @@ undefined4 FUN_004fde38(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 1) != 0)
              ) {
             iVar2 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20);
-            iVar3 = Card_UntapCard(hDIBSection,card_slot,5);
+            iVar3 = Card_RemapColorIndexFF(hDIBSection,card_slot,5);
             if (*(int *)(&g_MasterCardTypeTable + iVar2 * 0x34) ==
                 *(int *)(&DAT_006ff2bc + iVar3 * 4)) {
               Pic_Subsystem_0044867e(local_8,local_c,2);
@@ -7118,7 +7118,7 @@ undefined4 FUN_004fdf72(int hDIBSection,int card_slot,int arg_3)
       for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 0x40) !=
@@ -7380,12 +7380,12 @@ undefined4 FUN_004fe901(int hDIBSection,int card_slot,int arg_3)
     if (arg_3 == 0x71) {
       iVar3 = hDIBSection;
       iVar4 = card_slot;
-      iVar2 = Card_UntapCard(hDIBSection,card_slot,4);
+      iVar2 = Card_RemapColorIndexFF(hDIBSection,card_slot,4);
       Mem_AllocOrFree_0041df33
                 (1 - hDIBSection,*(int *)(&DAT_0063ee30 + iVar2 * 4 + hDIBSection * 0x20),iVar3,iVar4);
       iVar3 = hDIBSection;
       iVar4 = card_slot;
-      iVar2 = Card_UntapCard(hDIBSection,card_slot,4);
+      iVar2 = Card_RemapColorIndexFF(hDIBSection,card_slot,4);
       Mem_AllocOrFree_0041df33
                 (hDIBSection,(*(int *)(&DAT_0063ee30 + iVar2 * 4 + hDIBSection * 0x20) + 1) / 2,iVar3,iVar4);
       Pic_Subsystem_0044867e(hDIBSection,card_slot,1);

@@ -448,7 +448,7 @@ int Card_Kudzu_LandDestruction(int player,int card_index,int event_code)
       for (local_c = 0; local_c < 2; local_c = local_c + 1) {
         for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[local_c];
             local_10 = local_10 + 1) {
-          status = Card_IsTapped(local_c, local_10);
+          status = Card_IsInPlay(local_c, local_10);
           if (status != 0) {
             uVar3 = Magic_QueryCardAttribute(local_c, local_10, 0x34, 0xffffffff);
             if ((uVar3 & 0x20) != 0) {
@@ -2275,7 +2275,7 @@ int Card_ClockworkBeast_ResetCounters(int player,int card_index,int event_code)
   char cVar2;
   
   if (((event_code == 0x34) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    cVar2 = Card_SetTapState(player, card_index, 1);
+    cVar2 = Card_RemapColorIndexF9(player, card_index, 1);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     u_res = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(player,card_index,1);
@@ -2335,19 +2335,19 @@ int Card_ClockworkBeast_CombatTrigger(int player,int card_index,int event_code)
   int local_8;
   
   if (((event_code == 0x34) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    c_res = Card_UntapCard(player, card_index, 4);
+    c_res = Card_RemapColorIndexFF(player, card_index, 4);
     g_CardEventResult = g_CardEventResult | 0x800 << (c_res - 1U & 0x1f);
   }
   if (((event_code == 0x32) || (event_code == 0x33)) &&
      ((card_index == g_EventSourceSlot && (player == g_EventSourcePlayer)))) {
-    temp_idx = Card_SetTapState(player,card_index,5);
+    temp_idx = Card_RemapColorIndexF9(player,card_index,5);
     bVar4 = *(int *)(&DAT_0063ee30 + temp_idx * 4 + (1 - player) * 0x20) != 0;
     if (!bVar4) {
       for (local_8 = 0; local_8 < 0x50; local_8 = local_8 + 1) {
-        temp_idx = Card_IsTapped(1 - player,local_8);
+        temp_idx = Card_IsInPlay(1 - player,local_8);
         if ((temp_idx != 0) &&
            (c_res = (&DAT_006a5f4c)[local_8 * 0x120 + (1 - player) * 0x5b20],
-           is_match = Card_SetTapState(player,card_index,5), (1 << (is_match & 0x1f) & (int)c_res) != 0)) {
+           is_match = Card_RemapColorIndexF9(player,card_index,5), (1 << (is_match & 0x1f) & (int)c_res) != 0)) {
           bVar4 = true;
           break;
         }
@@ -2799,7 +2799,7 @@ int Card_SedgeTroll_CheckSwamp(int player,int card_index,int event_code)
   int status;
   
   if ((card_index == g_EventSourceSlot) && (player == g_EventSourcePlayer)) {
-    status = Card_UntapCard(player,card_index,3);
+    status = Card_RemapColorIndexFF(player,card_index,3);
     if (0 < *(int *)(&DAT_0063ee30 + status * 4 + player * 0x20)) {
       if (event_code == 0x32) {
         g_CardEventResult = g_CardEventResult + 1;
@@ -2842,20 +2842,20 @@ int Card_SedgeTroll_Regenerate(int player,int card_index,int event_code)
     }
   }
   if (event_code == 1) {
-    status = Card_UntapCard(player,card_index,1);
+    status = Card_RemapColorIndexFF(player,card_index,1);
     *(int *)(&DAT_006ff690 + status * 4 + player * 0x20) =
          *(int *)(&DAT_006ff690 + status * 4 + player * 0x20) + 2;
   }
   if (((event_code == 0x70) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
     status = 1;
-    arg_2_00 = Card_UntapCard(player,card_index,1);
+    arg_2_00 = Card_RemapColorIndexFF(player,card_index,1);
     status = Font_DrawString(player,arg_2_00,status);
     if (status != 0) {
       status = Ai_Subsystem_004cc56d
                         (player,player,card_index,-1,-1,s_Regenerate_Sedge_Troll__Don_t_re_0052eaa4,0);
       if (status == 0) {
         arg_3_00 = 1;
-        status = Card_UntapCard(player,card_index,1);
+        status = Card_RemapColorIndexFF(player,card_index,1);
         Ai_CalcManaRequirement_004ba890(player,status,arg_3_00);
         if (g_ActivePlayer == 1) {
           g_ActivePlayer = -1;
@@ -3015,7 +3015,7 @@ int Card_GenericCreature_CanRegenerate(int player,int card_index)
   while ((local_c < 2 && (!is_valid))) {
     local_8 = 0;
     while ((local_8 < (int)(&g_PlayerActiveCardCount)[local_c] && (!is_valid))) {
-      val_result = Card_IsTapped(local_c,local_8);
+      val_result = Card_IsInPlay(local_c,local_8);
       if ((((val_result != 0) &&
            ((char)(&g_CardSlot_Toughness)[local_c * 0x5b20 + local_8 * 0x120] == player)) &&
           (*(int *)(&g_CardSlot_OriginalCardId + local_c * 0x5b20 + local_8 * 0x120) == card_index)) &&
@@ -3918,7 +3918,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      is_valid = Card_SetTapState(player, card_index, 1);
+      is_valid = Card_RemapColorIndexF9(player, card_index, 1);
       val_result = 1 << (is_valid & 0x1f);
       uVar3 = Card_GetColorAndTypeFlags(player,card_index);
       uVar3 = UI_PaintBigCardInfo((int *)0x0,0,player,2,2,0x200,0x1047,0,0,uVar3,val_result,arg_12,arg_13,
@@ -3945,7 +3945,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       iVar8 = -1;
       val_result = -1;
       uVar7 = 0;
-      is_valid = Card_SetTapState(player, card_index, 1);
+      is_valid = Card_RemapColorIndexF9(player, card_index, 1);
       uVar5 = 1 << (is_valid & 0x1f);
       uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Duel_ChooseTarget
@@ -3973,7 +3973,7 @@ int Card_NorthernPaladin_DestroyBlack(int player,int card_index,int event_code)
       iVar8 = -1;
       val_result = -1;
       uVar7 = 0;
-      is_valid = Card_SetTapState(player, card_index, 1);
+      is_valid = Card_RemapColorIndexF9(player, card_index, 1);
       uVar5 = 1 << (is_valid & 0x1f);
       uVar4 = Card_GetColorAndTypeFlags(player,card_index);
       val_result = Rules_ParseFilter_0040360b
@@ -4475,7 +4475,7 @@ int Card_NettlingImp_IsTargetEligible(int player,int card_index,int event_code)
     val_result = 1 - player;
     is_valid = true;
     for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[val_result]; local_8 = local_8 + 1) {
-      temp_idx = Card_IsTapped(val_result,local_8);
+      temp_idx = Card_IsInPlay(val_result,local_8);
       if ((temp_idx != 0) && ((char)(&g_CardSlot_ColorMask)[local_8 * 0x120 + val_result * 0x5b20] == card_index)
          ) {
         is_valid = false;
@@ -5109,7 +5109,7 @@ int Card_CavePeople_Mountainwalk(int player,int card_index,int event_code)
       else {
         local_8 = Card_ApplyTriggerEffect(g_DialogPromptHwnd,g_DuelArenaHwnd,DAT_0069f6dc,local_10,local_c);
         if (local_8 != -1) {
-          c_res = Card_UntapCard(player, card_index, 4);
+          c_res = Card_RemapColorIndexFF(player, card_index, 4);
           *(int *)(&g_CardSlot_ConvertedManaCost + local_8 * 0x120 + player * 0x5b20) =
                1 << (c_res - 1U & 0x1f);
         }
@@ -5660,7 +5660,7 @@ int Card_DamagePrevention_ClearAtCleanup(int player,int card_index,int event_cod
   if (((&DAT_0051aebd)
        [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
         * 0x34] == '\x02') && (event_code == 0x34)) {
-    c_res = Card_UntapCard(player,card_index,1);
+    c_res = Card_RemapColorIndexFF(player,card_index,1);
     g_CardEventResult = g_CardEventResult | (1 << (c_res - 1U & 0x1f)) + 0x200U;
   }
   if (((event_code == 0x77) && (g_EventSourceSlot == card_index)) && (g_EventSourcePlayer == player)) {
@@ -5741,7 +5741,7 @@ int Card_DamagePrevention_CheckSource(int player,int card_index,int event_code)
      (((&g_CardSlot_Flags)[g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20] & 2) != 0)
      ) {
     if (event_code == 0x34) {
-      c_res = Card_UntapCard(player, card_index, 4);
+      c_res = Card_RemapColorIndexFF(player, card_index, 4);
       g_CardEventResult = g_CardEventResult | 1 << (c_res - 1U & 0x1f);
     }
     if ((event_code == 0x32) || (event_code == 0x33)) {
@@ -5936,7 +5936,7 @@ int Card_Leviathan_SacrificeLands(int player,int card_index,int event_code)
          *(uint *)(&g_CardSlot_SpecialState + card_index * 0x120 + player * 0x5b20) | 0x10;
   }
   if ((event_code == 0x88) &&
-     (status = Card_UntapCard(player,card_index,2), *(int *)(&DAT_0063ee30 + status * 4 + player * 0x20) < 2))
+     (status = Card_RemapColorIndexFF(player,card_index,2), *(int *)(&DAT_0063ee30 + status * 4 + player * 0x20) < 2))
   {
     g_CardEventResult = g_CardEventResult | 1;
   }
@@ -5951,7 +5951,7 @@ int Card_Leviathan_SacrificeLands(int player,int card_index,int event_code)
     }
   }
   if ((event_code == 0x79) && (*(int *)(&g_CardSlot_TargetSlot + card_index * 0x120 + player * 0x5b20) == 0)) {
-    status = Card_UntapCard(player,card_index,2);
+    status = Card_RemapColorIndexFF(player,card_index,2);
     if (*(int *)(&DAT_0063ee30 + status * 4 + player * 0x20) < 2) {
       g_CardEventResult = 1;
     }
@@ -5963,7 +5963,7 @@ int Card_Leviathan_SacrificeLands(int player,int card_index,int event_code)
           ((DAT_006a4b5c == g_TurnPlayer &&
            (*(int *)(&g_CardSlot_TargetSlot + card_index * 0x120 + player * 0x5b20) == 0)))))) &&
         (player == DAT_00695f08)) && (DAT_006b2e14 == card_index)) {
-      status = Card_UntapCard(player,card_index,2);
+      status = Card_RemapColorIndexFF(player,card_index,2);
       if (*(int *)(&DAT_0063ee30 + status * 4 + player * 0x20) < 2) {
         DAT_0068a65c = 1;
       }
@@ -6011,7 +6011,7 @@ int Card_Leviathan_PromptLandSacrifice(int player,int card_index,int event_code)
   int u_temp;
   int aiStack_20 [7];
   
-  status = Card_UntapCard(player,card_index,2);
+  status = Card_RemapColorIndexFF(player,card_index,2);
   aiStack_20[6] = status + -1;
   aiStack_20[5] = 0;
   while ((aiStack_20[5] < 2 && (g_ActivePlayer != 1))) {
@@ -6712,7 +6712,7 @@ int Card_PirateShip_CheckIslandwalk(int player,int card_index,int event_code)
     is_valid = true;
     player = 1 - player;
     for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[player]; local_8 = local_8 + 1) {
-      val_result = Card_IsTapped(player,local_8);
+      val_result = Card_IsInPlay(player,local_8);
       if ((val_result != 0) && ((char)(&g_CardSlot_ColorMask)[local_8 * 0x120 + player * 0x5b20] == card_index))
       {
         is_valid = false;
@@ -6745,13 +6745,13 @@ int Card_PirateShip_HasIsland(int player,int card_index,int event_code)
   int status;
   
   if (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 2) != 0) {
-    status = Card_UntapCard(player,card_index,2);
+    status = Card_RemapColorIndexFF(player,card_index,2);
     if (*(int *)(&DAT_0063ee30 + status * 4 + player * 0x20) == 0) {
       Pic_Subsystem_0044867e(player,card_index,2);
     }
   }
   if (event_code == 0x79) {
-    status = Card_UntapCard(player,card_index,2);
+    status = Card_RemapColorIndexFF(player,card_index,2);
     if (*(int *)(&DAT_0063ee30 + status * 4 + (1 - player) * 0x20) == 0) {
       g_CardEventResult = 1;
     }
@@ -6869,13 +6869,13 @@ int Card_IslandFishJasconius_CheckIslands(int player,int card_index,int event_co
   char c_res;
   int val_result;
   
-  val_result = Card_IsTapped(g_EventSourcePlayer,g_EventSourceSlot);
+  val_result = Card_IsInPlay(g_EventSourcePlayer,g_EventSourceSlot);
   if ((val_result != 0) &&
      ((&DAT_0051aebd)
       [*(int *)(&g_CardSlot_CardId + g_EventSourceSlot * 0x120 + g_EventSourcePlayer * 0x5b20)
        * 0x34] == '\x01')) {
     if (event_code == 0x34) {
-      c_res = Card_UntapCard(player,card_index,2);
+      c_res = Card_RemapColorIndexFF(player,card_index,2);
       g_CardEventResult = g_CardEventResult | 1 << (c_res - 1U & 0x1f);
     }
     if ((event_code == 0x32) || (event_code == 0x33)) {
@@ -6910,7 +6910,7 @@ int Card_IslandFishJasconius_DestroyIfNoIslands(int player,int card_index,int ev
   int status;
   
   if (event_code == 0x79) {
-    status = Card_UntapCard(player, card_index, 4);
+    status = Card_RemapColorIndexFF(player, card_index, 4);
     if (*(int *)(&DAT_0063ee30 + status * 4 + (1 - player) * 0x20) == 0) {
       g_CardEventResult = 1;
     }
@@ -7181,7 +7181,7 @@ bool Card_PsionicEntity_ShootTarget(int player,int card_index,int event_code)
   int status;
   bool is_match;
   
-  if (((event_code == 199) && (status = Card_IsTapped(player,card_index), status != 0)) &&
+  if (((event_code == 199) && (status = Card_IsInPlay(player,card_index), status != 0)) &&
      (3 < *(short *)(&DAT_006a5f46 + card_index * 0x120 + player * 0x5b20))) {
     if (player == g_ActivePlayerPriority) {
       g_SpellStackDepth = g_SpellStackDepth + 200;
@@ -8286,7 +8286,7 @@ int Card_RockHydra_DecrementHead(int player,int card_index,int event_code)
   char cVar2;
   
   if (((event_code == 0x34) && (card_index == g_EventSourceSlot)) && (player == g_EventSourcePlayer)) {
-    cVar2 = Card_SetTapState(player, card_index, 1);
+    cVar2 = Card_RemapColorIndexF9(player, card_index, 1);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     u_res = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(player,card_index,1);
@@ -8314,7 +8314,7 @@ int Card_RockHydra_DamageTrigger(int player,int card_index,int event_code)
   char cVar2;
   
   if (((event_code == 0x34) && (g_EventSourceSlot == card_index)) && (g_EventSourcePlayer == player)) {
-    cVar2 = Card_SetTapState(player,card_index,5);
+    cVar2 = Card_RemapColorIndexF9(player,card_index,5);
     g_CardEventResult = g_CardEventResult | 0x800 << (cVar2 - 1U & 0x1f);
     u_res = g_CardEventResult;
     Card_RockHydra_UpdateStatsFromHeads(player,card_index,5);
@@ -8346,12 +8346,12 @@ void Card_RockHydra_UpdateStatsFromHeads(int player,int card_index,int event_cod
   
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      temp_idx = Card_IsTapped(local_8,local_c);
+      temp_idx = Card_IsInPlay(local_8,local_c);
       if (((temp_idx != 0) &&
           ((char)(&g_CardSlot_Toughness)[local_c * 0x120 + local_8 * 0x5b20] == player)) &&
          (*(int *)(&g_CardSlot_OriginalCardId + local_c * 0x120 + local_8 * 0x5b20) == card_index)) {
         c_res = (&DAT_006a5f4d)[local_c * 0x120 + local_8 * 0x5b20];
-        is_match = Card_SetTapState(player,card_index,event_code);
+        is_match = Card_RemapColorIndexF9(player,card_index,event_code);
         if (((1 << (is_match & 0x1f) & (int)c_res) != 0) &&
            (((&g_MasterCardColorTable)
              [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 4) != 0))
@@ -8382,7 +8382,7 @@ int Card_RockHydra_InitHeads(int player,int card_index,int event_code)
   char c_res;
   
   if (((event_code == 0x34) && (g_EventSourceSlot == card_index)) && (player == g_EventSourcePlayer)) {
-    c_res = Card_SetTapState(player,card_index,4);
+    c_res = Card_RemapColorIndexF9(player,card_index,4);
     g_CardEventResult = g_CardEventResult | 0x800 << (c_res - 1U & 0x1f);
   }
   return 0;
@@ -9077,7 +9077,7 @@ int Card_Venom_DestroyCombatBlocker(int player,int card_index,int event_code)
         else {
           for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[temp_idx];
               local_10 = local_10 + 1) {
-            iVar4 = Card_IsTapped(temp_idx,local_10);
+            iVar4 = Card_IsInPlay(temp_idx,local_10);
             if ((iVar4 != 0) &&
                ((&g_CardSlot_ColorMask)[temp_idx * 0x5b20 + local_10 * 0x120] == c_res)) {
               Card_ApplyTriggerEffect(player,card_index,DAT_006a48e4,temp_idx,local_10);
@@ -9160,7 +9160,7 @@ int Card_Venom_AttachToCreature(int player,int card_index,int event_code)
       else {
         for (local_10 = 0; local_10 < (int)(&g_PlayerActiveCardCount)[player]; local_10 = local_10 + 1
             ) {
-          val_result = Card_IsTapped(player,local_10);
+          val_result = Card_IsInPlay(player,local_10);
           if (((val_result != 0) && ((&g_CardSlot_ColorMask)[player * 0x5b20 + local_10 * 0x120] == c_res))
              && (((&DAT_0051aebd)
                   [*(int *)(&g_CardSlot_CardId + player * 0x5b20 + local_10 * 0x120) * 0x34] != '\0'
@@ -9215,7 +9215,7 @@ int Card_Venom_CombatDamageTrigger(int player,int card_index,int event_code)
     }
     else {
       for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[player]; local_c = local_c + 1) {
-        val_result = Card_IsTapped(player,local_c);
+        val_result = Card_IsInPlay(player,local_c);
         if ((val_result != 0) && ((&g_CardSlot_ColorMask)[local_c * 0x120 + player * 0x5b20] == c_res)) {
           Card_ApplyTriggerEffect(player,card_index,DAT_006b2d84,player,local_c);
           *(uint *)(&g_CardSlot_Abilities1 + local_c * 0x120 + player * 0x5b20) =
@@ -9273,7 +9273,7 @@ int Card_Venom_DestroyAtEndOfCombat(int player,int card_index,int event_code)
       }
       else {
         for (local_10 = 0; local_10 < 0x50; local_10 = local_10 + 1) {
-          val_result = Card_IsTapped(player,local_10);
+          val_result = Card_IsInPlay(player,local_10);
           if ((val_result != 0) && ((&g_CardSlot_ColorMask)[local_10 * 0x120 + player * 0x5b20] == c_res))
           {
             Pic_Subsystem_0044867e(player,local_10,4);
@@ -9390,14 +9390,14 @@ int Card_Venom_ClearAuraFlags(int player,int card_index,int event_code)
   player = 1 - player;
   if (event_code == 0x3c) {
     bVar4 = (&DAT_006a604f)[card_index * 0x120 + player * 0x5b20];
-    is_match = Card_SetTapState(player,card_index,3);
-    bVar3 = Card_SetTapState(player,card_index,5);
+    is_match = Card_RemapColorIndexF9(player,card_index,3);
+    bVar3 = Card_RemapColorIndexF9(player,card_index,5);
     (&DAT_006a604f)[card_index * 0x120 + player * 0x5b20] =
          bVar4 | (byte)(1 << (is_match & 0x1f)) | (byte)(1 << (bVar3 & 0x1f)) | 0x80;
   }
   if (event_code == 0x1a) {
-    bVar4 = Card_SetTapState(player,card_index,3);
-    is_match = Card_SetTapState(player,card_index,5);
+    bVar4 = Card_RemapColorIndexF9(player,card_index,3);
+    is_match = Card_RemapColorIndexF9(player,card_index,5);
     uVar6 = 1 << (bVar4 & 0x1f) | 1 << (is_match & 0x1f);
     if ((player == g_TurnPlayer) &&
        (((&g_CardSlot_Flags)[card_index * 0x120 + player * 0x5b20] & 0x44) != 0)) {
@@ -9434,7 +9434,7 @@ int Card_Venom_ClearAuraFlags(int player,int card_index,int event_code)
       else {
         for (local_14 = 0; local_14 < (int)(&g_PlayerActiveCardCount)[player]; local_14 = local_14 + 1
             ) {
-          iVar5 = Card_IsTapped(player,local_14);
+          iVar5 = Card_IsInPlay(player,local_14);
           if (((iVar5 != 0) && ((&g_CardSlot_ColorMask)[local_14 * 0x120 + player * 0x5b20] == c_res))
              && ((uVar6 & (int)(char)(&DAT_006a5f4d)[local_14 * 0x120 + player * 0x5b20]) != 0)) {
             Card_ApplyTriggerEffect(player,card_index,DAT_006a48e4,player,local_14);

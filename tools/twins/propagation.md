@@ -10,12 +10,12 @@ A name is *generic* when it is a Ghidra default (`FUN_`, `thunk_FUN_`), an auto-
 
 | | Pairs |
 |---|---|
-| 1. MAGIC semantic, DUEL generic | 208 (7 of the MAGIC names verified) |
+| 1. MAGIC semantic, DUEL generic | 206 (5 of the MAGIC names verified) |
 | 2. DUEL semantic, MAGIC generic | 5 (0 of the DUEL names verified) |
 | 3. Both semantic, different | 3 |
 | Sections 1 and 2 where the other side's C file already has a different semantic name (conflicts once the index catches up) | 0 |
-| Both semantic, the same | 68 |
-| Both generic | 1009 |
+| Both semantic, the same | 74 |
+| Both generic | 1005 |
 | 4. DUEL names on several addresses, a twin among them | 27 |
 
 ## 1. MAGIC.EXE semantic, DUEL.EXE generic
@@ -26,8 +26,6 @@ Candidates for carrying the MAGIC.EXE name to the DUEL.EXE twin. Verified MAGIC 
 |---|---|---|---|---|---|
 | `0x004485d6` | `Magic_BroadcastCardEventInStep` (verified) | `0x0046e4c9` | `FUN_0046e4c9` (generic: Ghidra default) | 1.0000 |  |
 | `0x00473e69` | `Magic_BroadcastCardEvent` (verified) | `0x0048c50b` | `FUN_0048c50b` (generic: Ghidra default) | 1.0000 |  |
-| `0x00474428` | `Magic_PushEventContext` (verified) | `0x0048cac9` | `FUN_0048cac9` (generic: Ghidra default) | 1.0000 |  |
-| `0x004744de` | `Magic_PopEventContext` (verified) | `0x0048cb7f` | `FUN_0048cb7f` (generic: Ghidra default) | 1.0000 |  |
 | `0x004cfe4d` | `SpellChain_RebuildEntryTargets` (verified) | `0x004a1f15` | `Palette_Subsystem_0049608e` (generic: auto-label) | 0.8261 | `Palette_Subsystem_0049608e` is carried by 6 DUEL addresses: rename by address |
 | `0x004cfb2f` | `SpellChain_InsertEntry` (verified) | `0x004a1bf7` | `Palette_Subsystem_0049608e` (generic: auto-label) | 0.8213 | `Palette_Subsystem_0049608e` is carried by 6 DUEL addresses: rename by address |
 | `0x004756a1` | `Magic_ResolveTopSpell` (verified) | `0x0048dd43` | `FUN_0048dd43` (generic: Ghidra default) | 0.7347 |  |

@@ -4698,7 +4698,7 @@ undefined4 FUN_004118a8(int value,int min_val,int max_val)
            *(int *)(&g_CardSlot_ConvertedManaCost + min_val * 0x120 + value * 0x5b20);
     }
     else {
-      iVar3 = Card_IsTapped((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+      iVar3 = Card_IsInPlay((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                            *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20));
       if ((iVar3 != 0) &&
          (*(short *)(&g_CardSlot_Power +
@@ -4850,7 +4850,7 @@ undefined4 FUN_00412413(int value,int min_val,int max_val)
        (*(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20) == g_EventSourceSlot)
        ) && ((char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20] ==
              g_EventSourcePlayer)) && (g_EventSourceSlot != -1)) {
-    iVar1 = Card_IsTapped((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+    iVar1 = Card_IsInPlay((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                          *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20));
     if ((iVar1 != 0) &&
        (((&g_MasterCardColorTable)
@@ -4999,7 +4999,7 @@ undefined4 FUN_0041283f(int value,int min_val,int max_val)
                 *(int *)(&g_CardSlot_TypeFlags + min_val * 0x120 + value * 0x5b20) * 0x120 +
                 (char)(&g_CardSlot_DamageReceived)[min_val * 0x120 + value * 0x5b20] * 0x5b20) != -1))
     {
-      iVar1 = Card_UntapCard(value, min_val, *(int *)(&g_CardSlot_ConvertedManaCost +
+      iVar1 = Card_RemapColorIndexFF(value, min_val, *(int *)(&g_CardSlot_ConvertedManaCost +
                                    *(int *)(&g_CardSlot_TypeFlags + min_val * 0x120 + value * 0x5b20)
                                    * 0x120 + (char)(&g_CardSlot_DamageReceived)
                                                    [min_val * 0x120 + value * 0x5b20] * 0x5b20));
@@ -5110,7 +5110,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
       }
       else if (uVar1 == 0x100) {
         if (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 1) != 0) {
-          iVar2 = Card_UntapCard((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+          iVar2 = Card_RemapColorIndexFF((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20)
                                ,*(int *)(&g_CardSlot_ConvertedManaCost +
                                         min_val * 0x120 + value * 0x5b20));
@@ -5119,7 +5119,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
                              (char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20] * 0x20);
         }
         if (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 2) != 0) {
-          iVar2 = Card_UntapCard((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
+          iVar2 = Card_RemapColorIndexFF((int)(char)(&g_CardSlot_Toughness)[min_val * 0x120 + value * 0x5b20],
                                *(int *)(&g_CardSlot_OriginalCardId + min_val * 0x120 + value * 0x5b20)
                                ,*(int *)(&g_CardSlot_ConvertedManaCost +
                                         min_val * 0x120 + value * 0x5b20));
@@ -5146,7 +5146,7 @@ undefined4 FUN_00412f15(int value,int min_val,int max_val)
             (((&g_CardSlot_TargetSlot)[min_val * 0x120 + value * 0x5b20] & 2) != 0)))) {
           for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_14];
               local_8 = local_8 + 1) {
-            iVar2 = Card_IsTapped(local_14,local_8);
+            iVar2 = Card_IsInPlay(local_14,local_8);
             if (((iVar2 != 0) &&
                 (((&g_MasterCardColorTable)
                   [*(int *)(&g_CardSlot_CardId + local_8 * 0x120 + local_14 * 0x5b20) * 0x34] & 2)
@@ -5312,7 +5312,7 @@ undefined4 FUN_00413baa(int value,int min_val,int max_val)
     x = 1 - value;
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[x]; local_c = local_c + 1) {
       iVar1 = *(int *)(&g_CardSlot_CardId + local_c * 0x120 + x * 0x5b20);
-      iVar2 = Card_IsTapped(x,local_c);
+      iVar2 = Card_IsInPlay(x,local_c);
       if (((iVar2 != 0) && (((&g_MasterCardColorTable)[iVar1 * 0x34] & 2) != 0)) &&
          (((&DAT_0051aebd)[iVar1 * 0x34] != '\0' &&
           ((*(uint *)(&g_CardSlot_Flags + local_c * 0x120 + x * 0x5b20) & 0x30040) == 0)))) {
@@ -5492,7 +5492,7 @@ undefined4 FUN_00414270(int value,int min_val,int max_val)
                                      ),value,min_val);
           for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8];
               local_c = local_c + 1) {
-            iVar1 = Card_IsTapped(local_8,local_c);
+            iVar1 = Card_IsInPlay(local_8,local_c);
             if ((iVar1 != 0) &&
                (((&g_MasterCardColorTable)
                  [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) !=
@@ -5875,7 +5875,7 @@ undefined4 FUN_00416129(int value,int min_val,int max_val)
       for (local_c = 0; local_c < 2; local_c = local_c + 1) {
         for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[local_c]; local_8 = local_8 + 1)
         {
-          iVar2 = Card_IsTapped(local_c,local_8);
+          iVar2 = Card_IsInPlay(local_c,local_8);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x5b20 + local_8 * 0x120) * 0x34] & 2) != 0)
@@ -6109,7 +6109,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
     arg_15 = 0xffffffff;
     arg_14 = 0xffffffff;
     arg_13 = 0xffffffff;
-    bVar1 = Card_SetTapState(value, min_val, 1);
+    bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
     iVar4 = 1 << (bVar1 & 0x1f);
     arg_11 = 0;
     uVar2 = Glue_Subsystem_004d0a42(value,min_val);
@@ -6128,7 +6128,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       uVar8 = 0xffffffff;
       iVar7 = -1;
       iVar4 = -1;
-      bVar1 = Card_SetTapState(value, min_val, 1);
+      bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
       uVar3 = Glue_Subsystem_004d0a42(value,min_val);
@@ -6154,7 +6154,7 @@ undefined4 FUN_00417c96(int value,int min_val,int max_val)
       uVar8 = 0xffffffff;
       iVar7 = -1;
       iVar4 = -1;
-      bVar1 = Card_SetTapState(value, min_val, 1);
+      bVar1 = Card_RemapColorIndexF9(value, min_val, 1);
       uVar5 = 1 << (bVar1 & 0x1f);
       uVar6 = 0;
       uVar3 = Glue_Subsystem_004d0a42(value,min_val);
@@ -6496,7 +6496,7 @@ undefined4 FUN_0041a782(int value,int min_val,int max_val)
           while ((local_18 < (int)(&g_PlayerActiveCardCount)[iVar1] &&
                  (local_8 < *(int *)(&g_CardSlot_ConvertedManaCost + min_val * 0x120 + value * 0x5b20)
                  ))) {
-            iVar3 = Card_IsTapped(iVar1,local_18);
+            iVar3 = Card_IsInPlay(iVar1,local_18);
             if (((iVar3 != 0) &&
                 ((((&g_MasterCardColorTable)
                    [*(int *)(&g_CardSlot_CardId + local_18 * 0x120 + iVar1 * 0x5b20) * 0x34] & 1) !=
@@ -6877,7 +6877,7 @@ undefined4 FUN_0041d019(int value,int min_val,int max_val)
                    value,min_val);
         for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1)
         {
-          iVar2 = Card_IsTapped(local_8,local_c);
+          iVar2 = Card_IsInPlay(local_8,local_c);
           if ((iVar2 != 0) &&
              (((&g_MasterCardColorTable)
                [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0)
@@ -7091,13 +7091,13 @@ void Mem_AllocOrFree_0041d942(int value)
 }
 
 /*
- * Decompiled function: Card_UntapCard
+ * Decompiled function: Card_RemapColorIndexFF
  * Entry Point: 0041d963
  * Size: 106 bytes
  */
 
 
-int Card_UntapCard(int value,int min_val,int max_val)
+int Card_RemapColorIndexFF(int value,int min_val,int max_val)
 
 {
   if ((&DAT_006a602f)[max_val + value * 0x5b20 + min_val * 0x120] != '\0') {
@@ -7107,13 +7107,13 @@ int Card_UntapCard(int value,int min_val,int max_val)
 }
 
 /*
- * Decompiled function: Card_SetTapState
+ * Decompiled function: Card_RemapColorIndexF9
  * Entry Point: 0041d9d2
  * Size: 106 bytes
  */
 
 
-int Card_SetTapState(int value,int min_val,int max_val)
+int Card_RemapColorIndexF9(int value,int min_val,int max_val)
 
 {
   if ((&DAT_006a6029)[max_val + value * 0x5b20 + min_val * 0x120] != '\0') {
@@ -11632,13 +11632,13 @@ bool FUN_00471bc0(int x,int y)
 }
 
 /*
- * Decompiled function: Card_IsTapped
+ * Decompiled function: Card_IsInPlay
  * Entry Point: 00471c32
  * Size: 114 bytes
  */
 
 
-bool Card_IsTapped(int x,int y)
+bool Card_IsInPlay(int x,int y)
 
 {
   bool bVar1;
@@ -11878,7 +11878,7 @@ undefined4 FUN_00472905(int value)
   DAT_006a5f20 = 0;
   DAT_00626810 = 0;
   for (local_8 = 0; local_8 < (int)(&g_PlayerActiveCardCount)[value]; local_8 = local_8 + 1) {
-    iVar1 = Card_IsTapped(value,local_8);
+    iVar1 = Card_IsInPlay(value,local_8);
     if (iVar1 != 0) {
       if (((&g_CardSlot_Flags)[value * 0x5b20 + local_8 * 0x120] & 4) == 0) {
         if (((&DAT_006a5f3d)[value * 0x5b20 + local_8 * 0x120] & 0x80) != 0) {
@@ -12130,7 +12130,7 @@ void FUN_00472fae(void)
   Ai_Subsystem_004ccca3();
   for (local_8 = 0; local_8 < 2; local_8 = local_8 + 1) {
     for (local_c = 0; local_c < (int)(&g_PlayerActiveCardCount)[local_8]; local_c = local_c + 1) {
-      iVar2 = Card_IsTapped(local_8,local_c);
+      iVar2 = Card_IsInPlay(local_8,local_c);
       if (((iVar2 != 0) &&
           (((&g_MasterCardColorTable)
             [*(int *)(&g_CardSlot_CardId + local_c * 0x120 + local_8 * 0x5b20) * 0x34] & 2) != 0))
@@ -12213,11 +12213,11 @@ uint Magic_QueryCardAttribute(int player,int slot,int event_code,undefined4 targ
       local_1c = 0;
       for (local_18 = 0; local_18 < 5; local_18 = local_18 + 1) {
         if ((local_8 & 1 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_UntapCard(player,slot,local_18 + 1);
+          cVar4 = Card_RemapColorIndexFF(player,slot,local_18 + 1);
           local_1c = local_1c | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((local_8 & 0x800 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_SetTapState(player,slot,local_18 + 1);
+          cVar4 = Card_RemapColorIndexF9(player,slot,local_18 + 1);
           local_1c = local_1c | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
@@ -12276,7 +12276,7 @@ LAB_004737a0:
     }
   }
   uVar1 = g_CardEventResult;
-  iVar5 = Card_IsTapped(player,slot);
+  iVar5 = Card_IsInPlay(player,slot);
   if (((iVar5 != 0) && (event_code == 0x33)) &&
      ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 ||
@@ -17354,7 +17354,7 @@ undefined4 FUN_005063f6(int x,int y)
   int iVar1;
   undefined4 uVar2;
   
-  iVar1 = Card_IsTapped(x,y);
+  iVar1 = Card_IsInPlay(x,y);
   if ((((iVar1 == 0) ||
        (((&DAT_0051aed1)[*(int *)(&g_CardSlot_CardId + y * 0x120 + x * 0x5b20) * 0x34] & 0x10)
         == 0)) || (((&g_CardSlot_Flags)[y * 0x120 + x * 0x5b20] & 0x10) != 0)) ||

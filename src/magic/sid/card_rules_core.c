@@ -39,7 +39,7 @@ extern int DAT_006a5f69;
 extern int DAT_006a604f;
 extern int g_CurrentStepCode;
 extern int g_ActiveCardsInPlay;
-bool Card_IsTapped();
+bool Card_IsInPlay();
 extern int DAT_006a5f6f;
 extern int DAT_0051aec2;
 extern int DAT_006a5f4a;
@@ -47,8 +47,8 @@ extern int DAT_006a5f46;
 extern int DAT_006a5f48;
 extern int DAT_0051aecc;
 extern int g_CardSlot_Abilities2;
-int Card_SetTapState();
-int Card_UntapCard();
+int Card_RemapColorIndexF9();
+int Card_RemapColorIndexFF();
 
 #define _rand rand
 #define _sprintf sprintf
@@ -64,18 +64,18 @@ int Card_UntapCard();
 
 typedef int (*GhidraCall)(void *, ...);
 
-int Duel_ColorMaskToIndex(byte arg_1);
+int Card_ColorMaskToColorIndex(byte arg_1);
 uint Duel_QueryCardAttribute(int player, int slot, int event_code, undefined4 target_slot);
 uint Card_GetColorAndTypeFlags(int player, int card_slot);
 bool CardTarget_PromptTargetCreature(int arg_1, uint arg_2, int arg_3);
-int Duel_GetCardColorOverride(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexF9(int arg_1, int arg_2, int arg_3);
 
 int Duel_ApplyCombatDamage(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
-int Duel_GetCardModifiedPower(int arg_1, int arg_2, int arg_3);
+int Card_RemapColorIndexFF(int arg_1, int arg_2, int arg_3);
 int Duel_RandomRange(int arg_1);
 
 void Duel_UpdateBoardState(undefined4 arg1, undefined4 arg2);
-bool Duel_CardIsTapped(int arg1, int arg2);
+bool Card_IsInPlay(int arg1, int arg2);
 int Duel_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 int Magic_TriggerCardEvent(int arg_1, int arg_2, int arg_3, int arg_4, int arg_5);
 
@@ -252,9 +252,9 @@ int Mem_AllocOrFree_0050f740();
 uint32_t* Mem_AllocOrFree_004d9630(uint32_t*, uint32_t*);
 int FUN_0048ac2f();
 int FUN_00470a16();
-int FUN_0048cb7f();
+int Magic_PopEventContext();
 int Magic_IsManaSource();
-int FUN_0048cac9();
+int Magic_PushEventContext();
 int FUN_0048caf4();
 int FUN_00432c2a();
 int FUN_00447114();
@@ -346,11 +346,11 @@ uint Magic_QueryCardAttribute(int player,int slot,int event_code,undefined4 flag
       local_1c = 0;
       for (local_18 = 0; local_18 < 5; local_18 = local_18 + 1) {
         if ((local_8 & 1 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_UntapCard(player, slot, local_18 + 1);
+          cVar4 = Card_RemapColorIndexFF(player, slot, local_18 + 1);
           local_1c = local_1c | 1 << (cVar4 - 1U & 0x1f);
         }
         if ((local_8 & 0x800 << ((byte)local_18 & 0x1f)) != 0) {
-          cVar4 = Card_SetTapState(player, slot, local_18 + 1);
+          cVar4 = Card_RemapColorIndexF9(player, slot, local_18 + 1);
           local_1c = local_1c | 0x800 << (cVar4 - 1U & 0x1f);
         }
       }
@@ -409,7 +409,7 @@ LAB_004737a0:
     }
   }
   uVar1 = g_CardEventResult;
-  iVar5 = Card_IsTapped(player, slot);
+  iVar5 = Card_IsInPlay(player, slot);
   if (((iVar5 != 0) && (event_code == 0x33)) &&
      ((((&g_MasterCardColorTable)[g_EventCardId * 0x34] & 2) != 0 &&
       (((((int)uVar1 < 1 ||
@@ -477,13 +477,13 @@ LAB_00473adb:
 }
 
 /*
- * Decompiled function: Card_IsTapped
+ * Decompiled function: Card_IsInPlay
  * Entry Point: 00471c32
  * Size: 114 bytes
  */
 
 
-bool Card_IsTapped(int player,int card_slot)
+bool Card_IsInPlay(int player,int card_slot)
 
 {
   bool bVar1;
@@ -498,13 +498,13 @@ bool Card_IsTapped(int player,int card_slot)
 }
 
 /*
- * Decompiled function: Card_UntapCard
+ * Decompiled function: Card_RemapColorIndexFF
  * Entry Point: 0041d963
  * Size: 106 bytes
  */
 
 
-int Card_UntapCard(int player,int card_slot,int arg_3)
+int Card_RemapColorIndexFF(int player,int card_slot,int arg_3)
 
 {
   if ((&DAT_006a602f)[arg_3 + player * 0x5b20 + card_slot * 0x120] != '\0') {
@@ -514,13 +514,13 @@ int Card_UntapCard(int player,int card_slot,int arg_3)
 }
 
 /*
- * Decompiled function: Card_SetTapState
+ * Decompiled function: Card_RemapColorIndexF9
  * Entry Point: 0041d9d2
  * Size: 106 bytes
  */
 
 
-int Card_SetTapState(int player,int card_slot,int tap_state)
+int Card_RemapColorIndexF9(int player,int card_slot,int tap_state)
 
 {
   if ((&DAT_006a6029)[tap_state + player * 0x5b20 + card_slot * 0x120] != '\0') {

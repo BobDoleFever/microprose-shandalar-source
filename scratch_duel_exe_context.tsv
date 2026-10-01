@@ -998,7 +998,7 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048a07d	FUN_0048a07d	Activate | Tapping		5	330
 0048a1c7	FUN_0048a1c7	Process | processes...		8	262
 0048a2cd	FUN_0048a2cd			0	114
-0048a33f	FUN_0048a33f			0	114
+0048a33f	Card_IsInPlay			0	114
 0048a3b1	FUN_0048a3b1			0	114
 0048a423	FUN_0048a423	Block which attacker? | Choose blockers | Illegal block.	Sleep	7	722
 0048acd3	FUN_0048acd3			1	175
@@ -1012,15 +1012,15 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 0048b5c9	FUN_0048b5c9			4	134
 0048b64f	FUN_0048b64f			4	459
 0048b81a	FUN_0048b81a			8	2824
-0048c367	FUN_0048c367			0	121
+0048c367	Card_ColorMaskToColorIndex			0	121
 0048c420	FUN_0048c420			0	26
 0048c43a	FUN_0048c43a			0	209
 0048c50b	FUN_0048c50b			3	157
 0048c5a8	FUN_0048c5a8	++nScan<10 | D:\Newmagic\sources\sid\Magic.c | ScanCard error	__assert	5	863
 0048c907	FUN_0048c907			3	291
 0048ca2a	Magic_IsManaSource			0	159
-0048cac9	FUN_0048cac9			0	182
-0048cb7f	FUN_0048cb7f			0	170
+0048cac9	Magic_PushEventContext			0	182
+0048cb7f	Magic_PopEventContext			0	170
 0048cc29	FUN_0048cc29			3	945
 0048cfda	FUN_0048cfda			1	50
 0048d00c	FUN_0048d00c		CloseSndTrack | GetLRUSnd | InitSndTrack | IsSndLoaded | PlaySnd	7	788
@@ -1283,8 +1283,8 @@ Address	CurrentName	StringsReferenced	CalledAPIs	CallsCount	Size
 004af1fa	FUN_004af1fa		Sleep	9	1173
 004af68f	FUN_004af68f	AddType error	FID_conflict:_memcpy	2	156
 004af72b	FUN_004af72b			0	33
-004af74c	FUN_004af74c			0	106
-004af7bb	FUN_004af7bb			0	106
+004af74c	Card_RemapColorIndexFF			0	106
+004af7bb	Card_RemapColorIndexF9			0	106
 004af82a	FUN_004af82a	Card leaving play		4	294
 004af950	FUN_004af950			2	972
 004afd1c	FUN_004afd1c			1	37

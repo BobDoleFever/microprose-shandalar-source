@@ -2533,7 +2533,7 @@ int32_t Prompts_Load_004172a6(int spell_id,int target_id,int flags)
       for (slot_idx = 0; slot_idx < 2; slot_idx = slot_idx + 1) {
         for (match_count = 0; match_count < (int)(&g_PlayerActiveCardCount)[slot_idx]; match_count = match_count + 1)
         {
-          val_2 = Card_IsTapped(slot_idx, match_count);
+          val_2 = Card_IsInPlay(slot_idx, match_count);
           if (((val_2 != 0) &&
               (((&g_MasterCardColorTable)
                 [*(int *)(&g_CardSlot_CardId + match_count * 0x120 + slot_idx * 0x5b20) * 0x34] & 0x40)
@@ -3126,7 +3126,7 @@ int32_t Prompts_Load_00418785(int spell_id,int target_id,int flags)
         match_count = Rules_CalculateManaCostReduction((&g_MasterCardColorTable)
                                [*(int *)(&g_CardSlot_CardId + spell_id * 0x5b20 + target_id * 0x120)
                                 * 0x34]);
-        flag_1 = Card_SetTapState(spell_id, target_id, match_count);
+        flag_1 = Card_RemapColorIndexF9(spell_id, target_id, match_count);
         (&g_CardSlot_MinusOneCounters)[player_idx * 0x5b20 + card_idx * 0x120] = (char)(1 << (flag_1 & 0x1f));
         if (g_IsAiThinking != 1) {
           Duel_PlaySoundById(0x1d);
@@ -3264,7 +3264,7 @@ int32_t Prompts_Load_00418d2a(int spell_id,int target_id,int flags)
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + spell_id * 0x5b20 + target_id * 0x120
                                    ) * 0x120] & 2) != 0) {
               val_3 = Rules_CalculateManaCostReduction((uint8_t)local_e4);
-              flag_1 = Card_UntapCard(*(int *)(&g_CardSlot_CombatTarget +
+              flag_1 = Card_RemapColorIndexFF(*(int *)(&g_CardSlot_CombatTarget +
                                            spell_id * 0x5b20 + target_id * 0x120),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            spell_id * 0x5b20 + target_id * 0x120),val_3);
@@ -3457,7 +3457,7 @@ int32_t Prompts_Load_004195a4(int spell_id,int target_id,int flags)
                   0x5b20 + *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20
                                    ) * 0x120] & 4) != 0) {
               val_3 = Rules_CalculateManaCostReduction((uint8_t)local_e4);
-              flag_1 = Card_SetTapState(*(int *)(&g_CardSlot_CombatTarget +
+              flag_1 = Card_RemapColorIndexF9(*(int *)(&g_CardSlot_CombatTarget +
                                            target_id * 0x120 + spell_id * 0x5b20),
                                    *(int *)(&g_CardSlot_AttachedAura +
                                            target_id * 0x120 + spell_id * 0x5b20),val_3);
@@ -3574,7 +3574,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      flag_2 = Card_SetTapState(spell_id,target_id,4);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       val_4 = 1 << (flag_2 & 0x1f);
       uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
       uval_3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uval_3,val_4,arg_12,arg_13,
@@ -3589,7 +3589,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
       val_6 = -1;
       val_4 = -1;
       uval_5 = 0;
-      flag_2 = Card_SetTapState(spell_id,target_id,4);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
       val_4 = Rules_ParseFilter_0040360b
                         (g_SelectedTargetPlayer,g_SelectedTargetSlot,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (flag_2 & 0x1f),uval_5,val_4,val_6,uval_7,uval_8,uVar9,uVar10,uVar12);
@@ -3617,7 +3617,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         val_4 = Duel_ChooseTarget
@@ -3649,7 +3649,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         val_4 = Rules_ParseFilter_0040360b
@@ -3671,7 +3671,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_5 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         val_4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -3689,7 +3689,7 @@ int32_t Prompts_Load_00419d5e(int spell_id,int target_id,int flags)
         card_idx = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         match_count = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&g_CardSlot_MinusOneCounters)[match_count * 0x120 + card_idx * 0x5b20];
-        flag_2 = Card_SetTapState(spell_id,target_id,4);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,4);
         if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(card_idx,match_count,2);
         }
@@ -3750,7 +3750,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       arg_14 = 0xffffffff;
       arg_13 = 0xffffffff;
       arg_12 = 0;
-      flag_2 = Card_SetTapState(spell_id,target_id,2);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       val_4 = 1 << (flag_2 & 0x1f);
       uval_3 = Glue_Subsystem_004d0a42(spell_id,target_id);
       uval_3 = UI_PaintBigCardInfo((int *)0x0,0,spell_id,2,2,0x200,0x1047,0,0,uval_3,val_4,arg_12,arg_13,
@@ -3765,7 +3765,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
       val_6 = -1;
       val_4 = -1;
       uval_5 = 0;
-      flag_2 = Card_SetTapState(spell_id,target_id,2);
+      flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
       val_4 = Rules_ParseFilter_0040360b
                         (g_SelectedTargetPlayer,g_SelectedTargetSlot,(char *)0x0,spell_id,2,2,0,0,0,0,0,
                          1 << (flag_2 & 0x1f),uval_5,val_4,val_6,uval_7,uval_8,uVar9,uVar10,uVar12);
@@ -3793,7 +3793,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         val_4 = Duel_ChooseTarget
@@ -3825,7 +3825,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_8 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         uval_7 = 1 << (flag_2 & 0x1f);
         uval_5 = Glue_Subsystem_004d0a42(spell_id,target_id);
         val_4 = Rules_ParseFilter_0040360b
@@ -3847,7 +3847,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         val_6 = -1;
         val_4 = -1;
         uval_5 = 0;
-        flag_2 = Card_SetTapState(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         val_4 = Rules_ParseFilter_0040360b
                           (*(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20
                                    ),
@@ -3865,7 +3865,7 @@ int32_t Prompts_Load_0041b1ae(int spell_id,int target_id,int flags)
         card_idx = *(int *)(&g_CardSlot_CombatTarget + target_id * 0x120 + spell_id * 0x5b20);
         match_count = *(int *)(&g_CardSlot_AttachedAura + target_id * 0x120 + spell_id * 0x5b20);
         cVar1 = (&g_CardSlot_MinusOneCounters)[card_idx * 0x5b20 + match_count * 0x120];
-        flag_2 = Card_SetTapState(spell_id,target_id,2);
+        flag_2 = Card_RemapColorIndexF9(spell_id,target_id,2);
         if ((1 << (flag_2 & 0x1f) & (int)cVar1) != 0) {
           Pic_Subsystem_0044867e(card_idx,match_count,2);
         }
