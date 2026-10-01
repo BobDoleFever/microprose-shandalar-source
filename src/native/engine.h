@@ -53,6 +53,7 @@
 #define MASTER_COLOR 0x06u     /* char: colour mask (1 colourless, 2..0x20 the five colours) */
 #define MASTER_POWER 0x0au     /* short: printed power */
 #define MASTER_TOUGHNESS 0x0cu /* short: printed toughness */
+#define MASTER_HANDLER 0x10u   /* dword: the card's own event handler, handler(player, slot, event_code) */
 #define MASTER_ABILITIES 0x14u /* dword: printed abilities */
 #define MASTER_FLAGS 0x18u     /* dword: bit 0x1000 taps for mana, bit 1 excludes it */
 
@@ -60,10 +61,14 @@
 
 /* ---- Functions the native code calls but does not implement ---------------------------------- */
 typedef enum {
-    CALLEE_SCAN_CARDS,          /* Magic_ScanCards(event_code): runs every card's handler */
-    CALLEE_MARK_CARD,           /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
-    CALLEE_AFTER_MARK,          /* Pic_Subsystem_004488a0() */
-    CALLEE_FIND_FREE_SLOT,      /* Pic_Subsystem_00451291(player, card): allocate a slot */
+    CALLEE_CARD_HANDLER,         /* a card's own event handler: its address is read from the master record (+0x10), so
+                                  * it differs per call and has no entry in the layout (vm_call_at) */
+    CALLEE_SCAN_CHECK,           /* FUN_004728c3 / FUN_0048af80(player, slot): tested after a turn-start scan */
+    CALLEE_BROADCAST_CARD_EVENT, /* Magic_BroadcastCardEvent(player, slot, event) */
+    CALLEE_COMBAT_DAMAGE_STEP,   /* FUN_00472fae / FUN_0048b64f(): run after a turn-start scan of the turn player */
+    CALLEE_MARK_CARD,            /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
+    CALLEE_AFTER_MARK,           /* Pic_Subsystem_004488a0() */
+    CALLEE_FIND_FREE_SLOT,       /* Pic_Subsystem_00451291(player, card): allocate a slot */
     CALLEE_COUNT
 } Callee;
 
@@ -90,6 +95,7 @@ typedef enum {
     FN_AI_PEEK_PLANNED_SLOT,
     FN_AI_PEEK_PLANNED_CHOICE,
     FN_AI_GET_LAND_COLOR_MASKS,
+    FN_SCAN_CARDS,
     FN_COUNT
 } NativeFn;
 
@@ -124,6 +130,17 @@ typedef struct Layout {
     uint32_t card_event_result;    /* g_CardEventResult */
     uint32_t duel_mode_flags;      /* g_DuelModeFlags */
     uint32_t token_card_base;      /* DAT_006ff2e0 / g_DuelTargetCardId: first of 0x1d token card indexes */
+    /* Magic_ScanCards: runs every card's handler for one event. MAGIC / DUEL. */
+    uint32_t scan_event_code;      /* _DAT_006b1584 / _DAT_0068dd04: the event being scanned */
+    uint32_t scan_counter;         /* _DAT_00627a0c / _DAT_00666728: incremented by every scan */
+    uint32_t scan_depth;           /* DAT_006fe3f8 / DAT_0068ef48: nesting of scans (an assert above 9) */
+    uint32_t scan_order_player;    /* DAT_007006e0 / DAT_00690320: int[500], player of each card in play order, -1 ends */
+    uint32_t scan_order_slot;      /* DAT_006a5750 / DAT_00681ee0: int[500], its slot */
+    uint32_t scan_current_card;    /* _DAT_0068a704 / _DAT_00666448: player * 0x80 + slot of the card being run */
+    uint32_t master_count;         /* g_MasterCardCount / DAT_00665ed0: card indexes above this + 0x10 are an error */
+    uint32_t turn_player;          /* g_TurnPlayer */
+    uint32_t scan_flag;            /* DAT_006ff2d4 / DAT_0068f0f4: set to -1 when a scan marks a card */
+    uint32_t global_handler;       /* DAT_0068a64c / DAT_00666418: a card index whose handler runs after every scan, or -1 */
     /* The AI's plan lists: five arrays of 256 dwords per list, one shared cursor (docs, "The AI"). MAGIC / DUEL. */
     uint32_t ai_cursor;            /* DAT_0054be44 / DAT_0050b37c: trial list length and replay cursor */
     uint32_t ai_trial_choice;      /* DAT_005524c8 / DAT_00511a00 */
@@ -162,6 +179,8 @@ typedef struct Vm {
 
 /* Call a function that is not native (through the hook). */
 uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args);
+/* The same for a callee whose address is not fixed (a card handler): the address is passed in. */
+uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args);
 
 static inline uint32_t slot_addr(const Vm *vm, int32_t player, int32_t slot, uint32_t field)
 {
@@ -185,6 +204,8 @@ uint32_t Native_Magic_PushSpellStack(Vm *vm, int32_t player, int32_t slot, int32
                                      int32_t target_slot, uint32_t flags);
 uint32_t Native_Magic_ClearSpellStack(Vm *vm);
 uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot);
+/* Runs every in-play card's handler for `event_code`, then the global handler. */
+void Native_Magic_ScanCards(Vm *vm, int32_t event_code);
 void Native_Ai_RecordChoice(Vm *vm);
 void Native_Ai_ReplayChoice(Vm *vm);
 void Native_Ai_CommitBestPlan(Vm *vm);

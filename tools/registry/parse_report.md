@@ -39,11 +39,13 @@ Addresses in prose or in skipped tables that are a function start or a known glo
 | `0x0045102d` | DUEL: function, `Ai_Subsystem_004cc56d` | 573 | Round 2: red-deck game (emulator, 2026-09-26) |
 | `0x00468130` | DUEL: function, `CardTarget_PromptTargetCreature` | 580 | Round 4: the `Mana_CanAffordCost` / `CardTarget_PromptTargetCreature` conflict, resolved (2026-09-27) |
 | `0x0046d497` | DUEL: function, `Pic_Subsystem_004475a4` | 435 | Globals checked with write watches (emulator, 2026-09-26) |
+| `0x00473f06` | MAGIC: function, `Magic_ScanCards` | 709 | Round 8: the card scan is native (2026-10-01) |
 | `0x00474389` | MAGIC: function, `Magic_IsManaSource` | 301 | The spell stack (MAGIC.EXE): push and resolve seen live, the rest static |
 | `0x0047740d` | DUEL: function, `Combat_ResolveBlocksAndDamage` | 567 | Round 2: red-deck game (emulator, 2026-09-26) |
 | `0x00488662` | DUEL: function, `FUN_00488662` | 434 | Globals checked with write watches (emulator, 2026-09-26) |
 | `0x0048b5c9` | DUEL: function, `FUN_0048b5c9` | 480, 571 | The AI: a random-rollout search with a recorded plan (emulator, 2026-09-26) |
 | `0x0048b81a` | DUEL: function, `Duel_QueryCardAttribute` | 384, 385, 640 | `Magic_QueryCardAttribute` codes (emulator, 2026-09-26) |
+| `0x0048c5a8` | DUEL: function, `Magic_ScanCards` | 709 | Round 8: the card scan is native (2026-10-01) |
 | `0x0048ca2a` | DUEL: function, `Magic_IsManaSource` | 401 | `Magic_IsManaSource` (emulator, 2026-09-26) |
 | `0x0048e01d` | MAGIC: function, `FUN_0048e01d` | 658 | Round 5: the `Mana_GetCardColorRequirement` anomaly and the remaining twin conflicts (static evidence only, 2026-09-27) |
 | `0x00493e30` | DUEL: function, `Glue_Subsystem_004cdb4f` | 467 | The spell-chain window family (emulator, 2026-09-26) |

@@ -81,19 +81,27 @@ NATIVE_FUNCTIONS = [
     ("FN_AI_PEEK_PLANNED_SLOT", "Ai_PeekPlannedSlot", 1),
     ("FN_AI_PEEK_PLANNED_CHOICE", "Ai_PeekPlannedChoice", 1),
     ("FN_AI_GET_LAND_COLOR_MASKS", "Ai_GetLandColorMasks", 2),
+    ("FN_SCAN_CARDS", "Magic_ScanCards", 1),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
 VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext", "Ai_RecordChoice", "Ai_ReplayChoice",
-                  "Ai_CommitBestPlan", "Ai_ClearPlan", "Ai_PlanCursorBack", "Ai_GetLandColorMasks"}
+                  "Ai_CommitBestPlan", "Ai_ClearPlan", "Ai_PlanCursorBack", "Ai_GetLandColorMasks",
+                  "Magic_ScanCards"}
 # Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c): the
 # functions the native code still calls through the hook because they are not native yet.
 CALLEES_INFO = [
-    ("CALLEE_SCAN_CARDS", "Magic_ScanCards", 1),
+    ("CALLEE_CARD_HANDLER", "card_handler", 3),
+    ("CALLEE_SCAN_CHECK", "scan_check", 2),
+    ("CALLEE_BROADCAST_CARD_EVENT", "Magic_BroadcastCardEvent", 3),
+    ("CALLEE_COMBAT_DAMAGE_STEP", "combat_damage_step", 0),
     ("CALLEE_MARK_CARD", "mark_card", 3),
     ("CALLEE_AFTER_MARK", "after_mark", 0),
     ("CALLEE_FIND_FREE_SLOT", "find_free_slot", 2),
 ]
+# Callees with no fixed address (a card handler's address is read from the card's master record), so layout.c has no
+# entry for them. They are recognised at the call instruction inside the native function instead (Recorder.handler_sites).
+DYNAMIC_CALLEES = {"CALLEE_CARD_HANDLER"}
 # Slot table base for the recorded program is read from layout.c at runtime (slot_base); the mode-flags
 # dword the query function's caller reads a byte of (see PAD_DWORDS) is duel_mode_flags.
 SLOT_PLAYER_STRIDE, SLOT_STRIDE = 0x5B20, 0x120
@@ -123,12 +131,25 @@ class Recorder:
         entries, callees, _, _ = load_layout(program)
         self.funcs = {int(entries[fn], 16): (name, nargs) for fn, name, nargs in NATIVE_FUNCTIONS if fn in entries}
         self.callees = {int(callees[c], 16): (label, nargs) for c, label, nargs in CALLEES_INFO if c in callees}
+        self.handler_sites = self.find_handler_sites(int(entries["FN_SCAN_CARDS"], 16), m.L_master_base + 0x10)
         # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
         # memory-hook support, so the per-call hooks added at function entry see reads already inside a
         # block that started translating before the call began.
         self.uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, lambda *a: None, begin=0, end=0xFFFFFFFF)
         for addr in self.funcs:
             self.uc.hook_add(UC_HOOK_CODE, self.on_entry, begin=addr, end=addr)
+
+    def find_handler_sites(self, entry, table):
+        """The `call dword ptr [reg*4 + table]` instructions in the scan (FF 14 85 imm32: how it calls a card's handler):
+        {address of the call: address it returns to}. The scan is small, so its bytes are searched from the entry on."""
+        code = bytes(self.uc.mem_read(entry, 1024))
+        needle = b"\xff\x14\x85" + table.to_bytes(4, "little")
+        sites, at = {}, code.find(needle)
+        while at != -1:
+            sites[entry + at] = entry + at + len(needle)
+            at = code.find(needle, at + 1)
+        assert sites, "no card-handler call found in the scan: the recorder cannot tell handler calls apart"
+        return sites
 
     def situation_key(self, name, args):
         """A rough bucket so a run yields a few examples of each interesting case (a slot's flags, its
@@ -162,6 +183,14 @@ class Recorder:
             return (name, m.r32(m.L_event_context_depth))
         if name.startswith("Ai_"):
             return self.ai_key(name, args)
+        if name == "Magic_ScanCards":
+            try:   # the event, how many cards are in the play order (0, 1, 2, 3 or more), and the nesting
+                n = 0
+                while n < 3 and m.r32(m.L_scan_order_player + 4 * n) != 0xFFFFFFFF:
+                    n += 1
+                return (name, args[0], n, m.r32(m.L_scan_depth))
+            except Exception:
+                return (name, "unreadable")
         return (name,)
 
     def ai_key(self, name, args):
@@ -218,6 +247,8 @@ class Recorder:
         r["handles"].append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, self.on_mem))
         for ca in self.callees:
             r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee, begin=ca, end=ca))
+        for site in self.handler_sites:
+            r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_handler_site, begin=site, end=site))
         r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_return, begin=r["ret"], end=r["ret"]))
 
     def on_mem(self, uc, access, address, size, value, user):
@@ -247,12 +278,34 @@ class Recorder:
         r["cur"], r["depth"] = c, 1
         r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee_return, begin=c["ret"], end=c["ret"]))
 
+    def on_handler_site(self, uc, address, size, user):
+        """About to execute `call [eax*4 + table]` for a card's handler: its address, and the three arguments already on
+        the stack (player, slot, event), before the call pushes the return address."""
+        r = self.rec
+        if r is None or r["depth"] != 0:
+            return
+        esp = uc.reg_read(UC_X86_REG_ESP)
+        pointer = self.m.L_master_base + 0x10 + 4 * uc.reg_read(UC_X86_REG_EAX)
+        target = self.m.r32(pointer)
+        # The scan reads this function pointer (it is the call's own operand), but the call instruction runs after the
+        # depth is switched to "inside a callee", where reads are not recorded: record the read here, as the scan's own.
+        for i in range(4):
+            if pointer + i not in r["touched"] and pointer + i not in r["reads"]:
+                r["reads"][pointer + i] = self.uc.mem_read(pointer + i, 1)[0]
+        c = {"callee": target, "name": "card_handler", "args": [self.m.r32(esp + 4 * i) for i in range(3)],
+             "writes": {}, "ret": self.handler_sites[address], "esp": esp - 4}
+        r["cur"], r["depth"] = c, 1
+        r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee_return, begin=c["ret"], end=c["ret"]))
+
     def on_callee_return(self, uc, address, size, user):
         r = self.rec
         if r is None or r["depth"] != 1 or r["cur"] is None or uc.reg_read(UC_X86_REG_ESP) != r["cur"]["esp"] + 4:
             return
         c = r["cur"]
         c["return"] = S32(uc.reg_read(UC_X86_REG_EAX))
+        # What the callee left in memory, now: the function may change the same bytes again after the call returns, and the
+        # replay must apply the callee's own values, not the final ones.
+        c["final"] = {a: self.uc.mem_read(a, 1)[0] for a in c["writes"]}
         r["calls"].append(c)
         r["cur"], r["depth"] = None, 0
 
@@ -269,7 +322,7 @@ class Recorder:
         eax = uc.reg_read(UC_X86_REG_EAX)
         out = {a: self.uc.mem_read(a, 1)[0] for a in r["writes"]}
         calls = [{"callee": "0x%08x" % c["callee"], "name": c["name"], "args": [S32(x) for x in c["args"]],
-                  "return": c["return"], "memory_writes": regions({a: self.uc.mem_read(a, 1)[0] for a in c["writes"]})}
+                  "return": c["return"], "memory_writes": regions(c["final"])}
                  for c in r["calls"]]
         v = {"function": r["name"], "program": self.program, "address": "0x%08x" % r["addr"],
              "description": "recorded from %s at virtual %.3fs" % (self.program, r["t"]),
@@ -312,7 +365,8 @@ def main():
             self.L_is_ai_thinking = addr("is_ai_thinking")
             self.L_spell_stack_count = addr("spell_stack_count")
             self.L_event_context_depth = addr("event_context_depth")
-            for field in ("ai_cursor", "ai_trial_choice", "ai_best_choice", "ai_plan_mode", "land_counts_x", "land_counts_y"):
+            for field in ("ai_cursor", "ai_trial_choice", "ai_best_choice", "ai_plan_mode", "land_counts_x", "land_counts_y",
+                          "scan_order_player", "scan_depth", "master_base"):
                 setattr(self, "L_" + field, addr(field))
             self.recorder = Recorder(self, outdir, cap, program, addr("duel_mode_flags"))
 

@@ -6,31 +6,35 @@
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
   0,
-  1,
-  50,
+  0,
+  60,
   -1
  ],
- "expected_return": 4,
+ "expected_return": 56,
  "memory_in": [
   {
-   "addr": "0x0048be1a",
-   "bytes": "a4b84800"
+   "addr": "0x0048be2e",
+   "bytes": "05bc4800"
   },
   {
-   "addr": "0x0048be36",
-   "bytes": "00"
+   "addr": "0x0048be40",
+   "bytes": "05"
   },
   {
    "addr": "0x004fab4c",
    "bytes": "00000000"
   },
   {
-   "addr": "0x005001fa",
+   "addr": "0x005000f0",
+   "bytes": "95000000"
+  },
+  {
+   "addr": "0x005000f6",
    "bytes": "08"
   },
   {
-   "addr": "0x005001fe",
-   "bytes": "0400"
+   "addr": "0x00500109",
+   "bytes": "10"
   },
   {
    "addr": "0x005ef980",
@@ -38,7 +42,7 @@
   },
   {
    "addr": "0x006663e0",
-   "bytes": "0a000000"
+   "bytes": "00000000"
   },
   {
    "addr": "0x0066642c",
@@ -53,24 +57,20 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x006827e4",
-   "bytes": "3d000000"
+   "addr": "0x006826c0",
+   "bytes": "3800000038000000"
   },
   {
-   "addr": "0x006827ec",
+   "addr": "0x006826cc",
    "bytes": "00000000"
   },
   {
-   "addr": "0x006827f4",
-   "bytes": "0400"
-  },
-  {
-   "addr": "0x006827f8",
-   "bytes": "0000"
-  },
-  {
-   "addr": "0x0068281f",
+   "addr": "0x006826f8",
    "bytes": "00"
+  },
+  {
+   "addr": "0x006826ff",
+   "bytes": "08"
   },
   {
    "addr": "0x0068ecb0",
@@ -87,6 +87,10 @@
   {
    "addr": "0x0068eed8",
    "bytes": "01000000"
+  },
+  {
+   "addr": "0x0068f104",
+   "bytes": "a2010000"
   },
   {
    "addr": "0x00690310",
@@ -113,7 +117,7 @@
   },
   {
    "addr": "0x006663e0",
-   "bytes": "0b000000"
+   "bytes": "01000000"
   },
   {
    "addr": "0x0066642c",
@@ -124,8 +128,12 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x006827f4",
-   "bytes": "0400"
+   "addr": "0x006826c4",
+   "bytes": "38000000"
+  },
+  {
+   "addr": "0x006826dc",
+   "bytes": "08"
   },
   {
    "addr": "0x0068ecb0",

@@ -5,32 +5,32 @@
  "description": "recorded from DUEL at virtual 18.271s",
  "source": "tools/difftest/record_vectors.py (emulator recording)",
  "args": [
+  0,
   1,
-  5,
-  52,
+  51,
   -1
  ],
- "expected_return": 0,
+ "expected_return": 4,
  "memory_in": [
   {
-   "addr": "0x0048be22",
-   "bytes": "a4ba4800"
+   "addr": "0x0048be1e",
+   "bytes": "a4b94800"
   },
   {
-   "addr": "0x0048be38",
-   "bytes": "02"
+   "addr": "0x0048be37",
+   "bytes": "01"
   },
   {
    "addr": "0x004fab4c",
    "bytes": "00000000"
   },
   {
-   "addr": "0x005042c6",
+   "addr": "0x005001fa",
    "bytes": "08"
   },
   {
-   "addr": "0x005042d4",
-   "bytes": "00000000"
+   "addr": "0x00500200",
+   "bytes": "0400"
   },
   {
    "addr": "0x005ef980",
@@ -38,7 +38,7 @@
   },
   {
    "addr": "0x006663e0",
-   "bytes": "15000000"
+   "bytes": "0b000000"
   },
   {
    "addr": "0x0066642c",
@@ -53,16 +53,24 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x00688784",
-   "bytes": "7c010000"
+   "addr": "0x006827e4",
+   "bytes": "3d000000"
   },
   {
-   "addr": "0x0068878c",
-   "bytes": "00100000"
+   "addr": "0x006827ec",
+   "bytes": "00000000"
   },
   {
-   "addr": "0x006887bc",
-   "bytes": "00000008"
+   "addr": "0x006827f6",
+   "bytes": "0400"
+  },
+  {
+   "addr": "0x006827fa",
+   "bytes": "0000"
+  },
+  {
+   "addr": "0x0068281f",
+   "bytes": "00"
   },
   {
    "addr": "0x0068ecb0",
@@ -89,38 +97,7 @@
    "bytes": "00000000"
   }
  ],
- "calls": [
-  {
-   "callee": "0x0048c5a8",
-   "name": "Magic_ScanCards",
-   "args": [
-    52
-   ],
-   "return": -1,
-   "memory_writes": [
-    {
-     "addr": "0x005ef980",
-     "bytes": "ffffffff"
-    },
-    {
-     "addr": "0x00666408",
-     "bytes": "0700000007000000"
-    },
-    {
-     "addr": "0x00666728",
-     "bytes": "06000000"
-    },
-    {
-     "addr": "0x0068dd04",
-     "bytes": "34000000"
-    },
-    {
-     "addr": "0x0068ef48",
-     "bytes": "00000000"
-    }
-   ]
-  }
- ],
+ "calls": [],
  "memory_out_expected": [
   {
    "addr": "0x004fab4c",
@@ -136,7 +113,7 @@
   },
   {
    "addr": "0x006663e0",
-   "bytes": "16000000"
+   "bytes": "0c000000"
   },
   {
    "addr": "0x0066642c",
@@ -147,8 +124,8 @@
    "bytes": "00000000"
   },
   {
-   "addr": "0x006887bc",
-   "bytes": "00000000"
+   "addr": "0x006827f6",
+   "bytes": "0400"
   },
   {
    "addr": "0x0068ecb0",

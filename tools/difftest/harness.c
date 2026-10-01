@@ -32,9 +32,9 @@
 
 #include "../../src/native/engine.h"
 
-#define MAX_CALLS 256
+#define MAX_CALLS 1024
 #define MAX_ARGS 8
-#define MAX_READS 1024
+#define MAX_READS 8192
 #define MAX_WRITES 65536
 
 typedef struct {
