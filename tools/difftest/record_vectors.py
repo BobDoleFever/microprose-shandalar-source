@@ -142,6 +142,8 @@ class Recorder:
                     addr = int(e["addr"], 16)
                     self.funcs[addr] = (e["name"], 3)
                     self.handler_callees[addr] = {int(c["addr"], 16): (c["name"], c["nargs"]) for c in e["calls"]}
+        if spec and os.environ.get("RECORD_ONLY_HANDLERS"):   # nothing but the lifted handlers: much faster
+            self.funcs = {a: v for a, v in self.funcs.items() if a in self.handler_callees}
         # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
         # memory-hook support, so the per-call hooks added at function entry see reads already inside a
         # block that started translating before the call began.

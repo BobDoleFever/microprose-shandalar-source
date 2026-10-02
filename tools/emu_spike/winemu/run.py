@@ -12,6 +12,7 @@ game creates and saved as PNG in --shots (default sources/emu_shots) when the ru
 import argparse
 import json
 import os
+import random
 import re
 import struct
 import sys
@@ -191,10 +192,15 @@ def main(argv=None):
                     b = 0x6826C0 + p * 0x5B20 + sl * 0x120
                     if mm.r32(b + 4) != 0xFFFFFFFF:
                         print(f"   [slots {now:.1f}s] p{p} s{sl} card={mm.r32(b + 4):#x} +8={mm.r32(b + 8):#x} +c={mm.r32(b + 0xC):#x}")
-        elif op == "inject":                                   # inject HANDLER EVENT NTH [K]: run a card handler on demand
+        elif op == "inject":                                   # inject HANDLER EVENT NTH [K [CARD [SEED]]]: run a card handler on demand
             # Calls handler(player, slot, event) for the NTH card in play (both players, in slot order), on a new guest
             # thread, with the event globals set the way the game's own dispatcher sets them. DUEL.EXE addresses. The
-            # handler's effects are undone afterwards: this is for recording what a handler does (tools/lift), not for play.
+            # game is put back afterwards: this is for recording what a handler does (tools/lift), not for play.
+            #   K     what every function the handler calls returns (default 0; `r` picks one per function from the seed)
+            #   CARD  `own` puts a card whose handler this is into that slot first; a number puts that card id there;
+            #         `-` (default) leaves the card alone
+            #   SEED  (nonzero) fills the slot's fields with arbitrary values and moves other cards into play, from a
+            #         generator seeded with it, so the same op always makes the same situation
             handler, event, nth = int(cmd[1], 0), int(cmd[2], 0), int(cmd[3])
             live = [(p, sl) for p in (0, 1) for sl in range(0x50)
                     if mm.r32(0x6826C0 + p * 0x5B20 + sl * 0x120 + 4) != 0xFFFFFFFF
@@ -202,30 +208,54 @@ def main(argv=None):
             if not live:
                 print(f"   [script] inject: no card in play at {now:.1f}s")
             else:
+                # The game stays as it was: the data section is saved before anything is changed and put back (the thread
+                # ended) a little later, so that one handler's effects do not change what the next one sees. The functions
+                # the handler calls (LIFT_SPEC lists them) are patched to return K at once, so the handler runs on its own:
+                # a call that would open a prompt or wait on the UI cannot stall it, and what each callee returned is
+                # exactly what the lifted code is later given.
+                snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
+                k = cmd[4] if len(cmd) > 4 else "0"           # `r`: a different value for each function, from the seed
+                token = cmd[5] if len(cmd) > 5 else "-"
+                seed = int(cmd[6], 0) if len(cmd) > 6 else 0
+                rng = random.Random(seed)
                 pl, sl = live[nth % len(live)]
-                card = mm.r32(0x6826C0 + pl * 0x5B20 + sl * 0x120 + 4)
+                base = 0x6826C0 + pl * 0x5B20 + sl * 0x120
+                if token == "own":
+                    ids = [i for i in range(1000) if mm.r32(0x4FF590 + i * 0x34 + 0x10) == handler]
+                    if ids:
+                        mm.w32(base + 4, ids[rng.randrange(len(ids))])
+                elif token != "-":
+                    mm.w32(base + 4, int(token, 0))
+                if seed:
+                    def arbitrary():
+                        c = rng.random()
+                        return (0, 1, 2, 3, 0xFFFFFFFF, rng.randrange(0, 20), rng.randrange(0, 0x10000), rng.getrandbits(32))[int(c * 8)]
+                    for off in range(0x10, 0x120, 4):            # the slot's own fields
+                        if off != 0xC and rng.random() < 0.4:
+                            mm.w32(base + off, arbitrary())
+                    mm.w32(base + 0xC, mm.r32(base + 0xC) | 2)   # it stays in play
+                    for p2 in (0, 1):                            # other cards move around: into play, or out of it
+                        for s2 in range(0x50):
+                            b2 = 0x6826C0 + p2 * 0x5B20 + s2 * 0x120
+                            if (p2, s2) != (pl, sl) and mm.r32(b2 + 4) != 0xFFFFFFFF and rng.random() < 0.5:
+                                mm.w32(b2 + 0xC, mm.r32(b2 + 0xC) ^ 2)
+                card = mm.r32(base + 4)
                 mm.w32(0x68ECB0, pl)                             # event source player and slot
                 mm.w32(0x690C48, sl)
                 mm.w32(0x681ECC, card)                           # the card, and its colour byte
-                mm.w32(0x68EE64, mm.r32(0x4FF590 + card * 0x34 + 4) >> 16 & 0xFF)
+                mm.w32(0x68EE64, mm.r32(0x4FF590 + (card & 0x3FF) * 0x34 + 4) >> 16 & 0xFF)
                 mm.w32(0x690310, 1 - pl)                         # target player and slot
                 mm.w32(0x68ECFC, 0xFFFFFFFF)
                 mm.w32(0x66642C, 0)                              # the event result
-                # The game stays as it was: the data section is saved now and put back (the thread ended) a little later,
-                # so that one handler's effects do not change what the next one sees. The functions the handler calls
-                # (LIFT_SPEC lists them) are patched to return K at once (default 0, or the 5th word of the op), so the
-                # handler runs on its own: a call that would open a prompt or wait on the UI cannot stall it, and what
-                # each callee returned is exactly what the lifted code is later given.
-                snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
                 patched = []
-                k = int(cmd[4], 0) if len(cmd) > 4 else 0
                 spec = os.environ.get("LIFT_SPEC")
                 if spec:
                     if "lift_spec" not in pending:
                         pending["lift_spec"] = {int(e["addr"], 16): e for e in json.load(open(spec)) if e.get("lifted")}
                     for c in pending["lift_spec"].get(handler, {}).get("calls", []):
                         a = int(c["addr"], 16)
-                        stub = b"\xb8" + struct.pack("<I", k) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
+                        kv = rng.choice((0, 1, 2, 3, 5, 8, 16, 100, 0xFFFFFFFF)) if k == "r" else int(k, 0)
+                        stub = b"\xb8" + struct.pack("<I", kv) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
                         patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
                         mm.uc.mem_write(a, stub)
                 th = mm.spawn(handler, [pl, sl, event], "inject", one_shot=True)
