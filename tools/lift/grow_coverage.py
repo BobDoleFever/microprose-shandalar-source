@@ -58,7 +58,30 @@ def instructions_by_handler(gen_c):
     return funcs
 
 
-def plan_round(rng, spec, insns, covered, events, n):
+GATE = re.compile(r"/\* (?:cmp|test) (dword|word|byte) ptr \[0x([0-9a-f]+)\], (-?(?:0x[0-9a-f]+|\d+)|\w+) \*/")
+SIZES = {"dword": 4, "word": 2, "byte": 1}
+
+
+def gates_by_handler(gen_c):
+    """Per handler, the globals its code compares or tests: {address: (size, values it is compared with)}. A handler is
+    usually gated on one of these (the step code, say) before it does anything, so injections set them to what it wants."""
+    gates, cur = {}, None
+    for line in open(gen_c):
+        m = re.match(r"uint32_t lifted_([0-9a-f]{8})\(", line)
+        if m:
+            cur = gates.setdefault(int(m.group(1), 16), {})
+        m = GATE.search(line)
+        if m and cur is not None and 0x4F2000 <= int(m.group(2), 16) < 0x6C3000:
+            size, addr, operand = SIZES[m.group(1)], int(m.group(2), 16), m.group(3)
+            values = cur.setdefault(addr, (size, set()))[1]
+            try:
+                values.add(int(operand, 0) & 0xFFFFFFFF)
+            except ValueError:    # compared with a register: some small values are what it can be equal to
+                values.update((0, 1, 2))
+    return gates
+
+
+def plan_round(rng, spec, insns, covered, events, gates, n):
     """n injection operations, aimed at the handlers with the most uncovered instructions."""
     left = {a: sum(1 for i in ins if i not in covered) for a, ins in insns.items()}
     todo = [a for a, c in left.items() if c > 0]
@@ -70,14 +93,21 @@ def plan_round(rng, spec, insns, covered, events, n):
         evs = events.get(h) or []
         event = rng.choice(evs) if evs and rng.random() < 0.6 else rng.randrange(0, 0x90)
         card = "own" if rng.random() < 0.8 else "-"
-        ops.append((h, event, rng.randrange(0, 4), card, rng.randrange(1, 1 << 31)))
+        pokes = []
+        g = gates.get(h) or {}
+        if g and rng.random() < 0.85:
+            for addr in rng.sample(sorted(g), min(len(g), rng.randrange(1, 4))):
+                size, values = g[addr]
+                v = rng.choice(sorted(values)) if rng.random() < 0.8 else rng.randrange(0, 4)
+                pokes.append(f"{addr:x}:{size}:{v:x}")
+        ops.append((h, event, rng.randrange(0, 4), card, rng.randrange(1, 1 << 31), ",".join(pokes) or "-"))
     return ops
 
 
 def script_for(ops):
     t, parts = START, [BASE]
-    for h, event, nth, card, seed in ops:
-        parts.append(f"{t:.2f}:inject {h:#x} {event:#x} {nth} r {card} {seed}")
+    for h, event, nth, card, seed, pokes in ops:
+        parts.append(f"{t:.2f}:inject {h:#x} {event:#x} {nth} r {card} {seed} {pokes}")
         t += STEP
     return ";".join(parts), t + 2.0
 
@@ -165,6 +195,7 @@ def main():
     total = sum(len(v) for v in insns.values())
     spec = json.load(open(os.path.join(args.gen, "handler_spec.json")))
     source = open(os.path.join(ROOT, "duel", "duel_all.c"), errors="replace").read()
+    gates = gates_by_handler(os.path.join(args.gen, "handlers_gen.c"))
     events = {}
     for e in spec:
         if e["lifted"]:
@@ -185,7 +216,7 @@ def main():
         rnd += 1
         rng = random.Random(time.time_ns())
         before = percent()
-        ops = plan_round(rng, spec, insns, covered, events, args.round_ops)
+        ops = plan_round(rng, spec, insns, covered, events, gates, args.round_ops)
         if not ops:
             log(args.out, "everything is covered")
             break

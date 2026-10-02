@@ -192,13 +192,14 @@ def main(argv=None):
                     b = 0x6826C0 + p * 0x5B20 + sl * 0x120
                     if mm.r32(b + 4) != 0xFFFFFFFF:
                         print(f"   [slots {now:.1f}s] p{p} s{sl} card={mm.r32(b + 4):#x} +8={mm.r32(b + 8):#x} +c={mm.r32(b + 0xC):#x}")
-        elif op == "inject":                                   # inject HANDLER EVENT NTH [K [CARD [SEED]]]: run a card handler on demand
+        elif op == "inject":                                   # inject HANDLER EVENT NTH [K [CARD [SEED [POKES]]]]: run a card handler on demand
             # Calls handler(player, slot, event) for the NTH card in play (both players, in slot order), on a new guest
             # thread, with the event globals set the way the game's own dispatcher sets them. DUEL.EXE addresses. The
             # game is put back afterwards: this is for recording what a handler does (tools/lift), not for play.
             #   K     what every function the handler calls returns (default 0; `r` picks one per function from the seed)
             #   CARD  `own` puts a card whose handler this is into that slot first; a number puts that card id there;
             #         `-` (default) leaves the card alone
+            #   POKES `address:size:value,...` (hex) set those globals last (a handler is often gated on a global such as the step code)
             #   SEED  (nonzero) fills the slot's fields with arbitrary values and moves other cards into play, from a
             #         generator seeded with it, so the same op always makes the same situation
             handler, event, nth = int(cmd[1], 0), int(cmd[2], 0), int(cmd[3])
@@ -227,9 +228,9 @@ def main(argv=None):
                 elif token != "-":
                     mm.w32(base + 4, int(token, 0))
                 if seed:
-                    def arbitrary():
+                    def arbitrary():                              # never a value that could be a pointer into memory: wild stores wedge the game
                         c = rng.random()
-                        return (0, 1, 2, 3, 0xFFFFFFFF, rng.randrange(0, 20), rng.randrange(0, 0x10000), rng.getrandbits(32))[int(c * 8)]
+                        return (0, 1, 2, 3, 0xFFFFFFFF, rng.randrange(0, 20), rng.randrange(0, 0x10000), rng.randrange(0, 0x400000))[int(c * 8)]
                     for off in range(0x10, 0x120, 4):            # the slot's own fields
                         if off != 0xC and rng.random() < 0.4:
                             mm.w32(base + off, arbitrary())
@@ -239,6 +240,9 @@ def main(argv=None):
                             b2 = 0x6826C0 + p2 * 0x5B20 + s2 * 0x120
                             if (p2, s2) != (pl, sl) and mm.r32(b2 + 4) != 0xFFFFFFFF and rng.random() < 0.5:
                                 mm.w32(b2 + 0xC, mm.r32(b2 + 0xC) ^ 2)
+                for poke in (cmd[7].split(",") if len(cmd) > 7 and cmd[7] != "-" else []):
+                    addr, size, value = (int(x, 16) for x in poke.split(":"))   # a global the handler tests, set to a value it tests for
+                    mm.uc.mem_write(addr, (value & ((1 << (8 * size)) - 1)).to_bytes(size, "little"))
                 card = mm.r32(base + 4)
                 mm.w32(0x68ECB0, pl)                             # event source player and slot
                 mm.w32(0x690C48, sl)
