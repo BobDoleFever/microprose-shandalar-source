@@ -156,7 +156,8 @@ alphabet.
 whole behaviour is in its machine code, so `tools/lift` translates the machine code into C mechanically (a static
 recompiler for the integer subset of x86) and the result is checked against vectors recorded from the original, the same
 way as every native function above. all 383 lift; every vector recorded for them (about 94,000) matches; the
-vectors run 86% of the lifted instructions, which is the number to raise. See `tools/lift/README.md`. What it changes for the plan:
+vectors run 86% of the lifted instructions, which is the number to raise. See `tools/lift/README.md`. The native layer, with the handlers in it, now also runs hosted in the emulator (`--native`): the original game plays
+its duel with those functions replaced by native C and reaches the same board. What it changes for the plan:
 the hand-written native work is the engine around the handlers, and the handlers become a generated, verified bulk
 layer, not hundreds of rewrites.
 

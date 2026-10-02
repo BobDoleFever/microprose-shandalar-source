@@ -27,6 +27,11 @@ typedef struct Mem {
     int fault_count;                 /* total undefined reads, may exceed MEM_MAX_FAULTS */
     void (*on_write)(void *ctx, uint32_t addr, size_t len); /* optional write observer */
     void *on_write_ctx;
+    /* An external backend (the emulator hosting the native layer, native_host.c): when set, every access goes to it and
+     * nothing is held here. All bytes count as defined. */
+    uint32_t (*ext_read)(void *ctx, uint32_t addr, int size);
+    void (*ext_write)(void *ctx, uint32_t addr, int size, uint32_t value);
+    void *ext_ctx;
 } Mem;
 
 void mem_init(Mem *m);

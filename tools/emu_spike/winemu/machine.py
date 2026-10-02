@@ -12,15 +12,17 @@ with a continuation, not a nested emulator run: the handler returns `m.call_gues
 machine lays a stack frame for `fn` under the current one whose return address is a trap, and when the
 guest function returns to that trap `then(eax)` produces the result of the original import.
 """
+import ctypes
 import inspect
 import itertools
+import mmap
 import os
 import re
 import struct
 import time as _time
 
 import pefile
-from unicorn import Uc, UC_ARCH_X86, UC_MODE_32, UC_HOOK_CODE, UC_HOOK_MEM_UNMAPPED, UC_HOOK_MEM_WRITE, UcError
+from unicorn import Uc, UC_ARCH_X86, UC_MODE_32, UC_PROT_ALL, UC_HOOK_CODE, UC_HOOK_MEM_UNMAPPED, UC_HOOK_MEM_WRITE, UcError
 from unicorn.x86_const import (UC_X86_REG_EAX, UC_X86_REG_ESP, UC_X86_REG_EIP, UC_X86_REG_FS,
                                UC_X86_REG_GDTR, UC_X86_REG_DS, UC_X86_REG_ES, UC_X86_REG_SS,
                                UC_X86_REG_CS, UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI,
@@ -77,8 +79,9 @@ api, crt = REG.api, REG.crt
 
 class Cont:
     """Returned by a handler that wants a guest function run before the import completes."""
-    def __init__(self, fn, args, then=None):
+    def __init__(self, fn, args, then=None, sp=None):
         self.fn, self.args, self.then = fn, args, then or (lambda r: r)
+        self.sp = sp   # the caller's stack pointer, if lower than the import's own: the new frame goes below it
 
 
 class Block:
@@ -142,15 +145,16 @@ class Machine:
     def __init__(self, exe_path, game_root, overlay_root, log=print):
         self.log = log
         self.uc = Uc(UC_ARCH_X86, UC_MODE_32)
+        self.regions = []                           # (guest base, size, host address, buffer): see map_region
         self.game_root = game_root                  # host directory that is "C:\\Magic" in the guest
         self.overlay_root = overlay_root            # writes land here, reads look here first
         self.cwd = "C:\\Magic\\Program"
         self.exe_guest_path = self.cwd + "\\" + os.path.basename(exe_path)
-        self.uc.mem_map(STACK_TOP - STACK_SIZE, STACK_SIZE)
-        self.uc.mem_map(TEB, 0x2000)
-        self.uc.mem_map(GDT, 0x1000)
-        self.uc.mem_map(HEAP_BASE, HEAP_SIZE)
-        self.uc.mem_map(STUB_BASE, STUB_SIZE)
+        self.map_region(STACK_TOP - STACK_SIZE, STACK_SIZE)
+        self.map_region(TEB, 0x2000)
+        self.map_region(GDT, 0x1000)
+        self.map_region(HEAP_BASE, HEAP_SIZE)
+        self.map_region(STUB_BASE, STUB_SIZE)
         self.heap = Heap(HEAP_BASE + 0x1000, HEAP_BASE + HEAP_SIZE)
         self.stubs = {}                             # trap address -> (dll, name)
         self.handler_of = {}                        # trap address -> (fn, argc)
@@ -166,6 +170,7 @@ class Machine:
         self.next_tid = 1
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
+        self.intercepts = {}                        # guest address -> (replacement, bytes the original pops): add_intercept
         self.exit_hooks = []                        # called as a code hook when a thread function returns
         self.kill_hooks = []                        # called when a thread is ended from outside (a card handler run on demand)
         self.vt = 0.0                               # virtual time in seconds: the only clock the guest sees
@@ -223,6 +228,14 @@ class Machine:
     def put_cstr(self, a, b):
         self.wr(a, bytes(b) + b"\0")
 
+    def map_region(self, base, size):
+        """Map guest memory backed by a host buffer we own, so that native code (native_host.py) can read and write
+        the guest's memory directly instead of through a call per access."""
+        buf = mmap.mmap(-1, size)
+        host = ctypes.addressof(ctypes.c_char.from_buffer(buf))
+        self.uc.mem_map_ptr(base, size, UC_PROT_ALL, host)
+        self.regions.append((base, size, host, buf))
+
     def alloc_cstr(self, b):
         a = self.heap.alloc(len(b) + 1)
         self.put_cstr(a, b)
@@ -263,7 +276,7 @@ class Machine:
         if base != pe.OPTIONAL_HEADER.ImageBase:
             pe.relocate_image(base)
         image = pe.get_memory_mapped_image()
-        self.uc.mem_map(base, size)
+        self.map_region(base, size)
         self.wr(base, image)
         mod = {"base": base, "size": size, "pe": pe, "path": path,
                "name": os.path.basename(path).lower()}
@@ -455,6 +468,25 @@ class Machine:
             return
         self._apply(res, esp, ret, 0 if cdecl else argc, address)
 
+    def add_intercept(self, addr, fn, cleanup=0):
+        """Run `fn(machine, esp)` in place of the guest function that starts at `addr`. It returns the function's result,
+        or is a generator that yields `call_guest(...)` to have guest functions run first (as an import handler does).
+        `cleanup` is the bytes the original pops off the stack when it returns (a `ret imm16`)."""
+        self.intercepts[addr] = (fn, cleanup)
+        self.uc.hook_add(UC_HOOK_CODE, self._on_intercept, begin=addr, end=addr)
+
+    def _on_intercept(self, uc, address, size, user):
+        ent = self.intercepts.get(address)
+        if ent is None:
+            return
+        fn, cleanup = ent
+        esp = uc.reg_read(UC_X86_REG_ESP)
+        ret = self.r32(esp)
+        res = fn(self, esp)
+        if inspect.isgenerator(res):
+            res = self._drive(res, None)
+        self._apply(res, esp, ret, cleanup // 4, address)
+
     def default_argc(self, dll, name):
         table = self.state.get("argc_table", {})
         if name in table:
@@ -467,13 +499,13 @@ class Machine:
         uc.reg_write(UC_X86_REG_ESP, esp + 4 + 4 * argc)
         uc.reg_write(UC_X86_REG_EIP, ret)
 
-    def call_guest(self, fn, args, then=lambda r: r):
-        return Cont(fn, args, then)
+    def call_guest(self, fn, args, then=lambda r: r, sp=None):
+        return Cont(fn, args, then, sp)
 
     def _start_cont(self, c, esp, ret, argc, addr):
         uc = self.uc
         self.conts.append((c.then, esp, ret, argc, addr))
-        sp = esp - 4                                  # build the callee's frame below the import's own
+        sp = (c.sp if c.sp else esp) - 4              # build the callee's frame below the import's own (or the caller's)
         for a in reversed(c.args):
             self.w32(sp, a)
             sp -= 4
@@ -511,7 +543,7 @@ class Machine:
             return e.value or 0
         if isinstance(c, Block):
             return GenBlock(c, gen)
-        return Cont(c.fn, c.args, lambda r: self._drive(gen, r))
+        return Cont(c.fn, c.args, lambda r: self._drive(gen, r), c.sp)
 
     def _on_unmapped(self, uc, access, address, size, value, user):
         eip = uc.reg_read(UC_X86_REG_EIP)

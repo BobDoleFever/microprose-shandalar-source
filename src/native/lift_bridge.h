@@ -30,6 +30,10 @@ void lift_detach(void);
 /* Where the lifted code's stack lives while it runs (it needs memory for pushes and locals), and its current top. */
 #define LIFT_STACK_TOP 0x7ff00000u
 void lift_set_stack(uint32_t top);
+uint32_t lift_get_stack(void);
+
+/* Run the lifted function at `entry` on a frame already built at `esp`; 1 if there is such a function. */
+int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, uint32_t *ret);
 
 /* The generated function that stands for the original at `entry`, or NULL. */
 const LiftedFn *lift_find(uint32_t entry);
