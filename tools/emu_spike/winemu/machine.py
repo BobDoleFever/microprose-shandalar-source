@@ -170,6 +170,9 @@ class Machine:
         self.next_tid = 1
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
+        self.charging = False                       # native_host.py: slices are run in pieces so owed instructions count
+        self.owed = 0                               # instructions owed to the clock by native code run in this slice
+        self.CHUNK = 200_000
         self.intercepts = {}                        # guest address -> (replacement, bytes the original pops): add_intercept
         self.exit_hooks = []                        # called as a code hook when a thread function returns
         self.kill_hooks = []                        # called when a thread is ended from outside (a card handler run on demand)
@@ -413,6 +416,9 @@ class Machine:
         self.uc.emu_stop()
 
     def _on_code(self, uc, address, size, user):
+        if address in self.intercepts:
+            self._on_intercept(uc, address, size, user)
+            return
         if address == CONT_TRAP:
             self._finish_cont()
             return
@@ -471,9 +477,17 @@ class Machine:
     def add_intercept(self, addr, fn, cleanup=0):
         """Run `fn(machine, esp)` in place of the guest function that starts at `addr`. It returns the function's result,
         or is a generator that yields `call_guest(...)` to have guest functions run first (as an import handler does).
-        `cleanup` is the bytes the original pops off the stack when it returns (a `ret imm16`)."""
-        self.intercepts[addr] = (fn, cleanup)
-        self.uc.hook_add(UC_HOOK_CODE, self._on_intercept, begin=addr, end=addr)
+        `cleanup` is the bytes the original pops off the stack when it returns (a `ret imm16`).
+
+        The function's first bytes are overwritten with a jump to a trap in the stub area, which the one code hook there
+        already watches: a code hook of its own for every replaced function (hundreds) makes Unicorn several times slower."""
+        trap = STUB_BASE + self.next_stub * 16
+        self.next_stub += 1
+        if self.next_stub * 16 >= STUB_SIZE - 0x100:
+            raise RuntimeError("out of stub traps")
+        self.intercepts[trap] = (fn, cleanup)
+        self.uc.mem_write(addr, b"\xe9" + struct.pack("<I", (trap - (addr + 5)) & 0xFFFFFFFF))
+        self.uc.ctl_remove_cache(addr, addr + 5)
 
     def _on_intercept(self, uc, address, size, user):
         ent = self.intercepts.get(address)
@@ -614,23 +628,43 @@ class Machine:
                     uc.reg_write(UC_X86_REG_EIP, t.retry[0])
                     uc.reg_write(UC_X86_REG_ESP, t.retry[1])
                     t.retry = None
-                pc = uc.reg_read(UC_X86_REG_EIP)
-                try:
-                    uc.emu_start(pc, 0xFFFFFFFF, count=t.slice or self.slice)
-                except UcError as e:
-                    eip = uc.reg_read(UC_X86_REG_EIP)
-                    if t.name == "inject":   # a card handler run on demand (winemu/run.py) faulted: that call ends, the run goes on
-                        self.log(f"injected call faulted: {e} at eip 0x{eip:08x}")
-                        t.state = "done"
-                        for hook in self.kill_hooks:
-                            hook()
-                        continue
-                    self.log(f"emulation error: {e} at eip 0x{eip:08x} in thread {t.tid} ({t.name})")
-                    self.dump_crash(eip)
-                    self.exit_code = -2
+                limit = t.slice or self.slice
+                executed, faulted = 0, False
+                while True:
+                    pc = uc.reg_read(UC_X86_REG_EIP)
+                    # With native code standing in for some of the original's (native_host.py), the instructions it would
+                    # have run are owed to the clock: the slice is run in pieces so that it can end when the guest's own
+                    # instructions plus the owed ones reach the limit, as the original's would have.
+                    step = min(self.CHUNK, limit - executed) if self.charging else limit
+                    try:
+                        uc.emu_start(pc, 0xFFFFFFFF, count=step)
+                    except UcError as e:
+                        eip = uc.reg_read(UC_X86_REG_EIP)
+                        if t.name == "inject":   # a card handler run on demand (winemu/run.py) faulted: that call ends, the run goes on
+                            self.log(f"injected call faulted: {e} at eip 0x{eip:08x}")
+                            t.state = "done"
+                            for hook in self.kill_hooks:
+                                hook()
+                            faulted = True
+                            break
+                        self.log(f"emulation error: {e} at eip 0x{eip:08x} in thread {t.tid} ({t.name})")
+                        self.dump_crash(eip)
+                        self.exit_code = -2
+                        faulted = None
+                        break
+                    if self.charging and t.state == "ready" and not self.stop:
+                        executed += step
+                        if executed + self.owed < limit:
+                            continue
+                    break
+                if faulted:
+                    continue
+                if faulted is None:
                     break
                 # charge virtual time: a full slice if it ran to the limit, little if it blocked, plus calls
-                self.vt += (((t.slice or self.slice) if t.state == "ready" else 3000) + 150 * (self.calls - calls0)) / self.ips
+                ran = (executed if self.charging else limit) if t.state == "ready" else 3000
+                self.vt += (ran + self.owed + 150 * (self.calls - calls0)) / self.ips
+                self.owed = 0
                 if t.state == "ready":
                     t.ctx = uc.context_save()
                 elif t.state == "blocked":

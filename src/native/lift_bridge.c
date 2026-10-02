@@ -17,6 +17,7 @@
 #define RETURN_TRAP 0xfeedfac0u /* the return address pushed for a call from native code: nothing is ever run there */
 
 Mem *lift_mem;
+uint64_t lift_icount; /* instructions executed by lifted code, when built with -DLIFT_COUNT */
 
 #ifdef LIFT_COVERAGE
 /* Which lifted instructions ran, appended to the file $FLAT_COV at exit (tools/lift/coverage.py reads it). */

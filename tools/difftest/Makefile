@@ -48,7 +48,7 @@ HOSTSRCS = $(NATIVE)/mem.c $(NATIVE)/engine.c $(NATIVE)/layout.c $(NATIVE)/spell
 host: $(HOSTSRCS) | build
 	mkdir -p $(BUILD)
 	if [ -f $(GEN)/handlers_gen.c ]; then \
-	  $(CC) $(CFLAGS) -w -fPIC -DLIFT_BACKEND_MEM -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_host.o && \
+	  $(CC) $(CFLAGS) -w -fPIC -DLIFT_BACKEND_MEM -DLIFT_COUNT -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_host.o && \
 	  $(CC) $(CFLAGS) $(WARN) -fPIC -shared -DHOST_LIFTED -I$(NATIVE) -o $(BUILD)/libnative_host.dylib $(HOSTSRCS) \
 	    $(NATIVE)/lift_bridge.c $(BUILD)/handlers_host.o; \
 	else \

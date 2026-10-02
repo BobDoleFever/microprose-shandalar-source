@@ -27,6 +27,7 @@ static uint32_t colour_bit(uint32_t base, int8_t c)
 
 uint32_t Native_Magic_IsManaSource(Vm *vm, int32_t player, int32_t slot)
 {
+    NATIVE_ENTER(FN_IS_MANA_SOURCE);
     int32_t card = (int32_t)mem_rd32(vm->mem, slot_addr(vm, player, slot, SLOT_CARD));
     if ((mem_rd8(vm->mem, master_addr(vm, card, MASTER_FLAGS + 1)) & 0x10) == 0)
         return 0;
@@ -35,6 +36,7 @@ uint32_t Native_Magic_IsManaSource(Vm *vm, int32_t player, int32_t slot)
 
 uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot)
 {
+    NATIVE_ENTER(FN_GET_COLOR_AND_TYPE_FLAGS);
     Mem *m = vm->mem;
     int32_t card = (int32_t)mem_rd32(m, slot_addr(vm, player, slot, SLOT_CARD));
     uint32_t type_bit;
@@ -66,6 +68,7 @@ uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot)
 uint32_t Native_Magic_QueryCardAttribute(Vm *vm, int32_t player, int32_t slot, int32_t event_code,
                                          uint32_t target_slot)
 {
+    NATIVE_ENTER(FN_QUERY_CARD_ATTRIBUTE);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     uint32_t saved, result, local = 0, args[3] = {0, 0, 0};

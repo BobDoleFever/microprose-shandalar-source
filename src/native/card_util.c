@@ -14,6 +14,7 @@
 
 uint32_t Native_Card_IsInPlay(Vm *vm, int32_t player, int32_t slot)
 {
+    NATIVE_ENTER(FN_CARD_IS_IN_PLAY);
     if ((int32_t)mem_rd32(vm->mem, slot_addr(vm, player, slot, SLOT_CARD)) == -1)
         return 0;
     /* The original reads the flags dword and tests its low byte: bit 1 (in play) set and bit 5 clear. Bit 5
@@ -24,6 +25,7 @@ uint32_t Native_Card_IsInPlay(Vm *vm, int32_t player, int32_t slot)
 /* The lowest set bit among colour-mask bits 1 to 5 as an index 1 to 5; 0 if none (the argument is a byte). */
 uint32_t Native_Card_ColorMaskToColorIndex(uint32_t mask)
 {
+    NATIVE_ENTER(FN_COLOR_MASK_TO_INDEX);
     uint8_t v = (uint8_t)mask;
 
     if (v & 0x02)
@@ -48,10 +50,12 @@ static int32_t remap(Vm *vm, int32_t player, int32_t slot, int32_t index, uint32
 
 int32_t Native_Card_RemapColorIndexF9(Vm *vm, int32_t player, int32_t slot, int32_t index)
 {
+    NATIVE_ENTER(FN_REMAP_COLOR_INDEX_F9);
     return remap(vm, player, slot, index, 0xf9u);
 }
 
 int32_t Native_Card_RemapColorIndexFF(Vm *vm, int32_t player, int32_t slot, int32_t index)
 {
+    NATIVE_ENTER(FN_REMAP_COLOR_INDEX_FF);
     return remap(vm, player, slot, index, 0xffu);
 }

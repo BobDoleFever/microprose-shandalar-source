@@ -44,4 +44,8 @@ const char *host_lifted_name(int index);
 uint32_t host_lifted_run(uint32_t entry, uint32_t esp);
 int host_lifted_try(uint32_t entry, uint32_t esp, uint32_t *ret); /* see host_native_try */
 
+/* Work done so far: how often each native function was entered (nested calls included), and how many instructions lifted
+ * code executed. `entries` has host_native_count() numbers. */
+void host_counters(uint64_t *entries, uint64_t *lifted_instructions);
+
 #endif

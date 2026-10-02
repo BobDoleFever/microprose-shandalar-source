@@ -164,18 +164,36 @@ cd tools/emu_spike && python3 -m winemu.run --exe ../../sources/installed/Magic/
 ```
 
 `--native` replaces the original's native functions (22) and lifted handlers (383) with the native layer, in the running
-emulator, at their entry addresses (`Machine.add_intercept`, `winemu/native_host.py`). The native code reads and writes the
+emulator, at their entry addresses (`winemu/native_host.py`). Each replaced function's first bytes are overwritten with a
+jump to a trap in the machine's stub area, which one code hook already watches (a code hook of its own for each of the 405
+functions made Unicorn five times slower, and was the whole cost of hosting at first). The native code reads and writes the
 guest's memory directly (the machine's memory is host buffers, `Machine.map_region`), and calls the guest for anything not
-native, by running the guest function and handing its result back. Natives run without a thread when they can: a call
-that needs the guest stops, its writes are undone, and it runs again on a worker thread that can wait for the guest. About
-one in five calls of the AI's search does. `--native-only NAMES`, `--native-skip NAMES` and `--no-native-handlers` narrow it.
+native by running the guest function and handing its result back. Natives run without a thread when they can: a call that
+needs the guest stops, its writes are undone, and it runs again on a worker thread that can wait for the guest. About one
+in five calls of the AI's search does. `--native-only NAMES`, `--native-skip NAMES` and `--no-native-handlers` narrow it.
 
 The script op `digest` prints hashes of the card slots and the event state, to compare a run on the original code with a run
-on the native layer. For the mono-green duel the pilot script plays (two lands and an elf, then the AI's turn), the two
-end in the same state: the card slot table, the per-player counts and the event globals hash the same from 85 s on. The
-query counters differ, as they must: the native functions take no virtual time, so the time-boxed AI search does more
-rollouts in the same virtual seconds (1.8 million native calls in 120 virtual seconds), and the hosted run is slower in
-real time for that reason (about 14 minutes against 1.5 for 120 virtual seconds), not because the hosting is.
+on the native layer.
+
+### The guest's clock
+
+The machine charges the guest's clock for the guest's own instructions (a slice that runs to its limit costs the limit
+divided by the emulated machine's speed) and for its import calls. A replaced function runs no guest instructions, so
+without a charge time passes more slowly for the guest and the time-boxed AI search does about three times the work in the
+same virtual seconds (254,000 calls of the card query in 90 virtual seconds on the original, 716,000 hosted). So the work
+is charged back. Lifted code executes the original's instructions one for one and counts them; for each hand-written native
+function the original's own instructions per call are measured once on the original:
+
+```
+python3 -m winemu.run --exe ... --native-calibrate costs.json --script "..."       # the original, with block hooks
+python3 -m winemu.run --exe ... --native --native-costs costs.json --script "..."  # hosted, clock charged
+```
+
+After each replaced call the instructions it would have taken are owed to the machine, which then runs its slices in
+pieces so that one ends when the guest's instructions plus the owed ones reach the limit. With that, the hosted run matches
+the original on the pilot duel: outermost calls 254,371 / 73,920 / 114,269 of the card query / scan / in-play test against
+254,055 / 72,431 / 99,496, 1,305,591 import calls against 1,305,773, and the same card slots, counts and event globals from
+85 s on. It takes 114 s of real time for 90 virtual seconds (the original, with nothing replaced, 88 s for 120).
 
 ## Growing the coverage
 
