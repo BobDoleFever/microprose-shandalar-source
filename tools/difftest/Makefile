@@ -41,4 +41,18 @@ lifted-cov: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATI
 	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -DLIFT_COVERAGE -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen_cov.o
 	$(CC) $(CFLAGS) $(WARN) -DNATIVE_LIFTED -DLIFT_COVERAGE -I$(NATIVE) -o $(BUILD)/harness-lifted-cov $(SRCS) $(NATIVE)/lift_bridge.c $(BUILD)/handlers_gen_cov.o
 
-.PHONY: asan clean flat lifted lifted-cov
+# The native layer as a shared library for the emulator to host (tools/emu_spike/winemu/native_host.py). With the generated
+# handlers when GEN has them, without otherwise.
+HOSTSRCS = $(NATIVE)/mem.c $(NATIVE)/engine.c $(NATIVE)/layout.c $(NATIVE)/spell_stack.c $(NATIVE)/card_query.c \
+           $(NATIVE)/event_context.c $(NATIVE)/card_util.c $(NATIVE)/ai_plan.c $(NATIVE)/card_scan.c $(NATIVE)/native_host.c
+host: $(HOSTSRCS) | build
+	mkdir -p $(BUILD)
+	if [ -f $(GEN)/handlers_gen.c ]; then \
+	  $(CC) $(CFLAGS) -w -fPIC -DLIFT_BACKEND_MEM -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_host.o && \
+	  $(CC) $(CFLAGS) $(WARN) -fPIC -shared -DHOST_LIFTED -I$(NATIVE) -o $(BUILD)/libnative_host.dylib $(HOSTSRCS) \
+	    $(NATIVE)/lift_bridge.c $(BUILD)/handlers_host.o; \
+	else \
+	  $(CC) $(CFLAGS) $(WARN) -fPIC -shared -I$(NATIVE) -o $(BUILD)/libnative_host.dylib $(HOSTSRCS); \
+	fi
+
+.PHONY: asan clean flat lifted lifted-cov host

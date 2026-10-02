@@ -60,6 +60,11 @@ void lift_set_stack(uint32_t top)
     stack_top = top;
 }
 
+uint32_t lift_get_stack(void)
+{
+    return stack_top;
+}
+
 const LiftedFn *lift_find(uint32_t entry)
 {
     int i;
@@ -83,6 +88,22 @@ void lift_bad_jump(uint32_t from)
     char what[80];
     snprintf(what, sizeof(what), "lifted jump at 0x%08x indexed past its table", from);
     NATIVE_UNIMPLEMENTED(what);
+}
+
+/* A call into the lifted function at `entry` on the frame the caller has already built at `esp` (a return address, then
+ * the arguments): what a host does when the original program calls a function that has been lifted. */
+int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, uint32_t *ret)
+{
+    const LiftedFn *f = lift_find(entry);
+    uint32_t saved = stack_top;
+
+    if (!f)
+        return 0;
+    lift_mem = vm->mem;
+    stack_top = esp;
+    *ret = f->fn(esp);
+    stack_top = saved;
+    return 1;
 }
 
 /* A call made from native code (the scan running a card's handler): put the arguments on the lifted stack and run. */
@@ -149,7 +170,13 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
             return ret;
         }
     }
-    return vm_call_at(bridge_vm, CALLEE_FUNCTION, target, nargs, args);
+    {   /* out to the Vm's hook: a guest function called from here gets its frame below this one's */
+        uint32_t saved_top = stack_top;
+        stack_top = argp - 4u;
+        ret = vm_call_at(bridge_vm, CALLEE_FUNCTION, target, nargs, args);
+        stack_top = saved_top;
+        return ret;
+    }
 }
 
 /* LIFT_DUMP="address:length,..." prints that memory (?? where nothing defined it) each time the scan starts a handler. */

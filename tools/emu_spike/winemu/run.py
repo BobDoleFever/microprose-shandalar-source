@@ -214,6 +214,11 @@ def main(argv=None):
     ap.add_argument("--break", dest="breaks", action="append", default=[],
                     help="trace a guest function: ADDR:label:nargs[:stringargs], e.g. 0x48e8f2:RunTurnStep:4:2")
     ap.add_argument("--watch", action="append", default=[], help="log writes to a guest dword: ADDR:label")
+    ap.add_argument("--native", action="store_true",
+                    help="host the native layer (make -C tools/difftest host): run its functions and the lifted card handlers in place of the original's")
+    ap.add_argument("--native-only", default="", help="with --native: only these functions (comma-separated names)")
+    ap.add_argument("--native-skip", default="", help="with --native: not these")
+    ap.add_argument("--no-native-handlers", action="store_true", help="with --native: the native functions only, not the lifted handlers")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     args = ap.parse_args(argv)
 
@@ -269,6 +274,11 @@ def main(argv=None):
             user32.inject_mouse(mm, "move", int(cmd[1]), int(cmd[2]))
         elif op == "key":
             user32.inject_key(mm, int(cmd[1]), int(cmd[2]) if len(cmd) > 2 else None)
+        elif op == "digest":                                   # digest [LABEL]: hash the game's card and event state (compare two runs)
+            import hashlib
+            parts = [bytes(mm.uc.mem_read(0x6826C0, 2 * 0x5B20)), bytes(mm.uc.mem_read(0x666408, 0x20)),
+                     bytes(mm.uc.mem_read(0x6663E0, 0x100)), bytes(mm.uc.mem_read(0x68ECB0, 0x40))]
+            print(f"   [digest {now:.1f}s {cmd[1] if len(cmd) > 1 else ''}] " + " ".join(hashlib.md5(p).hexdigest()[:8] for p in parts))
         elif op == "slots":                                    # slots: list the occupied slots (debugging aid)
             for p in (0, 1):
                 for sl in range(0x50):
@@ -513,8 +523,19 @@ def main(argv=None):
     m.state["should_stop"] = lambda mm: mm.vt > args.seconds
     m.state["virtual_limit"] = args.seconds
     m.state["next_host_event"] = None
+    nh = None
+    if args.native:
+        from . import native_host  # noqa: PLC0415
+        nh = native_host.NativeHost(m)
+        n = nh.install(only=set(filter(None, args.native_only.split(","))) or None,
+                       skip=set(filter(None, args.native_skip.split(","))), handlers=not args.no_native_handlers)
+        print(f"   [native] {n} functions of the original replaced by the native layer")
     code = m.run()
     m.flush_trace()
+    if nh:
+        top = sorted(nh.runs.items(), key=lambda kv: -kv[1])
+        print(f"   [native] ran natively: {sum(nh.runs.values())} calls of {len(nh.runs)} functions; "
+              + ", ".join(f"{k} x{v}" for k, v in top[:8]) + f"; memory faults {nh.faults}; run again on a thread: {sum(nh.escalated.values())}; host seconds {nh.seconds}")
     print(f"\nfinished: exit code {code}, {m.calls} import calls, {m.vt:.1f}s virtual, {time.time() - t0:.1f}s real")
     shot = os.path.join(args.shots, "screen.png")
     Image.fromarray(compose(m)).save(shot)
