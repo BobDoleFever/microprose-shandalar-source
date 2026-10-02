@@ -31,9 +31,12 @@
 #include <string.h>
 
 #include "../../src/native/engine.h"
+#ifdef NATIVE_LIFTED
+#include "../../src/native/lift_bridge.h" /* + the generated handlers: `Handler_<address>` functions run lifted */
+#endif
 
-#define MAX_CALLS 1024
-#define MAX_ARGS 8
+#define MAX_CALLS 8192
+#define MAX_ARGS 32
 #define MAX_READS 8192
 #define MAX_WRITES 65536
 
@@ -61,9 +64,14 @@ typedef struct {
     uint32_t writes[MAX_WRITES][2];
     int nwrites, writes_dropped;
     jmp_buf bail;
+    uint32_t frame_lo, frame_hi; /* writes inside are the lifted code's own stack frame, not part of its result */
 } Harness;
 
 static Harness H;
+#ifdef NATIVE_LIFTED
+static uint32_t lifted_entry;
+static NativeInfo lifted_info;
+#endif
 
 static void die(const char *msg, const char *detail)
 {
@@ -116,6 +124,8 @@ static uint8_t *parse_hex(const char *s, size_t *len)
 static void on_write(void *ctx, uint32_t addr, size_t len)
 {
     (void)ctx;
+    if (H.frame_lo <= addr && addr < H.frame_hi)
+        return;
     if (H.nwrites < MAX_WRITES) {
         H.writes[H.nwrites][0] = addr;
         H.writes[H.nwrites][1] = (uint32_t)len;
@@ -159,17 +169,28 @@ static int run_guarded(const NativeInfo *fn, Vm *vm, const uint32_t *args, uint3
 {
     if (setjmp(H.bail))
         return 1;
+#ifdef NATIVE_LIFTED
+    if (fn == &lifted_info) {
+        if (!lift_call_function(vm, lifted_entry, 3, args, ret))
+            die("no lifted function at", fn->name);
+        return 0;
+    }
+#endif
     *ret = fn->run(vm, args);
     return 0;
 }
 
 int main(void)
 {
-    char line[1 << 16];
+    static char line[1 << 23];
     const Layout *layout = NULL;
     const NativeInfo *fn = NULL;
     uint32_t args[MAX_ARGS], entry = 0, ret = 0;
-    int nargs = 0, have_entry = 0, ran = 0, bailed, i;
+    int nargs = 0, have_entry = 0, ran = 0, bailed, i, have_stack_ptr = 0;
+    uint32_t stack_ptr = 0;
+    int use_lifted_handlers = 0;
+    (void)have_stack_ptr;
+    (void)stack_ptr;
     Vm vm;
 
     mem_init(&H.mem);
@@ -185,10 +206,26 @@ int main(void)
         } else if (strcmp(cmd, "function") == 0) {
             const char *name = strtok(NULL, " \t\r\n");
             fn = name ? native_find(name) : NULL;
+#ifdef NATIVE_LIFTED
+            if (!fn && name && strncmp(name, "Handler_", 8) == 0) {
+                int k;
+                for (k = 0; k < LIFTED_COUNT; k++)
+                    if (strcmp(LIFTED[k].name, name) == 0) {
+                        lifted_info.name = LIFTED[k].name;
+                        lifted_info.nargs = 3;
+                        lifted_info.ret_bits = 32;
+                        lifted_entry = LIFTED[k].entry;
+                        fn = &lifted_info;
+                    }
+            }
+#endif
             if (!fn)
                 die("no native implementation of", name);
+        } else if (strcmp(cmd, "lifted") == 0) {
+            use_lifted_handlers = 1;
         } else if (strcmp(cmd, "esp") == 0) {
-            (void)strtok(NULL, " \t\r\n"); /* the recorded stack pointer: only the lifted-code harness needs it */
+            stack_ptr = parse_u32(strtok(NULL, " \t\r\n")); /* the recorded stack pointer: for lifted handlers only */
+            have_stack_ptr = 1;
         } else if (strcmp(cmd, "entry") == 0) {
             entry = parse_u32(strtok(NULL, " \t\r\n"));
             have_entry = 1;
@@ -249,6 +286,16 @@ int main(void)
         snprintf(detail, sizeof(detail), "%s takes %d, got %d", fn->name, fn->nargs, nargs);
         die("wrong argument count", detail);
     }
+#ifdef NATIVE_LIFTED
+    if (fn == &lifted_info) {
+        if (have_entry && entry != lifted_entry) {
+            char detail[96];
+            snprintf(detail, sizeof(detail), "%s is at 0x%08x, the vector says 0x%08x", fn->name, lifted_entry, entry);
+            die("entry address mismatch", detail);
+        }
+        have_entry = 0;
+    }
+#endif
     if (have_entry && entry != layout->entry[fn->id]) {
         char detail[96];
         snprintf(detail, sizeof(detail), "%s in %s is at 0x%08x, the vector says 0x%08x", fn->name,
@@ -260,6 +307,26 @@ int main(void)
     vm.L = layout;
     vm.call = call_hook;
     vm.call_ctx = &H;
+#ifdef NATIVE_LIFTED
+    if (fn == &lifted_info) {
+        uint32_t top = have_stack_ptr ? stack_ptr + 4u * (uint32_t)(nargs + 1) : LIFT_STACK_TOP;
+        lift_attach(&vm, LIFT_CALLS_HOOK);
+        lift_set_stack(top);
+        H.frame_lo = top - 4u * (uint32_t)(nargs + 1) - 0x200000u;
+        H.frame_hi = top;
+    }
+#endif
+#ifdef NATIVE_LIFTED
+    if (use_lifted_handlers) { /* the scan runs a card's handler as lifted code; what that calls runs native, or replays */
+        lift_attach(&vm, LIFT_CALLS_NATIVE);
+        lift_set_stack(LIFT_STACK_TOP);
+        H.frame_lo = LIFT_STACK_TOP - 0x200000u;
+        H.frame_hi = LIFT_STACK_TOP;
+    }
+#else
+    if (use_lifted_handlers)
+        die("this vector needs the lifted handlers: build the harness with `make lifted`", NULL);
+#endif
     H.mem.on_write = on_write;
     printf("retbits %d\n", fn->ret_bits);
     fflush(stdout);

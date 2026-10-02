@@ -150,6 +150,20 @@ class Recorder:
                     for site in e.get("dynamic_sites", []):   # a call through the master table inside the handler
                         site = int(site, 16)
                         self.handler_sites[site] = site + 7
+        # With the lifted handlers part of the native layer, a native function that runs card handlers (the scan) has no
+        # handler calls of its own to replay: the handlers run lifted, native functions they call run native, and what is
+        # left to replay is every other function a handler can call. Nested handler calls are transparent, as nested
+        # native calls are, so that is what the recording holds.
+        self.lifted_handlers = bool(spec and os.environ.get("RECORD_LIFTED_HANDLERS"))
+        if self.lifted_handlers:
+            natives = {a for a in self.funcs if a not in self.handler_callees}
+            union = {}
+            for a, cs in self.handler_callees.items():
+                union.update({k: v for k, v in cs.items() if k not in natives and k not in self.handler_callees})
+            union.update({k: v for k, v in self.callees.items() if k not in natives and k not in self.handler_callees})
+            for a in natives:
+                self.handler_callees[a] = union
+            self.handler_sites = {}
         if spec and os.environ.get("RECORD_ONLY_HANDLERS"):   # nothing but the lifted handlers: much faster
             self.funcs = {a: v for a, v in self.funcs.items() if a in self.handler_callees}
         # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
@@ -401,6 +415,8 @@ class Recorder:
              "expected_return": 0 if r["name"] in VOID_FUNCTIONS else S32(eax),
              "memory_in": regions({**r["pad"], **r["reads"]}), "calls": calls,
              "memory_out_expected": regions(out), "memory_out_exhaustive": True}
+        if self.lifted_handlers and not r["name"].startswith("Handler_"):
+            v["lifted_handlers"] = True
         self.n += 1
         json.dump(v, open(os.path.join(self.out, "%s_%04d.json" % (r["name"], self.n)), "w"), indent=1)
 

@@ -12,6 +12,7 @@ import pytest
 capstone = pytest.importorskip("capstone")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))
 DIFFTEST = os.path.join(os.path.dirname(HERE), "difftest")
 sys.path.insert(0, HERE)
 sys.path.insert(0, DIFFTEST)
@@ -73,7 +74,7 @@ def harness(tmp_path_factory):
     gen.append(f"const CalleeRow LIFT_CALLEES[] = {{ {{0x{CALLEE:x}u, 1, 0u}}, {{0x{IMPORT_SLOT:x}u, 1, 4u}}, {{0, 0, 0}} }};\nconst int LIFT_CALLEE_COUNT = 2;")
     (out / "gen.c").write_text("\n".join(gen))
     exe = str(out / "harness-flat")
-    cmd = [cc, "-O1", "-DLIFT_TRACK_WRITES", "-w", f"-I{HERE}", "-o", exe, os.path.join(DIFFTEST, "harness_flat.c"),
+    cmd = [cc, "-O1", "-DLIFT_TRACK_WRITES", "-w", f"-I{os.path.join(ROOT, 'src', 'native')}", "-o", exe, os.path.join(DIFFTEST, "harness_flat.c"),
            str(out / "gen.c")]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr
@@ -147,3 +148,53 @@ def test_unreadable_memory_is_reported(tmp_path, harness):
     # that read memory the vector does not define would give different results under the two fills.
     status, messages, _ = run(tmp_path, harness, vector("Test_Add", [1, 2], 3))
     assert status == "PASS", messages
+
+
+# ---- the same lifted code inside the native layer (src/native/lift_bridge.c) ------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def native_harness(tmp_path_factory):
+    """tools/difftest's native harness with the synthetic functions linked in as Handler_<address> lifted functions."""
+    cc = os.environ.get("CC") or "cc"
+    if not shutil.which(cc) or not shutil.which("make"):
+        pytest.skip("no C compiler or make")
+    out = tmp_path_factory.mktemp("lift_native")
+    lifter, sources, names = Lifter(), [], []
+    lifter.imports[IMPORT_SLOT] = "Sleep"
+    for name, (addr, code) in FUNCTIONS.items():
+        if name == "Test_BadJump":
+            continue
+        src, _, _, _ = lifter.lift_function(getbytes, addr, f"Handler_{addr:08x}", frozenset([CALLEE]))
+        sources.append(src)
+        names.append((f"Handler_{addr:08x}", addr))
+    gen = ['#include "lift_rt.h"\n#include "lift_tables.h"\n'] + sources
+    gen.append("const LiftedFn LIFTED[] = {\n" + "".join(f'    {{"{n}", 0x{a:x}u, lifted_{a:08x}}},\n' for n, a in names)
+               + "    {0, 0, 0}\n};")
+    gen.append(f"const int LIFTED_COUNT = {len(names)};")
+    gen.append(f"const CalleeRow LIFT_CALLEES[] = {{ {{0x{CALLEE:x}u, 1, 0u}}, {{0x{IMPORT_SLOT:x}u, 1, 4u}}, {{0, 0, 0}} }};\n"
+               "const int LIFT_CALLEE_COUNT = 2;")
+    (out / "handlers_gen.c").write_text("\n".join(gen))
+    proc = subprocess.run(["make", "-C", DIFFTEST, "lifted", f"GEN={out}", f"BUILD={out}/build"], capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    return str(out / "build" / "harness-lifted")
+
+
+def test_native_layer_runs_a_lifted_function(tmp_path, native_harness):
+    v = vector("Handler_00001000", [7, 5, 0], 12)   # Test_Add
+    assert run(tmp_path, native_harness, v)[0] == "PASS"
+    v = vector("Handler_00002000", [-4, 2, 0], 2)   # Test_Max
+    assert run(tmp_path, native_harness, v)[0] == "PASS"
+
+
+def test_native_layer_replays_the_calls_a_lifted_function_makes(tmp_path, native_harness):
+    call = {"callee": CALLEE, "name": "Callee", "args": [9], "return": 41}
+    status, messages, _ = run(tmp_path, native_harness, vector("Handler_00005000", [9, 0, 0], 42, [call]))   # Test_Call
+    assert status == "PASS", messages
+
+
+def test_native_layer_counts_a_read_of_undefined_memory_as_a_fault(tmp_path, native_harness):
+    # Test_Switch reads nothing but its argument; Test_Dynamic reads the master table, which the vector does not provide
+    v = vector("Handler_00007200", [3, 0, 0], 7, [{"callee": 0x1234, "name": "card_handler", "args": [3], "return": 7}])
+    status, messages, _ = run(tmp_path, native_harness, v)
+    assert status == "FAIL" and any("undefined" in m or "0x00008000" in m or "8000" in m for m in messages), messages

@@ -23,8 +23,16 @@ clean:
 
 # The harness for lifted code (tools/lift): GEN holds the handlers_gen.c that tools/lift/gen_handlers.py wrote.
 GEN ?= ../../sources/generated/lift
-flat: harness_flat.c $(GEN)/handlers_gen.c ../lift/lift_rt.h ../lift/lift_tables.h | build
-	$(CC) $(CFLAGS) -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable -DLIFT_TRACK_WRITES -I../lift -I$(GEN) \
+flat: harness_flat.c $(GEN)/handlers_gen.c $(NATIVE)/lift_rt.h $(NATIVE)/lift_tables.h | build
+	$(CC) $(CFLAGS) -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable -DLIFT_TRACK_WRITES -I$(NATIVE) -I$(GEN) \
 	    -o build/harness-flat harness_flat.c $(GEN)/handlers_gen.c
 
-.PHONY: asan clean flat
+# The native layer with the lifted handlers linked in: the harness above plus lift_bridge.c and the generated code, with
+# `Handler_<address>` functions running lifted, on the sparse memory image the native functions use.
+BUILD ?= build
+lifted: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATIVE)/lift_bridge.h $(NATIVE)/lift_rt.h
+	mkdir -p $(BUILD)
+	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen.o
+	$(CC) $(CFLAGS) $(WARN) -DNATIVE_LIFTED -I$(NATIVE) -o $(BUILD)/harness-lifted $(SRCS) $(NATIVE)/lift_bridge.c $(BUILD)/handlers_gen.o
+
+.PHONY: asan clean flat lifted

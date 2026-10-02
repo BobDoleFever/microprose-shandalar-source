@@ -21,8 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lift/lift_rt.h"
-#include "../lift/lift_tables.h"
+#include "lift_rt.h"
+#include "lift_tables.h"
 
 #define LOW_SIZE 0x01000000u /* guest addresses below this are in G as they are */
 #define HIGH_BLOCKS 16       /* 1 MB blocks above LOW_SIZE that can be folded in */

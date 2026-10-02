@@ -16,6 +16,7 @@ static const char *const CALLEE_NAMES[CALLEE_COUNT] = {
     [CALLEE_MARK_CARD] = "Pic_Subsystem_0044867e",
     [CALLEE_AFTER_MARK] = "Pic_Subsystem_004488a0",
     [CALLEE_FIND_FREE_SLOT] = "Pic_Subsystem_00451291 (find free slot)",
+    [CALLEE_FUNCTION] = "a function called from lifted code",
 };
 
 const char *callee_name(Callee c)
@@ -32,8 +33,14 @@ uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args)
     return vm->call(vm->call_ctx, callee, vm->L->callee[callee], nargs, args);
 }
 
+int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret);
+
 uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args)
 {
+    uint32_t lifted_ret;
+    if (callee == CALLEE_CARD_HANDLER && native_handler_dispatch &&
+        native_handler_dispatch(vm, addr, nargs, args, &lifted_ret))
+        return lifted_ret;
     if (!vm->call) {
         fprintf(stderr, "native: call to %s with no call hook\n", callee_name(callee));
         abort();

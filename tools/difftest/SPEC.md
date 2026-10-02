@@ -165,6 +165,20 @@ times in one game).
 3. Add it to `NATIVE_FUNCTIONS` with its argument count and return width.
 4. Add vectors. A path the native version does not cover calls `NATIVE_UNIMPLEMENTED`, which asserts.
 
+## Lifted card handlers in the native layer
+
+The 383 card handlers are not hand-written: `tools/lift` translates each one's machine code to C. Built with
+`LIFT_BACKEND_MEM` (`src/native/lift_rt.h`) that C reads and writes the same sparse image as the functions above, and
+`src/native/lift_bridge.c` is what connects it to them. Nothing generated is committed, so the bridge is only linked by a
+build that has the generated code: `make -C tools/difftest lifted` (after `tools/lift/gen_handlers.py`) builds
+`build/harness-lifted`, the harness above with `Handler_<address>` as extra functions, run on vectors exactly as the
+others are. A vector's `calls` are replayed, so a handler is checked on its own: every function it calls is a replayed
+callee, and a read of memory the vector did not provide is a fault, as for any native function.
+
+A vector with `"lifted_handlers": true` (recorded with `RECORD_LIFTED_HANDLERS=1`) is for a native function that runs
+card handlers, the scan above all: the handlers run lifted inside it, the native functions they call run native, and
+what is recorded is every other function a handler can call.
+
 ## What is native today
 
 | Function | MAGIC.EXE | DUEL.EXE | Not covered | Callees replayed |
