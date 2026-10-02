@@ -131,6 +131,7 @@ def load_vector(path):
         "args": [num(a, f"args[{i}]") for i, a in enumerate(v["args"])],
         "expected_return": num(v["expected_return"], "expected_return"),
         "return_bits": v.get("return_bits"),
+        "stack_pointer": num(v["stack_pointer"], "stack_pointer") if "stack_pointer" in v else None,
         "memory_in": [region_bytes(r, f"memory_in[{i}]") for i, r in enumerate(v.get("memory_in", []))],
         "memory_out": [region_bytes(r, f"memory_out_expected[{i}]")
                        for i, r in enumerate(v.get("memory_out_expected", []))],
@@ -161,6 +162,8 @@ def protocol(v):
     lines = [f"program {v['program']}", f"function {v['function']}"]
     if v["address"] is not None:
         lines.append(f"entry 0x{v['address']:08x}")
+    if v.get("stack_pointer") is not None:
+        lines.append(f"esp 0x{v['stack_pointer']:08x}")
     lines += [f"arg 0x{a:08x}" for a in v["args"]]
     lines += [f"mem 0x{addr:08x} {data.hex()}" for addr, data in v["memory_in"]]
     for c in v["calls"]:
