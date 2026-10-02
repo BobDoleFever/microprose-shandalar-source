@@ -18,6 +18,7 @@ static uint32_t frame_field(const Vm *vm, int32_t depth, uint32_t index)
 
 void Native_Magic_PushEventContext(Vm *vm)
 {
+    NATIVE_ENTER(FN_PUSH_EVENT_CONTEXT);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t depth = (int32_t)mem_rd32(m, L->event_context_depth);
@@ -36,6 +37,7 @@ void Native_Magic_PushEventContext(Vm *vm)
 
 void Native_Magic_PopEventContext(Vm *vm)
 {
+    NATIVE_ENTER(FN_POP_EVENT_CONTEXT);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t depth = (int32_t)mem_rd32(m, L->event_context_depth);

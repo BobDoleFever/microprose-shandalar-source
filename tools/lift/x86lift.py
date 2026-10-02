@@ -41,6 +41,7 @@ class Lifter:
         self.md.detail = True
         self.tables = {}   # address of an indirect jmp -> its jump table (guest addresses), found while exploring
         self.imports = {}  # address of an import slot (a `call [slot]` target) -> name; set by the caller
+        self.strict_tables = True   # False: keep only the plausible entries of a jump table instead of refusing the function
         self.dynamic_sites = []   # addresses of `call [index*4 + table]` instructions in the function just lifted
 
     # ---- operands ---------------------------------------------------------------------------------------------
@@ -317,7 +318,9 @@ class Lifter:
             raise Unsupported("jump table runs off the image")
         table = [int.from_bytes(raw[4 * k:4 * k + 4], "little") for k in range(bound)]
         if any(not func - 0x1000 <= t < func + 0x6000 for t in table):
-            raise Unsupported("jump table entry outside the function (the bound was misjudged)")
+            if self.strict_tables:
+                raise Unsupported("jump table entry outside the function (the bound was misjudged)")
+            table = [t for t in table if func - 0x1000 <= t < func + 0x6000]   # only the extent is wanted (native_host.py)
         return table
 
     def lift_function(self, getbytes, addr, name, entries=frozenset()):

@@ -140,6 +140,21 @@ static void roll_back(void)
     }
 }
 
+void host_counters(uint64_t *entries, uint64_t *lifted_instructions)
+{
+    int i;
+    for (i = 0; i < FN_COUNT; i++)
+        entries[i] = native_entries[i];
+#ifdef HOST_LIFTED
+    {
+        extern uint64_t lift_icount;
+        *lifted_instructions = lift_icount;
+    }
+#else
+    *lifted_instructions = 0;
+#endif
+}
+
 int host_native_count(void)
 {
     return FN_COUNT;

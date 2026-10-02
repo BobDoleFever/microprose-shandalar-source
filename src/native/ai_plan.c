@@ -26,6 +26,7 @@ static uint32_t entry(uint32_t base, int32_t i)
 
 void Native_Ai_RecordChoice(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_RECORD_CHOICE);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t n = (int32_t)mem_rd32(m, L->ai_cursor);
@@ -51,6 +52,7 @@ void Native_Ai_RecordChoice(Vm *vm)
 
 void Native_Ai_ReplayChoice(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_REPLAY_CHOICE);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t n = (int32_t)mem_rd32(m, L->ai_cursor);
@@ -66,6 +68,7 @@ void Native_Ai_ReplayChoice(Vm *vm)
 
 void Native_Ai_CommitBestPlan(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_COMMIT_BEST_PLAN);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t n = (int32_t)mem_rd32(m, L->ai_cursor);
@@ -85,17 +88,20 @@ void Native_Ai_CommitBestPlan(Vm *vm)
 
 void Native_Ai_ClearPlan(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_CLEAR_PLAN);
     mem_wr32(vm->mem, vm->L->ai_cursor, 0);
     mem_wr32(vm->mem, vm->L->ai_best_choice, AI_NO_CHOICE);
 }
 
 uint32_t Native_Ai_GetPlanCursor(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_GET_PLAN_CURSOR);
     return mem_rd32(vm->mem, vm->L->ai_cursor);
 }
 
 void Native_Ai_PlanCursorBack(Vm *vm)
 {
+    NATIVE_ENTER(FN_AI_PLAN_CURSOR_BACK);
     int32_t n = (int32_t)mem_rd32(vm->mem, vm->L->ai_cursor);
 
     mem_wr32(vm->mem, vm->L->ai_cursor, n < 1 ? 0u : (uint32_t)(n - 1));
@@ -105,6 +111,7 @@ void Native_Ai_PlanCursorBack(Vm *vm)
  * bits (the slot and player, without the mode bits). Returns 0. */
 uint32_t Native_Ai_PeekPlannedSlot(Vm *vm, int32_t offset)
 {
+    NATIVE_ENTER(FN_AI_PEEK_PLANNED_SLOT);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
 
@@ -122,6 +129,7 @@ uint32_t Native_Ai_PeekPlannedSlot(Vm *vm, int32_t offset)
 /* Outside the AI's thinking: load the planned choice `offset` entries past the cursor, with "none" (99) read as 0. */
 uint32_t Native_Ai_PeekPlannedChoice(Vm *vm, int32_t offset)
 {
+    NATIVE_ENTER(FN_AI_PEEK_PLANNED_CHOICE);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
 
@@ -140,6 +148,7 @@ uint32_t Native_Ai_PeekPlannedChoice(Vm *vm, int32_t offset)
  * through the two out-pointers (guest addresses; either may be null). */
 void Native_Ai_GetLandColorMasks(Vm *vm, uint32_t out_x, uint32_t out_y)
 {
+    NATIVE_ENTER(FN_AI_GET_LAND_COLOR_MASKS);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     uint32_t mask_x = 0, mask_y = 0;

@@ -33,6 +33,8 @@ uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args)
     return vm->call(vm->call_ctx, callee, vm->L->callee[callee], nargs, args);
 }
 
+uint64_t native_entries[FN_COUNT];
+
 int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret);
 
 uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args)

@@ -89,6 +89,7 @@ class NativeHost:
         lib.host_native_ret_bits.argtypes = [ctypes.c_int]
         lib.host_native_run.restype = ctypes.c_uint32
         lib.host_native_run.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32]
+        lib.host_counters.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64)]
         lib.host_lifted_count.restype = ctypes.c_int
         lib.host_lifted_entry.restype = ctypes.c_uint32
         lib.host_lifted_entry.argtypes = [ctypes.c_int]
@@ -99,6 +100,7 @@ class NativeHost:
         lib.host_native_try.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
         lib.host_lifted_try.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
         self.escalated = {}   # name -> calls that had to be run again with a thread
+        self.native_cost = None
         self.seconds = {"try": 0.0, "thread": 0.0}   # host time spent in each way of running a call (for tuning)
         self.faults = 0
         self.runs = {}   # name -> times run natively
@@ -160,7 +162,10 @@ class NativeHost:
             arr = (ctypes.c_uint32 * max(nargs, 1))(*args)
             self.runs[name] = self.runs.get(name, 0) + 1
             out = ctypes.c_uint32()
+            charging = self.m.charging
+            inner = self.charged_total if charging else 0.0
             t0 = time.perf_counter()
+            before = self._counters() if charging else None
             done = lib.host_native_try(fid, arr, esp, ctypes.byref(out)) == 0
             self.seconds["try"] += time.perf_counter() - t0
             if done:
@@ -168,8 +173,11 @@ class NativeHost:
             else:   # it needs the guest: put back what it wrote and run it again where it can wait for it
                 self.escalated[name] = self.escalated.get(name, 0) + 1
                 t0 = time.perf_counter()
+                before = self._counters() if charging else None
                 ret = yield from self._run_in_thread(lambda: lib.host_native_run(fid, arr, esp))
                 self.seconds["thread"] += time.perf_counter() - t0
+            if charging:
+                self.charge_since(before, inner)
             if bits == 0:
                 return m.uc.reg_read(UC_X86_REG_EAX)   # a void function: EAX is whatever it was
             return ret & 0xFF if bits == 8 else ret
@@ -181,11 +189,108 @@ class NativeHost:
         def handler(m, esp):
             self.runs[name] = self.runs.get(name, 0) + 1
             out = ctypes.c_uint32()
+            charging = self.m.charging
+            inner = self.charged_total if charging else 0.0
+            before = self._counters() if charging else None
             if lib.host_lifted_try(entry, esp, ctypes.byref(out)) == 0:
+                if charging:
+                    self.charge_since(before, inner)
                 return out.value
             self.escalated[name] = self.escalated.get(name, 0) + 1
-            return (yield from self._run_in_thread(lambda: lib.host_lifted_run(entry, esp)))
+            before = self._counters() if charging else None
+            ret = yield from self._run_in_thread(lambda: lib.host_lifted_run(entry, esp))
+            if charging:
+                self.charge_since(before, inner)
+            return ret
         return handler
+
+    # ---- virtual time ------------------------------------------------------------------------------------------
+    # The machine charges the guest's clock for the guest's own instructions (a slice that runs to its limit costs the limit
+    # divided by the speed of the emulated machine) and for the import calls it makes. A replaced function runs no guest
+    # instructions, so without a charge time would pass more slowly for the guest, and a time-boxed search (the AI's) would
+    # do several times the work in the same virtual seconds. The work is known: lifted code executes the original's
+    # instructions one for one and counts them (lift_icount), and for each hand-written native function the original's
+    # own instructions per call are measured by `calibrate` on the original. After each replaced call the instructions it
+    # would have taken are owed to the machine (`Machine.owed`), which ends slices sooner and charges them.
+    def calibrate(self, path):
+        """Count, on the original, the instructions each native function executes in its own code per call (not those of the
+        functions it calls), and write them to `path` when the run ends (`finish_calibration`)."""
+        from unicorn import UC_HOOK_BLOCK, UC_HOOK_CODE  # noqa: PLC0415
+        import bisect  # noqa: PLC0415
+        sys.path.insert(0, os.path.join(ROOT, "tools", "lift"))
+        from x86lift import Lifter  # noqa: PLC0415
+
+        def getbytes(va, n):
+            return bytes(self.m.uc.mem_read(va, min(n, 0x4000)))
+        self.cal = {}
+        self.cal_path = path
+        for fid in range(self.lib.host_native_count()):
+            name = self.lib.host_native_name(fid).decode()
+            entry = self.lib.host_native_entry(fid)
+            lifter = Lifter()
+            lifter.strict_tables = False
+            insns, _ = lifter.explore(getbytes, entry, frozenset(), window=0x3000)
+            addrs = sorted(insns)
+            rec = self.cal[name] = {"entries": 0, "instructions": 0}
+
+            def on_entry(uc, address, size, user, rec=rec):
+                rec["entries"] += 1
+
+            def on_block(uc, address, size, user, rec=rec, addrs=addrs):
+                rec["instructions"] += bisect.bisect_left(addrs, address + size) - bisect.bisect_left(addrs, address)
+            self.m.uc.hook_add(UC_HOOK_CODE, on_entry, begin=entry, end=entry)
+            self.m.uc.hook_add(UC_HOOK_BLOCK, on_block, begin=addrs[0], end=addrs[-1])
+        return len(self.cal)
+
+    def finish_calibration(self):
+        import json  # noqa: PLC0415
+        out = {n: (c["instructions"] / c["entries"] if c["entries"] else None) for n, c in self.cal.items()}
+        json.dump({"instructions_per_call": out, "entries": {n: c["entries"] for n, c in self.cal.items()}},
+                  open(self.cal_path, "w"), indent=1, sort_keys=True)
+        return out
+
+    def load_costs(self, path):
+        import json  # noqa: PLC0415
+        table = json.load(open(path))["instructions_per_call"]
+        self.native_cost = [table.get(self.lib.host_native_name(i).decode()) or 0.0 for i in range(self.lib.host_native_count())]
+        self.m.charging = True
+        self.charged_total = 0.0
+
+    def _counters(self):
+        n = self.lib.host_native_count()
+        arr, ic = (ctypes.c_uint64 * n)(), ctypes.c_uint64()
+        self.lib.host_counters(arr, ctypes.byref(ic))
+        return list(arr), ic.value
+
+    def charge_since(self, before, inner_before):
+        """Owe the machine what the original would have executed for the work done since `before`, except what calls made
+        meanwhile (a guest function that ran a native one) already paid."""
+        if not self.m.charging:
+            return
+        entries, ic = self._counters()
+        total = float(ic - before[1]) + sum((e - b) * c for e, b, c in zip(entries, before[0], self.native_cost))
+        own = max(total - (self.charged_total - inner_before), 0.0)
+        self.charged_total += own
+        self.m.owed += int(own)
+
+    def count_only(self):
+        """Count how often the guest enters each function the native layer could replace, leaving the original running (to
+        compare with a run that replaces them: the same calls should happen in the same virtual time)."""
+        from unicorn import UC_HOOK_CODE  # noqa: PLC0415
+        names = {}
+        for fid in range(self.lib.host_native_count()):
+            names[self.lib.host_native_entry(fid)] = self.lib.host_native_name(fid).decode()
+        for i in range(self.lib.host_lifted_count()):
+            names[self.lib.host_lifted_entry(i)] = self.lib.host_lifted_name(i).decode()
+
+        def hit(uc, address, size, user):
+            n = names[address]
+            self.runs[n] = self.runs.get(n, 0) + 1
+        mode = os.environ.get("COUNT_MODE", "count")
+        for a, n in names.items():
+            if mode == "natives" and not n.startswith(("Magic_", "Card_", "Ai_")):
+                continue
+            self.m.uc.hook_add(UC_HOOK_CODE, (lambda *x: None) if mode == "nop" else hit, begin=a, end=a)
 
     def install(self, only=None, skip=(), handlers=True):
         """Intercept the original's native functions (and lifted handlers). `only` (a set of names) restricts it."""

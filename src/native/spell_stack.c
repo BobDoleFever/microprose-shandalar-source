@@ -22,6 +22,7 @@ static uint32_t object_slot_addr(const Vm *vm, int32_t i)
 
 uint32_t Native_Magic_ClearSpellStack(Vm *vm)
 {
+    NATIVE_ENTER(FN_CLEAR_SPELL_STACK);
     mem_wr32(vm->mem, vm->L->spell_stack_count, 0);
     mem_wr32(vm->mem, vm->L->spell_stack_objects, 0xffffffffu);
     return 0;
@@ -29,6 +30,7 @@ uint32_t Native_Magic_ClearSpellStack(Vm *vm)
 
 uint32_t Native_Magic_DropTopSpell(Vm *vm)
 {
+    NATIVE_ENTER(FN_DROP_TOP_SPELL);
     Mem *m = vm->mem;
     int32_t count = (int32_t)mem_rd32(m, vm->L->spell_stack_count);
 
@@ -52,6 +54,7 @@ uint32_t Native_Magic_DropTopSpell(Vm *vm)
 uint32_t Native_Magic_PushSpellStack(Vm *vm, int32_t player, int32_t slot, int32_t event_code,
                                      int32_t target_slot, uint32_t flags)
 {
+    NATIVE_ENTER(FN_PUSH_SPELL_STACK);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     int32_t count = (int32_t)mem_rd32(m, L->spell_stack_count);

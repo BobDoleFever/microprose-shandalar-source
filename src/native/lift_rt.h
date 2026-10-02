@@ -46,6 +46,11 @@ void lift_chk_read(uint32_t a, uint32_t n);
 #ifdef LIFT_COVERAGE
 void lift_cov(uint32_t a);
 #define LIFT_COV(a) lift_cov(a)
+#elif defined(LIFT_COUNT)
+/* The host build counts the instructions lifted code executes (they are the original's, one for one), to charge the guest's
+ * clock for them. */
+extern uint64_t lift_icount;
+#define LIFT_COV(a) (lift_icount++)
 #else
 #define LIFT_COV(a) ((void)0)
 #endif

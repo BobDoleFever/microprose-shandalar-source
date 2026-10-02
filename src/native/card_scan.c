@@ -32,6 +32,7 @@ static void run_handler(Vm *vm, int32_t card, int32_t player, int32_t slot, int3
 
 void Native_Magic_ScanCards(Vm *vm, int32_t event_code)
 {
+    NATIVE_ENTER(FN_SCAN_CARDS);
     Mem *m = vm->mem;
     const Layout *L = vm->L;
     uint32_t saved = mem_rd32(m, L->query_saved);

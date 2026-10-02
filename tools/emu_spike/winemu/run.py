@@ -216,6 +216,10 @@ def main(argv=None):
     ap.add_argument("--watch", action="append", default=[], help="log writes to a guest dword: ADDR:label")
     ap.add_argument("--native", action="store_true",
                     help="host the native layer (make -C tools/difftest host): run its functions and the lifted card handlers in place of the original's")
+    ap.add_argument("--native-count", action="store_true", help="count calls of the functions --native would replace, leaving them")
+    ap.add_argument("--native-calibrate", metavar="FILE",
+                    help="on the original, measure the instructions each native function executes per call; write FILE")
+    ap.add_argument("--native-costs", metavar="FILE", help="with --native: charge the guest's clock for the instructions the replaced functions would have run (FILE from --native-calibrate)")
     ap.add_argument("--native-only", default="", help="with --native: only these functions (comma-separated names)")
     ap.add_argument("--native-skip", default="", help="with --native: not these")
     ap.add_argument("--no-native-handlers", action="store_true", help="with --native: the native functions only, not the lifted handlers")
@@ -524,15 +528,29 @@ def main(argv=None):
     m.state["virtual_limit"] = args.seconds
     m.state["next_host_event"] = None
     nh = None
+    if args.native_count:
+        from . import native_host  # noqa: PLC0415
+        nh = native_host.NativeHost(m)
+        nh.count_only()
+    if args.native_calibrate:
+        from . import native_host  # noqa: PLC0415
+        nh = native_host.NativeHost(m)
+        print("   [native] calibrating %d native functions on the original" % nh.calibrate(args.native_calibrate))
     if args.native:
         from . import native_host  # noqa: PLC0415
         nh = native_host.NativeHost(m)
+        if args.native_costs:
+            nh.load_costs(args.native_costs)
         n = nh.install(only=set(filter(None, args.native_only.split(","))) or None,
                        skip=set(filter(None, args.native_skip.split(","))), handlers=not args.no_native_handlers)
         print(f"   [native] {n} functions of the original replaced by the native layer")
     code = m.run()
     m.flush_trace()
-    if nh:
+    if nh and args.native_calibrate:
+        out = nh.finish_calibration()
+        print("   [native] instructions per call: " + ", ".join(f"{k} {v:.1f}" for k, v in sorted(out.items()) if v))
+        print(f"   [native] written to {args.native_calibrate}")
+    if nh and nh.runs:
         top = sorted(nh.runs.items(), key=lambda kv: -kv[1])
         print(f"   [native] ran natively: {sum(nh.runs.values())} calls of {len(nh.runs)} functions; "
               + ", ".join(f"{k} x{v}" for k, v in top[:8]) + f"; memory faults {nh.faults}; run again on a thread: {sum(nh.escalated.values())}; host seconds {nh.seconds}")

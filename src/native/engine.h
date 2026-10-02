@@ -196,6 +196,11 @@ static inline uint32_t master_addr(const Vm *vm, int32_t index, uint32_t field)
     return vm->L->master_base + (uint32_t)index * MASTER_STRIDE + field;
 }
 
+/* How often each native function has been entered, nested calls included (native_host.c reads it to charge the guest's clock
+ * for the work the original would have done). */
+extern uint64_t native_entries[FN_COUNT];
+#define NATIVE_ENTER(id) (native_entries[id]++)
+
 /* Stop on a code path that is not implemented natively (an assert, and an abort under NDEBUG). */
 #define NATIVE_UNIMPLEMENTED(what) native_unimplemented(what, __FILE__, __LINE__)
 void native_unimplemented(const char *what, const char *file, int line);
