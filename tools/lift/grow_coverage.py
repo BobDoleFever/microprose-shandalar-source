@@ -106,10 +106,10 @@ def gates_by_handler(gen_c):
     return gates
 
 
-def plan_round(rng, spec, insns, covered, events, gates, n):
+def plan_round(rng, spec, insns, covered, events, gates, n, only=None):
     """n injection operations, aimed at the handlers with the most uncovered instructions."""
     left = {a: sum(1 for i in ins if i not in covered) for a, ins in insns.items()}
-    todo = [a for a, c in left.items() if c > 0]
+    todo = [a for a, c in left.items() if c > 0 and (only is None or a in only)]
     if not todo:
         return []
     weights = [left[a] ** 0.7 for a in todo]
@@ -207,6 +207,7 @@ def main():
     ap.add_argument("--hours", type=float, default=6.0)
     ap.add_argument("--workers", type=int, default=8, help="emulator runs at once")
     ap.add_argument("--chunk", type=int, default=400, help="injections per emulator run")
+    ap.add_argument("--only", help="a JSON list of handler addresses (\"0x004a65df\"): aim only at these")
     ap.add_argument("--round-ops", type=int, default=12000, help="injections per round")
     ap.add_argument("--stall", type=float, default=420, help="seconds without a new vector before an emulator run is cut off")
     ap.add_argument("--timeout", type=float, default=50 * 60, help="seconds before an emulator run is cut off")
@@ -229,6 +230,7 @@ def main():
             ev = mis.events_for(source, e["name"], e["addr"])
             events[int(e["addr"], 16)] = sorted(set(ev) | lifted_events.get(int(e["addr"], 16), set()) | set(mis.COMMON))
 
+    only = {int(a, 16) for a in json.load(open(args.only))} if args.only else None
     cov_file = os.path.join(args.out, "cov_all.txt")
     covered = {int(l, 16) for l in open(cov_file) if l.strip()} if os.path.exists(cov_file) else set()
 
@@ -238,12 +240,13 @@ def main():
     rnd = len(glob.glob(os.path.join(args.out, "round_*.done")))
     log(args.out, f"start: {len(insns)} handlers, {total} instructions, {percent():.2f}% covered, round {rnd}")
     quiet = 0
+    special_kept = {}
     pool = multiprocessing.Pool(args.workers)
     while time.time() < deadline and quiet < 2:
         rnd += 1
         rng = random.Random(time.time_ns())
         before = percent()
-        ops = plan_round(rng, spec, insns, covered, events, gates, args.round_ops)
+        ops = plan_round(rng, spec, insns, covered, events, gates, args.round_ops, only)
         if not ops:
             log(args.out, "everything is covered")
             break
@@ -257,7 +260,16 @@ def main():
             status_count[status] = status_count.get(status, 0) + 1
             name = os.path.basename(os.path.dirname(path)) + "_" + os.path.basename(path)
             if status == "PASS":
-                if hit - covered:
+                new_cov = bool(hit - covered)
+                special = False
+                if not new_cov:   # also keep a few that reach the call kinds only some handlers make (an import, a handler through the table)
+                    with open(path) as f:
+                        names = {c.get("name") for c in json.load(f).get("calls", [])} & {"Sleep", "card_handler"}
+                    key = (os.path.basename(path).split("_")[1], tuple(sorted(names)))
+                    special = bool(names) and special_kept.get(key, 0) < 3
+                    if special:
+                        special_kept[key] = special_kept.get(key, 0) + 1
+                if new_cov or special:
                     covered |= hit
                     shutil.move(path, os.path.join(args.out, "keep", name))
                     kept += 1

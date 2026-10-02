@@ -40,6 +40,8 @@ class Lifter:
         self.md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
         self.md.detail = True
         self.tables = {}   # address of an indirect jmp -> its jump table (guest addresses), found while exploring
+        self.imports = {}  # address of an import slot (a `call [slot]` target) -> name; set by the caller
+        self.dynamic_sites = []   # addresses of `call [index*4 + table]` instructions in the function just lifted
 
     # ---- operands ---------------------------------------------------------------------------------------------
     def reg(self, insn, op):
@@ -229,14 +231,24 @@ class Lifter:
             return [f"if ({CC[mn[1:]]}) goto L_{t:08x};"]
         if mn == "call":
             need(1)
-            if ops[0].type != X.X86_OP_IMM:
-                raise Unsupported("indirect call")
-            t = ops[0].imm
-            targets.add(t)
             nxt = i.address + i.size
-            return ["R_esp -= 4;", f"WR32(R_esp, 0x{nxt:x}u);",
-                    f"{{ uint32_t cl_ = 0; R_eax = lift_call(0x{t:x}u, R_esp + 4u, &cl_); R_esp += 4u + cl_; }}",
-                    "R_ecx = R_edx = 0xcdcdcdcdu;"]
+            push = ["R_esp -= 4;", f"WR32(R_esp, 0x{nxt:x}u);"]
+            after = ["R_ecx = R_edx = 0xcdcdcdcdu;"]
+            if ops[0].type == X.X86_OP_IMM:
+                t = ops[0].imm
+                targets.add(t)
+                return push + [f"{{ uint32_t cl_ = 0; R_eax = lift_call(0x{t:x}u, R_esp + 4u, &cl_); R_esp += 4u + cl_; }}"] + after
+            m = ops[0].mem if ops[0].type == X.X86_OP_MEM else None
+            if m is not None and not m.base and not m.index and (m.disp & 0xffffffff) in self.imports and m.segment in (0, X.X86_REG_INVALID):
+                t = m.disp & 0xffffffff   # a call through the import table: the slot's address stands for the function
+                targets.add(t)
+                return push + [f"{{ uint32_t cl_ = 0; R_eax = lift_call(0x{t:x}u, R_esp + 4u, &cl_); R_esp += 4u + cl_; }}"] + after
+            if m is not None and not m.base and m.index and m.scale == 4 and m.segment in (0, X.X86_REG_INVALID):
+                # `call [index*4 + table]`: a card's handler reached through the master table. The target is only known
+                # when it runs; the harness takes its argument count from the recorded call.
+                self.dynamic_sites.append(i.address)
+                return push + [f"{{ uint32_t cl_ = 0; R_eax = lift_call(RD32({self.addr(i, ops[0])}), R_esp + 4u, &cl_); R_esp += 4u + cl_; }}"] + after
+            raise Unsupported("indirect call")
         raise Unsupported(f"instruction {mn}")
 
     # ---- a whole function -------------------------------------------------------------------------------------
@@ -310,6 +322,7 @@ class Lifter:
 
     def lift_function(self, getbytes, addr, name, entries=frozenset()):
         insns, tails = self.explore(getbytes, addr, entries)
+        self.dynamic_sites = []
         order = sorted(insns)
         lo, hi = order[0], order[-1] + insns[order[-1]].size
         body, targets = [], set()

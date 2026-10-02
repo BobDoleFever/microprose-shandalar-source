@@ -136,13 +136,20 @@ class Recorder:
         # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
         # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
         self.handler_callees = {}
+        self.callee_alias = {}   # where a callee is hooked -> the address the vector reports it at
         spec = os.environ.get("RECORD_HANDLER_SPEC")
         if spec:
             for e in json.load(open(spec)):
                 if e.get("lifted"):
                     addr = int(e["addr"], 16)
                     self.funcs[addr] = (e["name"], 3)
-                    self.handler_callees[addr] = {int(c["addr"], 16): (c["name"], c["nargs"]) for c in e["calls"]}
+                    # An import is called through its slot in the import table: while a handler is injected the slot points
+                    # at a stand-in (run.py), so the call is seen at the stand-in and reported as a call to the slot.
+                    self.handler_callees[addr] = {int(c.get("stub") or c["addr"], 16): (c["name"], c["nargs"], c.get("cleanup", 0)) for c in e["calls"]}
+                    self.callee_alias.update({int(c["stub"], 16): int(c["addr"], 16) for c in e["calls"] if c.get("stub")})
+                    for site in e.get("dynamic_sites", []):   # a call through the master table inside the handler
+                        site = int(site, 16)
+                        self.handler_sites[site] = site + 7
         if spec and os.environ.get("RECORD_ONLY_HANDLERS"):   # nothing but the lifted handlers: much faster
             self.funcs = {a: v for a, v in self.funcs.items() if a in self.handler_callees}
         # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
@@ -335,9 +342,9 @@ class Recorder:
         if r is None or r["depth"] != 0 or self.foreign(r):
             return
         esp = uc.reg_read(UC_X86_REG_ESP)
-        name, nargs = r["callees"][address]
+        name, nargs, *rest = r["callees"][address]
         c = {"callee": address, "name": name, "args": [self.m.r32(esp + 4 + 4 * i) for i in range(nargs)],
-             "writes": {}, "ret": self.m.r32(esp), "esp": esp}
+             "writes": {}, "ret": self.m.r32(esp), "esp": esp, "pops": rest[0] if rest else 0}   # `ret imm16` callees pop their own arguments
         r["cur"], r["depth"] = c, 1
         r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee_return, begin=c["ret"], end=c["ret"]))
 
@@ -362,7 +369,7 @@ class Recorder:
 
     def on_callee_return(self, uc, address, size, user):
         r = self.rec
-        if r is None or r["depth"] != 1 or r["cur"] is None or self.foreign(r) or uc.reg_read(UC_X86_REG_ESP) != r["cur"]["esp"] + 4:
+        if r is None or r["depth"] != 1 or r["cur"] is None or self.foreign(r) or uc.reg_read(UC_X86_REG_ESP) != r["cur"]["esp"] + 4 + r["cur"].get("pops", 0):
             return
         c = r["cur"]
         c["return"] = S32(uc.reg_read(UC_X86_REG_EAX))
@@ -384,7 +391,7 @@ class Recorder:
         self.rec = None
         eax = uc.reg_read(UC_X86_REG_EAX)
         out = {a: self.uc.mem_read(a, 1)[0] for a in r["writes"]}
-        calls = [{"callee": "0x%08x" % c["callee"], "name": c["name"], "args": [S32(x) for x in c["args"]],
+        calls = [{"callee": "0x%08x" % self.callee_alias.get(c["callee"], c["callee"]), "name": c["name"], "args": [S32(x) for x in c["args"]],
                   "return": c["return"], "memory_writes": regions(c["final"])}
                  for c in r["calls"]]
         v = {"function": r["name"], "program": self.program, "address": "0x%08x" % r["addr"],

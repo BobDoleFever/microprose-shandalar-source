@@ -222,12 +222,21 @@ void lift_bad_jump(uint32_t from)
 uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
 {
     const CalleeRow *row = NULL;
+    CalleeRow dyn;
     Mock *m;
     int i;
 
     for (i = 0; i < LIFT_CALLEE_COUNT; i++)
         if (LIFT_CALLEES[i].addr == target)
             row = &LIFT_CALLEES[i];
+    if (!row && next_mock < nmocks && mocks[next_mock].addr == target) {
+        /* A target only known when it runs (a card's handler through the master table): the recorded call says how many
+         * arguments it took, and handlers are cdecl. */
+        dyn.addr = target;
+        dyn.nargs = mocks[next_mock].nargs;
+        dyn.cleanup = 0;
+        row = &dyn;
+    }
     if (!row) {
         snprintf(error_text, sizeof(error_text), "call to 0x%08x, which the generated table does not know", target);
         longjmp(bail, 1);

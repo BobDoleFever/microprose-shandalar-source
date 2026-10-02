@@ -74,10 +74,9 @@ point of lifting is that correctness does not wait for it.
 
 ## Limits
 
-* Ten handlers are refused: nine call `Sleep` through the import table (`call [0x6c3654]`) and one calls another card's
-  handler through the master table (`call [eax*4 + 0x4ff5a0]`). Both are small additions (an import is a callee with a
-  fixed argument count; the table call is the card scan's dynamic callee). The refusal is by design: the lifter stops
-  at anything it cannot translate exactly instead of guessing.
+* A call through the import table is understood for the imports in `KNOWN_IMPORTS` (`Sleep`) only; any other import
+  makes the handler refuse. A call through the master table takes its argument count from the recorded call, and
+  assumes cdecl, as card handlers are.
 * Callees are mocked, so a handler's behaviour is checked up to its calls. Each callee is a function in its own right
   and gets its own vectors.
 * The injection reaches the states a one-card board and a handful of events produce. It is a sample of paths, not a
@@ -89,11 +88,11 @@ All 383 distinct handlers of DUEL.EXE's master card table:
 
 | | |
 |---|---|
-| lifted to C | 373 (97.4%): 350 straight-line and loop code, 23 more once jump tables were supported |
-| refused | 10 (see Limits) |
+| lifted to C | **383 (all)**: 350 straight-line and loop code, 23 more with jump tables, 10 more with calls through the import table (`Sleep`, nine handlers) and the master card table (one handler) |
+| refused | none |
 | first corpus | 7,323 vectors, events from each handler's own body, callees returning 0, 1 or 2: all match, and run 53% of the lifted instructions |
 | grown corpus | about 86,000 more vectors from `grow_coverage.py` (random events, a different result for each function the handler calls, the handler's own card in play, slot fields and other cards' zones filled with arbitrary values, and the globals the handler is gated on set to the values it tests for): all match |
-| instructions executed | 68,132 of 79,016 (**86.2%**); 140 handlers fully, every handler at least partly |
+| instructions executed | 70,451 of 82,074 (**85.8%**); 141 handlers fully, every handler at least partly. Four of the nine `Sleep` handlers and the table-call handler have vectors that reach their call; the other five do not yet |
 | instruction forms | 188 distinct forms executed; 6 forms (10 instructions) occur only in code no vector reached |
 
 Every vector the harness can run matches the original: return value, every byte stored outside the stack frame, and
