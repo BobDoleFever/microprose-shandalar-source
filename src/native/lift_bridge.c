@@ -8,6 +8,7 @@
 
 #include <setjmp.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "lift_rt.h"
@@ -16,6 +17,40 @@
 #define RETURN_TRAP 0xfeedfac0u /* the return address pushed for a call from native code: nothing is ever run there */
 
 Mem *lift_mem;
+
+#ifdef LIFT_COVERAGE
+/* Which lifted instructions ran, appended to the file $FLAT_COV at exit (tools/lift/coverage.py reads it). */
+static uint32_t *cov;
+static size_t ncov, capcov;
+static int cov_registered;
+
+static void dump_cov(void)
+{
+    const char *path = getenv("FLAT_COV");
+    FILE *f = path ? fopen(path, "a") : NULL;
+    size_t i;
+    if (!f)
+        return;
+    for (i = 0; i < ncov; i++)
+        fprintf(f, "%x\n", cov[i]);
+    fclose(f);
+}
+
+void lift_cov(uint32_t a)
+{
+    size_t i;
+    if (!cov_registered) {
+        cov_registered = 1;
+        atexit(dump_cov);
+    }
+    for (i = 0; i < ncov; i++)
+        if (cov[i] == a)
+            return;
+    if (ncov == capcov)
+        cov = realloc(cov, sizeof(uint32_t) * (capcov = capcov ? capcov * 2 : 1024));
+    cov[ncov++] = a;
+}
+#endif
 static Vm *bridge_vm;
 static LiftCalls bridge_mode;
 static uint32_t stack_top = LIFT_STACK_TOP;
@@ -59,6 +94,8 @@ int lift_call_function(Vm *vm, uint32_t entry, int nargs, const uint32_t *args, 
 
     if (!f)
         return 0;
+    if (getenv("LIFT_TRACE"))   /* which handlers a run used, for tests that must be sure the lifted code ran */
+        fprintf(stderr, "lifted: %s\n", f->name);
     lift_mem = vm->mem;
     esp = stack_top - 4u * (uint32_t)(nargs + 1);
     mem_wr32(vm->mem, esp, RETURN_TRAP);
@@ -79,6 +116,8 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
 
     if (nargs > MAX_CALL_ARGS)
         NATIVE_UNIMPLEMENTED("a lifted call with more than 32 arguments");
+    if (getenv("LIFT_TRACE"))
+        fprintf(stderr, "  calls 0x%08x\n", target);
     for (i = 0; i < nargs; i++)
         args[i] = mem_rd32(bridge_vm->mem, argp + 4u * (uint32_t)i);
     *cleanup = row ? row->cleanup : 0;
@@ -86,8 +125,21 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
     if (bridge_mode == LIFT_CALLS_NATIVE) {
         int f;
         for (f = 0; f < FN_COUNT; f++)
-            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs)
-                return NATIVE_FUNCTIONS[f].run(bridge_vm, args);
+            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs) {
+                /* a native function can run lifted code again (a query scans the cards): that code's frames go below this
+                 * one's, not over the locals it is using */
+                uint32_t saved_top = stack_top;
+                stack_top = argp - 4u;
+                ret = NATIVE_FUNCTIONS[f].run(bridge_vm, args);
+                stack_top = saved_top;
+                if (getenv("LIFT_TRACE")) {
+                    fprintf(stderr, "  native %s(", NATIVE_FUNCTIONS[f].name);
+                    for (i = 0; i < nargs; i++)
+                        fprintf(stderr, "%s%d", i ? ", " : "", (int)args[i]);
+                    fprintf(stderr, ") -> %d\n", (int)ret);
+                }
+                return ret;
+            }
         if (lift_find(target)) {
             const LiftedFn *lf = lift_find(target);
             uint32_t saved = stack_top;
@@ -100,8 +152,35 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
     return vm_call_at(bridge_vm, CALLEE_FUNCTION, target, nargs, args);
 }
 
+/* LIFT_DUMP="address:length,..." prints that memory (?? where nothing defined it) each time the scan starts a handler. */
+static void dump_memory(Vm *vm)
+{
+    const char *spec = getenv("LIFT_DUMP");
+    char buf[256];
+    char *part;
+
+    if (!spec)
+        return;
+    snprintf(buf, sizeof(buf), "%s", spec);
+    fprintf(stderr, "dump");
+    for (part = strtok(buf, ","); part; part = strtok(NULL, ",")) {
+        uint32_t a = (uint32_t)strtoul(part, &part, 0), n, i;
+        n = (uint32_t)strtoul(part + 1, NULL, 0);
+        fprintf(stderr, " ");
+        for (i = 0; i < n; i++) {
+            if (mem_is_defined(vm->mem, a + i))
+                fprintf(stderr, "%02x", mem_rd8(vm->mem, a + i));
+            else
+                fprintf(stderr, "??");
+        }
+        part = NULL;
+    }
+    fprintf(stderr, "\n");
+}
+
 static int dispatch_handler(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret)
 {
+    dump_memory(vm);
     return lift_call_function(vm, addr, nargs, args, ret);
 }
 

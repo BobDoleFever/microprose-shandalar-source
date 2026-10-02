@@ -188,7 +188,8 @@ int main(void)
     uint32_t args[MAX_ARGS], entry = 0, ret = 0;
     int nargs = 0, have_entry = 0, ran = 0, bailed, i, have_stack_ptr = 0;
     uint32_t stack_ptr = 0;
-    int use_lifted_handlers = 0;
+    int use_lifted_handlers = 0, have_handler_esp = 0;
+    uint32_t handler_esp = 0;
     (void)have_stack_ptr;
     (void)stack_ptr;
     Vm vm;
@@ -221,6 +222,9 @@ int main(void)
 #endif
             if (!fn)
                 die("no native implementation of", name);
+        } else if (strcmp(cmd, "handler_esp") == 0) {
+            handler_esp = parse_u32(strtok(NULL, " \t\r\n"));
+            have_handler_esp = 1;
         } else if (strcmp(cmd, "lifted") == 0) {
             use_lifted_handlers = 1;
         } else if (strcmp(cmd, "esp") == 0) {
@@ -318,12 +322,16 @@ int main(void)
 #endif
 #ifdef NATIVE_LIFTED
     if (use_lifted_handlers) { /* the scan runs a card's handler as lifted code; what that calls runs native, or replays */
+        /* with the recorded stack position, a handler's frame sits where the original's did (3 arguments and a return address) */
+        uint32_t top = have_handler_esp ? handler_esp + 16u : LIFT_STACK_TOP;
         lift_attach(&vm, LIFT_CALLS_NATIVE);
-        lift_set_stack(LIFT_STACK_TOP);
-        H.frame_lo = LIFT_STACK_TOP - 0x200000u;
-        H.frame_hi = LIFT_STACK_TOP;
+        lift_set_stack(top);
+        H.frame_lo = top - 0x200000u;
+        H.frame_hi = top;
     }
 #else
+    (void)handler_esp;
+    (void)have_handler_esp;
     if (use_lifted_handlers)
         die("this vector needs the lifted handlers: build the harness with `make lifted`", NULL);
 #endif

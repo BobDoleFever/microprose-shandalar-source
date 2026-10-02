@@ -35,4 +35,10 @@ lifted: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATIVE)/
 	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen.o
 	$(CC) $(CFLAGS) $(WARN) -DNATIVE_LIFTED -I$(NATIVE) -o $(BUILD)/harness-lifted $(SRCS) $(NATIVE)/lift_bridge.c $(BUILD)/handlers_gen.o
 
-.PHONY: asan clean flat lifted
+# The same with instruction coverage of the lifted code (FLAT_COV=file, then tools/lift/coverage.py).
+lifted-cov: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATIVE)/lift_bridge.h $(NATIVE)/lift_rt.h
+	mkdir -p $(BUILD)
+	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -DLIFT_COVERAGE -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen_cov.o
+	$(CC) $(CFLAGS) $(WARN) -DNATIVE_LIFTED -DLIFT_COVERAGE -I$(NATIVE) -o $(BUILD)/harness-lifted-cov $(SRCS) $(NATIVE)/lift_bridge.c $(BUILD)/handlers_gen_cov.o
+
+.PHONY: asan clean flat lifted lifted-cov

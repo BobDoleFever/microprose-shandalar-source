@@ -133,6 +133,28 @@ python3 tools/difftest/run_vectors.py --harness tools/difftest/build/harness-lif
 The generated code is derived from the user's own executable, so a build that has not run `gen_handlers.py` does not link
 the bridge and the native layer behaves as before.
 
+### What was checked, and how
+
+1. **Each handler on its own** in the native harness (strict memory: a read of a byte nothing defined is a fault): the
+   kept vectors of the coverage driver and the first corpus, 2,200+ vectors, all match.
+2. **The native scan with the handlers running lifted inside it**, against the original, on boards of arbitrary cards
+   (`winemu/run.py` `scan EVENT SEED [K [CARDS]]`: up to a dozen cards with random handlers in play, fields filled with
+   arbitrary values, every function a handler can call made to return a value from the seed; recorded with
+   `RECORD_LIFTED_HANDLERS=1`, which makes the handlers transparent as nested native calls are). 2,065 scans, all match;
+   they reach 382 of the 383 handlers. A native function or lifted handler that the original's real version would
+   disagree with shows up here, and the fuzz found two faults of the test setup and one of the bridge (below).
+3. **The native functions on the same fuzzed boards** (`callfn ADDR SEED K ARGS...`): 2,362 calls of
+   `Magic_QueryCardAttribute`, `Magic_IsManaSource`, `Card_IsInPlay` and `Card_GetColorAndTypeFlags`, and 1,650 of the
+   three colour-remap lookups, all match the original. These were verified before only against calls the game made
+   by itself; fuzzed boards are a much wider sample.
+
+What the fuzz found: stubbing a function that is also the one under test (or one of the natives, or a handler another
+handler calls) made the *original* return early, so the original's recording was wrong, not the native layer; and the
+bridge placed the stack frames of lifted code that a native function re-enters (a query scans the cards, which runs
+handlers) over the locals of the handler that called it, so a loop counter in a handler was overwritten. The first two
+were found by `tools/lift/scan_diff.py`, which runs a failing scan with `LIFT_TRACE` and lines up, handler by handler,
+what the lifted run called and what memory held against what the recording says (`RECORD_DUMP`, `RECORD_NATIVE_TRACE`).
+
 ## Growing the coverage
 
 ```

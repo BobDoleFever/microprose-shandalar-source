@@ -136,6 +136,9 @@ class Recorder:
         # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
         # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
         self.handler_callees = {}
+        self.debug_addr = int(os.environ["RECORD_DEBUG_ADDR"], 0) if os.environ.get("RECORD_DEBUG_ADDR") else None
+        self.frame_sites = {}
+        self.dump_ranges = [tuple(int(x, 0) for x in part.split(":")) for part in os.environ.get("RECORD_DUMP", "").split(",") if part]
         self.callee_alias = {}   # where a callee is hooked -> the address the vector reports it at
         spec = os.environ.get("RECORD_HANDLER_SPEC")
         if spec:
@@ -163,13 +166,33 @@ class Recorder:
             union.update({k: v for k, v in self.callees.items() if k not in natives and k not in self.handler_callees})
             for a in natives:
                 self.handler_callees[a] = union
-            self.handler_sites = {}
+            # The scan's own handler calls are not callees now, but where the stack was when one was made is kept: a
+            # lifted handler's uninitialised locals hold what the original's did, at the same addresses.
+            self.frame_sites, self.handler_sites = self.handler_sites, {}
+        self.all_natives = {a: v for a, v in self.funcs.items() if a not in self.handler_callees or self.lifted_handlers}
         if spec and os.environ.get("RECORD_ONLY_HANDLERS"):   # nothing but the lifted handlers: much faster
             self.funcs = {a: v for a, v in self.funcs.items() if a in self.handler_callees}
-        # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
-        # memory-hook support, so the per-call hooks added at function entry see reads already inside a
-        # block that started translating before the call began.
-        self.uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, lambda *a: None, begin=0, end=0xFFFFFFFF)
+        if os.environ.get("RECORD_ONLY_NAMES"):   # e.g. Magic_ScanCards: record only these functions
+            keep = set(os.environ["RECORD_ONLY_NAMES"].split(","))
+            self.funcs = {a: v for a, v in self.funcs.items() if v[0] in keep}
+        # The hooks that watch a call are installed once, here, and look at self.rec to see whether a call is being
+        # recorded. Adding them at function entry (inside the entry hook) left the first stretch of the function
+        # unwatched for a function that was starting on a new thread: reads of its arguments and locals went missing.
+        # (A memory hook over the whole address space also makes Unicorn translate every block with memory-hook support.)
+        self.uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, self.on_mem, begin=0, end=0xFFFFFFFF)
+        watched = set(self.callees)
+        for cs in self.handler_callees.values():
+            watched.update(cs)
+        for ca in watched:
+            self.uc.hook_add(UC_HOOK_CODE, self.on_callee, begin=ca, end=ca)
+        if os.environ.get("RECORD_NATIVE_TRACE"):   # every native function entered inside a recorded call, with its result
+            for a in self.all_natives:
+                if a not in self.handler_callees or self.lifted_handlers:
+                    self.uc.hook_add(UC_HOOK_CODE, self.on_nested_native, begin=a, end=a)
+        for site in self.handler_sites:
+            self.uc.hook_add(UC_HOOK_CODE, self.on_handler_site, begin=site, end=site)
+        for site in self.frame_sites:
+            self.uc.hook_add(UC_HOOK_CODE, self.on_frame_site, begin=site, end=site)
         # Lifted code is checked on memory it reads below the stack pointer too (a local it reads before writing holds
         # whatever the stack held), so a recording made for the lifted handlers keeps those reads.
         self.frame_reads = bool(spec)
@@ -304,11 +327,8 @@ class Recorder:
             base = esp - self.FRAME_BASELINE
             r["pad"].update({base + i: b for i, b in enumerate(self.uc.mem_read(base, self.FRAME_BASELINE))})
         self.rec = r
-        r["handles"].append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, self.on_mem))
-        for ca in r["callees"]:
-            r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee, begin=ca, end=ca))
-        for site in self.handler_sites:
-            r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_handler_site, begin=site, end=site))
+        if self.debug_addr is not None and r["tid"] != 3:
+            print("   [recorder] start %s tid %s esp %#x eip %#x" % (name, r["tid"], esp, uc.reg_read(UC_X86_REG_EIP)), flush=True)
         r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_return, begin=r["ret"], end=r["ret"]))
 
     def on_mem(self, uc, access, address, size, value, user):
@@ -318,6 +338,11 @@ class Recorder:
             return
         if r is None or self.foreign(r):
             return
+        if self.debug_addr is not None and r["tid"] != 3 and self.m.cur.tid == r["tid"]:
+            print("   [recorder] %s of %#x in %s thread %s eip %#x" % ("write" if access == UC_MEM_WRITE else "read", address, r["name"], r["tid"], uc.reg_read(UC_X86_REG_EIP)), flush=True)
+        if self.debug_addr is not None and address <= self.debug_addr < address + size:
+            print("   [recorder] %s of %#x (%d bytes) in %s, thread %s, depth %d" % ("write" if access == UC_MEM_WRITE else "read",
+                  address, size, r["name"], self.m.cur.tid, r["depth"]), flush=True)
         in_frame = r["lo"] <= address < r["hi"]
         if in_frame and not self.frame_reads:
             return  # the caller's stack frame: native code keeps locals in C variables, not memory
@@ -356,11 +381,41 @@ class Recorder:
         if r is None or r["depth"] != 0 or self.foreign(r):
             return
         esp = uc.reg_read(UC_X86_REG_ESP)
+        if address not in r["callees"]:
+            return   # watched for another function's recording
         name, nargs, *rest = r["callees"][address]
         c = {"callee": address, "name": name, "args": [self.m.r32(esp + 4 + 4 * i) for i in range(nargs)],
              "writes": {}, "ret": self.m.r32(esp), "esp": esp, "pops": rest[0] if rest else 0}   # `ret imm16` callees pop their own arguments
         r["cur"], r["depth"] = c, 1
         r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee_return, begin=c["ret"], end=c["ret"]))
+
+    def on_nested_native(self, uc, address, size, user):
+        r = self.rec
+        if r is None or self.foreign(r) or address == r["addr"]:
+            return
+        name, nargs = self.all_natives[address]
+        esp = uc.reg_read(UC_X86_REG_ESP)
+        entry = [name] + [S32(self.m.r32(esp + 4 + 4 * i)) for i in range(nargs)] + ["->"]
+        r.setdefault("native_trace", []).append(entry)
+        ret, handle = self.m.r32(esp), []
+
+        def on_ret(uc2, a2, s2, u2):
+            if uc2.reg_read(UC_X86_REG_ESP) == esp + 4 and entry[-1] == "->":   # the first return only
+                entry.append(S32(uc2.reg_read(UC_X86_REG_EAX)))
+        handle.append(uc.hook_add(UC_HOOK_CODE, on_ret, begin=ret, end=ret))
+        r.setdefault("trace_handles", []).append(handle[0])
+
+    def on_frame_site(self, uc, address, size, user):
+        """About to run `call [eax*4 + table]` in the scan with lifted handlers: where the handler's frame will start."""
+        r = self.rec
+        if r is not None and r["depth"] == 0 and not self.foreign(r):
+            esp = uc.reg_read(UC_X86_REG_ESP)
+            r.setdefault("handler_esp", esp - 4)
+            # which handler ran, for what, and how many calls had been made before it: to find where a lifted run diverges
+            target = self.m.r32(self.m.L_master_base + 0x10 + 4 * uc.reg_read(UC_X86_REG_EAX))
+            r.setdefault("handler_log", []).append(["0x%08x" % target] + [S32(self.m.r32(esp + 4 * i)) for i in range(3)] + [len(r["calls"])])
+            if self.dump_ranges:   # memory as each handler starts, for lining up against a lifted run (tools/lift/scan_diff.py)
+                r.setdefault("handler_dumps", []).append([bytes(self.uc.mem_read(a, n)).hex() for a, n in self.dump_ranges])
 
     def on_handler_site(self, uc, address, size, user):
         """About to execute `call [eax*4 + table]` for a card's handler: its address, and the three arguments already on
@@ -403,6 +458,13 @@ class Recorder:
             except Exception:
                 pass
         self.rec = None
+        for h in r.get("trace_handles", []):
+            try:
+                uc.hook_del(h)
+            except Exception:
+                pass
+        if self.debug_addr is not None and r["tid"] != 3:
+            print("   [recorder] return %s tid %s reads %d" % (r["name"], r["tid"], len(r["reads"])), flush=True)
         eax = uc.reg_read(UC_X86_REG_EAX)
         out = {a: self.uc.mem_read(a, 1)[0] for a in r["writes"]}
         calls = [{"callee": "0x%08x" % self.callee_alias.get(c["callee"], c["callee"]), "name": c["name"], "args": [S32(x) for x in c["args"]],
@@ -417,6 +479,14 @@ class Recorder:
              "memory_out_expected": regions(out), "memory_out_exhaustive": True}
         if self.lifted_handlers and not r["name"].startswith("Handler_"):
             v["lifted_handlers"] = True
+            if "handler_esp" in r:
+                v["handler_stack_pointer"] = r["handler_esp"]
+            if "handler_log" in r:
+                v["handler_log"] = r["handler_log"]
+            if "handler_dumps" in r:
+                v["handler_dumps"] = r["handler_dumps"]
+            if "native_trace" in r:
+                v["native_trace"] = r["native_trace"]
         self.n += 1
         json.dump(v, open(os.path.join(self.out, "%s_%04d.json" % (r["name"], self.n)), "w"), indent=1)
 
@@ -424,10 +494,10 @@ class Recorder:
 def main():
     # Imported here, not at module level, so load_layout() and the vector-format helpers above can be
     # unit-tested (test_difftest.py) without unicorn or the game files installed.
-    global UC_HOOK_CODE, UC_HOOK_MEM_READ, UC_HOOK_MEM_WRITE, UC_MEM_WRITE, UC_X86_REG_EAX, UC_X86_REG_ESP
+    global UC_HOOK_CODE, UC_HOOK_MEM_READ, UC_HOOK_MEM_WRITE, UC_MEM_WRITE, UC_X86_REG_EAX, UC_X86_REG_ESP, UC_X86_REG_EIP
     sys.path.insert(0, os.path.join(ROOT, "tools", "emu_spike"))
     from unicorn import UC_HOOK_CODE, UC_HOOK_MEM_READ, UC_HOOK_MEM_WRITE, UC_MEM_WRITE
-    from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ESP
+    from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_EIP, UC_X86_REG_ESP
     from winemu import run as runmod
 
     outdir, cap = sys.argv[1], int(sys.argv[2])
