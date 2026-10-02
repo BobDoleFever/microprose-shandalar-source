@@ -16,7 +16,16 @@
 
 #include <stdint.h>
 
+/* Two ways to give the lifted code its memory:
+ *   the flat harness (tools/difftest/harness_flat.c): the guest address space is an array G, indexed by lift_xl(address);
+ *   the native layer (LIFT_BACKEND_MEM, src/native/lift_bridge.c): the sparse image of mem.h, so a lifted handler reads
+ *   and writes the same memory the hand-written native functions do, and a read of a byte nothing defined is a fault. */
+#ifdef LIFT_BACKEND_MEM
+#include "mem.h"
+extern Mem *lift_mem;
+#else
 extern uint8_t *G; /* the guest address space, indexed by lift_xl(virtual address) */
+#endif
 
 /* The flat harness records every write (a function that stores the value the memory already holds still wrote), and
  * a debug build (LIFT_UNDEF_CHECK) also reports reads of memory that neither the vector nor an earlier write defined. */
@@ -41,6 +50,14 @@ void lift_cov(uint32_t a);
 #define LIFT_COV(a) ((void)0)
 #endif
 
+#ifdef LIFT_BACKEND_MEM
+#define RD8(a) mem_rd8(lift_mem, (uint32_t)(a))
+#define RD16(a) mem_rd16(lift_mem, (uint32_t)(a))
+#define RD32(a) mem_rd32(lift_mem, (uint32_t)(a))
+#define WR8(a, v) mem_wr8(lift_mem, (uint32_t)(a), (uint8_t)(v))
+#define WR16(a, v) mem_wr16(lift_mem, (uint32_t)(a), (uint16_t)(v))
+#define WR32(a, v) mem_wr32(lift_mem, (uint32_t)(a), (uint32_t)(v))
+#else
 /* Where in G a guest address lives. The harness keeps the low 16 MB in place and folds the few high blocks a vector
  * touches (heap, a thread's stack) in behind them. */
 uint32_t lift_xl(uint32_t a);
@@ -51,6 +68,7 @@ uint32_t lift_xl(uint32_t a);
 #define WR8(a, v) (CHK_W(a, 1), *(uint8_t *)(G + lift_xl((uint32_t)(a))) = (uint8_t)(v))
 #define WR16(a, v) (CHK_W(a, 2), *(uint16_t *)(G + lift_xl((uint32_t)(a))) = (uint16_t)(v))
 #define WR32(a, v) (CHK_W(a, 4), *(uint32_t *)(G + lift_xl((uint32_t)(a))) = (uint32_t)(v))
+#endif
 
 /* Partial registers of a 32-bit register variable r. */
 #define LO8(r) ((uint8_t)(r))

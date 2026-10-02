@@ -113,6 +113,89 @@ def card_desc(m, args):
             f"rec: col={m.r32(rec + 4) >> 16 & 0xFF} p={sh(rec + 0xa)} t={sh(rec + 0xc)} ab={m.r32(rec + 0x14):#x} w18={m.r32(rec + 0x18):#x}]")
 
 
+def duel_native_entries():
+    """Where the native layer's functions start in DUEL.EXE (src/native/layout.c): the original's versions are left alone when a
+    native function, or the native scan, is what is being recorded."""
+    text = open(os.path.join(os.path.dirname(__file__), "..", "..", "..", "src", "native", "layout.c")).read()
+    block = text[text.index("const Layout LAYOUT_DUEL"):]
+    entry = block[block.index(".entry"):]
+    return {int(a, 16) for a in re.findall(r"\[FN_\w+\] = (0x[0-9a-fA-F]+)", entry)}
+
+
+def patch_calls(mm, pending, handler, k, rng, extra=(), skip=frozenset()):
+    """Make the functions a lifted handler calls (LIFT_SPEC lists them; `handler` None = the calls of every handler) return
+    K at once, so the handler runs on its own: a call that would open a prompt or wait on the UI cannot stall it, and what
+    each callee returned is exactly what the lifted code is later given. `r` picks a value per function from the rng. An
+    import (Sleep) is called through a slot in the import table: the slot is pointed at a stand-in in free space, as the
+    real function would block this thread. Returns what to put back."""
+    patched = []
+    spec = os.environ.get("LIFT_SPEC")
+    if not spec:
+        return patched
+    if "lift_spec" not in pending:
+        pending["lift_spec"] = {int(e["addr"], 16): e for e in json.load(open(spec)) if e.get("lifted")}
+    entries = list(pending["lift_spec"].values()) if handler is None else [pending["lift_spec"].get(handler, {})]
+    if handler is None:
+        skip = set(skip) | set(pending["lift_spec"])   # with every handler in play, a handler another one calls must still run
+    entries.append({"calls": [{"addr": f"{a:#x}", "cleanup": 0} for a in extra]})   # functions native code calls that are not lifted
+    seen = set()
+    for e in entries:
+        for c in e.get("calls", []):
+            a = int(c["addr"], 16)
+            if a in seen or a in skip:
+                continue
+            seen.add(a)
+            kv = rng.choice((0, 1, 2, 3, 5, 8, 16, 100, 0xFFFFFFFF)) if k == "r" else int(k, 0)
+            stub = b"\xb8" + struct.pack("<I", kv) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
+            if c.get("import_slot"):
+                where = int(c["stub"], 16)
+                mm.uc.mem_write(where, stub)
+                mm.uc.ctl_remove_cache(where, where + len(stub))
+                patched.append((a, bytes(mm.uc.mem_read(a, 4))))
+                mm.uc.mem_write(a, struct.pack("<I", where))
+                continue
+            patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
+            mm.uc.mem_write(a, stub)
+            mm.uc.ctl_remove_cache(a, a + len(stub))     # or a function the game already ran keeps its old code
+    return patched
+
+
+def fuzz_board(mm, rng, total=None):
+    """Put up to a dozen cards with random handlers in play (both players), their fields filled with arbitrary values, and
+    list them in the scan's order arrays (DUEL.EXE addresses). Returns [(player, slot)] in scan order. Everything it writes
+    is in the data section, which the caller saves and puts back."""
+    count = mm.r32(0x665ED0)
+
+    def arbitrary():
+        c = rng.random()
+        return (0, 1, 2, 3, 0xFFFFFFFF, rng.randrange(0, 20), rng.randrange(0, 0x10000), rng.randrange(0, 0x400000))[int(c * 8)]
+    placed = []
+    for p in (0, 1):
+        for sl in range(rng.randrange(1, 7) if total is None else (total + 1 - p) // 2):
+            card = rng.randrange(1, max(2, count))
+            for _ in range(20):
+                h = mm.r32(0x4FF590 + card * 0x34 + 0x10)
+                if 0x401000 <= h < 0x4F0000:
+                    break
+                card = rng.randrange(1, max(2, count))
+            b = 0x6826C0 + p * 0x5B20 + sl * 0x120
+            for off in range(0x10, 0x120, 4):
+                if rng.random() < 0.3:
+                    mm.w32(b + off, arbitrary())
+            mm.w32(b + 4, card)
+            mm.w32(b + 0xC, 2 | (rng.getrandbits(8) & 0xF4))
+            mm.w32(b + 0x34, len(placed))
+            placed.append((p, sl))
+    rng.shuffle(placed)
+    for i, (p, sl) in enumerate(placed):
+        mm.w32(0x690320 + 4 * i, p)
+        mm.w32(0x681EE0 + 4 * i, sl)
+        mm.w32(0x6826C0 + p * 0x5B20 + sl * 0x120 + 0x34, i)
+    mm.w32(0x690320 + 4 * len(placed), 0xFFFFFFFF)
+    mm.w32(0x666458, rng.randrange(0, 2))              # whose turn it is
+    return placed
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=os.path.join(ROOT, "sources", "installed", "Magic", "Program", "MAGIC.EXE"))
@@ -253,31 +336,44 @@ def main(argv=None):
                 mm.w32(0x690310, 1 - pl)                         # target player and slot
                 mm.w32(0x68ECFC, 0xFFFFFFFF)
                 mm.w32(0x66642C, 0)                              # the event result
-                patched = []
-                spec = os.environ.get("LIFT_SPEC")
-                if spec:
-                    if "lift_spec" not in pending:
-                        pending["lift_spec"] = {int(e["addr"], 16): e for e in json.load(open(spec)) if e.get("lifted")}
-                    for c in pending["lift_spec"].get(handler, {}).get("calls", []):
-                        a = int(c["addr"], 16)
-                        kv = rng.choice((0, 1, 2, 3, 5, 8, 16, 100, 0xFFFFFFFF)) if k == "r" else int(k, 0)
-                        stub = b"\xb8" + struct.pack("<I", kv) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
-                        if c.get("import_slot"):
-                            # An import (Sleep): the program calls through a slot in its import table. The slot is pointed at
-                            # a stand-in in free space for now (the real one would block this thread), and put back.
-                            where = int(c["stub"], 16)
-                            mm.uc.mem_write(where, stub)
-                            mm.uc.ctl_remove_cache(where, where + len(stub))
-                            patched.append((a, bytes(mm.uc.mem_read(a, 4))))
-                            mm.uc.mem_write(a, struct.pack("<I", where))
-                            continue
-                        patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
-                        mm.uc.mem_write(a, stub)
-                        mm.uc.ctl_remove_cache(a, a + len(stub))     # or a function the game already ran keeps its old code
+                patched = patch_calls(mm, pending, handler, k, rng)
                 th = mm.spawn(handler, [pl, sl, event], "inject", one_shot=True)
                 th.slice = 200_000   # a handler stuck in a loop (a callee that always returns the same value) is cut off soon
                 actions.append((now + float(os.environ.get("INJECT_RESTORE", "0.08")), ["_restore", snap, th, patched]))
                 actions.sort(key=lambda a: a[0])
+        elif op == "scan":                                     # scan EVENT SEED [K [CARDS]]: Magic_ScanCards on a board of arbitrary cards
+            # The native card scan (src/native/card_scan.c) runs every card in play's handler for an event. This puts up to
+            # a dozen cards with random handlers in play, their fields filled with arbitrary values, and calls the original
+            # scan (DUEL.EXE 0x0048c5a8) for EVENT on a new guest thread, with every function a handler can call made to
+            # return a value from the seed. What the scan recorded from this is what the native scan, with the handlers
+            # running lifted inside it, must reproduce. The game is put back afterwards.
+            event, seed = int(cmd[1], 0), int(cmd[2], 0)
+            k = cmd[3] if len(cmd) > 3 else "r"
+            rng = random.Random(seed)
+            snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
+            placed = fuzz_board(mm, rng, int(cmd[4]) if len(cmd) > 4 else None)
+            patched = patch_calls(mm, pending, None, k, rng, extra=(0x48AF80, 0x48C50B, 0x48B64F, 0x46E571, 0x46E793, 0x4D695B), skip=duel_native_entries())
+            th = mm.spawn(0x48C5A8, [event], "inject", one_shot=True)
+            th.slice = 200_000
+            actions.append((now + max(0.15, float(os.environ.get("INJECT_RESTORE", "0.08"))), ["_restore", snap, th, patched]))
+            actions.sort(key=lambda a: a[0])
+        elif op == "callfn":                                   # callfn ADDR SEED [K] ARGS...: a function, on an arbitrary board
+            # ARGS are numbers, or `p` / `s`: the player / slot of a random card of the board. The function is called on a
+            # new guest thread, as `scan` does, with the handlers' callees made to return values from the seed.
+            addr, seed = int(cmd[1], 0), int(cmd[2], 0)
+            k = cmd[3]
+            rng = random.Random(seed)
+            snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
+            placed = fuzz_board(mm, rng)
+            pick = placed[rng.randrange(len(placed))]
+            args = [pick[0] if t == "p" else pick[1] if t == "s" else int(t, 0) for t in cmd[4:]]
+            patched = patch_calls(mm, pending, None, k, rng, extra=(0x48AF80, 0x48C50B, 0x48B64F, 0x46E571, 0x46E793, 0x4D695B), skip=duel_native_entries())
+            if os.environ.get("INJECT_FLUSH_TB"):
+                mm.uc.ctl_flush_tb()
+            th = mm.spawn(addr, args, "inject", one_shot=True)
+            th.slice = 200_000
+            actions.append((now + max(0.15, float(os.environ.get("INJECT_RESTORE", "0.08"))), ["_restore", snap, th, patched]))
+            actions.sort(key=lambda a: a[0])
         elif op == "_restore":
             if cmd[2].state != "done":
                 cmd[2].state = "done"

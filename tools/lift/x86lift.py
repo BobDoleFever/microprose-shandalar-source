@@ -3,7 +3,7 @@
 x86lift.py - turn one function of a 32-bit x86 PE into C that does exactly what its machine code does.
 
 This is static recompilation of a single function, not decompilation: every instruction becomes a statement over the
-same registers and the same memory (tools/lift/lift_rt.h), so there are no types to recover, no names to trust and no
+same registers and the same memory (src/native/lift_rt.h), so there are no types to recover, no names to trust and no
 call targets to guess. The result is not meant to be read; it is meant to be checked (tools/difftest) and then kept or
 replaced by hand-written code where understanding matters.
 

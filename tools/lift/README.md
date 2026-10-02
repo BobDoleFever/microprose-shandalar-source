@@ -17,8 +17,8 @@ Nothing generated here is committed. The lifted C is derived from the game's mac
 | File | Job |
 |---|---|
 | `x86lift.py` | the lifter. Recursive-descent over the function's own instructions (the function index's sizes are sometimes short), one C statement block per instruction, eager flags, calls out through `lift_call`. Refuses (`Unsupported`) rather than guess: indirect jumps and calls, segment overrides, anything outside the integer subset |
-| `lift_rt.h` | what the lifted C compiles against: registers are locals, memory is `G` addressed through `lift_xl`, flag macros, `lift_idiv32` |
-| `lift_tables.h` | the shape of the generated tables (`LIFTED`, `LIFT_CALLEES`) |
+| `src/native/lift_rt.h` | what the lifted C compiles against: registers are locals, memory is `G` addressed through `lift_xl`, flag macros, `lift_idiv32` |
+| `src/native/lift_tables.h` | the shape of the generated tables (`LIFTED`, `LIFT_CALLEES`) |
 | `gen_handlers.py` | reads the handler pointers from the master card table, lifts each distinct handler, writes `handlers_gen.c` and `handler_spec.json` (per handler: size, instruction count, whether it lifted and why not, the exact functions it calls with argument counts and stack cleanup) |
 | `make_inject_script.py` | builds the emulator script that runs each handler on demand with the events its own body tests |
 | `coverage.py` | how many of the lifted instructions the vectors executed |
@@ -116,6 +116,46 @@ which dropped a callee's writes into the caller's locals. Several of these showe
 failed, which is what the differing-vector folder is for. The unit tests (`test_lift.py`) found one lifter bug the
 vectors never reached: `push [esp+4]` read its operand after ESP had moved.
 
+## As part of the native layer
+
+The lifted code is also built against the sparse memory image of `src/native/mem.h` (`LIFT_BACKEND_MEM`), where it
+shares state with the hand-written native functions. `src/native/lift_bridge.c` routes a lifted function's calls: to a
+native function if there is one for that address, to another lifted function, or to the Vm's hook (the difftest harness
+replays recorded calls there; hosted in the emulator it would call the original). `native_handler_dispatch` in
+`engine.c` is how the native card scan runs a card's handler as lifted code instead of calling out for it.
+
+```
+python3 tools/lift/gen_handlers.py --program duel --exe sources/installed/Magic/Program/DUEL.EXE --out sources/generated/lift
+make -C tools/difftest lifted                    # build/harness-lifted
+python3 tools/difftest/run_vectors.py --harness tools/difftest/build/harness-lifted OUTDIR/Handler_*.json
+```
+
+The generated code is derived from the user's own executable, so a build that has not run `gen_handlers.py` does not link
+the bridge and the native layer behaves as before.
+
+### What was checked, and how
+
+1. **Each handler on its own** in the native harness (strict memory: a read of a byte nothing defined is a fault): the
+   kept vectors of the coverage driver and the first corpus, 2,200+ vectors, all match.
+2. **The native scan with the handlers running lifted inside it**, against the original, on boards of arbitrary cards
+   (`winemu/run.py` `scan EVENT SEED [K [CARDS]]`: up to a dozen cards with random handlers in play, fields filled with
+   arbitrary values, every function a handler can call made to return a value from the seed; recorded with
+   `RECORD_LIFTED_HANDLERS=1`, which makes the handlers transparent as nested native calls are). 4,744 scans, all match;
+   they reach 382 of the 383 handlers and run about a quarter of the lifted instructions (the handlers' own logic is what the
+   per-handler vectors above cover). A native function or lifted handler that the original's real version would
+   disagree with shows up here, and the fuzz found two faults of the test setup and one of the bridge (below).
+3. **The native functions on the same fuzzed boards** (`callfn ADDR SEED K ARGS...`): 2,362 calls of
+   `Magic_QueryCardAttribute`, `Magic_IsManaSource`, `Card_IsInPlay` and `Card_GetColorAndTypeFlags`, and 1,650 of the
+   three colour-remap lookups, all match the original. These were verified before only against calls the game made
+   by itself; fuzzed boards are a much wider sample.
+
+What the fuzz found: stubbing a function that is also the one under test (or one of the natives, or a handler another
+handler calls) made the *original* return early, so the original's recording was wrong, not the native layer; and the
+bridge placed the stack frames of lifted code that a native function re-enters (a query scans the cards, which runs
+handlers) over the locals of the handler that called it, so a loop counter in a handler was overwritten. The first two
+were found by `tools/lift/scan_diff.py`, which runs a failing scan with `LIFT_TRACE` and lines up, handler by handler,
+what the lifted run called and what memory held against what the recording says (`RECORD_DUMP`, `RECORD_NATIVE_TRACE`).
+
 ## Growing the coverage
 
 ```
@@ -133,7 +173,7 @@ is lost.
 ## Coverage of a corpus
 
 ```
-cc -O1 -DLIFT_TRACK_WRITES -DLIFT_COVERAGE -w -Itools/lift -Isources/generated/lift -o tools/difftest/build/harness-flat-cov \
+cc -O1 -DLIFT_TRACK_WRITES -DLIFT_COVERAGE -w -Isrc/native -Isources/generated/lift -o tools/difftest/build/harness-flat-cov \
     tools/difftest/harness_flat.c sources/generated/lift/handlers_gen.c
 FLAT_COV=cov.txt python3 tools/difftest/run_vectors.py --harness tools/difftest/build/harness-flat-cov OUTDIR/Handler_*.json
 python3 tools/lift/coverage.py sources/generated/lift/handlers_gen.c cov.txt

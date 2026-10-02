@@ -69,6 +69,7 @@ typedef enum {
     CALLEE_MARK_CARD,            /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
     CALLEE_AFTER_MARK,           /* Pic_Subsystem_004488a0() */
     CALLEE_FIND_FREE_SLOT,       /* Pic_Subsystem_00451291(player, card): allocate a slot */
+    CALLEE_FUNCTION,             /* any other function, at the address passed in (called from lifted code, lift_bridge.c) */
     CALLEE_COUNT
 } Callee;
 
@@ -179,6 +180,9 @@ typedef struct Vm {
 
 /* Call a function that is not native (through the hook). */
 uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args);
+/* A build that links lift_bridge.c sets this: native code that runs a card's handler (the scan) then runs the lifted
+ * handler when there is one, instead of calling out through the hook. Returns 1 if it ran the call. */
+extern int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret);
 /* The same for a callee whose address is not fixed (a card handler): the address is passed in. */
 uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args);
 

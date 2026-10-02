@@ -131,6 +131,8 @@ def load_vector(path):
         "args": [num(a, f"args[{i}]") for i, a in enumerate(v["args"])],
         "expected_return": num(v["expected_return"], "expected_return"),
         "return_bits": v.get("return_bits"),
+        "lifted_handlers": bool(v.get("lifted_handlers", False)),
+        "handler_stack_pointer": num(v["handler_stack_pointer"], "handler_stack_pointer") if "handler_stack_pointer" in v else None,
         "stack_pointer": num(v["stack_pointer"], "stack_pointer") if "stack_pointer" in v else None,
         "memory_in": [region_bytes(r, f"memory_in[{i}]") for i, r in enumerate(v.get("memory_in", []))],
         "memory_out": [region_bytes(r, f"memory_out_expected[{i}]")
@@ -162,6 +164,10 @@ def protocol(v):
     lines = [f"program {v['program']}", f"function {v['function']}"]
     if v["address"] is not None:
         lines.append(f"entry 0x{v['address']:08x}")
+    if v.get("lifted_handlers"):
+        lines.append("lifted")   # card handlers run lifted (needs the harness built with `make lifted`)
+        if v.get("handler_stack_pointer") is not None:
+            lines.append(f"handler_esp 0x{v['handler_stack_pointer']:08x}")
     if v.get("stack_pointer") is not None:
         lines.append(f"esp 0x{v['stack_pointer']:08x}")
     lines += [f"arg 0x{a:08x}" for a in v["args"]]
