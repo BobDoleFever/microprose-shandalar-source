@@ -24,6 +24,11 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 from x86lift import Lifter, Unsupported  # noqa: E402
 
+# Imports a handler may call, as (argument count, bytes the callee pops). Anything else is refused.
+KNOWN_IMPORTS = {"Sleep": (1, 4)}
+STUB_BASE = 0x006C5800   # where winemu/run.py `inject` puts a stand-in for each import while it injects: free space after the
+STUB_STRIDE = 0x20       # last section's code, in a page the executable maps
+
 PROGRAMS = {  # master card table base, the code range its handler pointers fall in, function index
     "duel": dict(master=0x004FF590, code=(0x401000, 0x4F0000)),
     "magic": dict(master=0x0051AEB8, code=(0x401000, 0x510000)),
@@ -62,6 +67,11 @@ def main():
         for r in list(csv.reader(f))[1:]:
             index[int(r[0], 16)] = dict(name=r[1], nargs=int(r[3]), size=int(r[4]))
     lifter = Lifter()
+    for dll in getattr(pe, "DIRECTORY_ENTRY_IMPORT", []):
+        for imp in dll.imports:
+            if imp.name:
+                lifter.imports[imp.address] = imp.name.decode()
+    import_rows = {}
     entries = frozenset(index)
     sect = {(s.VirtualAddress + base, s.VirtualAddress + base + max(s.Misc_VirtualSize, s.SizeOfRawData)) for s in pe.sections}
 
@@ -84,10 +94,23 @@ def main():
         try:
             src, targets, ninsn, (lo, hi) = lifter.lift_function(getbytes, addr, entry["name"], entries)
             entry.update(extent=[f"0x{lo:x}", f"0x{hi:x}"], instructions=ninsn, index_size=info["size"])
-            calls, missing = [], [t for t in targets if t not in index]
+            for site in lifter.dynamic_sites:   # only a card's handler through the master table is understood
+                if getbytes(site, 7) != b"\xff\x14\x85" + (cfg["master"] + 0x10).to_bytes(4, "little"):
+                    raise Unsupported(f"indirect call at 0x{site:x} that is not through the master card table")
+            calls, missing = [], [t for t in targets if t not in index and t not in lifter.imports]
             if missing:
                 raise Unsupported("calls an address with no function-index row: " + ", ".join(f"0x{t:x}" for t in missing))
             for t in sorted(targets):
+                if t in lifter.imports:
+                    name = lifter.imports[t]
+                    if name not in KNOWN_IMPORTS:
+                        raise Unsupported(f"calls the import {name}, which the lifter has no signature for")
+                    nargs, cleanup = KNOWN_IMPORTS[name]
+                    row = callee_rows.setdefault(t, dict(addr=t, nargs=nargs, cleanup=cleanup, name=name))
+                    stub = import_rows.setdefault(t, STUB_BASE + STUB_STRIDE * len(import_rows))
+                    calls.append(dict(addr=f"0x{t:08x}", name=name, nargs=nargs, cleanup=cleanup, import_slot=True,
+                                      stub=f"0x{stub:08x}"))
+                    continue
                 row = callee_rows.get(t)
                 if row is None:
                     row = callee_rows[t] = dict(addr=t, nargs=index[t]["nargs"],
@@ -95,7 +118,7 @@ def main():
                                                 name=index[t]["name"])
                 calls.append(dict(addr=f"0x{t:08x}", name=row["name"], nargs=row["nargs"], cleanup=row["cleanup"]))
             sources.append(src)
-            entry.update(lifted=True, calls=calls)
+            entry.update(lifted=True, calls=calls, dynamic_sites=[f"0x{x:08x}" for x in lifter.dynamic_sites])
         except Unsupported as e:
             entry.update(lifted=False, reason=str(e))
         spec.append(entry)

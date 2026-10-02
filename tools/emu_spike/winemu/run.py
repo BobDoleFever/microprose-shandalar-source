@@ -262,6 +262,15 @@ def main(argv=None):
                         a = int(c["addr"], 16)
                         kv = rng.choice((0, 1, 2, 3, 5, 8, 16, 100, 0xFFFFFFFF)) if k == "r" else int(k, 0)
                         stub = b"\xb8" + struct.pack("<I", kv) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
+                        if c.get("import_slot"):
+                            # An import (Sleep): the program calls through a slot in its import table. The slot is pointed at
+                            # a stand-in in free space for now (the real one would block this thread), and put back.
+                            where = int(c["stub"], 16)
+                            mm.uc.mem_write(where, stub)
+                            mm.uc.ctl_remove_cache(where, where + len(stub))
+                            patched.append((a, bytes(mm.uc.mem_read(a, 4))))
+                            mm.uc.mem_write(a, struct.pack("<I", where))
+                            continue
                         patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
                         mm.uc.mem_write(a, stub)
                         mm.uc.ctl_remove_cache(a, a + len(stub))     # or a function the game already ran keeps its old code
