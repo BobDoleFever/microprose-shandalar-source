@@ -147,7 +147,8 @@ def run_chunks(args, chunks, rnd, deadline):
             n = len(glob.glob(os.path.join(d, "Handler_*.json")))
             if n > seen:
                 r[4], r[5] = n, now
-            stalled = now - r[5] > args.stall and now - started > args.stall + 600
+            # (before the first vector the emulator is still playing the game up to the point where injections start)
+            stalled = n > 0 and now - r[5] > args.stall
             if stalled or now - started > args.timeout or now > deadline + 600:
                 p.kill()
                 running.remove(r)
