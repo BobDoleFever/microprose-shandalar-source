@@ -104,6 +104,7 @@ class Thread:
         self.teb = 0
         self.exit_code = 0
         self.one_shot = False
+        self.slice = None                           # instructions per scheduling slice, if not the machine's
         self.gen = None                               # (gen, esp, ret, argc, addr) of a generator handler parked in a Block
         self.stack_base = 0
         self.retry = None                             # (stub address, esp) to resume a blocked call
@@ -165,6 +166,8 @@ class Machine:
         self.next_tid = 1
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
+        self.exit_hooks = []                        # called as a code hook when a thread function returns
+        self.kill_hooks = []                        # called when a thread is ended from outside (a card handler run on demand)
         self.vt = 0.0                               # virtual time in seconds: the only clock the guest sees
         self.ips = 100_000_000                      # instructions per virtual second (a fast late-90s PC)
         self.modules = {}                           # lower-case name -> dict(base, pe, path)
@@ -401,6 +404,8 @@ class Machine:
             self._finish_cont()
             return
         if address == EXIT_TRAP:
+            for hook in self.exit_hooks:   # Unicorn skips the remaining code hooks once this one stops the emulation
+                hook(uc, address, size, user)
             self.cur.state = "done"
             self.cur.exit_code = uc.reg_read(UC_X86_REG_EAX)
             uc.emu_stop()
@@ -579,15 +584,21 @@ class Machine:
                     t.retry = None
                 pc = uc.reg_read(UC_X86_REG_EIP)
                 try:
-                    uc.emu_start(pc, 0xFFFFFFFF, count=self.slice)
+                    uc.emu_start(pc, 0xFFFFFFFF, count=t.slice or self.slice)
                 except UcError as e:
                     eip = uc.reg_read(UC_X86_REG_EIP)
+                    if t.name == "inject":   # a card handler run on demand (winemu/run.py) faulted: that call ends, the run goes on
+                        self.log(f"injected call faulted: {e} at eip 0x{eip:08x}")
+                        t.state = "done"
+                        for hook in self.kill_hooks:
+                            hook()
+                        continue
                     self.log(f"emulation error: {e} at eip 0x{eip:08x} in thread {t.tid} ({t.name})")
                     self.dump_crash(eip)
                     self.exit_code = -2
                     break
                 # charge virtual time: a full slice if it ran to the limit, little if it blocked, plus calls
-                self.vt += ((self.slice if t.state == "ready" else 3000) + 150 * (self.calls - calls0)) / self.ips
+                self.vt += (((t.slice or self.slice) if t.state == "ready" else 3000) + 150 * (self.calls - calls0)) / self.ips
                 if t.state == "ready":
                     t.ctx = uc.context_save()
                 elif t.state == "blocked":

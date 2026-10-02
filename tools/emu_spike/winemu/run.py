@@ -13,6 +13,7 @@ import argparse
 import json
 import os
 import re
+import struct
 import sys
 import time
 
@@ -184,6 +185,62 @@ def main(argv=None):
             user32.inject_mouse(mm, "move", int(cmd[1]), int(cmd[2]))
         elif op == "key":
             user32.inject_key(mm, int(cmd[1]), int(cmd[2]) if len(cmd) > 2 else None)
+        elif op == "slots":                                    # slots: list the occupied slots (debugging aid)
+            for p in (0, 1):
+                for sl in range(0x50):
+                    b = 0x6826C0 + p * 0x5B20 + sl * 0x120
+                    if mm.r32(b + 4) != 0xFFFFFFFF:
+                        print(f"   [slots {now:.1f}s] p{p} s{sl} card={mm.r32(b + 4):#x} +8={mm.r32(b + 8):#x} +c={mm.r32(b + 0xC):#x}")
+        elif op == "inject":                                   # inject HANDLER EVENT NTH [K]: run a card handler on demand
+            # Calls handler(player, slot, event) for the NTH card in play (both players, in slot order), on a new guest
+            # thread, with the event globals set the way the game's own dispatcher sets them. DUEL.EXE addresses. The
+            # handler's effects are undone afterwards: this is for recording what a handler does (tools/lift), not for play.
+            handler, event, nth = int(cmd[1], 0), int(cmd[2], 0), int(cmd[3])
+            live = [(p, sl) for p in (0, 1) for sl in range(0x50)
+                    if mm.r32(0x6826C0 + p * 0x5B20 + sl * 0x120 + 4) != 0xFFFFFFFF
+                    and mm.r32(0x6826C0 + p * 0x5B20 + sl * 0x120 + 0xC) & 2]
+            if not live:
+                print(f"   [script] inject: no card in play at {now:.1f}s")
+            else:
+                pl, sl = live[nth % len(live)]
+                card = mm.r32(0x6826C0 + pl * 0x5B20 + sl * 0x120 + 4)
+                mm.w32(0x68ECB0, pl)                             # event source player and slot
+                mm.w32(0x690C48, sl)
+                mm.w32(0x681ECC, card)                           # the card, and its colour byte
+                mm.w32(0x68EE64, mm.r32(0x4FF590 + card * 0x34 + 4) >> 16 & 0xFF)
+                mm.w32(0x690310, 1 - pl)                         # target player and slot
+                mm.w32(0x68ECFC, 0xFFFFFFFF)
+                mm.w32(0x66642C, 0)                              # the event result
+                # The game stays as it was: the data section is saved now and put back (the thread ended) a little later,
+                # so that one handler's effects do not change what the next one sees. The functions the handler calls
+                # (LIFT_SPEC lists them) are patched to return K at once (default 0, or the 5th word of the op), so the
+                # handler runs on its own: a call that would open a prompt or wait on the UI cannot stall it, and what
+                # each callee returned is exactly what the lifted code is later given.
+                snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
+                patched = []
+                k = int(cmd[4], 0) if len(cmd) > 4 else 0
+                spec = os.environ.get("LIFT_SPEC")
+                if spec:
+                    if "lift_spec" not in pending:
+                        pending["lift_spec"] = {int(e["addr"], 16): e for e in json.load(open(spec)) if e.get("lifted")}
+                    for c in pending["lift_spec"].get(handler, {}).get("calls", []):
+                        a = int(c["addr"], 16)
+                        stub = b"\xb8" + struct.pack("<I", k) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
+                        patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
+                        mm.uc.mem_write(a, stub)
+                th = mm.spawn(handler, [pl, sl, event], "inject", one_shot=True)
+                th.slice = 200_000   # a handler stuck in a loop (a callee that always returns the same value) is cut off soon
+                actions.append((now + float(os.environ.get("INJECT_RESTORE", "0.08")), ["_restore", snap, th, patched]))
+                actions.sort(key=lambda a: a[0])
+        elif op == "_restore":
+            if cmd[2].state != "done":
+                cmd[2].state = "done"
+                for hook in mm.kill_hooks:
+                    hook()
+                print(f"   [script] inject: handler still running at {now:.2f}s ({cmd[2].state}), stopped")
+            mm.uc.mem_write(0x4F2000, cmd[1])
+            for a, orig in cmd[3]:
+                mm.uc.mem_write(a, orig)
         elif op == "dlg":                                      # dlg ID: press a button in the open dialog
             if user32.press_dialog_button(mm, int(cmd[1])):
                 print(f"   [script] dlg {cmd[1]} pressed at {now:.1f}s")

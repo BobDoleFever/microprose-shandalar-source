@@ -132,10 +132,25 @@ class Recorder:
         self.funcs = {int(entries[fn], 16): (name, nargs) for fn, name, nargs in NATIVE_FUNCTIONS if fn in entries}
         self.callees = {int(callees[c], 16): (label, nargs) for c, label, nargs in CALLEES_INFO if c in callees}
         self.handler_sites = self.find_handler_sites(int(entries["FN_SCAN_CARDS"], 16), m.L_master_base + 0x10)
+        # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
+        # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
+        self.handler_callees = {}
+        spec = os.environ.get("RECORD_HANDLER_SPEC")
+        if spec:
+            for e in json.load(open(spec)):
+                if e.get("lifted"):
+                    addr = int(e["addr"], 16)
+                    self.funcs[addr] = (e["name"], 3)
+                    self.handler_callees[addr] = {int(c["addr"], 16): (c["name"], c["nargs"]) for c in e["calls"]}
         # A no-op memory hook spanning the whole address space makes Unicorn translate every block with
         # memory-hook support, so the per-call hooks added at function entry see reads already inside a
         # block that started translating before the call began.
         self.uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, lambda *a: None, begin=0, end=0xFFFFFFFF)
+        # Lifted code is checked on memory it reads below the stack pointer too (a local it reads before writing holds
+        # whatever the stack held), so a recording made for the lifted handlers keeps those reads.
+        self.frame_reads = bool(spec)
+        self.m.kill_hooks.append(lambda: self.rec is not None and self.abandon())  # a thread ended without returning
+        self.m.exit_hooks.append(self.on_return)   # a function started on its own thread returns to the thread-exit trap
         for addr in self.funcs:
             self.uc.hook_add(UC_HOOK_CODE, self.on_entry, begin=addr, end=addr)
 
@@ -183,6 +198,8 @@ class Recorder:
             return (name, m.r32(m.L_event_context_depth))
         if name.startswith("Ai_"):
             return self.ai_key(name, args)
+        if name.startswith("Handler_"):   # one bucket per event: a handler does different things for different events
+            return (name, args[2])
         if name == "Magic_ScanCards":
             try:   # the event, how many cards are in the play order (0, 1, 2, 3 or more), and the nesting
                 n = 0
@@ -222,9 +239,22 @@ class Recorder:
             return (name, "unreadable")
         return (name,)
 
+    def abandon(self):
+        """Drop the recording in progress (its function never returned: a handler that blocked on a prompt, say)."""
+        r, self.rec = self.rec, None
+        print("   [recorder] abandoned %s (called at %.2fs, never returned)" % (r["name"], r["t"]), flush=True)
+        for h in r["handles"]:
+            try:
+                self.uc.hook_del(h)
+            except Exception:
+                pass
+
     def on_entry(self, uc, address, size, user):
         if self.rec is not None:
-            return
+            if self.m.vt - self.rec["t"] > 0.5:   # nothing legitimate takes half a virtual second
+                self.abandon()
+            else:
+                return
         m = self.m
         esp = uc.reg_read(UC_X86_REG_ESP)
         name, nargs = self.funcs[address]
@@ -234,8 +264,9 @@ class Recorder:
             return
         self.count[key] = self.count.get(key, 0) + 1
         r = {"addr": address, "name": name, "args": args, "esp": esp, "ret": m.r32(esp),
+             "callees": self.handler_callees.get(address, self.callees),
              "reads": {}, "writes": {}, "touched": set(), "calls": [], "depth": 0, "cur": None,
-             "t": m.vt, "handles": [], "lo": esp - 0x200000, "hi": esp + 4 + 4 * nargs}
+             "t": m.vt, "tid": m.cur.tid if m.cur else None, "handles": [], "lo": esp - 0x200000, "hi": esp + 4 + 4 * nargs}
         if self.mode_flags_addr is not None:
             # Superset padding: the query function's caller may re-check the mode-flags dword after a
             # recompute; the native code reads all 4 bytes where a given original call might read fewer.
@@ -245,7 +276,7 @@ class Recorder:
             r["pad"] = {}
         self.rec = r
         r["handles"].append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, self.on_mem))
-        for ca in self.callees:
+        for ca in r["callees"]:
             r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_callee, begin=ca, end=ca))
         for site in self.handler_sites:
             r["handles"].append(uc.hook_add(UC_HOOK_CODE, self.on_handler_site, begin=site, end=site))
@@ -253,26 +284,44 @@ class Recorder:
 
     def on_mem(self, uc, access, address, size, value, user):
         r = self.rec
-        if r is None or r["lo"] <= address < r["hi"]:
+        if r is not None and self.m.vt - r["t"] > 0.5:
+            self.abandon()   # a recording that never returns must not keep these hooks (and the slowdown) for the rest of the run
+            return
+        if r is None or self.foreign(r):
+            return
+        in_frame = r["lo"] <= address < r["hi"]
+        if in_frame and not self.frame_reads:
             return  # the caller's stack frame: native code keeps locals in C variables, not memory
         if access == UC_MEM_WRITE:
             data = (value & ((1 << (8 * size)) - 1)).to_bytes(size, "little")
             for i in range(size):
                 a = address + i
-                (r["cur"]["writes"] if r["depth"] else r["writes"])[a] = data[i]
+                if self.frame_reads and r["depth"] == 0 and a not in r["touched"] and a not in r["reads"]:
+                    # The hook runs before the store, so this is the byte's old value. Unicorn reports no read for the
+                    # load half of a read-modify-write instruction (`add [mem], reg`), so for lifted code the old
+                    # value of whatever is stored to is kept as input in case the instruction used it.
+                    r["reads"][a] = self.uc.mem_read(a, 1)[0]
+                if not in_frame:
+                    (r["cur"]["writes"] if r["depth"] else r["writes"])[a] = data[i]
                 r["touched"].add(a)
         elif r["depth"] == 0:
+            if in_frame and address >= r["esp"]:
+                return  # the return address and the arguments: the harness provides these
             for i in range(size):
                 a = address + i
                 if a not in r["touched"] and a not in r["reads"]:
                     r["reads"][a] = self.uc.mem_read(a, 1)[0]
 
+    def foreign(self, r):
+        """True while another guest thread runs: its calls and memory accesses are not part of this recording."""
+        return self.m.cur is None or self.m.cur.tid != r["tid"]
+
     def on_callee(self, uc, address, size, user):
         r = self.rec
-        if r is None or r["depth"] != 0:
+        if r is None or r["depth"] != 0 or self.foreign(r):
             return
         esp = uc.reg_read(UC_X86_REG_ESP)
-        name, nargs = self.callees[address]
+        name, nargs = r["callees"][address]
         c = {"callee": address, "name": name, "args": [self.m.r32(esp + 4 + 4 * i) for i in range(nargs)],
              "writes": {}, "ret": self.m.r32(esp), "esp": esp}
         r["cur"], r["depth"] = c, 1
@@ -282,7 +331,7 @@ class Recorder:
         """About to execute `call [eax*4 + table]` for a card's handler: its address, and the three arguments already on
         the stack (player, slot, event), before the call pushes the return address."""
         r = self.rec
-        if r is None or r["depth"] != 0:
+        if r is None or r["depth"] != 0 or self.foreign(r):
             return
         esp = uc.reg_read(UC_X86_REG_ESP)
         pointer = self.m.L_master_base + 0x10 + 4 * uc.reg_read(UC_X86_REG_EAX)
@@ -299,7 +348,7 @@ class Recorder:
 
     def on_callee_return(self, uc, address, size, user):
         r = self.rec
-        if r is None or r["depth"] != 1 or r["cur"] is None or uc.reg_read(UC_X86_REG_ESP) != r["cur"]["esp"] + 4:
+        if r is None or r["depth"] != 1 or r["cur"] is None or self.foreign(r) or uc.reg_read(UC_X86_REG_ESP) != r["cur"]["esp"] + 4:
             return
         c = r["cur"]
         c["return"] = S32(uc.reg_read(UC_X86_REG_EAX))
@@ -311,7 +360,7 @@ class Recorder:
 
     def on_return(self, uc, address, size, user):
         r = self.rec
-        if r is None or r["depth"] != 0 or uc.reg_read(UC_X86_REG_ESP) != r["esp"] + 4:
+        if r is None or r["depth"] != 0 or self.foreign(r) or uc.reg_read(UC_X86_REG_ESP) != r["esp"] + 4:
             return
         for h in r["handles"]:
             try:
@@ -327,7 +376,7 @@ class Recorder:
         v = {"function": r["name"], "program": self.program, "address": "0x%08x" % r["addr"],
              "description": "recorded from %s at virtual %.3fs" % (self.program, r["t"]),
              "source": "tools/difftest/record_vectors.py (emulator recording)",
-             "args": [S32(x) for x in r["args"]],
+             "args": [S32(x) for x in r["args"]], "stack_pointer": r["esp"],
              "expected_return": 0 if r["name"] in VOID_FUNCTIONS else S32(eax),
              "memory_in": regions({**r["pad"], **r["reads"]}), "calls": calls,
              "memory_out_expected": regions(out), "memory_out_exhaustive": True}

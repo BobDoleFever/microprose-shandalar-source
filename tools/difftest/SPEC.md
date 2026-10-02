@@ -59,6 +59,7 @@ A function that reaches a function that is not native yet lists the call, for ex
 | `calls` | no | every call the function makes to a function that is not native, in order (see "Calls") |
 | `memory_out_exhaustive` | no | when true, every byte the native code changed must lie in a `memory_out_expected` region. Recorded vectors should set it: then an extra write is a failure too |
 | `return_bits` | no | overrides the return width: 8, 16 or 32 |
+| `stack_pointer` | no | ESP at entry (it points at the return address) as the recording saw it. The harness for lifted code (`tools/lift`) puts its stack there so pointers into the stack compare equal; the native harness ignores it |
 | `description`, `source` | no | for people: what the vector shows and where its numbers come from |
 
 ### Undefined memory

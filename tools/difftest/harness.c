@@ -187,6 +187,8 @@ int main(void)
             fn = name ? native_find(name) : NULL;
             if (!fn)
                 die("no native implementation of", name);
+        } else if (strcmp(cmd, "esp") == 0) {
+            (void)strtok(NULL, " \t\r\n"); /* the recorded stack pointer: only the lifted-code harness needs it */
         } else if (strcmp(cmd, "entry") == 0) {
             entry = parse_u32(strtok(NULL, " \t\r\n"));
             have_entry = 1;

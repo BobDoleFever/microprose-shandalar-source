@@ -21,4 +21,10 @@ build:
 clean:
 	rm -rf build
 
-.PHONY: asan clean
+# The harness for lifted code (tools/lift): GEN holds the handlers_gen.c that tools/lift/gen_handlers.py wrote.
+GEN ?= ../../sources/generated/lift
+flat: harness_flat.c $(GEN)/handlers_gen.c ../lift/lift_rt.h ../lift/lift_tables.h | build
+	$(CC) $(CFLAGS) -Wall -Wno-unused-label -Wno-unused-variable -Wno-unused-but-set-variable -DLIFT_TRACK_WRITES -I../lift -I$(GEN) \
+	    -o build/harness-flat harness_flat.c $(GEN)/handlers_gen.c
+
+.PHONY: asan clean flat
