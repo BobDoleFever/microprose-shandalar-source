@@ -140,8 +140,9 @@ the bridge and the native layer behaves as before.
 2. **The native scan with the handlers running lifted inside it**, against the original, on boards of arbitrary cards
    (`winemu/run.py` `scan EVENT SEED [K [CARDS]]`: up to a dozen cards with random handlers in play, fields filled with
    arbitrary values, every function a handler can call made to return a value from the seed; recorded with
-   `RECORD_LIFTED_HANDLERS=1`, which makes the handlers transparent as nested native calls are). 2,065 scans, all match;
-   they reach 382 of the 383 handlers. A native function or lifted handler that the original's real version would
+   `RECORD_LIFTED_HANDLERS=1`, which makes the handlers transparent as nested native calls are). 4,744 scans, all match;
+   they reach 382 of the 383 handlers and run about a quarter of the lifted instructions (the handlers' own logic is what the
+   per-handler vectors above cover). A native function or lifted handler that the original's real version would
    disagree with shows up here, and the fuzz found two faults of the test setup and one of the bridge (below).
 3. **The native functions on the same fuzzed boards** (`callfn ADDR SEED K ARGS...`): 2,362 calls of
    `Magic_QueryCardAttribute`, `Magic_IsManaSource`, `Card_IsInPlay` and `Card_GetColorAndTypeFlags`, and 1,650 of the
