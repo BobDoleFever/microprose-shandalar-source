@@ -96,6 +96,35 @@ def start_chunk(args, out, tag, ops):
     return subprocess.Popen(cmd, cwd=os.path.join(ROOT, "tools", "emu_spike"), env=env, stdout=logf, stderr=subprocess.STDOUT), d
 
 
+def run_chunks(args, chunks, rnd, deadline):
+    """Run the chunks, `workers` emulators at a time. An emulator that stops producing vectors (the game wedged on some
+    arbitrary state) is killed after a while, and only its own chunk is lost."""
+    pending = list(enumerate(chunks))
+    running = []   # [process, directory, tag, started, vectors so far, when that last grew]
+    while pending or running:
+        while pending and len(running) < args.workers and time.time() < deadline:
+            i, c = pending.pop(0)
+            p, d = start_chunk(args, args.out, f"r{rnd}_{i}", c)
+            running.append([p, d, f"r{rnd}_{i}", time.time(), 0, time.time()])
+        if not running:
+            break
+        now = time.time()
+        for r in list(running):
+            p, d, tag, started, seen, changed = r
+            if p.poll() is not None:
+                running.remove(r)
+                continue
+            n = len(glob.glob(os.path.join(d, "Handler_*.json")))
+            if n > seen:
+                r[4], r[5] = n, now
+            stalled = now - r[5] > args.stall and now - started > args.stall + 600
+            if stalled or now - started > args.timeout or now > deadline + 600:
+                p.kill()
+                running.remove(r)
+                log(args.out, f"{tag} cut off after {int(now - started)} s with {n} vectors" + (" (stalled)" if stalled else ""))
+        time.sleep(10)
+
+
 def check_one(job):
     """(path, status, messages, covered addresses) for one vector."""
     path, harness = job
@@ -121,7 +150,9 @@ def main():
     ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--hours", type=float, default=6.0)
     ap.add_argument("--workers", type=int, default=8, help="emulator runs at once")
-    ap.add_argument("--chunk", type=int, default=1500, help="injections per emulator run")
+    ap.add_argument("--chunk", type=int, default=400, help="injections per emulator run")
+    ap.add_argument("--round-ops", type=int, default=12000, help="injections per round")
+    ap.add_argument("--stall", type=float, default=420, help="seconds without a new vector before an emulator run is cut off")
     ap.add_argument("--timeout", type=float, default=50 * 60, help="seconds before an emulator run is cut off")
     ap.add_argument("--min-gain", type=float, default=0.05, help="stop after two rounds that each add less than this percent")
     args = ap.parse_args()
@@ -154,21 +185,12 @@ def main():
         rnd += 1
         rng = random.Random(time.time_ns())
         before = percent()
-        ops = plan_round(rng, spec, insns, covered, events, args.workers * args.chunk)
+        ops = plan_round(rng, spec, insns, covered, events, args.round_ops)
         if not ops:
             log(args.out, "everything is covered")
             break
-        chunks = [ops[i::args.workers] for i in range(args.workers)]
-        procs = [start_chunk(args, args.out, f"r{rnd}_{i}", c) for i, c in enumerate(chunks)]
-        started = time.time()
-        while any(p.poll() is None for p, _ in procs):
-            if time.time() - started > args.timeout or time.time() > deadline + 600:
-                for p, _ in procs:
-                    if p.poll() is None:
-                        p.kill()
-                log(args.out, "emulator runs cut off")
-                break
-            time.sleep(15)
+        chunks = [ops[i:i + args.chunk] for i in range(0, len(ops), args.chunk)]
+        run_chunks(args, chunks, rnd, deadline)
         paths = sorted(glob.glob(os.path.join(args.out, "work", f"r{rnd}_*", "Handler_*.json")))
         results = pool.map(check_one, [(p, args.harness) for p in paths], chunksize=16)
         kept = failed = errors = 0
