@@ -155,7 +155,7 @@ alphabet.
 **The card handlers do not need to be rewritten by hand.** Each of the 383 distinct handlers is a small function whose
 whole behaviour is in its machine code, so `tools/lift` translates the machine code into C mechanically (a static
 recompiler for the integer subset of x86) and the result is checked against vectors recorded from the original, the same
-way as every native function above. 373 of 383 lift; all 373 match every vector recorded for them (about 94,000); the
+way as every native function above. all 383 lift; every vector recorded for them (about 94,000) matches; the
 vectors run 86% of the lifted instructions, which is the number to raise. See `tools/lift/README.md`. What it changes for the plan:
 the hand-written native work is the engine around the handlers, and the handlers become a generated, verified bulk
 layer, not hundreds of rewrites.

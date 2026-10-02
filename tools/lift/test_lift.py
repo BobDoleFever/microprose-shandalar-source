@@ -34,10 +34,15 @@ FUNCTIONS = {
     "Test_Div": (0x4000, bytes.fromhex("8b442404" "99" "f77c2408" "c3")),
     # a call: push [esp+4]; call 0x5100; add esp,4; add eax,1; ret
     "Test_Call": (0x5000, bytes.fromhex("ff742404" "e8f7000000" "83c404" "83c001" "c3")),
+    # a call through an import slot: push [esp+4]; call [0x7000]; add eax,2; ret   (the callee pops its argument)
+    "Test_Import": (0x7100, bytes.fromhex("ff742404" "ff1500700000" "83c002" "c3")),
+    # a call through the master table: mov eax,[esp+4]; push eax; call [eax*4+0x8000]; add esp,4; ret
+    "Test_Dynamic": (0x7200, bytes.fromhex("8b442404" "50" "ff148500800000" "83c404" "c3")),
     # an indirect jump with no bound check in front of it: must be refused
     "Test_BadJump": (0x6000, bytes.fromhex("8b442404" "ff248500700000" "c3")),
 }
 CALLEE = 0x5100
+IMPORT_SLOT = 0x7000
 
 
 def getbytes(va, n):
@@ -54,6 +59,7 @@ def harness(tmp_path_factory):
         pytest.skip("no C compiler")
     out = tmp_path_factory.mktemp("lift")
     lifter, sources, lifted = Lifter(), [], []
+    lifter.imports[IMPORT_SLOT] = "Sleep"
     for name, (addr, code) in FUNCTIONS.items():
         if name == "Test_BadJump":
             continue
@@ -64,7 +70,7 @@ def harness(tmp_path_factory):
     gen.append("const LiftedFn LIFTED[] = {\n" + "".join(f'    {{"{n}", 0x{a:x}u, lifted_{a:08x}}},\n' for n, a in lifted)
                + "    {0, 0, 0}\n};")
     gen.append(f"const int LIFTED_COUNT = {len(lifted)};")
-    gen.append(f"const CalleeRow LIFT_CALLEES[] = {{ {{0x{CALLEE:x}u, 1, 0u}}, {{0, 0, 0}} }};\nconst int LIFT_CALLEE_COUNT = 1;")
+    gen.append(f"const CalleeRow LIFT_CALLEES[] = {{ {{0x{CALLEE:x}u, 1, 0u}}, {{0x{IMPORT_SLOT:x}u, 1, 4u}}, {{0, 0, 0}} }};\nconst int LIFT_CALLEE_COUNT = 2;")
     (out / "gen.c").write_text("\n".join(gen))
     exe = str(out / "harness-flat")
     cmd = [cc, "-O1", "-DLIFT_TRACK_WRITES", "-w", f"-I{HERE}", "-o", exe, os.path.join(DIFFTEST, "harness_flat.c"),
@@ -113,6 +119,21 @@ def test_call_uses_the_recorded_return_and_arguments(tmp_path, harness):
     wrong = dict(call, args=[8])  # the lifted code passes 9
     assert run(tmp_path, harness, vector("Test_Call", [9], 42, [wrong]))[0] == "FAIL"
     assert run(tmp_path, harness, vector("Test_Call", [9], 42))[0] in ("FAIL", "ERROR")  # no call recorded
+
+
+def test_import_call_is_a_call_to_the_slot_and_pops_its_argument(tmp_path, harness):
+    call = {"callee": IMPORT_SLOT, "name": "Sleep", "args": [9], "return": 40}
+    status, messages, _ = run(tmp_path, harness, vector("Test_Import", [9], 42, [call]))
+    assert status == "PASS", messages
+
+
+def test_call_through_the_master_table_takes_its_argument_count_from_the_recording(tmp_path, harness):
+    call = {"callee": 0x1234, "name": "card_handler", "args": [3], "return": 7}
+    # the target is whatever the table holds: the vector's memory says 0x1234, at 0x8000 + 3*4
+    v = vector("Test_Dynamic", [3], 7, [call])
+    v["memory_in"] = [{"addr": 0x8000 + 12, "dwords": [0x1234]}]
+    status, messages, _ = run(tmp_path, harness, v)
+    assert status == "PASS", messages
 
 
 def test_unbounded_indirect_jump_is_refused():
