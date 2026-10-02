@@ -59,7 +59,23 @@ def instructions_by_handler(gen_c):
 
 
 GATE = re.compile(r"/\* (?:cmp|test) (dword|word|byte) ptr \[0x([0-9a-f]+)\], (-?(?:0x[0-9a-f]+|\d+)|\w+) \*/")
+SLOT_GATE = re.compile(r"/\* (?:cmp|test) (dword|word|byte) ptr \[e\w\w \+ e\w\w \+ 0x([0-9a-f]+)\], (-?(?:0x[0-9a-f]+|\d+)|\w+) \*/")
+EVENT_GATE = re.compile(r"/\* cmp dword ptr \[ebp \+ 0x10\], (-?(?:0x[0-9a-f]+|\d+)) \*/")
+SLOT_TABLE, SLOT_SIZE = 0x6826C0, 0x120
 SIZES = {"dword": 4, "word": 2, "byte": 1}
+
+
+def event_codes_by_handler(gen_c):
+    """The event codes each handler compares its third argument with (exact, from the lifted code)."""
+    out, cur = {}, None
+    for line in open(gen_c):
+        m = re.match(r"uint32_t lifted_([0-9a-f]{8})\(", line)
+        if m:
+            cur = out.setdefault(int(m.group(1), 16), set())
+        m = EVENT_GATE.search(line)
+        if m and cur is not None:
+            cur.add(int(m.group(1), 0) & 0xFFFFFFFF)
+    return out
 
 
 def gates_by_handler(gen_c):
@@ -70,6 +86,15 @@ def gates_by_handler(gen_c):
         m = re.match(r"uint32_t lifted_([0-9a-f]{8})\(", line)
         if m:
             cur = gates.setdefault(int(m.group(1), 16), {})
+        m = SLOT_GATE.search(line)
+        if m and cur is not None and SLOT_TABLE <= int(m.group(2), 16) < SLOT_TABLE + SLOT_SIZE:
+            size, key, operand = SIZES[m.group(1)], -(int(m.group(2), 16) - SLOT_TABLE) - 1, m.group(3)   # key < 0: a slot field
+            values = cur.setdefault(key, (size, set()))[1]
+            try:
+                values.add(int(operand, 0) & 0xFFFFFFFF)
+            except ValueError:
+                values.update((0, 1, 2))
+            continue
         m = GATE.search(line)
         if m and cur is not None and 0x4F2000 <= int(m.group(2), 16) < 0x6C3000:
             size, addr, operand = SIZES[m.group(1)], int(m.group(2), 16), m.group(3)
@@ -99,7 +124,7 @@ def plan_round(rng, spec, insns, covered, events, gates, n):
             for addr in rng.sample(sorted(g), min(len(g), rng.randrange(1, 4))):
                 size, values = g[addr]
                 v = rng.choice(sorted(values)) if rng.random() < 0.8 else rng.randrange(0, 4)
-                pokes.append(f"{addr:x}:{size}:{v:x}")
+                pokes.append((f"s{-addr - 1:x}" if addr < 0 else f"{addr:x}") + f":{size}:{v:x}")
         ops.append((h, event, rng.randrange(0, 4), card, rng.randrange(1, 1 << 31), ",".join(pokes) or "-"))
     return ops
 
@@ -197,11 +222,12 @@ def main():
     spec = json.load(open(os.path.join(args.gen, "handler_spec.json")))
     source = open(os.path.join(ROOT, "duel", "duel_all.c"), errors="replace").read()
     gates = gates_by_handler(os.path.join(args.gen, "handlers_gen.c"))
+    lifted_events = event_codes_by_handler(os.path.join(args.gen, "handlers_gen.c"))
     events = {}
     for e in spec:
         if e["lifted"]:
             ev = mis.events_for(source, e["name"], e["addr"])
-            events[int(e["addr"], 16)] = sorted(set(ev) | set(mis.COMMON))
+            events[int(e["addr"], 16)] = sorted(set(ev) | lifted_events.get(int(e["addr"], 16), set()) | set(mis.COMMON))
 
     cov_file = os.path.join(args.out, "cov_all.txt")
     covered = {int(l, 16) for l in open(cov_file) if l.strip()} if os.path.exists(cov_file) else set()

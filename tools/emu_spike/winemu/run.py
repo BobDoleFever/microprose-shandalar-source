@@ -199,7 +199,7 @@ def main(argv=None):
             #   K     what every function the handler calls returns (default 0; `r` picks one per function from the seed)
             #   CARD  `own` puts a card whose handler this is into that slot first; a number puts that card id there;
             #         `-` (default) leaves the card alone
-            #   POKES `address:size:value,...` (hex) set those globals last (a handler is often gated on a global such as the step code)
+            #   POKES `address:size:value,...` (hex; `sOFFSET:size:value` is a field of the slot itself) set those last (a handler is often gated on a global such as the step code)
             #   SEED  (nonzero) fills the slot's fields with arbitrary values and moves other cards into play, from a
             #         generator seeded with it, so the same op always makes the same situation
             handler, event, nth = int(cmd[1], 0), int(cmd[2], 0), int(cmd[3])
@@ -241,7 +241,9 @@ def main(argv=None):
                             if (p2, s2) != (pl, sl) and mm.r32(b2 + 4) != 0xFFFFFFFF and rng.random() < 0.5:
                                 mm.w32(b2 + 0xC, mm.r32(b2 + 0xC) ^ 2)
                 for poke in (cmd[7].split(",") if len(cmd) > 7 and cmd[7] != "-" else []):
-                    addr, size, value = (int(x, 16) for x in poke.split(":"))   # a global the handler tests, set to a value it tests for
+                    addr, size, value = (int(x.lstrip("s"), 16) for x in poke.split(":"))   # a global the handler tests, set to a value it tests for
+                    if poke.startswith("s"):                       # `sOFFSET:...`: a field of the slot the handler is called for
+                        addr += base
                     mm.uc.mem_write(addr, (value & ((1 << (8 * size)) - 1)).to_bytes(size, "little"))
                 card = mm.r32(base + 4)
                 mm.w32(0x68ECB0, pl)                             # event source player and slot
