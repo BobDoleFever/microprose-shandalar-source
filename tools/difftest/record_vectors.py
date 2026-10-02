@@ -120,6 +120,7 @@ def regions(byte_map):
 
 
 class Recorder:
+    FRAME_BASELINE = 0x800   # bytes below ESP saved with a lifted handler's vector
     """Hooks every native function's entry in a running Machine and, for a sampled call, records its
     inputs/outputs as a vector. One Recorder per Machine; at most one call is being recorded at a
     time (a nested entry, through a callee, is not itself recorded)."""
@@ -276,6 +277,11 @@ class Recorder:
             r["pad"] = {base + i: m.r32(base) >> (8 * i) & 0xFF for i in range(4)}
         else:
             r["pad"] = {}
+        if self.frame_reads:
+            # The stack below ESP as the call found it: a local the function reads before writing holds whatever was
+            # there. Unicorn does not report every such read, so the frame is kept whole rather than found read by read.
+            base = esp - self.FRAME_BASELINE
+            r["pad"].update({base + i: b for i, b in enumerate(self.uc.mem_read(base, self.FRAME_BASELINE))})
         self.rec = r
         r["handles"].append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, self.on_mem))
         for ca in r["callees"]:

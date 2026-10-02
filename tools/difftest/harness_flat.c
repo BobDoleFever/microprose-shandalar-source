@@ -352,7 +352,8 @@ int main(void)
     const LiftedFn *fn = NULL;
     uint32_t args[MAX_ARGS], entry = 0;
     int nargs = 0, have_entry = 0, ran = 0, i, k;
-    static Result r0, r1;
+    static Result r0, r1, r2, r3;
+    Result *o;
 
 #ifdef LIFT_COVERAGE
     atexit(dump_cov);
@@ -442,32 +443,37 @@ int main(void)
 
     if (have_stack_ptr)
         map_range(stack_ptr - 0x10000u, 0x12000u); /* room for the function's frame below the stack pointer */
+    /* Four fills: a comparison with a small constant gives the same answer under 0x00 and 0xff (both below it) and a
+     * different one under 0x7f, so two fills can agree by luck. */
     run_once(fn, args, nargs, 0x00, &r0);
     run_once(fn, args, nargs, 0xa5, &r1);
-    if (getenv("FLAT_FILL")) { /* debugging: judge the vector on one fill only, whether or not the two agree */
-        r1 = r0;
+    run_once(fn, args, nargs, 0xff, &r2);
+    run_once(fn, args, nargs, 0x7f, &r3);
+    o = !same(&r0, &r1) ? &r1 : !same(&r0, &r2) ? &r2 : &r3;
+    if (getenv("FLAT_FILL")) { /* debugging: judge the vector on one fill only, whether or not they agree */
+        o = &r0;
     }
 
     printf("retbits 32\n");
     if (r0.bailed) {
         printf("error %s\n", error_text);
     }
-    if (!same(&r0, &r1)) {
-        printf("error the result depends on memory the vector does not define (two fills gave different outputs)\n");
-        if (r0.nregions != r1.nregions)
-            printf("error   %d written regions with one fill, %d with the other\n", r0.nregions, r1.nregions);
-        for (i = 0; i < r0.nregions && i < r1.nregions; i++)
-            if (r0.raddr[i] != r1.raddr[i] || r0.rlen[i] != r1.rlen[i] || memcmp(r0.rbytes[i], r1.rbytes[i], r0.rlen[i]))
+    if (!same(&r0, o)) {
+        printf("error the result depends on memory the vector does not define (the fills gave different outputs)\n");
+        if (r0.nregions != o->nregions)
+            printf("error   %d written regions with one fill, %d with the other\n", r0.nregions, o->nregions);
+        for (i = 0; i < r0.nregions && i < o->nregions; i++)
+            if (r0.raddr[i] != o->raddr[i] || r0.rlen[i] != o->rlen[i] || memcmp(r0.rbytes[i], o->rbytes[i], r0.rlen[i]))
                 printf("error   written region at 0x%08x (%u bytes) differs\n", r0.raddr[i], (unsigned)r0.rlen[i]);
-        for (i = 0; i < r0.calls.made && i < r1.calls.made; i++)
-            if (r0.calls.addr[i] != r1.calls.addr[i] || memcmp(r0.calls.args[i], r1.calls.args[i], sizeof(r0.calls.args[i])))
+        for (i = 0; i < r0.calls.made && i < o->calls.made; i++)
+            if (r0.calls.addr[i] != o->calls.addr[i] || memcmp(r0.calls.args[i], o->calls.args[i], sizeof(r0.calls.args[i])))
                 printf("error   call %d (0x%08x) is made with different arguments\n", i, r0.calls.addr[i]);
-        if (r0.bailed != r1.bailed)
+        if (r0.bailed != o->bailed)
             printf("error   one fill bails out (%s)\n", error_text);
-        if (r0.ret != r1.ret)
-            printf("error   return value 0x%08x with one fill, 0x%08x with the other\n", r0.ret, r1.ret);
-        if (r0.calls.made != r1.calls.made)
-            printf("error   %d calls with one fill, %d with the other\n", r0.calls.made, r1.calls.made);
+        if (r0.ret != o->ret)
+            printf("error   return value 0x%08x with one fill, 0x%08x with the other\n", r0.ret, o->ret);
+        if (r0.calls.made != o->calls.made)
+            printf("error   %d calls with one fill, %d with the other\n", r0.calls.made, o->calls.made);
         return 3;
     }
     if (!r0.bailed)
