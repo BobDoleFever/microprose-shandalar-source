@@ -258,6 +258,7 @@ def main(argv=None):
                         stub = b"\xb8" + struct.pack("<I", kv) + (b"\xc2" + struct.pack("<H", c["cleanup"]) if c["cleanup"] else b"\xc3")
                         patched.append((a, bytes(mm.uc.mem_read(a, len(stub)))))
                         mm.uc.mem_write(a, stub)
+                        mm.uc.ctl_remove_cache(a, a + len(stub))     # or a function the game already ran keeps its old code
                 th = mm.spawn(handler, [pl, sl, event], "inject", one_shot=True)
                 th.slice = 200_000   # a handler stuck in a loop (a callee that always returns the same value) is cut off soon
                 actions.append((now + float(os.environ.get("INJECT_RESTORE", "0.08")), ["_restore", snap, th, patched]))
@@ -271,6 +272,7 @@ def main(argv=None):
             mm.uc.mem_write(0x4F2000, cmd[1])
             for a, orig in cmd[3]:
                 mm.uc.mem_write(a, orig)
+                mm.uc.ctl_remove_cache(a, a + len(orig))
         elif op == "dlg":                                      # dlg ID: press a button in the open dialog
             if user32.press_dialog_button(mm, int(cmd[1])):
                 print(f"   [script] dlg {cmd[1]} pressed at {now:.1f}s")
@@ -396,7 +398,7 @@ def main(argv=None):
             tick["n"] += 1
             Image.fromarray(compose(mm)).save(os.path.join(args.shots, f"screen_{tick['n']:03d}.png"))
     m.state["on_schedule"] = schedule
-    m.state["hard_stop"] = t0 + max(args.seconds * 6, 120)      # real-time safety net
+    m.state["hard_stop"] = t0 + float(os.environ.get("EMU_HARD_STOP") or max(args.seconds * 6, 120))   # real-time safety net
     m.state["should_stop"] = lambda mm: mm.vt > args.seconds
     m.state["virtual_limit"] = args.seconds
     m.state["next_host_event"] = None

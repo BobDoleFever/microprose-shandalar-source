@@ -309,8 +309,14 @@ class Recorder:
                     # load half of a read-modify-write instruction (`add [mem], reg`), so for lifted code the old
                     # value of whatever is stored to is kept as input in case the instruction used it.
                     r["reads"][a] = self.uc.mem_read(a, 1)[0]
-                if not in_frame:
-                    (r["cur"]["writes"] if r["depth"] else r["writes"])[a] = data[i]
+                if r["depth"]:
+                    c = r["cur"]
+                    # A callee's stores count unless they are its own stack; for lifted code the caller's locals (an
+                    # output parameter points at one) count too, which are above the callee's arguments.
+                    if not in_frame or (self.frame_reads and a >= c["esp"] + 4 + 4 * len(c["args"])):
+                        c["writes"][a] = data[i]
+                elif not in_frame:
+                    r["writes"][a] = data[i]
                 r["touched"].add(a)
         elif r["depth"] == 0:
             if in_frame and address >= r["esp"]:

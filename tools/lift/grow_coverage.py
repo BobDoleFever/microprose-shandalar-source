@@ -88,7 +88,8 @@ def start_chunk(args, out, tag, ops):
     shutil.rmtree(d, ignore_errors=True)
     os.makedirs(d)
     spec = os.path.join(args.gen, "handler_spec.json")
-    env = dict(os.environ, LIFT_SPEC=spec, RECORD_HANDLER_SPEC=spec, RECORD_ONLY_HANDLERS="1", INJECT_RESTORE="0.03")
+    env = dict(os.environ, LIFT_SPEC=spec, RECORD_HANDLER_SPEC=spec, RECORD_ONLY_HANDLERS="1", INJECT_RESTORE="0.03",
+               EMU_HARD_STOP=str(args.timeout))
     cmd = [args.python, "-u", os.path.join(ROOT, "tools", "difftest", "record_vectors.py"), d, "100000", "--exe", args.exe,
            "--seconds", f"{seconds:.1f}", "--script", script]
     logf = open(os.path.join(d, "..", tag + ".log"), "w")
