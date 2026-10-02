@@ -91,24 +91,47 @@ All 383 distinct handlers of DUEL.EXE's master card table:
 |---|---|
 | lifted to C | 373 (97.4%): 350 straight-line and loop code, 23 more once jump tables were supported |
 | refused | 10 (see Limits) |
-| recorded vectors | 7323, covering all 373 lifted handlers (events from each handler's own body plus four common ones, each with the callees returning 0, 1 and 2) |
-| lifted code vs the original | every vector the harness can run matches: return value, every byte stored, every call and its arguments |
-| instructions executed by the vectors | 42,194 of 79,016 (53%); 78 handlers fully, every handler at least partly |
-| instruction forms | 163 distinct forms executed. Only 31 forms (112 instructions, 0.14%) occur solely in code no vector reached, and each is a variant of an operation that other executed code already covers |
+| first corpus | 7,323 vectors, events from each handler's own body, callees returning 0, 1 or 2: all match, and run 53% of the lifted instructions |
+| grown corpus | about 86,000 more vectors from `grow_coverage.py` (random events, a different result for each function the handler calls, the handler's own card in play, slot fields and other cards' zones filled with arbitrary values, and the globals the handler is gated on set to the values it tests for): all match |
+| instructions executed | 68,132 of 79,016 (**86.2%**); 140 handlers fully, every handler at least partly |
+| instruction forms | 188 distinct forms executed; 6 forms (10 instructions) occur only in code no vector reached |
 
-The 53% matters. A passing vector proves the instructions it ran, so the rest is covered only by the fact that the
-lifter translates every instruction of a given form the same way. The way to raise the number is more situations (more
-cards in play, more callee results, more events), not more handlers.
+Every vector the harness can run matches the original: return value, every byte stored outside the stack frame, and
+every call made with its arguments, under four fills of the memory the vector does not define. The vectors are not
+committed (they hold the game's memory); the driver keeps the 904 that each added coverage.
+
+A passing vector proves the instructions it ran, so the remaining 14% is covered only by the lifter translating every
+instruction of a given form the same way. What is left is
+mostly code behind several conditions at once (a card state, an event, a callee result and a global together) that random
+search reaches slowly; `grow_coverage.py` gains about 0.3 points per 25-minute round now, against 5 at the start.
 
 Getting here found and fixed a lot of faults in the test machinery, none of them in the lifter's treatment of the
 instructions that were exercised: the harness compared changed bytes instead of stored bytes (a store of the value
-already there was invisible), the recorder missed reads made by the load half of `add [mem], reg` and reads of stack
-locals written before use, stack pointers outside the harness's memory, a callee-argument limit of eight when one takes
-twenty, and a recording that kept going on a thread that had been killed so the next call's data was attributed to the
-wrong handler. The unit tests (`test_lift.py`) found one lifter bug the vectors never reached: `push [esp+4]` read the
-operand after ESP had moved.
+already there was invisible), and two fills could agree by luck (`cmp x, 2; jl` gives the same answer under fills of
+0x00 and 0xff), so there are four; the recorder missed reads made by the load half of `add [mem], reg` and reads of
+stack locals written before use (it now keeps the stack frame as the call found it); stack pointers outside the
+harness's memory; a callee-argument limit of eight when one callee takes twenty; a recording that carried on after its
+thread was killed and attributed the next call's data to the wrong handler; callee stubs that did not take effect for
+functions the game had already run (Unicorn kept the translated original: the cache is now cleared after patching),
+which dropped a callee's writes into the caller's locals. Several of these showed up as a handful of vectors that
+failed, which is what the differing-vector folder is for. The unit tests (`test_lift.py`) found one lifter bug the
+vectors never reached: `push [esp+4]` read its operand after ESP had moved.
 
-## Coverage
+## Growing the coverage
+
+```
+python3 tools/lift/grow_coverage.py --out DIR --hours 6
+```
+
+Records in `--workers` emulators at once (each spends its first few minutes playing the game up to a board it can inject
+on), checks every vector through the lifted code with coverage on, keeps the ones that executed something new in
+`DIR/keep`, and puts any vector the lifted code does not match in `DIR/fail` with the harness's message. It can be
+stopped and started again. Each round aims at the handlers with the most uncovered instructions: the globals a handler
+compares (and the slot fields, and the event codes) are found in its lifted code, so injections set them to what it
+tests for. An emulator that stops producing vectors (the game wedged on some state) is cut off and only its own chunk
+is lost.
+
+## Coverage of a corpus
 
 ```
 cc -O1 -DLIFT_TRACK_WRITES -DLIFT_COVERAGE -w -Itools/lift -Isources/generated/lift -o tools/difftest/build/harness-flat-cov \
