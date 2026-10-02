@@ -211,10 +211,10 @@ def test_record_vectors_tables_match_native_code():
     import record_vectors as rec  # noqa: PLC0415 (imported here: needs no unicorn to run this test)
 
     fn_names = {n for n, _, _ in rec.NATIVE_FUNCTIONS}
-    callee_names = {n for n, _, _ in rec.CALLEES_INFO}
+    callee_names = {n for n, _, _ in rec.CALLEES_INFO} | {"CALLEE_FUNCTION"}   # the generic callee of lifted code (lift_bridge.c) has no table row
     for program in ("MAGIC", "DUEL"):
         entries, callees, fn_order, callee_order = rec.load_layout(program)
         assert set(fn_order) == fn_names, (program, "FN_* mismatch", set(fn_order) ^ fn_names)
         assert set(callee_order) == callee_names, (program, "CALLEE_* mismatch", set(callee_order) ^ callee_names)
         assert set(entries) == set(fn_order), (program, "layout.c .entry vs engine.h NativeFn")
-        assert set(callees) == set(callee_order) - rec.DYNAMIC_CALLEES, (program, "layout.c .callee vs engine.h Callee")
+        assert set(callees) == set(callee_order) - rec.DYNAMIC_CALLEES - {"CALLEE_FUNCTION"}, (program, "layout.c .callee vs engine.h Callee")
