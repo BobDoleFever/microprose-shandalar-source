@@ -293,3 +293,24 @@ def test_window_extra_bytes_keep_words_and_longs_apart():
     assert x.get(100, -1) == -1                        # beyond the extra bytes: the default
     x.put(0, 0x10001, 2)                               # a word write keeps to its two bytes
     assert x.get(0, 0, 2) == 1 and x.get(2) == 0x12345678
+
+
+def test_get_top_window_and_get_window_walk_the_children_top_down():
+    # the deck editor lays its cards out by walking GetTopWindow, then GetWindow(GW_HWNDNEXT / GW_HWNDPREV)
+    from winemu import user32
+
+    class M:
+        state = {}
+        cur = None
+    m = M()
+    user32._st(m).update(windows={}, zcount=0, next_hwnd=0x100, classes={})
+    parent = user32.new_window(m, "P", 0, 0, 0, 0, 0, 10, 10, "", 0, 0)
+    kid = lambda: user32.new_window(m, "K", parent["hwnd"], 0, 0, 0, 0, 1, 1, "", 0, 0)       # noqa: E731
+    a, b, c = kid(), kid(), kid()                                                              # a created first: the bottom
+    top = lambda h: user32.get_top_window(m, [h])                                               # noqa: E731
+    gw = lambda h, cmd: user32.get_window(m, [h, cmd])                                          # noqa: E731
+    assert top(parent["hwnd"]) == c["hwnd"] and gw(parent["hwnd"], 5) == c["hwnd"]
+    assert [gw(c["hwnd"], 2), gw(b["hwnd"], 2), gw(a["hwnd"], 2)] == [b["hwnd"], a["hwnd"], 0]    # NEXT goes down
+    assert [gw(a["hwnd"], 3), gw(b["hwnd"], 3), gw(c["hwnd"], 3)] == [b["hwnd"], c["hwnd"], 0]    # PREV goes up
+    assert (gw(b["hwnd"], 0), gw(b["hwnd"], 1)) == (c["hwnd"], a["hwnd"])                        # FIRST is the top, LAST the bottom
+    assert top(a["hwnd"]) == 0                                                                  # no children
