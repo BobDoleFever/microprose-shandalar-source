@@ -232,6 +232,11 @@ class Live:
     # (a lone DllMain thread ended with wrong registers within seconds in about half of the runs, when the ticker stopped it
     # directly every 10 ms), and Unicorn's own `timeout=` never fires. LIVE_TICK_MS=0 goes back to counted slices.
     TICK_MS = float(os.environ.get("LIVE_TICK_MS", "10"))
+    # How long (host time) a thread may run before it is asked to give way. The game was written for a scheduler that switches threads
+    # only when one blocks (its C runtime and its picture decompressor are not thread-safe, and the emulator's original slice is 200M
+    # instructions, so in the exact runs threads switch only at blocking calls). Every extra switch is a chance for the races that
+    # this hides, so the quantum is long: it only keeps a thread that never blocks (a polling loop) from starving the window.
+    QUANTUM_MS = float(os.environ.get("LIVE_QUANTUM_MS", "250"))
     FALLBACK_MS = float(os.environ.get("LIVE_FALLBACK_MS", "100"))
     # Slices a pressed mouse button or key is held before anything else is delivered. The game's own thread polls the button's
     # state, and the window thread's messages (button down, button up) are handled by the main thread in one turn, so
@@ -254,9 +259,11 @@ class Live:
                         m.uc.emu_stop()
                     except Exception:                            # noqa: BLE001  (not running: nothing to stop)
                         pass
-            else:
+            elif time.monotonic() - m.slice_t0 >= self.QUANTUM_MS / 1000:    # this slice has run a whole quantum without blocking
                 asked = None
                 m.yield_req = True
+            else:
+                asked = None
 
     def _close(self, m):
         """The window was closed: the game's next GetMessage sees WM_QUIT; a slice in progress is cut short."""

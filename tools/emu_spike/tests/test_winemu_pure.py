@@ -152,3 +152,27 @@ def test_save_and_restore_dc_bring_back_origin_clip_and_colours(monkeypatch):
     assert gdi.restore_dc(m, [5, 1]) == 1                          # level 1
     assert (dc.org, dc.clip, dc.textcolor) == ((100, 160), (1, 2, 3, 4), 0x123456)
     assert gdi.restore_dc(m, [5, 0xFFFFFFFF]) == 0                 # nothing left to restore
+
+
+def test_sibling_z_order_follows_creation_bring_to_top_and_insert_after():
+    from winemu import user32
+
+    class M:
+        state = {}
+        cur = None                                                                     # no running thread
+    m = M()
+    user32._st(m).update(windows={}, zcount=0, next_hwnd=0x100, classes={})
+    mk = lambda: user32.new_window(m, "X", 0, 0, 0, 0, 0, 1, 1, "", 0, 0)             # noqa: E731
+    a, b, c = mk(), mk(), mk()
+    order = lambda: [w["hwnd"] for w in user32.siblings(m, a)]                          # noqa: E731  (bottom to top)
+    assert order() == [a["hwnd"], b["hwnd"], c["hwnd"]]
+    user32.set_z(m, a, 0)                                                              # HWND_TOP / BringWindowToTop
+    assert order() == [b["hwnd"], c["hwnd"], a["hwnd"]]
+    user32.set_z(m, a, 1)                                                              # HWND_BOTTOM
+    assert order() == [a["hwnd"], b["hwnd"], c["hwnd"]]
+    user32.set_z(m, c, b["hwnd"])                                                      # directly below b
+    assert order() == [a["hwnd"], c["hwnd"], b["hwnd"]]
+    for _ in range(60):                                                                # repeated halving renumbers instead of collapsing
+        user32.set_z(m, b, a["hwnd"])
+        user32.set_z(m, a, 0)
+    assert len(set(w["z"] for w in user32.siblings(m, a))) == 3

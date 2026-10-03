@@ -185,6 +185,7 @@ class Machine:
                                                     # static C runtime is not thread-safe and relies on that)
         self._regcheck = bool(os.environ.get("EMU_REGCHECK"))
         self._proctrace = {int(x, 16) for x in os.environ.get("EMU_PROCTRACE", "").split(",") if x}
+        self.slice_t0 = 0.0                         # host time the running slice started (live.py)
         self.slices = 0                             # scheduling slices run so far
         self.yield_req = False                      # live.py: end the running slice at the next import call
         self.charging = False                       # native_host.py: slices are run in pieces so owed instructions count
@@ -743,6 +744,7 @@ class Machine:
                     continue
                 rr += 1
                 self.slices += 1
+                self.slice_t0 = _time.monotonic()
                 t = runnable[rr % len(runnable)]
                 t.state, t.wait = "ready", None
                 calls0 = self.calls

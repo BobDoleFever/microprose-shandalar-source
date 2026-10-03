@@ -12,6 +12,7 @@ Tokens (space separated, run in order):
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
+    sent:          pending cross-thread SendMessage calls
     n:             print the counters of a few imports        win:   list the windows         rec:  the last imports called
     pal:           system palette and index statistics         thr:   thread states            r:A,B  read guest dwords (hex)
     p:SECS         histogram of where the guest is (needs LIVE_SAMPLE=1)
@@ -107,11 +108,26 @@ def helper(lv):
             for h, w in list(m.state.get("u32", {}).get("windows", {}).items()):
                 print(f"WIN 0x{h:x} {w['cls']!r} {w['title']!r} vis={int(w['visible'])} en={int(w.get('enabled', 1))} {w['x']},{w['y']} "
                       f"{w['w']}x{w['h']} parent=0x{w['parent']:x} tid={w.get('tid')}", flush=True)
+        elif op == "sent":
+            st = m.state.get("u32", {})
+            for r in list(st.get("sent", [])):
+                w = st["windows"].get(r["hwnd"], {})
+                owner = next((t for t in m.threads if t.tid == r["tid"]), None)
+                print(f"SENT to t{r['tid']} ({owner.name + ' ' + owner.state if owner else 'gone'}): window 0x{r['hwnd']:x} {w.get('cls')!r} {w.get('title')!r} "
+                      f"msg=0x{r['msg']:x} wp=0x{r['wp']:x} lp=0x{r['lp']:x} done={r['done']} running={r.get('running')}", flush=True)
         elif op == "rec":
             print("REC", [(t, n, hex(r)) for t, n, r in list(m.recent)[-30:]], flush=True)
         elif op == "thr":
             for t in list(m.threads):
-                print("THR", t.tid, t.name, t.state, flush=True)
+                what = ""
+                if t.state == "blocked":
+                    w = t.wait
+                    call = m.stubs.get(t.retry[0]) if t.retry else None
+                    g = t.gen[0] if t.gen else None
+                    gname = g.gi_code.co_name if g is not None else ""
+                    gline = (g.gi_frame.f_lineno if g.gi_frame else 0) if g is not None else 0
+                    what = f"in {call[1] if call else (('handler ' + gname + ':' + str(gline) + ' conts=' + str(len(t.conts))) if g is not None else 'a handler')} until={getattr(w, 'until', None)} ready={'yes' if getattr(w, 'ready', None) else 'no'}"
+                print("THR", t.tid, t.name, t.state, what, flush=True)
         elif op == "pal":
             import numpy as np
             from winemu import gdi, user32

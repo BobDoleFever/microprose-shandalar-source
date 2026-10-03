@@ -64,6 +64,8 @@ def new_window(m, cls, parent, style, exstyle, x, y, w, h, title, menu, param):
                x=x, y=y, w=w, h=h, title=title, visible=False, enabled=True, id=menu if style & WS_CHILD else 0,
                long={}, extra={}, invalid=True, surface=None, children=[], param=param, userdata=0,
                builtin=c is None, hinst=c["hinst"] if c else 0, tid=m.cur.tid if m.cur else 1)
+    st["zcount"] = st.get("zcount", 0) + 1
+    win["z"] = float(st["zcount"])                      # stacking order among siblings: a higher z is above (see set_z)
     st["windows"][hwnd] = win
     if parent and parent in st["windows"]:
         st["windows"][parent]["children"].append(hwnd)
@@ -84,6 +86,33 @@ def client_size(win):
 
 def _owner_alive(m, tid):
     return any(t.tid == tid and t.state != "done" for t in m.threads)
+
+
+def siblings(m, win):
+    """The windows with the same parent as `win` (itself included), bottom to top."""
+    st = _st(m)
+    return sorted((w for w in st["windows"].values() if w["parent"] == win["parent"]), key=lambda w: w["z"])
+
+
+def set_z(m, win, after):
+    """Restack `win` among its siblings. `after`: 0 / -1 (HWND_TOP, HWND_TOPMOST) to the top, 1 (HWND_BOTTOM) to the bottom, -2
+    (HWND_NOTOPMOST) to the top, or a sibling's handle: directly below that window (the game's SetWindowPos(hwnd, other, ...))."""
+    st = _st(m)
+    others = [w for w in siblings(m, win) if w is not win]
+    if after in (0, 0xFFFFFFFF, 0xFFFFFFFE) or not others:
+        win["z"] = (others[-1]["z"] + 1.0) if others else win["z"]
+    elif after == 1:
+        win["z"] = others[0]["z"] - 1.0
+    else:
+        ref = st["windows"].get(after)
+        if ref is None or ref["parent"] != win["parent"] or ref is win:
+            return
+        idx = others.index(ref)
+        below = others[idx - 1]["z"] if idx > 0 else ref["z"] - 2.0
+        win["z"] = (below + ref["z"]) / 2.0
+    if len(others) > 1 and min(abs(a["z"] - b["z"]) for a, b in zip(others, others[1:] + [win])) < 1e-6:
+        for i, w in enumerate(siblings(m, win)):      # the gaps have worn thin: number the siblings again
+            w["z"] = float(i)
 
 
 def send(m, hwnd, msg, wp, lp):
@@ -476,6 +505,8 @@ def set_window_pos(m, a):
             yield from show(m, hwnd, 1)
         elif flags & 0x80:
             yield from show(m, hwnd, 0)
+        if not flags & 4:                                   # SWP_NOZORDER
+            set_z(m, win, after)
         win["invalid"] = True
         mark_dirty(m)
     return 1
@@ -588,7 +619,14 @@ u("IsIconic", 1)(lambda m, a: 0)
 u("EnableWindow", 2)(lambda m, a: 0)
 u("SetWindowRgn", 3)(lambda m, a: 1)
 u("LockWindowUpdate", 1)(lambda m, a: 1)
-u("BringWindowToTop", 1)(lambda m, a: 1)
+@u("BringWindowToTop", 1)
+def bring_window_to_top(m, a):
+    win = window(m, a[0])
+    if win:
+        set_z(m, win, 0)
+        mark_dirty(m)
+    return 1
+
 u("SetForegroundWindow", 1)(lambda m, a: 1)
 u("GetWindowThreadProcessId", 2)(lambda m, a: (m.w32(a[1], 1) if a[1] else None, 1)[1])
 u("EnumChildWindows", 3)(lambda m, a: 0)
@@ -1141,7 +1179,8 @@ def abs_rect(m, win):
 
 def window_at(m, x, y):
     """The topmost visible window under a screen point. Z-order: windows under a WS_POPUP window are above those
-    that are not, and otherwise later-created windows are above earlier ones (a child above its parent)."""
+    that are not; among siblings a higher `z` is above (creation order, changed by BringWindowToTop and SetWindowPos); a child
+    is above its parent."""
     st = _st(m)
     best, best_key = 0, None
     for order, (h, w) in enumerate(st["windows"].items()):
@@ -1164,9 +1203,9 @@ def window_at(m, x, y):
             continue
         x0, y0, x1, y1 = abs_rect(m, w)
         if x0 <= x < x1 and y0 <= y < y1:
-            key = (popup, order)
+            key = (popup, tuple(st["windows"][c]["z"] for c in reversed([h] + _ancestors(st, w))))    # top-level z first; a child above its parent
             if m.state.get("gdi_debug"):
-                m.log(f"      [hit] 0x{h:x} {w['cls']!r} popup={popup} order={order} rect={(x0, y0, x1, y1)}")
+                m.log(f"      [hit] 0x{h:x} {w['cls']!r} popup={popup} z={key[1]} rect={(x0, y0, x1, y1)}")
             if best_key is None or key > best_key:
                 best, best_key = h, key
     return best
