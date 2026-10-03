@@ -64,6 +64,7 @@ def new_window(m, cls, parent, style, exstyle, x, y, w, h, title, menu, param):
                x=x, y=y, w=w, h=h, title=title, visible=False, enabled=True, id=menu if style & WS_CHILD else 0,
                long={}, extra={}, invalid=True, surface=None, children=[], param=param, userdata=0,
                builtin=c is None, hinst=c["hinst"] if c else 0, tid=m.cur.tid if m.cur else 1)
+    win["ownerdraw"] = c is None and str(cls).upper() == "BUTTON" and (style & 0xF) == 0xB      # BS_OWNERDRAW: the parent paints it (WM_DRAWITEM)
     st["zcount"] = st.get("zcount", 0) + 1
     win["z"] = float(st["zcount"])                      # stacking order among siblings: a higher z is above (see set_z)
     st["windows"][hwnd] = win
@@ -804,7 +805,41 @@ def _next_message(m, remove, hwnd_filter=0):
             if remove:
                 win["invalid"] = False
             return (hwnd, WM_PAINT, 0, 0)
+    for hwnd, win in st["windows"].items():                         # owner-draw buttons: the parent is asked to paint them
+        if win.get("ownerdraw") and win["invalid"] and win["visible"] and win["w"] > 0 and win["h"] > 0 and win.get("tid") == m.cur.tid \
+                and win["parent"] in st["windows"] and st["windows"][win["parent"]]["visible"]:
+            if remove:
+                win["invalid"] = False
+                return (win["parent"], WM_DRAWITEM, win["id"], _drawitem_struct(m, win))
+            return (win["parent"], WM_DRAWITEM, win["id"], 0)
     return None
+
+
+WM_DRAWITEM = 0x2B
+
+
+def _drawitem_struct(m, win):
+    """A DRAWITEMSTRUCT for an owner-draw button, with a DC that draws on the button's own surface."""
+    from .gdi import new_dc  # noqa: PLC0415
+    st = _st(m)
+    hdc, dc = new_dc(m, "window", win["hwnd"])
+    if win.get("odmem") is None:
+        win["odmem"] = m.alloc(0x40)
+    selected = st.get("press") == win["hwnd"]
+    cw, ch = client_size(win)
+    m.wr(win["odmem"], struct.pack("<11I", 4, win["id"] & 0xFFFF, 0, 1, 1 if selected else 0, win["hwnd"], hdc, 0, 0, cw, ch))
+    m.w32(win["odmem"] + 0x2C, 0)
+    win["surface"].idx[:] = 0
+    win["surface"].direct[:] = False
+    mark_dirty(m)
+    return win["odmem"]
+
+
+def invalidate_window(m, hwnd):
+    win = window(m, hwnd)
+    if win:
+        win["invalid"] = True
+        mark_dirty(m)
 
 
 def _write_msg(m, p, msg):
@@ -1481,8 +1516,10 @@ def inject_mouse(m, kind, x, y):
     if not tw["proc"] and str(tw["cls"]).upper() == "BUTTON":          # a built-in push button: click = WM_COMMAND
         if kind == "down":
             st["press"] = h
+            invalidate_window(m, h)
         elif kind == "up" and st.get("press") == h:
             st["press"] = 0
+            invalidate_window(m, h)
             st["queue"].append((tw["parent"], WM_COMMAND, tw["id"] & 0xFFFF, h))    # BN_CLICKED
             if m.state.get("gdi_debug"):
                 m.log(f"   [input] button 0x{h:x} id {tw['id']} clicked -> WM_COMMAND to 0x{tw['parent']:x}")
