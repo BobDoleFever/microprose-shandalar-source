@@ -950,7 +950,7 @@ def bitblt(m, a):
         return _rop_blit(m, dst, x, y, w, h, src, sx, sy, rop)
     if rop not in (0xCC0020,):
         _st(m).setdefault("odd_rops", set()).add(rop)
-    if m.state.get("gdi_debug") and dst.kind == "window":
+    if m.state.get("gdi_debug") and dst.kind == "window" and src.bitmap is not None:
         sb = src.bitmap
         _, _, ii = dc_indices(m, src, sx, sy, sx + w, sy + h)
         m.log(f"   [gdi] BitBlt win 0x{dst.hwnd:x} {w}x{h} <- {sb.kind} {sb.w}x{sb.h} bpp{sb.bpp} "

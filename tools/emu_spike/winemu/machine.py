@@ -117,6 +117,10 @@ class Thread:
         self.slice = None                           # instructions per scheduling slice, if not the machine's
         self.gen = None                               # (gen, esp, ret, argc, addr) of a generator handler parked in a Block
         self.stack_base = 0
+        self.stack_size = 0
+        self.cont_regs = []
+        self.proc_hook, self.proc_ring, self.proc_regs, self.proc_depth, self.proc_first = None, None, None, 0, None
+        self.entry_regs = {}                          # EMU_REGCHECK: esp at an import call -> (name, ebp, ebx, esi, edi)
         self.retry = None                             # (stub address, esp) to resume a blocked call
 
 
@@ -179,6 +183,8 @@ class Machine:
         self.next_tid = 1
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
+        self._regcheck = bool(os.environ.get("EMU_REGCHECK"))
+        self._proctrace = {int(x, 16) for x in os.environ.get("EMU_PROCTRACE", "").split(",") if x}
         self.slices = 0                             # scheduling slices run so far
         self.yield_req = False                      # live.py: end the running slice at the next import call
         self.charging = False                       # native_host.py: slices are run in pieces so owed instructions count
@@ -372,6 +378,7 @@ class Machine:
         t.one_shot = one_shot
         base = self.alloc(stack, zero=False)
         t.stack_base = base
+        t.stack_size = stack
         top = base + stack - 16
         self._thread_teb(t, top, base)
         sp = top
@@ -406,6 +413,53 @@ class Machine:
         self.cur = t
         self.uc.context_restore(t.ctx)
         self._set_fs(t.teb)
+
+    def _on_own_stack(self, t):
+        """True when ESP is inside the thread's own stack. The game's assembly (MPS_CODE: its picture decompressor) switches to a
+        private stack and keeps the old ESP in a global, and its read callback is called from there: another thread running
+        in the middle of that is how a thread came back on the wrong stack. Real Windows hides it behind coarse time slices;
+        here such a thread is never scheduled away (it is the game's own cooperative assumption)."""
+        esp = self.uc.reg_read(UC_X86_REG_ESP)
+        if t.stack_base:
+            return t.stack_base <= esp < t.stack_base + t.stack_size
+        return STACK_TOP - STACK_SIZE <= esp <= STACK_TOP                   # the main thread
+
+    def _start_proctrace(self):
+        """EMU_PROCTRACE=ADDR[,ADDR]: while a guest function called from a handler runs, keep its last instructions (eip, ebp, esp);
+        shown if it returns with different ebp/ebx/esi/edi."""
+        import collections
+        ring = collections.deque(maxlen=120)
+        uc, t = self.uc, self.cur
+        t.proc_ring = ring
+        t.proc_first = None
+        t.proc_regs = tuple(uc.reg_read(r) for r in (UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI, UC_X86_REG_EDI))
+
+        def cb(uc_, address, size, user):
+            rec = (address, uc_.reg_read(UC_X86_REG_EBP), uc_.reg_read(UC_X86_REG_ESP), self.cur.tid)
+            if not ring and t.proc_first is None:
+                t.proc_first = rec
+            ring.append(rec)
+        t.proc_hook = uc.hook_add(UC_HOOK_CODE, cb, begin=0x400000, end=0x600000)
+        uc.ctl_flush_tb()
+
+    def _stop_proctrace(self):
+        uc, t = self.uc, self.cur
+        uc.hook_del(t.proc_hook)
+        t.proc_hook = None
+        uc.ctl_flush_tb()
+        now = tuple(uc.reg_read(r) for r in (UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI, UC_X86_REG_EDI))
+        if now != t.proc_regs:
+            self.log(f"   first instruction of the traced call: {t.proc_first and [hex(x) for x in t.proc_first]}; thread stack {t.stack_base:#x}+{t.stack_size:#x}")
+            from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+            md = Cs(CS_ARCH_X86, CS_MODE_32)
+            self.log(f"!! PROCTRACE t{t.tid}: ebp/ebx/esi/edi {[hex(x) for x in t.proc_regs]} -> {[hex(x) for x in now]}; the last instructions:")
+            for a, ebp, esp, tid in list(t.proc_ring)[-70:]:
+                try:
+                    ins = next(md.disasm(bytes(uc.mem_read(a, 16)), a))
+                    txt = f"{ins.mnemonic} {ins.op_str}"
+                except Exception:                                # noqa: BLE001
+                    txt = "?"
+                self.log(f"     t{tid} {a:#010x} ebp={ebp:#010x} esp={esp:#010x}  {txt}")
 
     def _runnable(self, t, now):
         if t.state == "ready":
@@ -453,6 +507,9 @@ class Machine:
         self.calls += 1
         esp = uc.reg_read(UC_X86_REG_ESP)
         ret = self.r32(esp)
+        if self._regcheck:                                   # EMU_REGCHECK=1: callee-saved registers must survive an import call
+            self.cur.entry_regs[esp] = (key[1], uc.reg_read(UC_X86_REG_EBP), uc.reg_read(UC_X86_REG_EBX),
+                                        uc.reg_read(UC_X86_REG_ESI), uc.reg_read(UC_X86_REG_EDI))
         dll, name = key
         if self.call_hash_every:   # EMU_CALL_HASH=N: a running hash of the import calls, printed every N, to find where two runs part
             self.call_hash = zlib.crc32(f"{self.cur.tid}{name}{ret:x}".encode(), self.call_hash)
@@ -497,7 +554,7 @@ class Machine:
             uc.emu_stop()
             return
         self._apply(res, esp, ret, 0 if cdecl else argc, address)
-        if self.yield_req and self.cur.state == "ready":        # live (live.py): the ticker asked for the end of the slice; here is a clean place for it
+        if self.yield_req and self.cur.state == "ready" and self._on_own_stack(self.cur):   # live (live.py): the ticker asked for the end of the slice
             self.yield_req = False
             uc.emu_stop()
 
@@ -536,6 +593,13 @@ class Machine:
 
     def _return(self, esp, ret, argc, val):
         uc = self.uc
+        if self._regcheck:
+            rec = self.cur.entry_regs.pop(esp, None)
+            if rec:
+                now = (uc.reg_read(UC_X86_REG_EBP), uc.reg_read(UC_X86_REG_EBX), uc.reg_read(UC_X86_REG_ESI), uc.reg_read(UC_X86_REG_EDI))
+                if now != rec[1:]:
+                    self.log(f"!! REGCHECK t{self.cur.tid} {self.cur.name}: {rec[0]} changed callee-saved registers "
+                             f"ebp/ebx/esi/edi {[hex(x) for x in rec[1:]]} -> {[hex(x) for x in now]} (returning to {ret:#x})")
         uc.reg_write(UC_X86_REG_EAX, u32(val))
         uc.reg_write(UC_X86_REG_ESP, esp + 4 + 4 * argc)
         if self.burn > 4:
@@ -565,7 +629,12 @@ class Machine:
                 self.w32(sp, a)
                 sp -= 4
         self.conts.append((c.then, esp, ret, argc, addr, restore))
+        if self._regcheck:
+            self.cur.cont_regs.append((c.fn, tuple(uc.reg_read(r) for r in (UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI, UC_X86_REG_EDI)) if c.regs is None else None))
         self.w32(sp, CONT_TRAP)
+        if self._proctrace and c.fn in self._proctrace and self.cur.proc_hook is None:
+            self.cur.proc_depth = len(self.conts) - 1
+            self._start_proctrace()
         if c.regs is not None:
             for reg, v in zip((UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_EDX, UC_X86_REG_EBX, UC_X86_REG_EBP,
                                UC_X86_REG_ESI, UC_X86_REG_EDI), c.regs):
@@ -575,6 +644,16 @@ class Machine:
 
     def _finish_cont(self):
         then, esp, ret, argc, addr, restore = self.conts.pop()
+        if self.cur.proc_hook is not None and len(self.conts) == self.cur.proc_depth:
+            self._stop_proctrace()
+        if self._regcheck and self.cur.cont_regs:
+            fn, before = self.cur.cont_regs.pop()
+            if before is not None:
+                uc = self.uc
+                now = tuple(uc.reg_read(r) for r in (UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ESI, UC_X86_REG_EDI))
+                if now != before:
+                    self.log(f"!! REGCHECK t{self.cur.tid} {self.cur.name}: the guest function at {fn:#x} called from a handler changed "
+                             f"ebp/ebx/esi/edi {[hex(x) for x in before]} -> {[hex(x) for x in now]}")
         if restore:
             self.w32(*restore)
         r = self.uc.reg_read(UC_X86_REG_EAX)
@@ -707,6 +786,8 @@ class Machine:
                         self.exit_code = -2
                         faulted = None
                         break
+                    if ticked and t.state == "ready" and not self.stop and not self._on_own_stack(t):
+                        continue                                    # stopped on a private stack: run on until it is back
                     if self.charging and t.state == "ready" and not self.stop:
                         executed += step
                         if executed + self.owed < limit:
@@ -873,6 +954,14 @@ class Machine:
                 break
         self.log("   caller chain (ebp): " + " ".join(f"0x{c:08x}" for c in chain))
         self.log("   last imports: " + " | ".join(f"t{t}:{n}<0x{r:x}" for t, n, r in self.recent[-16:]))
+        esp = r["esp"]
+        try:
+            self.log(f"   thread t{self.cur.tid} {self.cur.name}: {len(self.cur.conts)} guest calls pending, state {self.cur.state}; stack from esp:")
+            for i in range(0, 0x60, 8):
+                self.log(f"     {esp + 4 * i:08x}: " + " ".join(f"{self.r32(esp + 4 * (i + j)):08x}" for j in range(8)))
+            self.log("   pending guest calls (resume esp, return address): " + ", ".join(f"({c[1]:#x},{c[2]:#x})" for c in self.cur.conts))
+        except Exception:                                    # noqa: BLE001
+            pass
 
     def regs(self):
         u = self.uc
