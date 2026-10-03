@@ -278,3 +278,18 @@ def test_draw_text_wraps_at_spaces_and_newlines():
         assert wrap("aaa bbb", 10, wb=False) == ["aaa bbb"]                     # no DT_WORDBREAK: one line
     finally:
         user32.text_size = orig
+
+
+def test_window_extra_bytes_keep_words_and_longs_apart():
+    # HorzList keeps a count word at 0, an item pointer long at 2 and more words at 6..0xc: they must not overlap
+    from winemu.user32 import ExtraBytes
+    x = ExtraBytes(14)
+    x.put(0, 0xFFFF, 2)
+    x.put(2, 0x12345678, 4)
+    x.put(6, 0xABCD, 2)
+    assert x.get(0, 0, 2) == 0xFFFF
+    assert x.get(2) == 0x12345678
+    assert x.get(6, 0, 2) == 0xABCD
+    assert x.get(100, -1) == -1                        # beyond the extra bytes: the default
+    x.put(0, 0x10001, 2)                               # a word write keeps to its two bytes
+    assert x.get(0, 0, 2) == 1 and x.get(2) == 0x12345678
