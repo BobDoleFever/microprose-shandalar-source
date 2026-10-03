@@ -45,6 +45,12 @@ def draw_dialogs(m, desk):
         x0, y0 = win["x"], win["y"]
         d.rectangle([x0, y0, x0 + win["w"], y0 + win["h"]], fill=(212, 208, 200), outline=(0, 0, 0))
         d.text((x0 + 6, y0 + 3), win["title"] or "Dialog", fill=(0, 0, 128), font=font)
+        sf = win["surface"]
+        if sf is not None and (sf.idx.any() or sf.direct.any()):             # what the game itself painted on the dialog (the ante cards)
+            painted = np.logical_or(sf.idx != 0, sf.direct)
+            rgb = gdi.surface_rgb(m, sf)
+            mask = Image.fromarray((painted * 255).astype(np.uint8))
+            img.paste(Image.fromarray(rgb), (x0, y0), mask)
         for c in win["children"]:
             cw = st["windows"].get(c)
             if not cw or not cw["visible"]:
