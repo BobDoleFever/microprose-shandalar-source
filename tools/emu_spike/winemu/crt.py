@@ -625,7 +625,8 @@ def ctime(m, a):
 
 @crt("srand")
 def srand(m, a):
-    _state(m)["seed"] = a[0]
+    # EMU_SRAND=N: every srand seeds with N, so that a debugging session meets the same world each time (the game seeds from the clock)
+    _state(m)["seed"] = int(os.environ["EMU_SRAND"]) if os.environ.get("EMU_SRAND") else a[0]
     return 0
 
 

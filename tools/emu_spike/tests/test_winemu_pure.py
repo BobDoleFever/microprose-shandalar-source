@@ -130,3 +130,25 @@ def test_combining_raster_operations_draw_a_glyph_over_a_picture():
     assert out.tolist() == [13, 7, 9, 84]
     assert gdi._ROPS[0x660046](picture, picture).tolist() == [0, 0, 0, 0]          # XOR with itself
     assert gdi._ROPS[0x330008](np.array([0, 255], np.uint8), picture[:2]).tolist() == [255, 0]
+
+
+def test_save_and_restore_dc_bring_back_origin_clip_and_colours(monkeypatch):
+    from winemu import gdi
+
+    dc = gdi.DC("window", 1)
+    st = {"objs": {5: dc}}
+
+    class M:
+        state = {"gdi": st}
+    m = M()
+    monkeypatch.setattr(gdi, "obj", lambda mm, h: st["objs"].get(h))      # the handle table
+    dc.org, dc.clip, dc.textcolor = (100, 160), (1, 2, 3, 4), 0x123456
+    assert gdi.save_dc(m, [5]) == 1
+    dc.org, dc.clip, dc.textcolor = (0, 0), None, 0
+    assert gdi.save_dc(m, [5]) == 2
+    dc.org = (7, 7)
+    assert gdi.restore_dc(m, [5, 0xFFFFFFFF]) == 1                 # -1: the last save
+    assert (dc.org, dc.clip, dc.textcolor) == ((0, 0), None, 0)
+    assert gdi.restore_dc(m, [5, 1]) == 1                          # level 1
+    assert (dc.org, dc.clip, dc.textcolor) == ((100, 160), (1, 2, 3, 4), 0x123456)
+    assert gdi.restore_dc(m, [5, 0xFFFFFFFF]) == 0                 # nothing left to restore
