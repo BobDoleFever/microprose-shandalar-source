@@ -90,7 +90,7 @@ def compose(m):
     def paint(win, ox, oy):
         s = win["surface"]
         x, y = ox + win["x"], oy + win["y"]
-        if s is not None and win["proc"]:
+        if s is not None and (win["proc"] or win.get("ownerdraw")):
             x0, y0 = max(x, 0), max(y, 0)
             x1, y1 = min(x + s.w, desk.shape[1]), min(y + s.h, desk.shape[0])
             if x1 > x0 and y1 > y0:
@@ -103,7 +103,46 @@ def compose(m):
         if win["visible"] and not win["style"] & user32.WS_CHILD and hwnd != st.get("desktop_hwnd") \
                 and not win.get("dialog"):
             paint(win, 0, 0)
-    return draw_popup(m, draw_dialogs(m, desk))
+    return draw_popup(m, draw_dialogs(m, draw_buttons(m, desk)))
+
+
+def draw_buttons(m, desk):
+    """Built-in push buttons that live on ordinary windows (the prompt bar's Done button): the game never paints them, Windows does."""
+    st = m.state.get("u32", {})
+    wins = st.get("windows", {})
+    todo = []
+    for h, w in wins.items():
+        if str(w["cls"]).upper() != "BUTTON" or w["proc"] or w.get("ownerdraw") or not w["visible"] or w["w"] <= 0 or w["h"] <= 0 or (w["style"] & 0xF) not in (0, 1):
+            continue
+        anc, ok, in_dialog = w, True, False
+        while anc["parent"] and anc["parent"] in wins:
+            anc = wins[anc["parent"]]
+            ok = ok and anc["visible"]
+            in_dialog = in_dialog or bool(anc.get("dialog") or anc.get("dlgproc"))
+        if ok and not in_dialog and w["title"]:
+            todo.append(w)
+    if not todo:
+        return desk
+    from PIL import ImageDraw, ImageFont
+    img = Image.fromarray(desk)
+    d = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 11)
+    except OSError:
+        font = ImageFont.load_default()
+    for w in todo:
+        x0, y0, x1, y1 = user32.abs_rect(m, w)
+        pressed = st.get("press") == w["hwnd"]
+        d.rectangle([x0, y0, x1 - 1, y1 - 1], fill=(192, 192, 192))
+        light, dark = ((128, 128, 128), (255, 255, 255)) if pressed else ((255, 255, 255), (96, 96, 96))
+        d.line([(x0, y0), (x1 - 1, y0)], fill=light)
+        d.line([(x0, y0), (x0, y1 - 1)], fill=light)
+        d.line([(x0, y1 - 1), (x1 - 1, y1 - 1)], fill=dark)
+        d.line([(x1 - 1, y0), (x1 - 1, y1 - 1)], fill=dark)
+        label = w["title"].replace("&", "")
+        tw = int(font.getlength(label))
+        d.text((x0 + (x1 - x0 - tw) // 2 + (1 if pressed else 0), y0 + (y1 - y0 - 11) // 2 - 1 + (1 if pressed else 0)), label, fill=(0, 0, 0), font=font)
+    return np.asarray(img)
 
 
 def draw_popup(m, desk):
