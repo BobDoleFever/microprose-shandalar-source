@@ -100,6 +100,7 @@ class Live:
         self.next_frame = 0.0
         self.machine = None
         self.hold_until = 0
+        self.stop_calls = int(os.environ.get("EMU_STOP_CALLS", "0"))
         self.last_compose = 0.0
         self.fallbacks = 0                                       # slices ended by the unsafe asynchronous stop (see _ticker)
         self.samples = __import__("collections").Counter() if os.environ.get("LIVE_SAMPLE") else None
@@ -121,6 +122,9 @@ class Live:
 
     def on_schedule(self, m):
         self._service(m)
+        if self.stop_calls and m.calls >= self.stop_calls:           # EMU_STOP_CALLS=N: a fixed amount of work, for timing
+            self.closed = True
+            m.stop = True
         if self.samples is not None:                                 # LIVE_SAMPLE=1: where the guest spends its time
             from unicorn.x86_const import UC_X86_REG_EIP  # noqa: PLC0415
             self.samples[m.uc.reg_read(UC_X86_REG_EIP)] += 1

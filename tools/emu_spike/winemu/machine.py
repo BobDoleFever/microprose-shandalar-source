@@ -18,6 +18,7 @@ import itertools
 import mmap
 import os
 import re
+import collections
 import struct
 import time as _time
 import zlib
@@ -52,6 +53,8 @@ class ExitProcess(Exception):
         self.code = code
 
 
+_U32 = struct.Struct("<I").unpack_from
+_P32 = struct.Struct("<I").pack_into
 S32 = lambda v: v - 0x100000000 if v & 0x80000000 else v
 
 
@@ -156,7 +159,11 @@ class Machine:
     def __init__(self, exe_path, game_root, overlay_root, log=print):
         self.log = log
         self.uc = Uc(UC_ARCH_X86, UC_MODE_32)
+        if not os.environ.get("EMU_NO_FASTUC"):
+            from .fastuc import speed_up  # noqa: PLC0415
+            speed_up(self.uc)
         self.regions = []                           # (guest base, size, host address, buffer): see map_region
+        self._last_region = None
         self.game_root = game_root                  # host directory that is "C:\\Magic" in the guest
         self.overlay_root = overlay_root            # writes land here, reads look here first
         self.cwd = "C:\\Magic\\Program"
@@ -175,7 +182,7 @@ class Machine:
         self.calls = 0
         self.trace_seen = {}
         self.trace_total = {}
-        self.recent = []                            # last few import calls, for crash reports
+        self.recent = collections.deque(maxlen=40)  # last few import calls, for crash reports
         self.counts = {}                            # (dll, name) -> times called
         self.threads = []
         self.pending_dll_inits = []
@@ -219,17 +226,47 @@ class Machine:
         return self.vt
 
     # ---- memory helpers -------------------------------------------------------------------------
+    # Guest memory is backed by host buffers (map_region), so reads and writes of data go straight to them: no call into Unicorn, no
+    # allocation. Code is different: Unicorn caches translated blocks, and a write that did not go through it would not invalidate
+    # them, so code (add_intercept, the loader) is written with uc.mem_write, never with wr.
+    def _region(self, a, n):
+        r = self._last_region
+        if r is not None and r[0] <= a and a + n <= r[0] + r[1]:
+            return r
+        for r in self.regions:
+            if r[0] <= a and a + n <= r[0] + r[1]:
+                self._last_region = r
+                return r
+        return None
+
     def rd(self, a, n):
-        return bytes(self.uc.mem_read(a, n))
+        r = self._region(a, n)
+        if r is None:
+            return bytes(self.uc.mem_read(a, n))
+        o = a - r[0]
+        return r[3][o:o + n]
 
     def wr(self, a, b):
-        self.uc.mem_write(a, bytes(b))
+        b = bytes(b)
+        r = self._region(a, len(b))
+        if r is None:
+            self.uc.mem_write(a, b)
+        else:
+            o = a - r[0]
+            r[3][o:o + len(b)] = b
 
     def r32(self, a):
-        return struct.unpack("<I", self.rd(a, 4))[0]
+        r = self._region(a, 4)
+        if r is None:
+            return struct.unpack("<I", bytes(self.uc.mem_read(a, 4)))[0]
+        return _U32(r[3], a - r[0])[0]
 
     def w32(self, a, v):
-        self.wr(a, struct.pack("<I", u32(v)))
+        r = self._region(a, 4)
+        if r is None:
+            self.uc.mem_write(a, struct.pack("<I", u32(v)))
+        else:
+            _P32(r[3], a - r[0], v & 0xFFFFFFFF)
 
     def r16(self, a):
         return struct.unpack("<H", self.rd(a, 2))[0]
@@ -244,7 +281,7 @@ class Machine:
         out = bytearray()
         while len(out) < limit:
             p = a + len(out)
-            chunk = bytes(self.uc.mem_read(p, min(4096 - (p & 4095), 256)))
+            chunk = self.rd(p, min(4096 - (p & 4095), 256))
             z = chunk.find(b"\0")
             if z >= 0:
                 out += chunk[:z]
@@ -520,7 +557,6 @@ class Machine:
                 self.log(f"   [call {self.calls}] t{self.cur.tid} {name} <- 0x{ret:08x} vt {self.vt:.6f}")
         self.counts[key] = self.counts.get(key, 0) + 1
         self.recent.append((self.cur.tid, name, ret))
-        del self.recent[:-40]
         h = REG.handlers.get(key)
         if h is None and dll.startswith("msvcrt"):
             h = REG.handlers.get(("msvcrtd.dll", name))
@@ -955,7 +991,7 @@ class Machine:
             except Exception:
                 break
         self.log("   caller chain (ebp): " + " ".join(f"0x{c:08x}" for c in chain))
-        self.log("   last imports: " + " | ".join(f"t{t}:{n}<0x{r:x}" for t, n, r in self.recent[-16:]))
+        self.log("   last imports: " + " | ".join(f"t{t}:{n}<0x{r:x}" for t, n, r in list(self.recent)[-16:]))
         esp = r["esp"]
         try:
             self.log(f"   thread t{self.cur.tid} {self.cur.name}: {len(self.cur.conts)} guest calls pending, state {self.cur.state}; stack from esp:")
