@@ -13,7 +13,7 @@ Win32, GDI, USER, KERNEL32 and the C runtime written in Python. Nothing from the
 
 Title screen in about 8 s, a new game's overworld in about 20 s. **Resume Game** loads the autosave the game makes at a wizard's door
 (click it at the title: about 45 s to the "Duel / Pay gold" choice), and a duel starts from there: coin toss, start-of-duel dialog,
-then the board; lands and phases (the bar under the board advances them) work. The sound effects play (`winemu/magsnd.py` is a host version of the game's sound library on pygame.mixer; `EMU_NO_AUDIO=1` mutes; music tracks and the coin-toss movie are not there), the dialogs are drawn plainly, and the AI thinks at emulator speed.
+then the board; lands and phases (the bar under the board advances them) work, right-click a card for its menu ("View in full card" shows it in the left panel). The sound effects play (`winemu/magsnd.py` is a host version of the game's sound library on pygame.mixer; `EMU_NO_AUDIO=1` mutes; music tracks and the coin-toss movie are not there), the dialogs are drawn plainly, and the AI thinks at emulator speed.
 
 `--live` implies `--accel` (the card-text keyword search as Python, `winemu/accel.py`) and `--host-sound`. Environment:
 `LIVE_TICK_MS` (default 10; 0 = counted slices, 35 times slower but the simplest), `LIVE_FALLBACK_MS`, `LIVE_PRESS_SLICES`, `LIVE_STATS=1`.

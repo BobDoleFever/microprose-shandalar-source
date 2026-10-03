@@ -176,3 +176,105 @@ def test_sibling_z_order_follows_creation_bring_to_top_and_insert_after():
         user32.set_z(m, b, a["hwnd"])
         user32.set_z(m, a, 0)
     assert len(set(w["z"] for w in user32.siblings(m, a))) == 3
+
+
+def test_popup_menu_apis_and_hit_testing(monkeypatch):
+    from winemu import user32
+
+    class M:
+        state = {}
+        cur = None
+        texts = {1: b"View card", 2: b"Attack", 3: b"Sub"}
+
+        def cstr(self, p):
+            return self.texts[p]
+    m = M()
+    st = {"objs": {}}
+    m.state["gdi"] = st
+    import itertools
+    ids = itertools.count(0x100)
+
+    def new_obj(mm, o):
+        h = next(ids)
+        st["objs"][h] = o
+        return h
+    monkeypatch.setattr(user32, "new_obj", new_obj)
+    monkeypatch.setattr(user32, "obj", lambda mm, h: st["objs"].get(h))
+    menu = new_obj(m, ("menu", []))
+    sub = new_obj(m, ("menu", []))
+    A = user32.append_menu
+    assert A(m, [menu, 0, 100, 1]) == 1 and A(m, [menu, 0x800, 0, 0]) == 1 and A(m, [menu, 0, 101, 2]) == 1
+    assert A(m, [sub, 0, 200, 2]) == 1 and A(m, [menu, user32.MF_POPUP, sub, 3]) == 1
+    items = user32._menu_items(m, menu)
+    assert [i["text"] for i in items] == ["View card", "", "Attack", "Sub"] and items[3]["sub"] == sub
+    # grey out and check by command id
+    assert user32._set_item_flag(m, [menu, 101, user32.MF_GRAYED], user32.MF_GRAYED | user32.MF_DISABLED, 0) == 0
+    assert items[2]["flags"] & user32.MF_GRAYED
+    assert user32._set_item_flag(m, [menu, 100, user32.MF_CHECKED], user32.MF_CHECKED, 0) == 0 and items[0]["flags"] & user32.MF_CHECKED
+    assert user32._set_item_flag(m, [menu, 999, 0], user32.MF_CHECKED, 0) == 0xFFFFFFFF          # no such item
+    # hit testing and choosing
+    popup = dict(levels=[(items, 50, 60)], hover=None, done=False, choice=0, hwnd=1)
+    levels = user32.popup_levels(m, popup)
+    x, y, w, hgt, rows = levels[0]
+    assert (x, y) == (50, 60) and rows[0][2] - rows[0][1] == user32.MENU_ITEM_H and rows[1][2] - rows[1][1] == user32.MENU_SEP_H
+    li, it = user32.popup_item_at(m, popup, 60, rows[0][1] + 3)
+    assert li == 0 and it["id"] == 100
+    assert user32.popup_item_at(m, popup, 5, 5) == (None, None)
+    user32._popup_choose(m, popup, items[2])                         # grey: nothing
+    assert not popup["done"]
+    user32._popup_choose(m, popup, items[3])                         # a submenu opens beside it
+    assert len(popup["levels"]) == 2 and popup["levels"][1][0] is user32._menu_items(m, sub)
+    user32._popup_choose(m, popup, items[0])
+    assert popup["done"] and popup["choice"] == 100
+
+
+def test_isotropic_mapping_scales_and_offsets_logical_units():
+    """The game draws its full-size card in a 200x300 logical space with the origin in the middle (MM_ISOTROPIC) on a 160x240 window."""
+    from winemu import gdi
+    dc = gdi.DC("memory")
+    dc.mm = 7
+    dc.wext, dc.vext = (200, 300), (160, 240)
+    gdi._rescale(dc)
+    dc.wo, dc.org = (100, 150), (80, 120)
+    assert (dc.sx, dc.sy) == (0.8, 0.8)
+    assert gdi.lx(dc, 0) + dc.org[0] == 0 and gdi.ly(dc, 0) + dc.org[1] == 0           # logical (0, 0) is the window's top-left
+    assert gdi.lx(dc, 200) + dc.org[0] == 160 and gdi.ly(dc, 300) + dc.org[1] == 240   # and (200, 300) its bottom-right
+    assert gdi.dev_rect(dc, 10, 20, 100, 50) == (-72, -104, 80, 40)                   # relative to the viewport origin
+    dc.mm = 1                                                                          # MM_TEXT: back to 1:1
+    dc.wext = dc.vext = (1, 1)
+    gdi._rescale(dc)
+    assert (dc.sx, dc.sy) == (1.0, 1.0)
+
+
+def test_isotropic_scale_is_the_smaller_ratio():
+    from winemu import gdi
+    dc = gdi.DC("memory")
+    dc.mm = 7
+    dc.wext, dc.vext = (100, 100), (200, 50)
+    gdi._rescale(dc)
+    assert dc.sx == dc.sy == 0.5
+    dc.mm = 8                                                                          # MM_ANISOTROPIC keeps both
+    gdi._rescale(dc)
+    assert (dc.sx, dc.sy) == (2.0, 0.5)
+
+
+def test_draw_text_wraps_at_spaces_and_newlines():
+    from winemu import user32
+
+    class DC:
+        pass
+
+    def fake_size(m, dc, s):
+        return len(s) * 10, 10
+    orig = user32.text_size
+    user32.text_size = fake_size
+    try:
+        wrap = lambda text, width, wb=True, single=False: user32._wrap_lines(None, DC(), text, width, wb, single)   # noqa: E731
+        assert wrap("aaa bbb ccc", 70) == ["aaa bbb", "ccc"]                    # 7 characters fit in 70
+        assert wrap("aaa bbb ccc", 1000) == ["aaa bbb ccc"]
+        assert wrap("one\ntwo", 1000) == ["one", "two"]                         # a newline always breaks...
+        assert wrap("one\ntwo", 1000, single=True) == ["one\ntwo"]              # ...except in a single line
+        assert wrap("a verylongword b", 50) == ["a", "verylongword", "b"]       # a word wider than the line has its own line
+        assert wrap("aaa bbb", 10, wb=False) == ["aaa bbb"]                     # no DT_WORDBREAK: one line
+    finally:
+        user32.text_size = orig
