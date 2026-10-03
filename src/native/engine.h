@@ -69,6 +69,7 @@ typedef enum {
     CALLEE_MARK_CARD,            /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
     CALLEE_AFTER_MARK,           /* Pic_Subsystem_004488a0() */
     CALLEE_FIND_FREE_SLOT,       /* Pic_Subsystem_00451291(player, card): allocate a slot */
+    CALLEE_AI_PREROLL_RANDOM,    /* FUN_004398be / Ai_Util_0040a1ff(): fills the AI's table of 100 random numbers (calls _rand) */
     CALLEE_FUNCTION,             /* any other function, at the address passed in (called from lifted code, lift_bridge.c) */
     CALLEE_COUNT
 } Callee;
@@ -98,6 +99,13 @@ typedef enum {
     FN_AI_GET_LAND_COLOR_MASKS,
     FN_SCAN_CARDS,
     FN_CRT_MEMCPY,
+    FN_AI_SAVE_GAME_STATE,
+    FN_AI_RESTORE_GAME_STATE,
+    FN_AI_PUSH_BOARD_STATE,
+    FN_AI_POP_BOARD_STATE,
+    FN_AI_RESET_RANDOM_CURSOR,
+    FN_AI_BEGIN_TRIAL,
+    FN_CRT_MEMSET,
     FN_COUNT
 } NativeFn;
 
@@ -160,6 +168,10 @@ typedef struct Layout {
     uint32_t ai_overflow_flag;     /* g_ActivePlayer / g_DuelHumanPlayerIndex: set to 1 when the list is full */
     uint32_t ai_committed;         /* DAT_00633434 / DAT_0067650c: set to 1 by every commit of a best plan */
     uint32_t ai_peeked_choice;     /* DAT_0062785c / DAT_00666410: written by the planned-choice peek */
+    uint32_t ai_random_cursor;     /* DAT_00538334 / DAT_00516744: next pre-rolled random number; reset to 0 by every restore */
+    uint32_t ai_trial_word_a;      /* DAT_00701008 / DAT_00690c44: cleared at the start of a trial, and copied to ai_cursor */
+    uint32_t ai_trial_word_b;      /* DAT_0063ee70 / DAT_0068ef98: set to -1 at the start of a trial */
+    uint32_t ai_search_stage;      /* DAT_006808a8 / DAT_00666400: the search stage; -1 outside the search */
     uint32_t land_counts_x;        /* DAT_0063ee50 / DAT_0068ef70: five per-colour land counts (colour 1 to 5) */
     uint32_t land_counts_y;        /* DAT_0063ee30 / DAT_0068ef50: the other player's */
     uint32_t callee[CALLEE_COUNT];
@@ -203,6 +215,9 @@ extern uint64_t native_entries[FN_COUNT];
 #define NATIVE_ENTER(id) (native_entries[id]++)
 /* Native functions the host does not stand in for: lifted code that calls one goes out to the original (native_host.h). */
 extern unsigned char native_disabled[FN_COUNT];
+/* Set in shadow mode: lifted code calls only the native functions that count their original's instructions exactly (self_charging);
+ * the others are run as their lifted twins, or by the original, so that no instruction goes uncounted. */
+extern int native_exact_only;
 
 /* Stop on a code path that is not implemented natively (an assert, and an abort under NDEBUG). */
 #define NATIVE_UNIMPLEMENTED(what) native_unimplemented(what, __FILE__, __LINE__)
@@ -222,7 +237,18 @@ void Native_Magic_ScanCards(Vm *vm, int32_t event_code);
  * function whose cost depends on its arguments adds it to native_cost_extra as it runs. */
 uint32_t Native_Crt_Memcpy(Vm *vm, uint32_t dst, uint32_t src, uint32_t n);
 uint64_t crt_memcpy_instructions(uint32_t dst, uint32_t src, uint32_t n);
+uint32_t Native_Crt_Memset(Vm *vm, uint32_t dst, uint32_t value, uint32_t n);
+uint64_t crt_memset_instructions(uint32_t dst, uint32_t n);
 extern uint64_t native_cost_extra;
+
+/* The AI's snapshots of the game (ai_state.c): the search saves the game before it starts, and restores it before each trial; the
+ * board push and pop are a second, one-deep snapshot. Ai_ResetRandomCursor puts the pre-rolled random numbers back at their start. */
+void Native_Ai_SaveGameState(Vm *vm);
+void Native_Ai_RestoreGameState(Vm *vm);
+void Native_Ai_PushBoardState(Vm *vm);
+void Native_Ai_PopBoardState(Vm *vm);
+void Native_Ai_ResetRandomCursor(Vm *vm);
+void Native_Ai_BeginTrial(Vm *vm);
 void Native_Ai_RecordChoice(Vm *vm);
 void Native_Ai_ReplayChoice(Vm *vm);
 void Native_Ai_CommitBestPlan(Vm *vm);
@@ -248,6 +274,7 @@ typedef struct NativeInfo {
     int nargs;
     int ret_bits; /* 8 for a bool returned in AL, 32 otherwise, 0 for a void function (EAX is not compared) */
     uint32_t (*run)(Vm *vm, const uint32_t *args);
+    int self_charging; /* 1: the function adds the instructions its original would have run to native_cost_extra itself, so the host does not charge a calibrated average per call */
 } NativeInfo;
 
 extern const NativeInfo NATIVE_FUNCTIONS[FN_COUNT];

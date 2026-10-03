@@ -71,6 +71,8 @@ static Harness H;
 #ifdef NATIVE_LIFTED
 static uint32_t lifted_entry;
 static NativeInfo lifted_info;
+static int lifted_nargs = 3;   /* a lifted function that is not a card handler takes the arguments its vector has */
+static int natives_only;       /* `natives`: the lifted function's native callees run native, everything else is replayed */
 #endif
 
 static void die(const char *msg, const char *detail)
@@ -171,7 +173,7 @@ static int run_guarded(const NativeInfo *fn, Vm *vm, const uint32_t *args, uint3
         return 1;
 #ifdef NATIVE_LIFTED
     if (fn == &lifted_info) {
-        if (!lift_call_function(vm, lifted_entry, 3, args, ret))
+        if (!lift_call_function(vm, lifted_entry, lifted_nargs, args, ret))
             die("no lifted function at", fn->name);
         return 0;
     }
@@ -225,6 +227,10 @@ int main(void)
         } else if (strcmp(cmd, "handler_esp") == 0) {
             handler_esp = parse_u32(strtok(NULL, " \t\r\n"));
             have_handler_esp = 1;
+        } else if (strcmp(cmd, "natives") == 0) {
+#ifdef NATIVE_LIFTED
+            natives_only = 1;
+#endif
         } else if (strcmp(cmd, "lifted") == 0) {
             use_lifted_handlers = 1;
         } else if (strcmp(cmd, "esp") == 0) {
@@ -285,7 +291,15 @@ int main(void)
         die("no run command", NULL);
     if (!layout || !fn)
         die("program and function are required", NULL);
-    if (nargs != fn->nargs) {
+#ifdef NATIVE_LIFTED
+    if (fn == &lifted_info)
+        lifted_nargs = nargs;
+#endif
+    if (nargs != fn->nargs
+#ifdef NATIVE_LIFTED
+        && fn != &lifted_info
+#endif
+    ) {
         char detail[64];
         snprintf(detail, sizeof(detail), "%s takes %d, got %d", fn->name, fn->nargs, nargs);
         die("wrong argument count", detail);
@@ -314,7 +328,7 @@ int main(void)
 #ifdef NATIVE_LIFTED
     if (fn == &lifted_info) {
         uint32_t top = have_stack_ptr ? stack_ptr + 4u * (uint32_t)(nargs + 1) : LIFT_STACK_TOP;
-        lift_attach(&vm, LIFT_CALLS_HOOK);
+        lift_attach(&vm, natives_only ? LIFT_CALLS_NATIVES_ONLY : LIFT_CALLS_HOOK);
         lift_set_stack(top);
         H.frame_lo = top - 4u * (uint32_t)(nargs + 1) - 0x200000u;
         H.frame_hi = top;
@@ -339,7 +353,20 @@ int main(void)
     printf("retbits %d\n", fn->ret_bits);
     fflush(stdout);
 
-    bailed = run_guarded(fn, &vm, args, &ret);
+    {
+        extern uint64_t lift_icount;
+        uint64_t cost0 = native_cost_extra
+#ifdef NATIVE_LIFTED
+                         + lift_icount
+#endif
+            ;
+        bailed = run_guarded(fn, &vm, args, &ret);
+        printf("cost %llu\n", (unsigned long long)(native_cost_extra
+#ifdef NATIVE_LIFTED
+                                                     + lift_icount
+#endif
+                                                     - cost0));
+    }
     H.mem.on_write = NULL;
 
     if (!bailed)

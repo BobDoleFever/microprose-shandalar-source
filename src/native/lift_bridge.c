@@ -175,10 +175,11 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
         args[i] = mem_rd32(bridge_vm->mem, argp + 4u * (uint32_t)i);
     *cleanup = row ? row->cleanup : 0;
 
-    if (bridge_mode == LIFT_CALLS_NATIVE) {
+    if (bridge_mode == LIFT_CALLS_NATIVE || bridge_mode == LIFT_CALLS_NATIVES_ONLY) {
         int f;
         for (f = 0; f < FN_COUNT; f++)
-            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs && !native_disabled[f]) {
+            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs && !native_disabled[f] &&
+                (!native_exact_only || NATIVE_FUNCTIONS[f].self_charging)) {
                 /* a native function can run lifted code again (a query scans the cards): that code's frames go below this
                  * one's, not over the locals it is using */
                 uint32_t saved_top = stack_top;
@@ -198,7 +199,7 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
                 }
                 return ret;
             }
-        if (lift_find(target)) {
+        if (bridge_mode == LIFT_CALLS_NATIVE && lift_find(target)) {
             const LiftedFn *lf = lift_find(target);
             uint32_t saved = stack_top;
             stack_top = argp - 4u;

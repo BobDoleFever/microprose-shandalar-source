@@ -12,7 +12,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 RD = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_void_p, ctypes.c_uint32, ctypes.c_int)
 WR = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32)
-CALL = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_uint32, ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32)
+CALL = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_uint32, ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.c_int,
+                        ctypes.POINTER(ctypes.c_uint32))
 
 SLOT = 0x006826C0          # DUEL.EXE slot table
 MASTER = 0x004FF590        # master card table
@@ -32,7 +33,8 @@ def host(tmp_path_factory):
     assert proc.returncode == 0, proc.stdout + proc.stderr
     lib = ctypes.CDLL(str(out / "build" / "libnative_host.dylib"))
     lib.host_native_find.argtypes = [ctypes.c_char_p]
-    lib.host_native_try.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+    lib.host_native_try.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32),
+                                    ctypes.POINTER(ctypes.c_uint32)]
     lib.host_native_run.restype = ctypes.c_uint32
     lib.host_native_run.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32]
     lib.host_add_region.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p]
@@ -41,7 +43,7 @@ def host(tmp_path_factory):
     buf = (ctypes.c_uint8 * size)()
     calls = []
 
-    def call(addr, nargs, args, sp):
+    def call(addr, nargs, args, sp, inplace, regs):
         calls.append((addr, [args[i] for i in range(nargs)]))
         return 7
 
@@ -62,7 +64,7 @@ def run_try(h, name, *args):
     fid = h.lib.host_native_find(name.encode())
     arr = (ctypes.c_uint32 * max(len(args), 1))(*args)
     out = ctypes.c_uint32()
-    status = h.lib.host_native_try(fid, arr, 0x00700000, ctypes.byref(out))
+    status = h.lib.host_native_try(fid, arr, 0x00700000, None, ctypes.byref(out))
     return status, out.value
 
 

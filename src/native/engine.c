@@ -16,6 +16,7 @@ static const char *const CALLEE_NAMES[CALLEE_COUNT] = {
     [CALLEE_MARK_CARD] = "Pic_Subsystem_0044867e",
     [CALLEE_AFTER_MARK] = "Pic_Subsystem_004488a0",
     [CALLEE_FIND_FREE_SLOT] = "Pic_Subsystem_00451291 (find free slot)",
+    [CALLEE_AI_PREROLL_RANDOM] = "FUN_004398be (fill the table of random numbers)",
     [CALLEE_FUNCTION] = "a function called from lifted code",
 };
 
@@ -35,6 +36,7 @@ uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args)
 
 uint64_t native_entries[FN_COUNT];
 unsigned char native_disabled[FN_COUNT];
+int native_exact_only;
 
 int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret);
 
@@ -193,30 +195,84 @@ static uint32_t run_crt_memcpy(Vm *vm, const uint32_t *a)
     return Native_Crt_Memcpy(vm, a[0], a[1], a[2]);
 }
 
+static uint32_t run_crt_memset(Vm *vm, const uint32_t *a)
+{
+    return Native_Crt_Memset(vm, a[0], a[1], a[2]);
+}
+
+static uint32_t run_ai_save(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_SaveGameState(vm);
+    return 0;
+}
+
+static uint32_t run_ai_restore(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_RestoreGameState(vm);
+    return 0;
+}
+
+static uint32_t run_ai_push(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_PushBoardState(vm);
+    return 0;
+}
+
+static uint32_t run_ai_pop(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_PopBoardState(vm);
+    return 0;
+}
+
+static uint32_t run_ai_reset_random(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_ResetRandomCursor(vm);
+    return 0;
+}
+
+static uint32_t run_ai_begin_trial(Vm *vm, const uint32_t *a)
+{
+    (void)a;
+    Native_Ai_BeginTrial(vm);
+    return 0;
+}
+
 const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
-    {FN_QUERY_CARD_ATTRIBUTE, "Magic_QueryCardAttribute", 4, 32, run_query},
-    {FN_IS_MANA_SOURCE, "Magic_IsManaSource", 2, 8, run_is_mana_source},
-    {FN_DROP_TOP_SPELL, "Magic_DropTopSpell", 0, 32, run_drop},
-    {FN_PUSH_SPELL_STACK, "Magic_PushSpellStack", 5, 32, run_push},
-    {FN_CLEAR_SPELL_STACK, "Magic_ClearSpellStack", 0, 32, run_clear},
-    {FN_GET_COLOR_AND_TYPE_FLAGS, "Card_GetColorAndTypeFlags", 2, 32, run_color_flags},
-    {FN_PUSH_EVENT_CONTEXT, "Magic_PushEventContext", 0, 0, run_push_event_context},
-    {FN_POP_EVENT_CONTEXT, "Magic_PopEventContext", 0, 0, run_pop_event_context},
-    {FN_CARD_IS_IN_PLAY, "Card_IsInPlay", 2, 8, run_is_tapped},
-    {FN_COLOR_MASK_TO_INDEX, "Card_ColorMaskToColorIndex", 1, 32, run_mask_to_index},
-    {FN_REMAP_COLOR_INDEX_FF, "Card_RemapColorIndexFF", 3, 32, run_remap_ff},
-    {FN_REMAP_COLOR_INDEX_F9, "Card_RemapColorIndexF9", 3, 32, run_remap_f9},
-    {FN_AI_RECORD_CHOICE, "Ai_RecordChoice", 0, 0, run_ai_record},
-    {FN_AI_REPLAY_CHOICE, "Ai_ReplayChoice", 0, 0, run_ai_replay},
-    {FN_AI_COMMIT_BEST_PLAN, "Ai_CommitBestPlan", 0, 0, run_ai_commit},
-    {FN_AI_CLEAR_PLAN, "Ai_ClearPlan", 0, 0, run_ai_clear},
-    {FN_AI_GET_PLAN_CURSOR, "Ai_GetPlanCursor", 0, 32, run_ai_cursor},
-    {FN_AI_PLAN_CURSOR_BACK, "Ai_PlanCursorBack", 0, 0, run_ai_cursor_back},
-    {FN_AI_PEEK_PLANNED_SLOT, "Ai_PeekPlannedSlot", 1, 32, run_ai_peek_slot},
-    {FN_AI_PEEK_PLANNED_CHOICE, "Ai_PeekPlannedChoice", 1, 32, run_ai_peek_choice},
-    {FN_AI_GET_LAND_COLOR_MASKS, "Ai_GetLandColorMasks", 2, 0, run_ai_land_masks},
-    {FN_SCAN_CARDS, "Magic_ScanCards", 1, 0, run_scan_cards},
-    {FN_CRT_MEMCPY, "Crt_Memcpy", 3, 32, run_crt_memcpy},
+    {FN_QUERY_CARD_ATTRIBUTE, "Magic_QueryCardAttribute", 4, 32, run_query, 0},
+    {FN_IS_MANA_SOURCE, "Magic_IsManaSource", 2, 8, run_is_mana_source, 0},
+    {FN_DROP_TOP_SPELL, "Magic_DropTopSpell", 0, 32, run_drop, 0},
+    {FN_PUSH_SPELL_STACK, "Magic_PushSpellStack", 5, 32, run_push, 0},
+    {FN_CLEAR_SPELL_STACK, "Magic_ClearSpellStack", 0, 32, run_clear, 0},
+    {FN_GET_COLOR_AND_TYPE_FLAGS, "Card_GetColorAndTypeFlags", 2, 32, run_color_flags, 0},
+    {FN_PUSH_EVENT_CONTEXT, "Magic_PushEventContext", 0, 0, run_push_event_context, 0},
+    {FN_POP_EVENT_CONTEXT, "Magic_PopEventContext", 0, 0, run_pop_event_context, 0},
+    {FN_CARD_IS_IN_PLAY, "Card_IsInPlay", 2, 8, run_is_tapped, 0},
+    {FN_COLOR_MASK_TO_INDEX, "Card_ColorMaskToColorIndex", 1, 32, run_mask_to_index, 0},
+    {FN_REMAP_COLOR_INDEX_FF, "Card_RemapColorIndexFF", 3, 32, run_remap_ff, 0},
+    {FN_REMAP_COLOR_INDEX_F9, "Card_RemapColorIndexF9", 3, 32, run_remap_f9, 0},
+    {FN_AI_RECORD_CHOICE, "Ai_RecordChoice", 0, 0, run_ai_record, 0},
+    {FN_AI_REPLAY_CHOICE, "Ai_ReplayChoice", 0, 0, run_ai_replay, 0},
+    {FN_AI_COMMIT_BEST_PLAN, "Ai_CommitBestPlan", 0, 0, run_ai_commit, 0},
+    {FN_AI_CLEAR_PLAN, "Ai_ClearPlan", 0, 0, run_ai_clear, 0},
+    {FN_AI_GET_PLAN_CURSOR, "Ai_GetPlanCursor", 0, 32, run_ai_cursor, 0},
+    {FN_AI_PLAN_CURSOR_BACK, "Ai_PlanCursorBack", 0, 0, run_ai_cursor_back, 0},
+    {FN_AI_PEEK_PLANNED_SLOT, "Ai_PeekPlannedSlot", 1, 32, run_ai_peek_slot, 0},
+    {FN_AI_PEEK_PLANNED_CHOICE, "Ai_PeekPlannedChoice", 1, 32, run_ai_peek_choice, 0},
+    {FN_AI_GET_LAND_COLOR_MASKS, "Ai_GetLandColorMasks", 2, 0, run_ai_land_masks, 0},
+    {FN_SCAN_CARDS, "Magic_ScanCards", 1, 0, run_scan_cards, 0},
+    {FN_CRT_MEMCPY, "Crt_Memcpy", 3, 32, run_crt_memcpy, 1},
+    {FN_AI_SAVE_GAME_STATE, "Ai_SaveGameState", 0, 0, run_ai_save, 1},
+    {FN_AI_RESTORE_GAME_STATE, "Ai_RestoreGameState", 0, 0, run_ai_restore, 1},
+    {FN_AI_PUSH_BOARD_STATE, "Ai_PushBoardState", 0, 0, run_ai_push, 1},
+    {FN_AI_POP_BOARD_STATE, "Ai_PopBoardState", 0, 0, run_ai_pop, 1},
+    {FN_AI_RESET_RANDOM_CURSOR, "Ai_ResetRandomCursor", 0, 0, run_ai_reset_random, 1},
+    {FN_AI_BEGIN_TRIAL, "Ai_BeginTrial", 0, 0, run_ai_begin_trial, 1},
+    {FN_CRT_MEMSET, "Crt_Memset", 3, 32, run_crt_memset, 1},
 };
 
 const NativeInfo *native_find(const char *name)

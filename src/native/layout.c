@@ -50,6 +50,10 @@ const Layout LAYOUT_MAGIC = {
     .scan_flag = 0x006ff2d4,
     .global_handler = 0x0068a64c,
     .ai_cursor = 0x0054be44,
+    .ai_random_cursor = 0x00538334,
+    .ai_trial_word_a = 0x00701008,
+    .ai_trial_word_b = 0x0063ee70,
+    .ai_search_stage = 0x006808a8,
     .ai_trial_choice = 0x005524c8,
     .ai_trial_slot = 0x0054fc38,
     .ai_trial_card = 0x00553840,
@@ -74,6 +78,7 @@ const Layout LAYOUT_MAGIC = {
         [CALLEE_MARK_CARD] = 0x0044867e,
         [CALLEE_AFTER_MARK] = 0x004488a0,
         [CALLEE_FIND_FREE_SLOT] = 0x00451291,
+        [CALLEE_AI_PREROLL_RANDOM] = 0x0040a1ff,
     },
     .entry = {
         [FN_QUERY_CARD_ATTRIBUTE] = 0x00473179,
@@ -99,6 +104,13 @@ const Layout LAYOUT_MAGIC = {
         [FN_AI_GET_LAND_COLOR_MASKS] = 0x004acb7f,
         [FN_SCAN_CARDS] = 0x00473f06,
         [FN_CRT_MEMCPY] = 0x00000000, /* none: MAGIC.EXE imports memcpy from the runtime DLL */
+        [FN_AI_SAVE_GAME_STATE] = 0x004aa830,
+        [FN_AI_RESTORE_GAME_STATE] = 0x004aaaea,
+        [FN_AI_PUSH_BOARD_STATE] = 0x004aad61,
+        [FN_AI_POP_BOARD_STATE] = 0x004aafa8,
+        [FN_AI_RESET_RANDOM_CURSOR] = 0x0040a240,
+        [FN_AI_BEGIN_TRIAL] = 0x004ab214,
+        [FN_CRT_MEMSET] = 0x00000000, /* none: MAGIC.EXE imports memset from the runtime DLL */
     },
 };
 
@@ -143,6 +155,10 @@ const Layout LAYOUT_DUEL = {
     .scan_flag = 0x0068f0f4,
     .global_handler = 0x00666418,
     .ai_cursor = 0x0050b37c,
+    .ai_random_cursor = 0x00516744,
+    .ai_trial_word_a = 0x00690c44,
+    .ai_trial_word_b = 0x0068ef98,
+    .ai_search_stage = 0x00666400,
     .ai_trial_choice = 0x00511a00,
     .ai_trial_slot = 0x0050f170,
     .ai_trial_card = 0x00512d78,
@@ -167,6 +183,7 @@ const Layout LAYOUT_DUEL = {
         [CALLEE_MARK_CARD] = 0x0046e571,
         [CALLEE_AFTER_MARK] = 0x0046e793,
         [CALLEE_FIND_FREE_SLOT] = 0x004d695b,
+        [CALLEE_AI_PREROLL_RANDOM] = 0x004398be,
     },
     .entry = {
         [FN_QUERY_CARD_ATTRIBUTE] = 0x0048b81a,
@@ -192,6 +209,13 @@ const Layout LAYOUT_DUEL = {
         [FN_AI_GET_LAND_COLOR_MASKS] = 0x00431f41,
         [FN_SCAN_CARDS] = 0x0048c5a8,
         [FN_CRT_MEMCPY] = 0x004d99b0,
+        [FN_AI_SAVE_GAME_STATE] = 0x0042fbf0,
+        [FN_AI_RESTORE_GAME_STATE] = 0x0042fea9,
+        [FN_AI_PUSH_BOARD_STATE] = 0x00430120,
+        [FN_AI_POP_BOARD_STATE] = 0x00430367,
+        [FN_AI_RESET_RANDOM_CURSOR] = 0x004398fe,
+        [FN_AI_BEGIN_TRIAL] = 0x004305d3,
+        [FN_CRT_MEMSET] = 0x004da190,
     },
 };
 

@@ -79,28 +79,59 @@ typedef struct {
 } Counters;
 static Counters counters_saved;
 
-static void save_counters(void)
+static void snap_counters(Counters *c)
 {
-    memcpy(counters_saved.entries, native_entries, sizeof(native_entries));
-    counters_saved.extra = native_cost_extra;
+    memcpy(c->entries, native_entries, sizeof(native_entries));
+    c->extra = native_cost_extra;
 #ifdef HOST_LIFTED
     {
         extern uint64_t lift_icount;
-        counters_saved.lifted = lift_icount;
+        c->lifted = lift_icount;
     }
 #endif
 }
 
-static void restore_counters(void)
+static void put_counters(const Counters *c)
 {
-    memcpy(native_entries, counters_saved.entries, sizeof(native_entries));
-    native_cost_extra = counters_saved.extra;
+    memcpy(native_entries, c->entries, sizeof(native_entries));
+    native_cost_extra = c->extra;
 #ifdef HOST_LIFTED
     {
         extern uint64_t lift_icount;
-        lift_icount = counters_saved.lifted;
+        lift_icount = c->lifted;
     }
 #endif
+}
+
+static void save_counters(void)
+{
+    snap_counters(&counters_saved);
+}
+
+static void restore_counters(void)
+{
+    put_counters(&counters_saved);
+}
+
+/* Shadow mode (host_set_shadow): the writes a call makes, as ranges, so that two runs of the same call can be compared. */
+typedef struct {
+    uint32_t addr, size;
+} Range;
+static Range *wlog;
+static size_t nwlog, capwlog;
+static int wlog_on;
+
+static void log_write(uint32_t addr, uint32_t size)
+{
+    if (nwlog == capwlog) {
+        capwlog = capwlog ? capwlog * 2 : 1024;
+        wlog = realloc(wlog, capwlog * sizeof(*wlog));
+        if (!wlog)
+            abort();
+    }
+    wlog[nwlog].addr = addr;
+    wlog[nwlog].size = size;
+    nwlog++;
 }
 
 /* A call finished: what it wrote stays. */
@@ -125,6 +156,8 @@ static void direct_write(void *ctx, uint32_t addr, int size, uint32_t value)
 {
     uint8_t *p = locate(addr, size);
     if (p) {
+        if (wlog_on)
+            log_write(addr, (uint32_t)size);
         if (trying) {
             Undo *u = push_undo();
             u->addr = addr;
@@ -144,6 +177,8 @@ static int direct_copy(void *ctx, uint32_t dst, uint32_t src, uint32_t len)
     (void)ctx;
     if (!pd || !ps || len > 0x7fffffffu)
         return 0;
+    if (wlog_on)
+        log_write(dst, len);
     if (trying) {
         Undo *u = push_undo();
         u->addr = dst;
@@ -254,11 +289,192 @@ int host_native_find(const char *name)
     return n ? (int)n->id : -1;
 }
 
-int host_native_try(int id, const uint32_t *args, uint32_t sp, uint32_t *ret)
+/* ---- shadow mode ---------------------------------------------------------------------------------------------------------
+ * A hand-written native function that has a lifted twin (the same function's machine code translated by tools/lift) is run
+ * both ways on every call of the real game: the twin first, on the guest's own stack and registers, then the native function,
+ * each under the undo log. Their return values and the bytes they wrote outside the stack frame are compared, the difference
+ * is reported, and the twin's result is what the guest keeps: so a run in shadow mode is the original's own (the twin counts the
+ * instructions the original ran, and leaves what it left on the stack), and every call the game makes is also a test of the
+ * hand-written code, on far more states than recorded vectors reach. */
+static int shadow_on;
+static uint64_t shadow_compared, shadow_mismatches, shadow_unchecked;
+
+void host_set_shadow(int on)
+{
+    shadow_on = on;
+    native_exact_only = on;
+}
+
+void host_shadow_stats(uint64_t *compared, uint64_t *mismatches, uint64_t *unchecked)
+{
+    *compared = shadow_compared;
+    *mismatches = shadow_mismatches;
+    *unchecked = shadow_unchecked;
+}
+
+#ifdef HOST_LIFTED
+typedef struct {
+    Range *r;
+    size_t n;
+    uint8_t *bytes;
+} Written;
+
+static Written written_a, written_b;
+
+static void capture(Written *w)
+{
+    size_t i, total = 0, at = 0;
+
+    w->n = nwlog;
+    w->r = malloc((nwlog ? nwlog : 1) * sizeof(Range));
+    for (i = 0; i < nwlog; i++)
+        total += wlog[i].size;
+    w->bytes = malloc(total ? total : 1);
+    if (!w->r || !w->bytes)
+        abort();
+    for (i = 0; i < nwlog; i++) {
+        uint8_t *p = locate(wlog[i].addr, (int)wlog[i].size);
+        w->r[i] = wlog[i];
+        if (p)
+            memcpy(w->bytes + at, p, wlog[i].size);
+        else
+            memset(w->bytes + at, 0, wlog[i].size);
+        at += wlog[i].size;
+    }
+}
+
+static void release(Written *w)
+{
+    free(w->r);
+    free(w->bytes);
+    w->r = NULL;
+    w->bytes = NULL;
+    w->n = 0;
+}
+
+/* The first byte at or above `floor` (the frame of the call is below it) where memory differs from what `w` captured. */
+static int first_difference(const Written *w, uint32_t floor, uint32_t *where)
+{
+    size_t i, at = 0;
+    for (i = 0; i < w->n; i++) {
+        uint8_t *p = locate(w->r[i].addr, (int)w->r[i].size);
+        uint32_t k;
+        for (k = 0; p && k < w->r[i].size; k++)
+            if (w->r[i].addr + k >= floor && p[k] != w->bytes[at + k]) {
+                *where = w->r[i].addr + k;
+                return 1;
+            }
+        at += w->r[i].size;
+    }
+    return 0;
+}
+
+static void apply(const Written *w)
+{
+    size_t i, at = 0;
+    for (i = 0; i < w->n; i++) {
+        uint8_t *p = locate(w->r[i].addr, (int)w->r[i].size);
+        if (p)
+            memcpy(p, w->bytes + at, w->r[i].size);
+        at += w->r[i].size;
+    }
+}
+
+static Counters counters_lifted;
+
+static int shadow_try(int id, const uint32_t *args, uint32_t sp, const uint32_t *regs, uint32_t *ret)
+{
+    uint32_t entry = host_vm.L->entry[id], saved_sp = lift_get_stack(), where = 0, native_ret = 0;
+    static uint32_t twin_ret;
+    int bits = NATIVE_FUNCTIONS[id].ret_bits, differs = 0;
+
+    lift_set_stack(sp);
+    host_sp = sp;
+    save_counters();
+    drop_undo();
+    trying = 1;
+    nwlog = 0;
+    wlog_on = 1;
+    if (setjmp(try_jb)) {   /* the twin needs the guest: not shadowed, the caller runs it on a thread */
+        trying = 0;
+        wlog_on = 0;
+        roll_back();
+        restore_counters();
+        lift_set_stack(saved_sp);
+        shadow_unchecked++;
+        return 1;
+    }
+    lift_run_at(&host_vm, entry, sp, regs, &twin_ret);
+    trying = 0;
+    wlog_on = 0;
+    capture(&written_a);
+    snap_counters(&counters_lifted);
+    roll_back();                 /* back to the state the call found */
+
+    trying = 1;
+    nwlog = 0;
+    wlog_on = 1;
+    if (setjmp(try_jb)) {   /* the native function needs the guest: nothing to compare */
+        trying = 0;
+        wlog_on = 0;
+        roll_back();
+        put_counters(&counters_lifted);
+        apply(&written_a);
+        release(&written_a);
+        lift_set_stack(saved_sp);
+        shadow_unchecked++;
+        *ret = twin_ret;
+        return 0;
+    }
+    native_ret = NATIVE_FUNCTIONS[id].run(&host_vm, args);
+    trying = 0;
+    wlog_on = 0;
+    if (bits && ((native_ret ^ twin_ret) & (bits == 8 ? 0xffu : 0xffffffffu))) {
+        fprintf(stderr, "shadow: %s returned 0x%x, its machine code 0x%x\n", NATIVE_FUNCTIONS[id].name, native_ret, twin_ret);
+        differs = 1;
+    }
+    if (first_difference(&written_a, sp, &where)) {
+        fprintf(stderr, "shadow: %s: the machine code left a different byte at 0x%08x\n", NATIVE_FUNCTIONS[id].name, where);
+        differs = 1;
+    }
+    capture(&written_b);
+    roll_back();
+    put_counters(&counters_lifted);
+    apply(&written_a);
+    if (first_difference(&written_b, sp, &where)) {
+        fprintf(stderr, "shadow: %s wrote 0x%08x differently from its machine code\n", NATIVE_FUNCTIONS[id].name, where);
+        differs = 1;
+    }
+    release(&written_a);
+    release(&written_b);
+    shadow_compared++;
+    shadow_mismatches += (uint64_t)differs;
+    lift_set_stack(saved_sp);
+    *ret = twin_ret;
+    return 0;
+}
+#endif
+
+int host_native_has_twin(int id)
 {
 #ifdef HOST_LIFTED
-    uint32_t saved_sp = lift_get_stack();
+    return lift_find((host_vm.L ? host_vm.L : &LAYOUT_DUEL)->entry[id]) != NULL;
+#else
+    (void)id;
+    return 0;
+#endif
+}
+
+int host_native_try(int id, const uint32_t *args, uint32_t sp, const uint32_t *regs, uint32_t *ret)
+{
+#ifdef HOST_LIFTED
+    uint32_t saved_sp;
+    if (shadow_on && lift_find(host_vm.L->entry[id]))
+        return shadow_try(id, args, sp, regs, ret);
+    saved_sp = lift_get_stack();
     lift_set_stack(sp);
+#else
+    (void)regs;
 #endif
     host_sp = sp;
     drop_undo();
@@ -300,6 +516,11 @@ int host_native_nargs(int id)
 int host_native_ret_bits(int id)
 {
     return NATIVE_FUNCTIONS[id].ret_bits;
+}
+
+int host_native_self_charging(int id)
+{
+    return NATIVE_FUNCTIONS[id].self_charging;
 }
 
 uint32_t host_native_run(int id, const uint32_t *args, uint32_t sp)

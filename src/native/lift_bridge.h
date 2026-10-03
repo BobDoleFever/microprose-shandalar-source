@@ -14,6 +14,8 @@
  *                      checked on their own, one at a time)
  *   LIFT_CALLS_NATIVE  a function that has a native implementation runs it, another lifted function runs lifted, and
  *                      anything else goes to the hook
+ *   LIFT_CALLS_NATIVES_ONLY  a native function runs, everything else (lifted functions included) goes to the hook: the lifted
+ *                      function is then run in the same surroundings as a native one (tools/difftest/check_costs.py)
  */
 #ifndef NATIVE_LIFT_BRIDGE_H
 #define NATIVE_LIFT_BRIDGE_H
@@ -21,7 +23,7 @@
 #include "engine.h"
 #include "lift_tables.h"
 
-typedef enum { LIFT_CALLS_HOOK, LIFT_CALLS_NATIVE } LiftCalls;
+typedef enum { LIFT_CALLS_HOOK, LIFT_CALLS_NATIVE, LIFT_CALLS_NATIVES_ONLY } LiftCalls;
 
 /* Make the Vm's memory and hook the ones lifted code uses, and install the card-handler dispatch of vm_call_at. */
 void lift_attach(Vm *vm, LiftCalls mode);

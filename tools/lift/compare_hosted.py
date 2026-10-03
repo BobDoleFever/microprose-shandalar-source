@@ -24,16 +24,32 @@ import re
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "tools", "emu_spike"))
+from winemu.native_host import exact_native_names  # noqa: E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 SPEC = os.path.join(ROOT, "sources", "generated", "lift", "handler_spec.json")
 
 
+def all_native_names():
+    import ctypes  # noqa: PLC0415
+    from winemu.native_host import DEFAULT_LIB  # noqa: PLC0415
+    lib = ctypes.CDLL(os.environ.get("NATIVE_LIB") or DEFAULT_LIB)
+    lib.host_native_name.restype = ctypes.c_char_p
+    lib.host_native_name.argtypes = [ctypes.c_int]
+    return [lib.host_native_name(i).decode() for i in range(lib.host_native_count())]
+
+
 def run(args, hosted, every, detail=None):
     cmd = [sys.executable, "-m", "winemu.run", "--exe", args.exe, "--seconds", str(args.seconds), "--script", args.script]
     if hosted:
-        names = [e["name"] for e in json.load(open(SPEC)) if e["lifted"]] + ["Crt_Memcpy"]
-        if args.with_natives:
+        names = [e["name"] for e in json.load(open(SPEC)) if e["lifted"]] + exact_native_names()
+        if args.shadow:
+            exact = set(exact_native_names(shadow=True))
+            inexact = [n for n in all_native_names() if n not in exact]
+            cmd += ["--native", "--native-exact", "--native-shadow"] + (["--native-skip", ",".join(inexact)] if inexact else [])
+        elif args.with_natives:
             cmd += ["--native", "--native-exact"] + (["--native-costs", args.costs] if args.costs else [])
         else:
             cmd += ["--native", "--native-exact", "--native-only", ",".join(names)]
@@ -41,6 +57,8 @@ def run(args, hosted, every, detail=None):
     if detail:
         env["EMU_CALL_DETAIL"] = "%d:%d" % detail
     done = subprocess.run(cmd, cwd=os.path.join(ROOT, "tools", "emu_spike"), capture_output=True, text=True, env=env)
+    if done.stderr.strip():
+        print(done.stderr[-3000:])
     return done.stdout
 
 
@@ -49,7 +67,8 @@ def blocks(text):
 
 
 def summary(text):
-    return [line.strip() for line in text.splitlines() if "[digest" in line or line.startswith("finished") or "emulation error" in line]
+    return [line.strip() for line in text.splitlines()
+            if "[digest" in line or line.startswith("finished") or "emulation error" in line or "[shadow]" in line]
 
 
 def main():
@@ -59,6 +78,8 @@ def main():
     ap.add_argument("--script", default="")
     ap.add_argument("--every", type=int, default=5000, help="calls per hash block")
     ap.add_argument("--hard-stop", type=int, default=3000, help="real seconds before a run is cut off")
+    ap.add_argument("--shadow", action="store_true", help="every native function too, in shadow mode: each call is also run as the original's "
+                    "machine code and compared (differences are reported on stderr); the run is then the original's however the native code counts")
     ap.add_argument("--with-natives", action="store_true", help="replace the hand-written native functions too")
     ap.add_argument("--costs", default="", help="with --with-natives: the file from --native-calibrate")
     args = ap.parse_args()

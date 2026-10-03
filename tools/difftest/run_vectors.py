@@ -26,7 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 NATIVE = os.path.join(REPO, "src", "native")
 SOURCES = [os.path.join(HERE, "harness.c")] + [os.path.join(NATIVE, f) for f in (
-    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c", "event_context.c", "card_util.c", "ai_plan.c", "card_scan.c", "crt.c")]
+    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c", "event_context.c", "card_util.c", "ai_plan.c", "card_scan.c", "crt.c", "ai_state.c")]
 HEADERS = [os.path.join(NATIVE, f) for f in ("mem.h", "engine.h")]
 DEFAULT_HARNESS = os.path.join(HERE, "build", "harness")
 CFLAGS = ["-std=c99", "-O1", "-g", "-Wall", "-Wextra"]
@@ -162,6 +162,8 @@ def load_vector(path):
 
 def protocol(v):
     lines = [f"program {v['program']}", f"function {v['function']}"]
+    if v.get("natives_only"):
+        lines.append("natives")   # a lifted function whose native callees run native and everything else is replayed
     if v["address"] is not None:
         lines.append(f"entry 0x{v['address']:08x}")
     if v.get("lifted_handlers"):
@@ -182,7 +184,7 @@ def protocol(v):
 
 
 def parse_output(text):
-    out = {"ret": None, "retbits": 32, "calls": [], "written": [], "faults": [], "fault_total": 0,
+    out = {"ret": None, "retbits": 32, "cost": None, "calls": [], "written": [], "faults": [], "fault_total": 0,
            "reads": {}, "errors": []}
     for line in text.splitlines():
         parts = line.split()
@@ -193,6 +195,8 @@ def parse_output(text):
             out["retbits"] = int(parts[1])
         elif tag == "ret":
             out["ret"] = int(parts[1], 16)
+        elif tag == "cost":
+            out["cost"] = int(parts[1])
         elif tag == "call":
             out["calls"].append((int(parts[2], 16), [int(a, 16) for a in parts[4:]]))
         elif tag == "written":

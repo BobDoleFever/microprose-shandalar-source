@@ -83,12 +83,20 @@ NATIVE_FUNCTIONS = [
     ("FN_AI_GET_LAND_COLOR_MASKS", "Ai_GetLandColorMasks", 2),
     ("FN_SCAN_CARDS", "Magic_ScanCards", 1),
     ("FN_CRT_MEMCPY", "Crt_Memcpy", 3),
+    ("FN_AI_SAVE_GAME_STATE", "Ai_SaveGameState", 0),
+    ("FN_AI_RESTORE_GAME_STATE", "Ai_RestoreGameState", 0),
+    ("FN_AI_PUSH_BOARD_STATE", "Ai_PushBoardState", 0),
+    ("FN_AI_POP_BOARD_STATE", "Ai_PopBoardState", 0),
+    ("FN_AI_RESET_RANDOM_CURSOR", "Ai_ResetRandomCursor", 0),
+    ("FN_AI_BEGIN_TRIAL", "Ai_BeginTrial", 0),
+    ("FN_CRT_MEMSET", "Crt_Memset", 3),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
 VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext", "Ai_RecordChoice", "Ai_ReplayChoice",
                   "Ai_CommitBestPlan", "Ai_ClearPlan", "Ai_PlanCursorBack", "Ai_GetLandColorMasks",
-                  "Magic_ScanCards"}
+                  "Magic_ScanCards", "Ai_SaveGameState", "Ai_RestoreGameState", "Ai_PushBoardState", "Ai_PopBoardState",
+                  "Ai_ResetRandomCursor", "Ai_BeginTrial"}
 # Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c): the
 # functions the native code still calls through the hook because they are not native yet.
 CALLEES_INFO = [
@@ -99,6 +107,7 @@ CALLEES_INFO = [
     ("CALLEE_MARK_CARD", "mark_card", 3),
     ("CALLEE_AFTER_MARK", "after_mark", 0),
     ("CALLEE_FIND_FREE_SLOT", "find_free_slot", 2),
+    ("CALLEE_AI_PREROLL_RANDOM", "ai_preroll_random", 0),
 ]
 # Callees with no fixed address (a card handler's address is read from the card's master record), so layout.c has no
 # entry for them. They are recognised at the call instruction inside the native function instead (Recorder.handler_sites).
@@ -247,6 +256,9 @@ class Recorder:
             return (name, args[2])
         if name in ("Magic_PushEventContext", "Magic_PopEventContext"):
             return (name, m.r32(m.L_event_context_depth))
+        if name == "Crt_Memset":   # the size (exactly up to 64, then by magnitude), the alignment and whether the byte is zero
+            dst, val, n = args
+            return (name, n if n <= 64 else n.bit_length(), dst & 3, (val & 0xff) == 0)
         if name == "Crt_Memcpy":   # the size (exactly up to 64, then by magnitude), both alignments, and overlap
             dst, src, n = args
             return (name, n if n <= 64 else n.bit_length(), dst & 3, src & 3, dst > src and dst < src + n)
@@ -288,6 +300,8 @@ class Recorder:
                 return (name, thinking, args[0], here == 99)
             if name == "Ai_PlanCursorBack":
                 return (name, min(cursor, 2))
+            if name == "Ai_BeginTrial":
+                return (name, thinking)
             if name == "Ai_GetPlanCursor":
                 return (name, min(cursor, 3))
             if name == "Ai_GetLandColorMasks":
