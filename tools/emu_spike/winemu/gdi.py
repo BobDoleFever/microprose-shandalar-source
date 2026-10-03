@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .machine import api, u32
+from .paths import host_path
 
 g32 = lambda name, argc: api("gdi32.dll", name, argc)
 SCREEN_W, SCREEN_H = 640, 480
@@ -437,16 +438,34 @@ def create_font_indirect(m, a):
     h = struct.unpack("<i", m.rd(a[0], 4))[0]
     weight = m.r32(a[0] + 16)
     face = m.cstr(a[0] + 28, 32).decode("latin-1")
-    return new_obj(m, ("font", face, abs(h) or 13, weight or 400))
+    return new_obj(m, ("font", face, abs(h) or 13, weight or 400, bool(m.rd(a[0] + 20, 1)[0]), h))
 
 
 @g32("CreateFontA", 14)
 def create_font(m, a):
-    return new_obj(m, ("font", m.cstr(a[13]).decode("latin-1"), abs(struct.unpack("<i", struct.pack("<I", a[0]))[0]) or 13,
-                       a[4] or 400))
+    h = struct.unpack("<i", struct.pack("<I", a[0]))[0]
+    return new_obj(m, ("font", m.cstr(a[13]).decode("latin-1"), abs(h) or 13, a[4] or 400, bool(a[5] & 0xFF), h))
 
 
-g32("AddFontResourceA", 1)(lambda m, a: 1)
+def _family_key(face):
+    return face.strip().strip('"').lower()
+
+
+@g32("AddFontResourceA", 1)
+def add_font_resource(m, a):
+    """Remember the game's own TrueType file under its family name: CreateFont asks for that family and gets it (not a stand-in)."""
+    from PIL import ImageFont  # noqa: PLC0415
+    hp, ok = host_path(m.game_root, m.overlay_root, m.cwd, m.cstr(a[0]).decode("latin-1"))
+    if not ok:
+        return 0
+    try:
+        family, style = ImageFont.truetype(hp, 20).getname()
+    except OSError:
+        return 0
+    _st(m).setdefault("game_fonts", {}).setdefault(_family_key(family), {})[style.lower()] = hp
+    return 1
+
+
 g32("RemoveFontResourceA", 1)(lambda m, a: 1)
 
 
@@ -787,6 +806,8 @@ def _rescale(dc):
             dc.sx = dc.sy = min(abs(dc.sx), abs(dc.sy))
     else:
         dc.sx = dc.sy = 1.0
+    if dc.sx == 0 or dc.sy == 0:                                 # an extent not set yet (the game sets the two in separate calls)
+        dc.sx, dc.sy = dc.sx or 1.0, dc.sy or 1.0
 
 
 @g32("SetMapMode", 2)
@@ -1247,14 +1268,39 @@ def get_pixel(m, a):
 
 
 # ---- text ----------------------------------------------------------------------------------------------------
+def _game_font_path(st, face, weight, italic):
+    """The host path of the game's own font file for `face` (the style closest to the request), or None."""
+    styles = st.get("game_fonts", {}).get(_family_key(face))
+    if not styles:
+        return None
+    want = ("bold italic" if weight >= 600 and italic else "bold" if weight >= 600 else "italic" if italic else "regular")
+    for cand in (want, "regular", "bold", "italic"):
+        if cand in styles:
+            return styles[cand]
+    return next(iter(styles.values()))
+
+
 def _pil_font(m, font, scale=1.0):
     st = _st(m)
     face, size, weight = (font[1], font[2], font[3]) if font else ("Arial", 13, 400)
+    italic = bool(font[4]) if font and len(font) > 4 else False
+    height = font[5] if font and len(font) > 5 else size                # signed: negative is the em height, positive the cell height
     size = size * scale
-    key = (face, round(size, 2), weight >= 600)
+    key = (face, round(size, 2), weight >= 600, italic, height < 0)
+    if key not in st["font_cache"] and os.environ.get("FONTDBG"):
+        m.log(f"   [font] {face!r} height {height} weight {weight} italic {italic} scale {scale:.2f} -> {_game_font_path(st, face, weight, italic)}")
     if key not in st["font_cache"]:
         f = None
-        for path in ("/System/Library/Fonts/Supplemental/Arial Bold.ttf" if weight >= 600 else
+        own = _game_font_path(st, face, weight, italic)
+        if own:
+            try:
+                probe = ImageFont.truetype(own, 100)
+                ascent, descent = probe.getmetrics()
+                em = size if height < 0 else size * 100.0 / (ascent + descent)
+                f = ImageFont.truetype(own, max(em, 2))
+            except OSError:
+                f = None
+        for path in () if f else ("/System/Library/Fonts/Supplemental/Arial Bold.ttf" if weight >= 600 else
                      "/System/Library/Fonts/Supplemental/Arial.ttf", "/System/Library/Fonts/Helvetica.ttc",
                      "/Library/Fonts/Arial.ttf"):
             try:
@@ -1267,11 +1313,13 @@ def _pil_font(m, font, scale=1.0):
 
 
 def text_size(m, dc, s):
-    f = _pil_font(m, dc.font)
+    """(width, height) of `s` in the DC's logical units. The font is realized at its height scaled by the mapping's vertical scale (a
+    20-unit font on a DC that maps 24 logical units to 13 pixels is 11 pixels high), and its width follows from that: so the logical
+    width is the realized device width divided by the horizontal scale, not the width of the unscaled font."""
+    f = _pil_font(m, dc.font, dc.sy)
     if not s:
         return 0, dc.font[2] if dc.font else 13
-    l, t, r, b = f.getbbox(s.decode("latin-1"))
-    return int(f.getlength(s.decode("latin-1"))), int(dc.font[2]) if dc.font else 13
+    return int(f.getlength(s.decode("latin-1")) / dc.sx), int(dc.font[2]) if dc.font else 13
 
 
 def draw_text(m, dc, x, y, s, align=True):
@@ -1280,7 +1328,7 @@ def draw_text(m, dc, x, y, s, align=True):
         return
     f = _pil_font(m, dc.font, dc.sy)                  # the font height is in logical units: scaled like everything else
     tw, th = text_size(m, dc, s)
-    tw, th = int(tw * dc.sx), int(th * dc.sy)
+    tw, th = int(tw * dc.sx), int(th * dc.sy)                    # back to device pixels
     fg = colorref(m, dc, dc.textcolor)
     ox, oy = dc.org
     x0, y0 = lx(dc, x) + ox, ly(dc, y) + oy
