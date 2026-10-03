@@ -56,7 +56,7 @@ int host_lifted_try(uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t
 
 /* A function (native or lifted, by its entry address) the host does not replace in this run: native and lifted code that calls it
  * goes out to the original instead of running its own version. Everything is enabled until this says otherwise. */
-void host_set_enabled(uint32_t entry, int on);
+void host_set_enabled(uint32_t entry, int on, int lifted); /* lifted 0: the native function at `entry`, 1: its lifted twin or the lifted function */
 
 /* Work done so far: how often each native function was entered (nested calls included), and how many instructions lifted
  * code executed. `entries` has host_native_count() numbers. */

@@ -257,6 +257,35 @@ Debugging aids that found the above and stay in: `EMU_CALL_HASH=N` and `EMU_CALL
 `compare_hosted.py` uses), `--native-log ADDRS:FILE` (arguments and result of every call of functions, original or hosted),
 `EMU_PEEK=ADDR` (the dword at ESP each time the guest reaches `ADDR`: an uninitialised local) and `--watch ADDR:label`.
 
+### Hand-written C for the AI search, and how it is checked
+
+`src/native/ai_state.c` (the game-state snapshots the search saves and restores, `Ai_BeginTrial`) and `src/native/ai_eval.c`
+(`Ai_EvaluateBoard` and `Ai_PenalizeCounterattack`, the AI's board score) are hand-written, from the disassembly (the decompiled
+bodies hide casts and truncating divisions) with both programs' addresses lined up by `tools/twins/align_addresses.py`; the
+snapshots are lists of steps read off the machine code of both programs. They are checked four ways, the first being the
+usual one:
+
+1. **Vectors** recorded from the original: natural play (12 for the evaluation and counterattack, one per state function) and
+   from boards the emulator fuzzes (`callfn`, 60 recorded, 12 kept). The fuzzed boards found two real faults in the first
+   version: the evaluation cached a slot's flags where the original reads them again at every test (a query's card handlers can
+   change them), and an index the counterattack reads for a creature it did not register in its first pass holds stack garbage in
+   the original (now refused as unimplemented). Both programs' remaining differences are paths that depend on such garbage or on
+   memory the original overwrites (an aura target outside its table), which the natives stop on (`NATIVE_UNIMPLEMENTED`).
+2. **Instruction counts** (`tools/difftest/check_costs.py`): the snapshot natives add the original's instruction count to
+   `native_cost_extra` (exact: the code is straight line), checked against the lifted twin of each on the recorded vectors.
+3. **Shadow mode** (`--native-shadow` or `--native-shadow-check`): every native function that has a lifted twin (`gen_handlers.py`
+   now lifts every native function's machine code as well) is run both ways on every call of a real game, the return value and
+   the bytes written outside the stack frame compared, any difference reported, and the twin's result kept, so the run stays the
+   original's. On the pilot duel and a game against the red deck, with the hand-written functions of the whole native layer:
+   **about 658,000 calls compared in exact mode, 114,000 and 83,000 in check mode (which lets lifted code call the natives whose
+   instruction count is only an average), none differ**, and the exact-mode run is identical to the original over 225 blocks of
+   5,000 import calls. Line coverage of `ai_eval.c` by the vectors alone is 91%; the real games add the paths the AI takes.
+4. `tools/difftest/fuzz_natives.py`: recorded vectors with a few bytes changed, native against twin. Only about a fifth of the
+   mutations stay inside the memory the vector has, and none of those differ; it is the weakest of the four.
+
+The AI's instruction costs in a hosted run without the twins (a build from the repository alone) are the calibrated averages of
+`--native-costs`, as for the other natives; in shadow mode they are the twin's, exactly.
+
 ### Functions that are not card handlers: the AI search
 
 The lifter does not care that a function is a card handler; `gen_handlers.py --extra-file tools/lift/ai_functions.txt` lifts

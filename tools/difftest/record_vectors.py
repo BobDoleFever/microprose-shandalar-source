@@ -90,6 +90,8 @@ NATIVE_FUNCTIONS = [
     ("FN_AI_RESET_RANDOM_CURSOR", "Ai_ResetRandomCursor", 0),
     ("FN_AI_BEGIN_TRIAL", "Ai_BeginTrial", 0),
     ("FN_CRT_MEMSET", "Crt_Memset", 3),
+    ("FN_AI_EVALUATE_BOARD", "Ai_EvaluateBoard", 1),
+    ("FN_AI_PENALIZE_COUNTERATTACK", "Ai_PenalizeCounterattack", 2),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
@@ -107,6 +109,8 @@ CALLEES_INFO = [
     ("CALLEE_MARK_CARD", "mark_card", 3),
     ("CALLEE_AFTER_MARK", "after_mark", 0),
     ("CALLEE_FIND_FREE_SLOT", "find_free_slot", 2),
+    ("CALLEE_AI_ATTACK_CHECK", "ai_attack_check", 6),
+    ("CALLEE_AI_CARD_COST_CLASS", "ai_card_cost_class", 1),
     ("CALLEE_AI_PREROLL_RANDOM", "ai_preroll_random", 0),
 ]
 # Callees with no fixed address (a card handler's address is read from the card's master record), so layout.c has no
@@ -143,6 +147,9 @@ class Recorder:
         self.funcs = {int(entries[fn], 16): (name, nargs) for fn, name, nargs in NATIVE_FUNCTIONS if fn in entries}
         self.callees = {int(callees[c], 16): (label, nargs) for c, label, nargs in CALLEES_INFO if c in callees}
         self.handler_sites = self.find_handler_sites(int(entries["FN_SCAN_CARDS"], 16), m.L_master_base + 0x10)
+        # Ai_PenalizeCounterattack also calls a card's handler through the master table (two sites, for the power and toughness
+        # bonuses of some cards)
+        self.handler_sites.update(self.find_handler_sites(int(entries["FN_AI_PENALIZE_COUNTERATTACK"], 16), m.L_master_base + 0x10, 2400))
         # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
         # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
         self.handler_callees = {}
@@ -214,10 +221,10 @@ class Recorder:
         for addr in self.funcs:
             self.uc.hook_add(UC_HOOK_CODE, self.on_entry, begin=addr, end=addr)
 
-    def find_handler_sites(self, entry, table):
+    def find_handler_sites(self, entry, table, size=1024):
         """The `call dword ptr [reg*4 + table]` instructions in the scan (FF 14 85 imm32: how it calls a card's handler):
         {address of the call: address it returns to}. The scan is small, so its bytes are searched from the entry on."""
-        code = bytes(self.uc.mem_read(entry, 1024))
+        code = bytes(self.uc.mem_read(entry, size))
         needle = b"\xff\x14\x85" + table.to_bytes(4, "little")
         sites, at = {}, code.find(needle)
         while at != -1:
@@ -302,6 +309,10 @@ class Recorder:
                 return (name, min(cursor, 2))
             if name == "Ai_BeginTrial":
                 return (name, thinking)
+            if name in ("Ai_EvaluateBoard", "Ai_PenalizeCounterattack"):
+                # who is evaluated, whether it is their turn, whether the search is running, and how many creatures there are
+                counts = tuple(min(r(m.L_player_card_count + 4 * q), 3) for q in (0, 1))
+                return (name, args[0], r(m.L_turn_player) == args[0], thinking, counts)
             if name == "Ai_GetPlanCursor":
                 return (name, min(cursor, 3))
             if name == "Ai_GetLandColorMasks":
@@ -549,7 +560,7 @@ def main():
             self.L_spell_stack_count = addr("spell_stack_count")
             self.L_event_context_depth = addr("event_context_depth")
             for field in ("ai_cursor", "ai_trial_choice", "ai_best_choice", "ai_plan_mode", "land_counts_x", "land_counts_y",
-                          "scan_order_player", "scan_depth", "master_base"):
+                          "scan_order_player", "scan_depth", "master_base", "player_card_count", "turn_player"):
                 setattr(self, "L_" + field, addr(field))
             self.recorder = Recorder(self, outdir, cap, program, addr("duel_mode_flags"))
 

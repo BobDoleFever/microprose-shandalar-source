@@ -206,6 +206,14 @@ what is recorded is every other function a handler can call.
 | `Ai_GetLandColorMasks` | `0x004acb7f` | `0x00431f41` | | |
 | `Magic_ScanCards` | `0x00473f06` | `0x0048c5a8` | a scan nested ten deep and a card index out of range assert (the original asserts or reports a fatal error) | each card's handler, `FUN_004728c3`, `Magic_BroadcastCardEvent`, `FUN_00472fae` |
 | `Crt_Memcpy` | none (MAGIC.EXE imports `memcpy` from the runtime DLL) | `0x004d99b0` | | |
+| `Crt_Memset` | none (imported) | `0x004da190` | | |
+| `Ai_SaveGameState` | `0x004aa830` | `0x0042fbf0` | a negative spell-stack count asserts | the table of random numbers is filled by the original (`FUN_004398be`) |
+| `Ai_RestoreGameState` | `0x004aaaea` | `0x0042fea9` | | |
+| `Ai_PushBoardState` / `Ai_PopBoardState` | `0x004aad61` / `0x004aafa8` | `0x00430120` / `0x00430367` | | |
+| `Ai_ResetRandomCursor` | `0x0040a240` | `0x004398fe` | | |
+| `Ai_BeginTrial` | `0x004ab214` | `0x004305d3` | | |
+| `Ai_EvaluateBoard` | `0x004ab552` | `0x00430911` | the developer's score display; an aura whose target index is outside the 2 x 80 table (the original writes over its locals) | creature queries (native), `FUN_0048b2c9` (can the attacker be blocked), the card cost class `FUN_004d7c20` |
+| `Ai_PenalizeCounterattack` | `0x004abff4` | `0x004313b9` | more than 16 own creatures; a creature that entered play between its two passes (the original reads stack garbage) | queries, `FUN_0048af80`, `FUN_0048b2c9`, card handlers |
 
 The nine `Ai_` functions are the AI's recorded plan (the trial and best lists and their shared cursor; see
 `docs/SYMBOL_VERIFICATION.md`, "The AI"). `Ai_BeginTrial` (`0x004ab214` / `0x004305d3`) is not hand-written yet (it calls the whole-game-state restore, which copies

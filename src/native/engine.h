@@ -69,6 +69,8 @@ typedef enum {
     CALLEE_MARK_CARD,            /* Pic_Subsystem_0044867e / Duel_DrawCardSprite(player, slot, what) */
     CALLEE_AFTER_MARK,           /* Pic_Subsystem_004488a0() */
     CALLEE_FIND_FREE_SLOT,       /* Pic_Subsystem_00451291(player, card): allocate a slot */
+    CALLEE_AI_ATTACK_CHECK,      /* FUN_0048b2c9 / FUN_00472c0c(q, j, p, slot, abilities, land mask): whether the attacker (p, slot) is blocked by creature (q, j) */
+    CALLEE_AI_CARD_COST_CLASS,   /* FUN_004d7c20 / Pic_Subsystem_00452551(card): a card's cost class, cached in its master record */
     CALLEE_AI_PREROLL_RANDOM,    /* FUN_004398be / Ai_Util_0040a1ff(): fills the AI's table of 100 random numbers (calls _rand) */
     CALLEE_FUNCTION,             /* any other function, at the address passed in (called from lifted code, lift_bridge.c) */
     CALLEE_COUNT
@@ -106,6 +108,8 @@ typedef enum {
     FN_AI_RESET_RANDOM_CURSOR,
     FN_AI_BEGIN_TRIAL,
     FN_CRT_MEMSET,
+    FN_AI_EVALUATE_BOARD,
+    FN_AI_PENALIZE_COUNTERATTACK,
     FN_COUNT
 } NativeFn;
 
@@ -249,6 +253,9 @@ void Native_Ai_PushBoardState(Vm *vm);
 void Native_Ai_PopBoardState(Vm *vm);
 void Native_Ai_ResetRandomCursor(Vm *vm);
 void Native_Ai_BeginTrial(Vm *vm);
+/* The AI's score of a board (see ai_eval.c) and the lowering of it by the opponent's best counterattack. */
+int32_t Native_Ai_EvaluateBoard(Vm *vm, int32_t player);
+int32_t Native_Ai_PenalizeCounterattack(Vm *vm, int32_t player, int32_t score);
 void Native_Ai_RecordChoice(Vm *vm);
 void Native_Ai_ReplayChoice(Vm *vm);
 void Native_Ai_CommitBestPlan(Vm *vm);

@@ -36,7 +36,7 @@ _current = threading.local()
 
 # What the original's prologue leaves on the stack below the return address that the native function does not: the registers it
 # saves (push ebp; push edi; push esi). Later code can read those words as uninitialised locals, and the original game does.
-FRAME_RESIDUE = {"Crt_Memcpy": ("ebp", "edi", "esi")}
+FRAME_RESIDUE = {"Crt_Memcpy": ("ebp", "edi", "esi"), "Crt_Memset": ("edi",)}
 
 
 def exact_native_names(lib_path=None, shadow=False):
@@ -103,7 +103,7 @@ class NativeHost:
         lib.host_native_name.argtypes = [ctypes.c_int]
         lib.host_native_entry.restype = ctypes.c_uint32
         lib.host_native_entry.argtypes = [ctypes.c_int]
-        lib.host_set_enabled.argtypes = [ctypes.c_uint32, ctypes.c_int]
+        lib.host_set_enabled.argtypes = [ctypes.c_uint32, ctypes.c_int, ctypes.c_int]
         lib.host_native_nargs.argtypes = [ctypes.c_int]
         lib.host_native_ret_bits.argtypes = [ctypes.c_int]
         lib.host_native_self_charging.argtypes = [ctypes.c_int]
@@ -224,7 +224,7 @@ class NativeHost:
                 self.seconds["thread"] += time.perf_counter() - t0
             if charging:
                 self.charge_since(before, inner, conts if not done else 0)
-            if name in FRAME_RESIDUE and not twin:
+            if name in FRAME_RESIDUE and not twin and not (name == "Crt_Memset" and args[2] == 0):
                 from unicorn.x86_const import UC_X86_REG_EBP, UC_X86_REG_EDI, UC_X86_REG_ESI  # noqa: PLC0415
                 rn = {"ebp": UC_X86_REG_EBP, "edi": UC_X86_REG_EDI, "esi": UC_X86_REG_ESI}
                 for k, reg in enumerate(FRAME_RESIDUE[name]):
@@ -234,11 +234,11 @@ class NativeHost:
             return ret & 0xFF if bits == 8 else ret
         return handler
 
-    def shadow_mode(self):
+    def shadow_mode(self, check=False):
         """Run every native function that has a lifted twin both ways on every call and compare (native_host.c, shadow mode); what the
         guest keeps is the twin's result, so the run is the original's. Needs a library built with the twins (gen_handlers.py)."""
         self.shadow = True
-        self.lib.host_set_shadow(1)
+        self.lib.host_set_shadow(2 if check else 1)
 
     def shadow_report(self):
         c = [ctypes.c_uint64() for _ in range(3)]
@@ -432,11 +432,11 @@ class NativeHost:
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
             if ((only is not None and name not in only) or name in skip) and self.lib.host_native_entry(fid):
-                self.lib.host_set_enabled(self.lib.host_native_entry(fid), 0)
+                self.lib.host_set_enabled(self.lib.host_native_entry(fid), 0, 0)
         for i in range(self.lib.host_lifted_count()):
             name = self.lib.host_lifted_name(i).decode()
             if (only is not None and name not in only) or name in skip or not handlers:
-                self.lib.host_set_enabled(self.lib.host_lifted_entry(i), 0)
+                self.lib.host_set_enabled(self.lib.host_lifted_entry(i), 0, 1)
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
             if (only is not None and name not in only) or name in skip:

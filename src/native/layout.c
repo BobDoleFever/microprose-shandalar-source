@@ -78,6 +78,8 @@ const Layout LAYOUT_MAGIC = {
         [CALLEE_MARK_CARD] = 0x0044867e,
         [CALLEE_AFTER_MARK] = 0x004488a0,
         [CALLEE_FIND_FREE_SLOT] = 0x00451291,
+        [CALLEE_AI_ATTACK_CHECK] = 0x00472c0c,
+        [CALLEE_AI_CARD_COST_CLASS] = 0x00452551,
         [CALLEE_AI_PREROLL_RANDOM] = 0x0040a1ff,
     },
     .entry = {
@@ -111,6 +113,8 @@ const Layout LAYOUT_MAGIC = {
         [FN_AI_RESET_RANDOM_CURSOR] = 0x0040a240,
         [FN_AI_BEGIN_TRIAL] = 0x004ab214,
         [FN_CRT_MEMSET] = 0x00000000, /* none: MAGIC.EXE imports memset from the runtime DLL */
+        [FN_AI_EVALUATE_BOARD] = 0x004ab552,
+        [FN_AI_PENALIZE_COUNTERATTACK] = 0x004abff4,
     },
 };
 
@@ -183,6 +187,8 @@ const Layout LAYOUT_DUEL = {
         [CALLEE_MARK_CARD] = 0x0046e571,
         [CALLEE_AFTER_MARK] = 0x0046e793,
         [CALLEE_FIND_FREE_SLOT] = 0x004d695b,
+        [CALLEE_AI_ATTACK_CHECK] = 0x0048b2c9,
+        [CALLEE_AI_CARD_COST_CLASS] = 0x004d7c20,
         [CALLEE_AI_PREROLL_RANDOM] = 0x004398be,
     },
     .entry = {
@@ -216,6 +222,8 @@ const Layout LAYOUT_DUEL = {
         [FN_AI_RESET_RANDOM_CURSOR] = 0x004398fe,
         [FN_AI_BEGIN_TRIAL] = 0x004305d3,
         [FN_CRT_MEMSET] = 0x004da190,
+        [FN_AI_EVALUATE_BOARD] = 0x00430911,
+        [FN_AI_PENALIZE_COUNTERATTACK] = 0x004313b9,
     },
 };
 

@@ -267,12 +267,15 @@ void host_counters(uint64_t *entries, uint64_t *lifted_instructions)
 #endif
 }
 
-void host_set_enabled(uint32_t entry, int on)
+void host_set_enabled(uint32_t entry, int on, int lifted)
 {
     int f;
-    for (f = 0; f < FN_COUNT; f++)
-        if (host_vm.L->entry[f] == entry)
-            native_disabled[f] = !on;
+    if (!lifted) {
+        for (f = 0; f < FN_COUNT; f++)
+            if (host_vm.L->entry[f] == entry)
+                native_disabled[f] = !on;
+        return;
+    }
 #ifdef HOST_LIFTED
     lift_set_enabled(entry, on);
 #endif
@@ -301,8 +304,8 @@ static uint64_t shadow_compared, shadow_mismatches, shadow_unchecked;
 
 void host_set_shadow(int on)
 {
-    shadow_on = on;
-    native_exact_only = on;
+    shadow_on = on != 0;
+    native_exact_only = on == 1;   /* 2: check only, lifted code may call any native function, the run is not the original's to the instruction */
 }
 
 void host_shadow_stats(uint64_t *compared, uint64_t *mismatches, uint64_t *unchecked)

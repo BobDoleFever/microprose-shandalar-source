@@ -16,6 +16,8 @@ static const char *const CALLEE_NAMES[CALLEE_COUNT] = {
     [CALLEE_MARK_CARD] = "Pic_Subsystem_0044867e",
     [CALLEE_AFTER_MARK] = "Pic_Subsystem_004488a0",
     [CALLEE_FIND_FREE_SLOT] = "Pic_Subsystem_00451291 (find free slot)",
+    [CALLEE_AI_ATTACK_CHECK] = "FUN_0048b2c9 (can the attacker be blocked)",
+    [CALLEE_AI_CARD_COST_CLASS] = "FUN_004d7c20 (a card's cost class)",
     [CALLEE_AI_PREROLL_RANDOM] = "FUN_004398be (fill the table of random numbers)",
     [CALLEE_FUNCTION] = "a function called from lifted code",
 };
@@ -43,7 +45,7 @@ int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t 
 uint32_t vm_call_at(Vm *vm, Callee callee, uint32_t addr, int nargs, const uint32_t *args)
 {
     uint32_t lifted_ret;
-    if (callee == CALLEE_CARD_HANDLER && native_handler_dispatch &&
+    if ((callee == CALLEE_CARD_HANDLER || callee == CALLEE_FUNCTION) && native_handler_dispatch &&
         native_handler_dispatch(vm, addr, nargs, args, &lifted_ret))
         return lifted_ret;
     if (!vm->call) {
@@ -195,6 +197,16 @@ static uint32_t run_crt_memcpy(Vm *vm, const uint32_t *a)
     return Native_Crt_Memcpy(vm, a[0], a[1], a[2]);
 }
 
+static uint32_t run_ai_evaluate(Vm *vm, const uint32_t *a)
+{
+    return (uint32_t)Native_Ai_EvaluateBoard(vm, (int32_t)a[0]);
+}
+
+static uint32_t run_ai_penalize(Vm *vm, const uint32_t *a)
+{
+    return (uint32_t)Native_Ai_PenalizeCounterattack(vm, (int32_t)a[0], (int32_t)a[1]);
+}
+
 static uint32_t run_crt_memset(Vm *vm, const uint32_t *a)
 {
     return Native_Crt_Memset(vm, a[0], a[1], a[2]);
@@ -273,6 +285,8 @@ const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_AI_RESET_RANDOM_CURSOR, "Ai_ResetRandomCursor", 0, 0, run_ai_reset_random, 1},
     {FN_AI_BEGIN_TRIAL, "Ai_BeginTrial", 0, 0, run_ai_begin_trial, 1},
     {FN_CRT_MEMSET, "Crt_Memset", 3, 32, run_crt_memset, 1},
+    {FN_AI_EVALUATE_BOARD, "Ai_EvaluateBoard", 1, 32, run_ai_evaluate, 0},
+    {FN_AI_PENALIZE_COUNTERATTACK, "Ai_PenalizeCounterattack", 2, 32, run_ai_penalize, 0},
 };
 
 const NativeInfo *native_find(const char *name)
