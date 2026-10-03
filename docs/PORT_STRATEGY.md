@@ -155,9 +155,14 @@ alphabet.
 **The card handlers do not need to be rewritten by hand.** Each of the 383 distinct handlers is a small function whose
 whole behaviour is in its machine code, so `tools/lift` translates the machine code into C mechanically (a static
 recompiler for the integer subset of x86) and the result is checked against vectors recorded from the original, the same
-way as every native function above. all 383 lift; every vector recorded for them (about 94,000) matches; the
-vectors run 86% of the lifted instructions, which is the number to raise. See `tools/lift/README.md`. The native layer, with the handlers in it, now also runs hosted in the emulator (`--native`): the original game plays
-its duel with those functions replaced by native C and reaches the same board. What it changes for the plan:
+way as every native function above. 377 of the 383 lift (the other six call a variadic C function, which a lifted call
+cannot pass its arguments to); every vector recorded for them (about 94,000) matches; the vectors run 86% of the lifted
+instructions, which is the number to raise. The same lifter handles the functions the AI's search spends its time in (1,247 of
+DUEL.EXE's 1,830 functions lift; 61 of them are the search's, found by profiling). See `tools/lift/README.md`. The native
+layer, with the handlers and those functions in it, now also runs hosted in the emulator (`--native`): the original game
+plays its duel with those functions replaced by native C. In `--native-exact` mode that duel is the original's own to the
+microsecond: every import call the guest makes, from which thread and which caller, is the same over 90 and 300 virtual
+seconds (`tools/lift/compare_hosted.py`). What it changes for the plan:
 the hand-written native work is the engine around the handlers, and the handlers become a generated, verified bulk
 layer, not hundreds of rewrites.
 

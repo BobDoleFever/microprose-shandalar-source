@@ -233,7 +233,7 @@ class Lifter:
         if mn == "call":
             need(1)
             nxt = i.address + i.size
-            push = ["R_esp -= 4;", f"WR32(R_esp, 0x{nxt:x}u);"]
+            push = ["R_esp -= 4;", f"WR32(R_esp, 0x{nxt:x}u);", "LIFT_CALL_REGS();"]
             after = ["R_ecx = R_edx = 0xcdcdcdcdu;"]
             if ops[0].type == X.X86_OP_IMM:
                 t = ops[0].imm
@@ -323,8 +323,72 @@ class Lifter:
             table = [t for t in table if func - 0x1000 <= t < func + 0x6000]   # only the extent is wanted (native_host.py)
         return table
 
+    def entry_register_reads(self, insns, tails, addr):
+        """Registers the function may read before it has written them: its inputs in registers (a __fastcall or hand-written
+        function). Lifted code starts them at zero, so such a function would be mistranslated; it is refused instead. A push of
+        a register is a callee-save, not a use, a call is taken to define the scratch registers (the return value), and a
+        write to part of a register counts as defining it (the compiler does not read the rest)."""
+        fam = {n: n for n in REG32}
+        fam.update(REG16)
+        fam.update(REG8LO)
+        fam.update(REG8HI)
+        index = {n: k for k, n in enumerate(REG32)}
+        skip = {"esp", "eip", "eflags"}
+
+        def regs(lst, insn):
+            out = 0
+            for r in lst:
+                n = fam.get(insn.reg_name(r))
+                if n and n not in skip:
+                    out |= 1 << index[n]
+            return out
+        scratch = sum(1 << index[n] for n in ("eax", "ecx", "edx"))
+        state, work, bad = {addr: 0}, [addr], 0
+        self.defined_at_returns = (1 << len(REG32)) - 1   # registers written on every path to a ret (read after the loop)
+        while work:
+            a = work.pop()
+            i = insns.get(a)
+            if i is None or a in tails:
+                continue
+            defined = state[a]
+            rd, wr = i.regs_access()[:2]
+            reads, writes = regs(rd, i), regs(wr, i)
+            if i.mnemonic == "push":
+                reads = 0
+            if i.mnemonic in ("xor", "sub", "sbb") and len(i.operands) == 2 and i.operands[0].type == X.X86_OP_REG \
+                    and i.operands[1].type == X.X86_OP_REG and i.operands[0].reg == i.operands[1].reg:
+                reads = 0
+            if i.mnemonic == "call":
+                writes |= scratch
+            bad |= reads & ~defined
+            after = defined | writes
+            succ = []
+            mn = i.mnemonic
+            if mn == "ret":
+                self.defined_at_returns &= after
+                continue
+            if mn == "jmp" or (mn.startswith("j") and mn[1:] in CC):
+                if i.operands[0].type == X.X86_OP_IMM:
+                    succ.append(i.operands[0].imm)
+                else:
+                    succ.extend(self.tables.get(a, []))
+                if mn != "jmp":
+                    succ.append(a + i.size)
+            else:
+                succ.append(a + i.size)
+            for t in succ:
+                old = state.get(t)
+                new = after if old is None else old & after
+                if old is None or new != old:
+                    state[t] = new
+                    work.append(t)
+        return [n for n in REG32 if bad & (1 << index[n])]
+
     def lift_function(self, getbytes, addr, name, entries=frozenset()):
         insns, tails = self.explore(getbytes, addr, entries)
+        stray = [r for r in self.entry_register_reads(insns, tails, addr) if r not in ("ebx", "esi", "edi", "ebp")]
+        if stray:
+            raise Unsupported("reads " + ", ".join(stray) + " on entry (a register argument)")
         self.dynamic_sites = []
         order = sorted(insns)
         lo, hi = order[0], order[-1] + insns[order[-1]].size
@@ -335,14 +399,50 @@ class Lifter:
             if a in tails:
                 t = tails[a]
                 targets.add(t)
-                body.append(f"    {{ uint32_t cl_ = 0; return lift_call(0x{t:x}u, R_esp + 4u, &cl_); }}")
+                body.append(f"    LIFT_CALL_REGS(); {{ uint32_t cl_ = 0; return lift_call(0x{t:x}u, R_esp + 4u, &cl_); }}")
             else:
                 body.extend("    " + st for st in self.insn(i, insns, targets))
-        decl = ["    uint32_t R_eax = 0, R_ecx = 0, R_edx = 0, R_ebx = 0, R_esp = esp, R_ebp = 0, R_esi = 0, R_edi = 0;",
+        # the registers the function starts with are its caller's (lift_rt.h LiftRegs): what it pushes to save them is real
+        decl = ["    uint32_t R_eax = lift_in.eax, R_ecx = lift_in.ecx, R_edx = lift_in.edx, R_ebx = lift_in.ebx, R_esp = esp,",
+                "             R_ebp = lift_in.ebp, R_esi = lift_in.esi, R_edi = lift_in.edi;",
                 "    uint32_t ZF = 0, SF = 0, CF = 0, OF = 0;"]
         src = (f"/* {name} @ 0x{addr:08x}, 0x{lo:x}-0x{hi:x}, {len(order)} instructions */\n"
                f"uint32_t lifted_{addr:08x}(uint32_t esp)\n{{\n" + "\n".join(decl) + "\n" + "\n".join(body) + "\n}\n")
+        self.last_stack_arguments = self.stack_arguments(insns)
+        self.last_returns_value = bool(self.defined_at_returns & (1 << REG32.index("eax")))   # else EAX is whatever the caller left
         return src, targets, len(order), (lo, hi)
+
+    def stack_arguments(self, insns):
+        """How many dword arguments a function with a frame pointer reads at [ebp+8], [ebp+12], ... (0 when it uses none, or does
+        not keep a frame: the function index's count is then all there is)."""
+        top = 0
+        for i in insns.values():
+            for op in i.operands:
+                if op.type == X.X86_OP_MEM and op.mem.base and i.reg_name(op.mem.base) == "ebp" and not op.mem.index \
+                        and 8 <= op.mem.disp < 8 + 4 * 32:
+                    top = max(top, (op.mem.disp - 8) // 4 + 1)
+        return top
+
+    def register_inputs(self, getbytes, addr, entries=frozenset()):
+        """The scratch registers (eax, ecx, edx) a function reads on entry. Used on the functions a lifted function calls,
+        whether or not they lift themselves: lift_call passes stack arguments only."""
+        try:
+            insns, tails = self.explore(getbytes, addr, entries)
+        except Unsupported:   # not liftable: look at the bytes up to its last `ret` instead
+            sweep = {i.address: i for i in self.md.disasm(getbytes(addr, 0x2000), addr)}
+            ends = [a for a, i in sweep.items() if i.mnemonic == "ret"]
+            insns, tails = {a: i for a, i in sweep.items() if not ends or a <= max(ends)}, {}
+        return [r for r in self.entry_register_reads(insns, tails, addr) if r in ("eax", "ecx", "edx")]
+
+    def callee_arguments(self, getbytes, addr, entries=frozenset(), size=0x2000):
+        """The stack arguments a callee takes: the most of what its frame reads and what its `ret imm16` pops (more than the
+        function index's count says when the decompiler missed one; extra arguments passed are harmless, missing ones are not)."""
+        try:
+            insns, _ = self.explore(getbytes, addr, entries)
+        except Unsupported:   # not liftable: the bytes the function index gives it
+            insns = {i.address: i for i in self.md.disasm(getbytes(addr, size), addr)}
+        pops = max((i.operands[0].imm for i in insns.values() if i.mnemonic == "ret" and i.operands), default=0)
+        return max(self.stack_arguments(insns), pops // 4)
 
     def ret_cleanup(self, getbytes, addr, entries=frozenset()):
         """Bytes a function pops off the stack itself: the largest `ret imm16` it contains."""

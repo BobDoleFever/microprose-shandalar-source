@@ -535,5 +535,31 @@ def main(out=None):
             f"{DOC}, the spell stack", [], 0, mi, mo))
 
 
+    # ---------------------------------------------------------------------------------------------
+    # Crt_Memcpy (DUEL.EXE 0x004d99b0): the C runtime's memcpy, which copies backwards when the destination lies inside the
+    # source, so it behaves as memmove. The expected bytes are what memmove gives, worked out here, not run.
+    BUF = 0x00700000
+    for name, dst, src, n, why in (
+            ("zero_length", BUF + 0x40, BUF, 0, "no bytes: nothing changes, the destination is returned"),
+            ("aligned_words", BUF + 0x40, BUF, 16, "four whole dwords between aligned buffers"),
+            ("tail_of_three", BUF + 0x40, BUF, 7, "one dword and a three-byte tail"),
+            ("unaligned_destination", BUF + 0x41, BUF, 33, "a destination that is not dword aligned: head bytes, words, tail"),
+            ("overlap_forward", BUF, BUF + 5, 40, "destination below the source, overlapping: copied forwards"),
+            ("overlap_backward", BUF + 5, BUF, 40, "destination inside the source: copied backwards, so the source survives intact"),
+            ("overlap_backward_aligned", BUF + 8, BUF, 24, "overlapping backwards, aligned end"),
+            ("short_unaligned", BUF + 0x43, BUF + 2, 9, "nine bytes to an odd destination: a byte-wise copy")):
+        data = bytes((7 * i + 3) & 0xFF for i in range(0x60))
+        mi, mo = Snapshot(), Snapshot()
+        for i, b in enumerate(data):
+            mi.u8(BUF + i, b)
+        image = bytearray(data)
+        image[dst - BUF:dst - BUF + n] = data[src - BUF:src - BUF + n]
+        for i in range(n):
+            mo.u8(dst + i, image[dst - BUF + i])
+        write(f"crt_memcpy_{name}", vector(
+            "Crt_Memcpy", "DUEL", 0x004D99B0, f"{n} bytes from +{src - BUF:#x} to +{dst - BUF:#x}: {why}",
+            "the C runtime's memcpy (a memmove), expected bytes by definition", [dst, src, n], dst, mi, mo))
+
+
 if __name__ == "__main__":
     main()

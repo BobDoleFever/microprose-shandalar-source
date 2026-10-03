@@ -220,6 +220,11 @@ def main(argv=None):
     ap.add_argument("--native-calibrate", metavar="FILE",
                     help="on the original, measure the instructions each native function executes per call; write FILE")
     ap.add_argument("--native-costs", metavar="FILE", help="with --native: charge the guest's clock for the instructions the replaced functions would have run (FILE from --native-calibrate)")
+    ap.add_argument("--profile", metavar="FILE", help="count the guest's instructions per function of the original (duel/function_index.csv), write them to FILE")
+    ap.add_argument("--profile-gate", default="", help="with --profile: also count apart while this dword (hex address) is non-zero (DUEL: 0x66aaf4, g_IsAiThinking)")
+    ap.add_argument("--profile-callers", default="", help="with --profile: report who calls these functions (comma-separated hex addresses) and with what")
+    ap.add_argument("--native-log", default="", metavar="ADDRS:FILE", help="write the arguments and result of every call of these functions (hex addresses, comma-separated) to FILE, in the original or hosted, to compare the two")
+    ap.add_argument("--native-exact", action="store_true", help="with --native: instead of owing the clock the instructions the replaced functions would have run, run them (a counting loop): the slice ends where the original's would, so the run repeats the original's exactly (lifted code counts exactly; a hand-written native costs its calibrated average)")
     ap.add_argument("--native-only", default="", help="with --native: only these functions (comma-separated names)")
     ap.add_argument("--native-skip", default="", help="with --native: not these")
     ap.add_argument("--no-native-handlers", action="store_true", help="with --native: the native functions only, not the lifted handlers")
@@ -539,21 +544,49 @@ def main(argv=None):
     if args.native:
         from . import native_host  # noqa: PLC0415
         nh = native_host.NativeHost(m)
-        if args.native_costs:
-            nh.load_costs(args.native_costs)
+        if args.native_costs or args.native_exact:
+            nh.load_costs(args.native_costs, exact=args.native_exact)
         n = nh.install(only=set(filter(None, args.native_only.split(","))) or None,
                        skip=set(filter(None, args.native_skip.split(","))), handlers=not args.no_native_handlers)
         print(f"   [native] {n} functions of the original replaced by the native layer")
+    if args.native_log:
+        from . import native_host  # noqa: PLC0415
+        addrs, path = args.native_log.split(":", 1)
+        if nh is None:
+            nh = native_host.NativeHost(m)
+        nh.log_calls([int(a, 16) for a in addrs.split(",")], path, hosted=args.native)
+    if os.environ.get("EMU_PEEK"):   # EMU_PEEK=addr: print the dword at ESP each time the guest reaches `addr` (a local read before it is written)
+        from unicorn import UC_HOOK_CODE  # noqa: PLC0415
+        from unicorn.x86_const import UC_X86_REG_ESP  # noqa: PLC0415
+
+        def peek(uc, address, size, user):
+            esp = uc.reg_read(UC_X86_REG_ESP)
+            print("   [peek %.6f] esp=%08x [esp]=%08x %s" % (m.vt, esp, m.r32(esp), " ".join("%08x" % m.r32(esp + 4 * i) for i in range(1, 4))))
+        a = int(os.environ["EMU_PEEK"], 16)
+        m.uc.hook_add(UC_HOOK_CODE, peek, begin=a, end=a)
+    prof = None
+    if args.profile:
+        from .profile import Profile  # noqa: PLC0415
+        prof = Profile(m, gate=int(args.profile_gate, 16) if args.profile_gate else None)
+        for a in filter(None, args.profile_callers.split(",")):
+            prof.callers(int(a, 16))
     code = m.run()
     m.flush_trace()
+    if prof:
+        print(prof.report())
+        print(prof.caller_report())
+        prof.dump(args.profile)
     if nh and args.native_calibrate:
         out = nh.finish_calibration()
         print("   [native] instructions per call: " + ", ".join(f"{k} {v:.1f}" for k, v in sorted(out.items()) if v))
         print(f"   [native] written to {args.native_calibrate}")
+    if nh and nh.runs and os.environ.get("NATIVE_RUNS_FILE"):
+        import json as _json  # noqa: PLC0415
+        _json.dump(nh.runs, open(os.environ["NATIVE_RUNS_FILE"], "w"), indent=0, sort_keys=True)
     if nh and nh.runs:
         top = sorted(nh.runs.items(), key=lambda kv: -kv[1])
         print(f"   [native] ran natively: {sum(nh.runs.values())} calls of {len(nh.runs)} functions; "
-              + ", ".join(f"{k} x{v}" for k, v in top[:8]) + f"; memory faults {nh.faults}; run again on a thread: {sum(nh.escalated.values())}; host seconds {nh.seconds}")
+              + ", ".join(f"{k} x{v}" for k, v in top[:8]) + f"; memory faults {nh.faults}; charged {getattr(nh, 'charged_total', 0):.0f} instructions; run again on a thread: {sum(nh.escalated.values())}; host seconds {nh.seconds}")
     print(f"\nfinished: exit code {code}, {m.calls} import calls, {m.vt:.1f}s virtual, {time.time() - t0:.1f}s real")
     shot = os.path.join(args.shots, "screen.png")
     Image.fromarray(compose(m)).save(shot)

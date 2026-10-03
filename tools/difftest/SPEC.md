@@ -58,7 +58,7 @@ A function that reaches a function that is not native yet lists the call, for ex
 | `address` | no | the function's entry address in `program`. If given, it must match the harness's layout, which catches a vector recorded from the wrong function |
 | `calls` | no | every call the function makes to a function that is not native, in order (see "Calls") |
 | `memory_out_exhaustive` | no | when true, every byte the native code changed must lie in a `memory_out_expected` region. Recorded vectors should set it: then an extra write is a failure too |
-| `return_bits` | no | overrides the return width: 8, 16 or 32 |
+| `return_bits` | no | overrides the return width: 8, 16 or 32, or 0 for a function that leaves EAX as the caller had it (not compared: the lifter works out which these are) |
 | `stack_pointer` | no | ESP at entry (it points at the return address) as the recording saw it. The harness for lifted code (`tools/lift`) puts its stack there so pointers into the stack compare equal; the native harness ignores it |
 | `description`, `source` | no | for people: what the vector shows and where its numbers come from |
 
@@ -205,11 +205,14 @@ what is recorded is every other function a handler can call.
 | `Ai_PeekPlannedChoice` | `0x004ab3a9` | `0x00430768` | | |
 | `Ai_GetLandColorMasks` | `0x004acb7f` | `0x00431f41` | | |
 | `Magic_ScanCards` | `0x00473f06` | `0x0048c5a8` | a scan nested ten deep and a card index out of range assert (the original asserts or reports a fatal error) | each card's handler, `FUN_004728c3`, `Magic_BroadcastCardEvent`, `FUN_00472fae` |
+| `Crt_Memcpy` | none (MAGIC.EXE imports `memcpy` from the runtime DLL) | `0x004d99b0` | | |
 
 The nine `Ai_` functions are the AI's recorded plan (the trial and best lists and their shared cursor; see
-`docs/SYMBOL_VERIFICATION.md`, "The AI"). `Ai_BeginTrial` (`0x004ab214` / `0x004305d3`) is deliberately not native
-yet: it calls the whole-game-state restore, which copies about 0xb640 bytes, so every vector of it would carry that much
-callee data. It should follow once the restore is native. `Ai_GetLandColorMasks` takes two out-pointers (guest
+`docs/SYMBOL_VERIFICATION.md`, "The AI"). `Ai_BeginTrial` (`0x004ab214` / `0x004305d3`) is not hand-written yet (it calls the whole-game-state restore, which copies
+about 0xb640 bytes, so every vector of it would carry that much callee data); it, the save and restore of the game state and
+the other functions the AI's search runs are lifted instead (`tools/lift/README.md`), and the C runtime's `memcpy` they call is
+native (`src/native/crt.c`: a memmove, with the instruction count of the original's code for each call, 959 of 980 sampled
+calls exact). `Ai_GetLandColorMasks` takes two out-pointers (guest
 addresses, in the original the caller's stack frame), so its vectors hold stack addresses as arguments and as written
 regions; that is deterministic in the emulator, and the harness treats them like any other address.
 

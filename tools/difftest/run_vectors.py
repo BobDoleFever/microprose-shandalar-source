@@ -26,7 +26,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 NATIVE = os.path.join(REPO, "src", "native")
 SOURCES = [os.path.join(HERE, "harness.c")] + [os.path.join(NATIVE, f) for f in (
-    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c", "event_context.c", "card_util.c", "ai_plan.c", "card_scan.c")]
+    "mem.c", "engine.c", "layout.c", "spell_stack.c", "card_query.c", "event_context.c", "card_util.c", "ai_plan.c", "card_scan.c", "crt.c")]
 HEADERS = [os.path.join(NATIVE, f) for f in ("mem.h", "engine.h")]
 DEFAULT_HARNESS = os.path.join(HERE, "build", "harness")
 CFLAGS = ["-std=c99", "-O1", "-g", "-Wall", "-Wextra"]
@@ -151,8 +151,8 @@ def load_vector(path):
             "writes": [region_bytes(r, f"calls[{i}].memory_writes[{j}]")
                        for j, r in enumerate(c.get("memory_writes", []))],
         })
-    if out["return_bits"] not in (None, 8, 16, 32):
-        raise VectorError("return_bits must be 8, 16 or 32")
+    if out["return_bits"] not in (None, 0, 8, 16, 32):
+        raise VectorError("return_bits must be 0 (the return value is not compared: the function leaves EAX as it was), 8, 16 or 32")
     return out
 
 
@@ -220,9 +220,11 @@ def final_written_bytes(written):
 def compare(v, out):
     """List of failure messages (empty when the vector passes)."""
     fails = list(out["errors"])
-    bits = v["return_bits"] or out["retbits"]
+    bits = out["retbits"] if v["return_bits"] is None else v["return_bits"]
     mask = (1 << bits) - 1
-    if out["ret"] is None and not out["errors"]:
+    if bits == 0:
+        pass
+    elif out["ret"] is None and not out["errors"]:
         fails.append("the harness returned no value")
     elif out["ret"] is not None and (out["ret"] & mask) != (v["expected_return"] & mask):
         fails.append(f"return 0x{out['ret'] & mask:x}, expected 0x{v['expected_return'] & mask:x}"

@@ -98,6 +98,17 @@ uint32_t lift_xl(uint32_t a);
 #define FLAGS_LOGIC(r, bits) \
     do { FLAGS_ZS(r, bits); CF = 0; OF = 0; } while (0)
 
+/* The registers a function starts with are its caller's, which matters only for what it pushes to save them: that stays on
+ * the stack below it for later code to read as an uninitialised local, and the original game does read such locals. The
+ * code that enters a lifted function sets lift_in first (from the guest's registers when the host replaces the function, from
+ * the caller's registers for a call between lifted functions); a lifted call sets lift_out to the registers at the call, which
+ * the callee, lifted or not, is entered with. A build that does not care (the flat harness) leaves both zero. */
+typedef struct {
+    uint32_t eax, ecx, edx, ebx, ebp, esi, edi;
+} LiftRegs;
+extern LiftRegs lift_in, lift_out;
+#define LIFT_CALL_REGS() (lift_out = (LiftRegs){R_eax, R_ecx, R_edx, R_ebx, R_ebp, R_esi, R_edi})
+
 /* Calls out of a lifted function. `argp` is the guest address of the first argument (just above the return address that
  * the call pushed); the result is the callee's EAX. The generated module defines the table it consults. */
 uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup);

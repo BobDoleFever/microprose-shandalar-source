@@ -20,6 +20,7 @@ import os
 import re
 import struct
 import time as _time
+import zlib
 
 import pefile
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_32, UC_PROT_ALL, UC_HOOK_CODE, UC_HOOK_MEM_UNMAPPED, UC_HOOK_MEM_WRITE, UcError
@@ -32,6 +33,9 @@ STUB_BASE = 0x70000000
 STUB_SIZE = 0x40000
 EXIT_TRAP = STUB_BASE + STUB_SIZE - 0x900          # a thread function returns here: the thread is finished
 CONT_TRAP = STUB_BASE + STUB_SIZE - 0x800           # guest functions called from a handler return here
+# Where a replaced function spends the instructions its original would have run (`Machine.burn`): `jecxz done; loop $; done:
+# jmp edx`. Outside the range the code hook watches, or each iteration would call into Python.
+BURN_BASE = STUB_BASE + STUB_SIZE + 0x1000
 STACK_TOP = 0x00300000
 STACK_SIZE = 0x00200000
 THREAD_STACK = 0x00100000
@@ -79,9 +83,12 @@ api, crt = REG.api, REG.crt
 
 class Cont:
     """Returned by a handler that wants a guest function run before the import completes."""
-    def __init__(self, fn, args, then=None, sp=None):
+    def __init__(self, fn, args, then=None, sp=None, inplace=False, regs=None):
         self.fn, self.args, self.then = fn, args, then or (lambda r: r)
         self.sp = sp   # the caller's stack pointer, if lower than the import's own: the new frame goes below it
+        # inplace: the frame is already built (native_host.py: a lifted function's own): `sp` is its return address slot, the
+        # arguments are above it. The call is made on that frame, with the registers `regs` (EAX, ECX, EDX, EBX, EBP, ESI, EDI).
+        self.inplace, self.regs = inplace, regs
 
 
 class Block:
@@ -155,6 +162,8 @@ class Machine:
         self.map_region(GDT, 0x1000)
         self.map_region(HEAP_BASE, HEAP_SIZE)
         self.map_region(STUB_BASE, STUB_SIZE)
+        self.map_region(BURN_BASE, 0x1000)
+        self.uc.mem_write(BURN_BASE, b"\xe3\x02\xe2\xfe\xff\xe2")
         self.heap = Heap(HEAP_BASE + 0x1000, HEAP_BASE + HEAP_SIZE)
         self.stubs = {}                             # trap address -> (dll, name)
         self.handler_of = {}                        # trap address -> (fn, argc)
@@ -171,7 +180,13 @@ class Machine:
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
         self.charging = False                       # native_host.py: slices are run in pieces so owed instructions count
+        self.iat_slots = set()                      # addresses of import table slots: `call [slot]` goes to what the slot holds
+        self.call_hash_every = int(os.environ.get("EMU_CALL_HASH", "0"))
+        self.call_hash = 0
+        d = os.environ.get("EMU_CALL_DETAIL")
+        self.call_detail = tuple(int(x) for x in d.split(":")) if d else None
         self.owed = 0                               # instructions owed to the clock by native code run in this slice
+        self.burn = 0                               # instructions the replaced function that is returning is to execute first
         self.CHUNK = 200_000
         self.intercepts = {}                        # guest address -> (replacement, bytes the original pops): add_intercept
         self.exit_hooks = []                        # called as a code hook when a thread function returns
@@ -290,6 +305,7 @@ class Machine:
             for imp in entry.imports:
                 name = imp.name.decode() if imp.name else f"#{imp.ordinal}"
                 slot = imp.address - pe.OPTIONAL_HEADER.ImageBase + base
+                self.iat_slots.add(slot)
                 target = real["exports"].get(name) if real else None
                 self.w32(slot, target or self.stub_for(dll, name))
         mod["exports"] = {}
@@ -436,6 +452,12 @@ class Machine:
         esp = uc.reg_read(UC_X86_REG_ESP)
         ret = self.r32(esp)
         dll, name = key
+        if self.call_hash_every:   # EMU_CALL_HASH=N: a running hash of the import calls, printed every N, to find where two runs part
+            self.call_hash = zlib.crc32(f"{self.cur.tid}{name}{ret:x}".encode(), self.call_hash)
+            if self.calls % self.call_hash_every == 0:
+                self.log(f"   [calls {self.calls}] {self.call_hash:08x} vt {self.vt:.6f}")
+            if self.call_detail and self.call_detail[0] <= self.calls <= self.call_detail[1]:
+                self.log(f"   [call {self.calls}] t{self.cur.tid} {name} <- 0x{ret:08x} vt {self.vt:.6f}")
         self.counts[key] = self.counts.get(key, 0) + 1
         self.recent.append((self.cur.tid, name, ret))
         del self.recent[:-40]
@@ -511,24 +533,45 @@ class Machine:
         uc = self.uc
         uc.reg_write(UC_X86_REG_EAX, u32(val))
         uc.reg_write(UC_X86_REG_ESP, esp + 4 + 4 * argc)
-        uc.reg_write(UC_X86_REG_EIP, ret)
+        if self.burn > 4:
+            # Run what the replaced function's original would have run, as real instructions, so that the emulator counts
+            # them and the slice ends where the original's would have: the jump that replaced the function's first bytes
+            # counted one, the trap it lands on (which the hook redirects, but the emulator counts) one more, `jecxz` and
+            # the final `jmp edx` two more, `loop` the rest.
+            uc.reg_write(UC_X86_REG_ECX, self.burn - 4)
+            uc.reg_write(UC_X86_REG_EDX, ret)
+            uc.reg_write(UC_X86_REG_EIP, BURN_BASE)
+        else:
+            uc.reg_write(UC_X86_REG_EIP, ret)
+        self.burn = 0
 
-    def call_guest(self, fn, args, then=lambda r: r, sp=None):
-        return Cont(fn, args, then, sp)
+    def call_guest(self, fn, args, then=lambda r: r, sp=None, inplace=False, regs=None):
+        return Cont(fn, args, then, sp, inplace, regs)
 
     def _start_cont(self, c, esp, ret, argc, addr):
         uc = self.uc
-        self.conts.append((c.then, esp, ret, argc, addr))
-        sp = (c.sp if c.sp else esp) - 4              # build the callee's frame below the import's own (or the caller's)
-        for a in reversed(c.args):
-            self.w32(sp, a)
-            sp -= 4
+        restore = None
+        if c.inplace:
+            sp = c.sp                                  # the lifted function's own frame: the return address slot is there
+            restore = (sp, self.r32(sp))               # the original's call leaves its return address behind; so must this
+        else:
+            sp = (c.sp if c.sp else esp) - 4           # build the callee's frame below the import's own (or the caller's)
+            for a in reversed(c.args):
+                self.w32(sp, a)
+                sp -= 4
+        self.conts.append((c.then, esp, ret, argc, addr, restore))
         self.w32(sp, CONT_TRAP)
+        if c.regs is not None:
+            for reg, v in zip((UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_EDX, UC_X86_REG_EBX, UC_X86_REG_EBP,
+                               UC_X86_REG_ESI, UC_X86_REG_EDI), c.regs):
+                uc.reg_write(reg, v)
         uc.reg_write(UC_X86_REG_ESP, sp)
         uc.reg_write(UC_X86_REG_EIP, c.fn)
 
     def _finish_cont(self):
-        then, esp, ret, argc, addr = self.conts.pop()
+        then, esp, ret, argc, addr, restore = self.conts.pop()
+        if restore:
+            self.w32(*restore)
         r = self.uc.reg_read(UC_X86_REG_EAX)
         res = then(r)
         if inspect.isgenerator(res):
@@ -557,7 +600,7 @@ class Machine:
             return e.value or 0
         if isinstance(c, Block):
             return GenBlock(c, gen)
-        return Cont(c.fn, c.args, lambda r: self._drive(gen, r), c.sp)
+        return Cont(c.fn, c.args, lambda r: self._drive(gen, r), c.sp, c.inplace, c.regs)
 
     def _on_unmapped(self, uc, access, address, size, value, user):
         eip = uc.reg_read(UC_X86_REG_EIP)

@@ -34,6 +34,7 @@ uint32_t vm_call(Vm *vm, Callee callee, int nargs, const uint32_t *args)
 }
 
 uint64_t native_entries[FN_COUNT];
+unsigned char native_disabled[FN_COUNT];
 
 int (*native_handler_dispatch)(Vm *vm, uint32_t addr, int nargs, const uint32_t *args, uint32_t *ret);
 
@@ -187,6 +188,11 @@ static uint32_t run_scan_cards(Vm *vm, const uint32_t *a)
     return 0;
 }
 
+static uint32_t run_crt_memcpy(Vm *vm, const uint32_t *a)
+{
+    return Native_Crt_Memcpy(vm, a[0], a[1], a[2]);
+}
+
 const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_QUERY_CARD_ATTRIBUTE, "Magic_QueryCardAttribute", 4, 32, run_query},
     {FN_IS_MANA_SOURCE, "Magic_IsManaSource", 2, 8, run_is_mana_source},
@@ -210,6 +216,7 @@ const NativeInfo NATIVE_FUNCTIONS[FN_COUNT] = {
     {FN_AI_PEEK_PLANNED_CHOICE, "Ai_PeekPlannedChoice", 1, 32, run_ai_peek_choice},
     {FN_AI_GET_LAND_COLOR_MASKS, "Ai_GetLandColorMasks", 2, 0, run_ai_land_masks},
     {FN_SCAN_CARDS, "Magic_ScanCards", 1, 0, run_scan_cards},
+    {FN_CRT_MEMCPY, "Crt_Memcpy", 3, 32, run_crt_memcpy},
 };
 
 const NativeInfo *native_find(const char *name)

@@ -97,6 +97,7 @@ typedef enum {
     FN_AI_PEEK_PLANNED_CHOICE,
     FN_AI_GET_LAND_COLOR_MASKS,
     FN_SCAN_CARDS,
+    FN_CRT_MEMCPY,
     FN_COUNT
 } NativeFn;
 
@@ -200,6 +201,8 @@ static inline uint32_t master_addr(const Vm *vm, int32_t index, uint32_t field)
  * for the work the original would have done). */
 extern uint64_t native_entries[FN_COUNT];
 #define NATIVE_ENTER(id) (native_entries[id]++)
+/* Native functions the host does not stand in for: lifted code that calls one goes out to the original (native_host.h). */
+extern unsigned char native_disabled[FN_COUNT];
 
 /* Stop on a code path that is not implemented natively (an assert, and an abort under NDEBUG). */
 #define NATIVE_UNIMPLEMENTED(what) native_unimplemented(what, __FILE__, __LINE__)
@@ -215,6 +218,11 @@ uint32_t Native_Magic_ClearSpellStack(Vm *vm);
 uint32_t Native_Card_GetColorAndTypeFlags(Vm *vm, int32_t player, int32_t slot);
 /* Runs every in-play card's handler for `event_code`, then the global handler. */
 void Native_Magic_ScanCards(Vm *vm, int32_t event_code);
+/* The C runtime's memcpy (a memmove, see crt.c) and what the original's code spends on a call, in instructions. A native
+ * function whose cost depends on its arguments adds it to native_cost_extra as it runs. */
+uint32_t Native_Crt_Memcpy(Vm *vm, uint32_t dst, uint32_t src, uint32_t n);
+uint64_t crt_memcpy_instructions(uint32_t dst, uint32_t src, uint32_t n);
+extern uint64_t native_cost_extra;
 void Native_Ai_RecordChoice(Vm *vm);
 void Native_Ai_ReplayChoice(Vm *vm);
 void Native_Ai_CommitBestPlan(Vm *vm);
