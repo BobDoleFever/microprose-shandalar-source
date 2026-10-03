@@ -2,16 +2,17 @@
 A live window for the emulated game: `python3 -m winemu.run --live`.
 
 The emulator runs on a worker thread and the window (pygame / SDL) on the main thread, as SDL requires. The two meet at
-two places only:
+two places only (and the window thread never calls into Unicorn):
   - input: the window's thread puts events in a queue; the emulator's thread turns them into the game's messages
     (user32.inject_mouse / inject_key) between scheduling slices, so the guest's state is only ever touched by one thread;
-  - output: the emulator's thread composes the screen (run.compose) a few times a second and hands over the latest frame.
-A slice can run a long time (the AI thinking): the window stays responsive and shows the last frame until it ends.
+  - output: the emulator's thread composes the screen (run.compose) up to 30 times a second and hands over the latest frame.
+A slice is short (SLICE instructions), so input is served and the frame refreshed many times a second even while the game thread spins.
 
-Time. The guest sees only the virtual clock (machine.py), which jumps forward when every thread is waiting. Live, that
-jump is paced to the real clock instead (`Pacer`), so animations and timers run at the speed the game was made for. When
-the host is too slow to keep up, the pacing re-anchors rather than racing to catch up.
+Time. The guest sees only the virtual clock (machine.py). Live, that clock is the real one (`Pacer`): it never runs behind
+what the host's clock says, and when every thread is waiting the jump to the next deadline is slept out in real time, so
+animations and timers run at the speed the game was made for however fast or slow the host is.
 """
+import os
 import queue
 import threading
 import time
@@ -109,6 +110,7 @@ class Live:
         # thread busy-waits through whole 200M-instruction slices, and its timers must still run at the right rate.
         m.state["clock"] = lambda mm, before: max(before, self.pacer.now_vt())
         m.state["should_stop"] = lambda mm: self.closed
+        m.slice = self.SLICE
         m.state["hard_stop"] = None
         m.state["virtual_limit"] = None
 
@@ -159,14 +161,8 @@ class Live:
         worker.start()
         shown = 0
         held, repeating = {}, set()                               # keys down: what each sent, and which have already repeated
-        last_tick = time.monotonic()
         while not self.closed and not result.get("done"):
-            events = pygame.event.get()
-            now = time.monotonic()
-            if events or now - last_tick >= self.TICK:                # end the slice in progress: input and timers get their turn
-                last_tick = now
-                self._preempt(m)
-            for ev in events:
+            for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     self._close(m)
                 elif ev.type == pygame.MOUSEMOTION:
@@ -207,19 +203,12 @@ class Live:
             raise result["error"]
         return result.get("code", 0)
 
-    TICK = 0.025                                                 # seconds between preemptions of a running slice
-
-    def _preempt(self, m):
-        try:
-            m.uc.emu_stop()
-        except Exception:                                        # noqa: BLE001  (not running: nothing to stop)
-            pass
+    # Instructions a thread runs before the others (and the window) get their turn. The game's own thread busy-waits, so
+    # without this the window would wait for the 200M-instruction slice of the exact runs (some twenty seconds of host time).
+    # The emulator is only ever stopped by running out of instructions: Unicorn's stop-from-another-thread is not atomic.
+    SLICE = int(os.environ.get("LIVE_SLICE", "200000"))
 
     def _close(self, m):
         """The window was closed: the game's next GetMessage sees WM_QUIT; a slice in progress is cut short."""
         self.closed = True
         m.stop = True
-        try:
-            m.uc.emu_stop()
-        except Exception:                                        # noqa: BLE001  (not running: nothing to stop)
-            pass

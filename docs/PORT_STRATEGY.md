@@ -169,9 +169,9 @@ layer, not hundreds of rewrites.
 **The game can be played now, in a window, on a Mac.** `python3 -m winemu.run --live` (from `tools/emu_spike`, with
 `pygame-ce` installed) runs the original MAGIC.EXE in the emulator and shows it in an SDL window with the mouse and
 keyboard connected: title screen, new game, difficulty, colour, visage, name, and on to the overworld map all work, and
-a game starts in about six seconds. The guest's clock follows the real one, and the window thread preempts the emulator
-every 25 ms and on input, because the game's own thread busy-waits through whole 200M-instruction slices (the exact
-runs above keep their deterministic slices; `--live` is for playing, not for comparing). It starts quickly because
+a game starts in about six seconds. The guest's clock follows the real one, and threads are switched every 200,000 instructions
+instead of every 200M, because the game's own thread busy-waits (the exact runs above keep their deterministic slices;
+`--live` is for playing, not for comparing). It starts quickly because
 `winemu/accel.py` runs the one function that made startup slow (a card-text keyword search that called `_strnicmp`
 870,000 times) as Python, checked against what the original returned for the same arguments. What is not there yet: sound,
 and the native layer for MAGIC.EXE (its duel engine is the same code as DUEL.EXE's at other addresses, so the AI's
