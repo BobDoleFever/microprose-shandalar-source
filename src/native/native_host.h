@@ -15,8 +15,10 @@
 typedef uint32_t (*HostMemRead)(void *ctx, uint32_t addr, int size);
 typedef void (*HostMemWrite)(void *ctx, uint32_t addr, int size, uint32_t value);
 /* Call the guest's function at `addr` with these cdecl/stdcall arguments (the host builds the frame at `sp`, below it) and
- * return what it returned. The host may run guest code and, in doing so, call back into this library. */
-typedef uint32_t (*HostCall)(uint32_t addr, int nargs, const uint32_t *args, uint32_t sp);
+ * return what it returned. With `inplace` the frame is already built (a lifted function's own, whose return address slot is
+ * at `sp`, arguments above it): the host calls the function on it, with the registers `regs` (EAX, ECX, EDX, EBX, EBP, ESI,
+ * EDI) if given, so that what the original leaves on the stack is what it left. The host may run guest code and, in doing so, call back into this library. */
+typedef uint32_t (*HostCall)(uint32_t addr, int nargs, const uint32_t *args, uint32_t sp, int inplace, const uint32_t *regs);
 
 int host_init(const char *program, HostMemRead rd, HostMemWrite wr, HostCall call);
 /* Guest memory the library can reach directly: the guest range [base, base + size) is the host's memory at `ptr`. Accesses
@@ -41,8 +43,13 @@ int host_lifted_count(void);
 uint32_t host_lifted_entry(int index);
 const char *host_lifted_name(int index);
 /* Run the lifted function at `entry` on the frame the guest has built at `esp`. */
-uint32_t host_lifted_run(uint32_t entry, uint32_t esp);
-int host_lifted_try(uint32_t entry, uint32_t esp, uint32_t *ret); /* see host_native_try */
+/* `regs`: the guest's EAX, ECX, EDX, EBX, EBP, ESI, EDI as the function is entered, or NULL. */
+uint32_t host_lifted_run(uint32_t entry, uint32_t esp, const uint32_t *regs);
+int host_lifted_try(uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret); /* see host_native_try */
+
+/* A function (native or lifted, by its entry address) the host does not replace in this run: native and lifted code that calls it
+ * goes out to the original instead of running its own version. Everything is enabled until this says otherwise. */
+void host_set_enabled(uint32_t entry, int on);
 
 /* Work done so far: how often each native function was entered (nested calls included), and how many instructions lifted
  * code executed. `entries` has host_native_count() numbers. */

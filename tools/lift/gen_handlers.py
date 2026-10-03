@@ -29,10 +29,22 @@ KNOWN_IMPORTS = {"Sleep": (1, 4)}
 STUB_BASE = 0x006C5800   # where winemu/run.py `inject` puts a stand-in for each import while it injects: free space after the
 STUB_STRIDE = 0x20       # last section's code, in a page the executable maps
 
+# C runtime functions that take a variable number of arguments: a call out passes a fixed count, so a function that calls one
+# is not lifted.
+VARIADIC = {"_sprintf", "_printf", "_fprintf", "_sscanf", "_fscanf", "_scanf", "_vsprintf", "_snprintf"}
+
 PROGRAMS = {  # master card table base, the code range its handler pointers fall in, function index
     "duel": dict(master=0x004FF590, code=(0x401000, 0x4F0000)),
     "magic": dict(master=0x0051AEB8, code=(0x401000, 0x510000)),
 }
+
+
+def native_entries(program):
+    """Addresses of the program's native functions (src/native/layout.c)."""
+    import re  # noqa: PLC0415
+    text = open(os.path.join(ROOT, "src", "native", "layout.c")).read()
+    block = text.split(f"const Layout LAYOUT_{program.upper()} = {{", 1)[1].split("\n};", 1)[0]
+    return {int(m.group(1), 16) for m in re.finditer(r"\[FN_[A-Z_0-9]+\] = (0x[0-9a-fA-F]+)", block)} - {0}
 
 
 def handler_addresses(pe, master, code):
@@ -57,6 +69,12 @@ def main():
     ap.add_argument("--program", choices=sorted(PROGRAMS), default="duel")
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--extra", default="", help="more functions to lift besides the card handlers: hex addresses, comma-separated "
+                    "(they are lifted and verified exactly as handlers are, and named Handler_<address> too)")
+    ap.add_argument("--extra-file", default="", help="a file of functions to lift besides the handlers, one per line: a hex address, "
+                    "then a label (tools/lift/ai_functions.txt)")
+    ap.add_argument("--no-handlers", action="store_true", help="lift only the extra functions, not the card handlers (for recording)")
+    ap.add_argument("--all", action="store_true", help="try every function of the program's function index (a survey: see what the lifter can do)")
     args = ap.parse_args()
     cfg = PROGRAMS[args.program]
 
@@ -83,17 +101,35 @@ def main():
         raise Unsupported(f"0x{va:x} is not in the image")
 
     handlers = handler_addresses(pe, cfg["master"], cfg["code"])
+    extra = [int(x, 16) for x in args.extra.split(",") if x]
+    if args.extra_file:
+        for line in open(args.extra_file):
+            line = line.split("#")[0].strip()
+            if line:
+                extra.append(int(line.split()[0], 16))
+    if args.no_handlers:
+        handlers = []
+    if args.all:
+        extra += sorted(a for a in index if cfg["code"][0] <= a < cfg["code"][1])
+    extra = [a for a in dict.fromkeys(extra) if a not in handlers]
+    handlers += extra
     spec, sources, callee_rows = [], [], {}
+    register_args = {}
+    native = native_entries(args.program)   # a native function stands in for its original, whatever registers that used
     for addr in handlers:
         info = index.get(addr)
         entry = dict(addr=f"0x{addr:08x}", name=f"Handler_{addr:08x}", size=info["size"] if info else None)
+        if addr in extra:
+            entry["extra"] = True   # not a card handler: it is called with its own arguments (nargs), not (player, slot, event)
+            entry["label"] = info["name"] if info else None
         if not info:
             entry.update(lifted=False, reason="not in function_index.csv")
             spec.append(entry)
             continue
         try:
             src, targets, ninsn, (lo, hi) = lifter.lift_function(getbytes, addr, entry["name"], entries)
-            entry.update(extent=[f"0x{lo:x}", f"0x{hi:x}"], instructions=ninsn, index_size=info["size"])
+            entry.update(extent=[f"0x{lo:x}", f"0x{hi:x}"], instructions=ninsn, index_size=info["size"],
+                         nargs=max(info["nargs"], lifter.last_stack_arguments), returns_value=lifter.last_returns_value)
             for site in lifter.dynamic_sites:   # only a card's handler through the master table is understood
                 if getbytes(site, 7) != b"\xff\x14\x85" + (cfg["master"] + 0x10).to_bytes(4, "little"):
                     raise Unsupported(f"indirect call at 0x{site:x} that is not through the master card table")
@@ -112,8 +148,14 @@ def main():
                                       stub=f"0x{stub:08x}"))
                     continue
                 row = callee_rows.get(t)
+                if t not in register_args and t not in native:
+                    register_args[t] = lifter.register_inputs(getbytes, t, entries)
+                if index[t]["name"] in VARIADIC:
+                    raise Unsupported(f"calls {index[t]['name']}, which takes a variable number of arguments")
+                if register_args.get(t):
+                    raise Unsupported(f"calls 0x{t:x}, which takes {', '.join(register_args[t])} in registers")
                 if row is None:
-                    row = callee_rows[t] = dict(addr=t, nargs=index[t]["nargs"],
+                    row = callee_rows[t] = dict(addr=t, nargs=max(index[t]["nargs"], lifter.callee_arguments(getbytes, t, entries, index[t]["size"])),
                                                 cleanup=lifter.ret_cleanup(getbytes, t, entries),
                                                 name=index[t]["name"])
                 calls.append(dict(addr=f"0x{t:08x}", name=row["name"], nargs=row["nargs"], cleanup=row["cleanup"]))

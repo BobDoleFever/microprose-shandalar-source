@@ -53,9 +53,62 @@ typedef struct {
     uint32_t addr;
     uint32_t old;
     int size;
+    uint8_t *blob; /* the old bytes of a bulk write (size > 4), else NULL */
 } Undo;
 static Undo *undo;
 static size_t nundo, capundo;
+
+static Undo *push_undo(void)
+{
+    if (nundo == capundo) {
+        capundo = capundo ? capundo * 2 : 4096;
+        undo = realloc(undo, capundo * sizeof(*undo));
+        if (!undo)
+            abort();
+    }
+    undo[nundo].blob = NULL;
+    return &undo[nundo++];
+}
+
+/* The counters a stopped call must give back (host_counters): it will be run again, and what the first attempt did is not work
+ * the original did. */
+typedef struct {
+    uint64_t entries[FN_COUNT];
+    uint64_t extra;
+    uint64_t lifted;
+} Counters;
+static Counters counters_saved;
+
+static void save_counters(void)
+{
+    memcpy(counters_saved.entries, native_entries, sizeof(native_entries));
+    counters_saved.extra = native_cost_extra;
+#ifdef HOST_LIFTED
+    {
+        extern uint64_t lift_icount;
+        counters_saved.lifted = lift_icount;
+    }
+#endif
+}
+
+static void restore_counters(void)
+{
+    memcpy(native_entries, counters_saved.entries, sizeof(native_entries));
+    native_cost_extra = counters_saved.extra;
+#ifdef HOST_LIFTED
+    {
+        extern uint64_t lift_icount;
+        lift_icount = counters_saved.lifted;
+    }
+#endif
+}
+
+/* A call finished: what it wrote stays. */
+static void drop_undo(void)
+{
+    while (nundo > 0)
+        free(undo[--nundo].blob);
+}
 
 static uint32_t direct_read(void *ctx, uint32_t addr, int size)
 {
@@ -73,21 +126,35 @@ static void direct_write(void *ctx, uint32_t addr, int size, uint32_t value)
     uint8_t *p = locate(addr, size);
     if (p) {
         if (trying) {
-            if (nundo == capundo) {
-                capundo = capundo ? capundo * 2 : 4096;
-                undo = realloc(undo, capundo * sizeof(*undo));
-                if (!undo)
-                    abort();
-            }
-            undo[nundo].addr = addr;
-            undo[nundo].size = size;
-            undo[nundo].old = 0;
-            memcpy(&undo[nundo].old, p, (size_t)size);
-            nundo++;
+            Undo *u = push_undo();
+            u->addr = addr;
+            u->size = size;
+            u->old = 0;
+            memcpy(&u->old, p, (size_t)size);
         }
         memcpy(p, &value, (size_t)size);
     } else if (fallback_write)
         fallback_write(ctx, addr, size, value);
+}
+
+/* A copy between two stretches of the guest's memory the host can reach: one memmove, with one undo entry. */
+static int direct_copy(void *ctx, uint32_t dst, uint32_t src, uint32_t len)
+{
+    uint8_t *pd = locate(dst, (int)len), *ps = locate(src, (int)len);
+    (void)ctx;
+    if (!pd || !ps || len > 0x7fffffffu)
+        return 0;
+    if (trying) {
+        Undo *u = push_undo();
+        u->addr = dst;
+        u->size = (int)len;
+        u->blob = malloc(len);
+        if (!u->blob)
+            abort();
+        memcpy(u->blob, pd, len);
+    }
+    memmove(pd, ps, len);
+    return 1;
 }
 
 static uint32_t current_sp(void)
@@ -105,7 +172,15 @@ static uint32_t call_out(void *ctx, Callee callee, uint32_t addr, int nargs, con
     if (trying)
         longjmp(try_jb, 1);
     (void)callee; /* the address says which function; the host does not need the enum */
-    return host_call(addr, nargs, args, current_sp());
+#ifdef HOST_LIFTED
+    {
+        uint32_t regs[7];
+        lift_call_regs(regs);
+        return host_call(addr, nargs, args, current_sp(), lift_inplace, lift_inplace ? regs : NULL);
+    }
+#else
+    return host_call(addr, nargs, args, current_sp(), 0, NULL);
+#endif
 }
 
 int host_init(const char *program, HostMemRead rd, HostMemWrite wr, HostCall call)
@@ -119,6 +194,7 @@ int host_init(const char *program, HostMemRead rd, HostMemWrite wr, HostCall cal
     fallback_write = wr;
     host_mem.ext_read = direct_read;
     host_mem.ext_write = direct_write;
+    host_mem.ext_copy = direct_copy;
     host_vm.mem = &host_mem;
     host_vm.L = layout;
     host_vm.call = call_out;
@@ -136,7 +212,8 @@ static void roll_back(void)
         Undo *u = &undo[--nundo];
         uint8_t *p = locate(u->addr, u->size);
         if (p)
-            memcpy(p, &u->old, (size_t)u->size);
+            memcpy(p, u->blob ? u->blob : (uint8_t *)&u->old, (size_t)u->size);
+        free(u->blob);
     }
 }
 
@@ -148,10 +225,21 @@ void host_counters(uint64_t *entries, uint64_t *lifted_instructions)
 #ifdef HOST_LIFTED
     {
         extern uint64_t lift_icount;
-        *lifted_instructions = lift_icount;
+        *lifted_instructions = lift_icount + native_cost_extra;
     }
 #else
-    *lifted_instructions = 0;
+    *lifted_instructions = native_cost_extra;
+#endif
+}
+
+void host_set_enabled(uint32_t entry, int on)
+{
+    int f;
+    for (f = 0; f < FN_COUNT; f++)
+        if (host_vm.L->entry[f] == entry)
+            native_disabled[f] = !on;
+#ifdef HOST_LIFTED
+    lift_set_enabled(entry, on);
 #endif
 }
 
@@ -173,11 +261,13 @@ int host_native_try(int id, const uint32_t *args, uint32_t sp, uint32_t *ret)
     lift_set_stack(sp);
 #endif
     host_sp = sp;
-    nundo = 0;
+    drop_undo();
     trying = 1;
+    save_counters();
     if (setjmp(try_jb)) {
         trying = 0;
         roll_back();
+        restore_counters();
 #ifdef HOST_LIFTED
         lift_set_stack(saved_sp);
 #endif
@@ -185,7 +275,7 @@ int host_native_try(int id, const uint32_t *args, uint32_t sp, uint32_t *ret)
     }
     *ret = NATIVE_FUNCTIONS[id].run(&host_vm, args);
     trying = 0;
-    nundo = 0;
+    drop_undo();
 #ifdef HOST_LIFTED
     lift_set_stack(saved_sp);
 #endif
@@ -237,28 +327,30 @@ const char *host_lifted_name(int index)
     return LIFTED[index].name;
 }
 
-uint32_t host_lifted_run(uint32_t entry, uint32_t esp)
+uint32_t host_lifted_run(uint32_t entry, uint32_t esp, const uint32_t *regs)
 {
     uint32_t ret = 0;
-    lift_run_at(&host_vm, entry, esp, &ret);
+    lift_run_at(&host_vm, entry, esp, regs, &ret);
     return ret;
 }
 
-int host_lifted_try(uint32_t entry, uint32_t esp, uint32_t *ret)
+int host_lifted_try(uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret)
 {
     uint32_t saved_sp = lift_get_stack();
 
-    nundo = 0;
+    drop_undo();
     trying = 1;
+    save_counters();
     if (setjmp(try_jb)) {
         trying = 0;
         roll_back();
+        restore_counters();
         lift_set_stack(saved_sp);
         return 1;
     }
-    lift_run_at(&host_vm, entry, esp, ret);
+    lift_run_at(&host_vm, entry, esp, regs, ret);
     trying = 0;
-    nundo = 0;
+    drop_undo();
     lift_set_stack(saved_sp);
     return 0;
 }
@@ -280,17 +372,19 @@ const char *host_lifted_name(int index)
     return "";
 }
 
-uint32_t host_lifted_run(uint32_t entry, uint32_t esp)
+uint32_t host_lifted_run(uint32_t entry, uint32_t esp, const uint32_t *regs)
 {
     (void)entry;
     (void)esp;
+    (void)regs;
     return 0;
 }
 
-int host_lifted_try(uint32_t entry, uint32_t esp, uint32_t *ret)
+int host_lifted_try(uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret)
 {
     (void)entry;
     (void)esp;
+    (void)regs;
     *ret = 0;
     return 0;
 }

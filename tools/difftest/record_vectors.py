@@ -82,6 +82,7 @@ NATIVE_FUNCTIONS = [
     ("FN_AI_PEEK_PLANNED_CHOICE", "Ai_PeekPlannedChoice", 1),
     ("FN_AI_GET_LAND_COLOR_MASKS", "Ai_GetLandColorMasks", 2),
     ("FN_SCAN_CARDS", "Magic_ScanCards", 1),
+    ("FN_CRT_MEMCPY", "Crt_Memcpy", 3),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
@@ -136,6 +137,7 @@ class Recorder:
         # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
         # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
         self.handler_callees = {}
+        self.no_return = set()   # lifted functions that leave EAX as the caller had it: the vector does not compare it
         self.debug_addr = int(os.environ["RECORD_DEBUG_ADDR"], 0) if os.environ.get("RECORD_DEBUG_ADDR") else None
         self.frame_sites = {}
         self.dump_ranges = [tuple(int(x, 0) for x in part.split(":")) for part in os.environ.get("RECORD_DUMP", "").split(",") if part]
@@ -145,7 +147,9 @@ class Recorder:
             for e in json.load(open(spec)):
                 if e.get("lifted"):
                     addr = int(e["addr"], 16)
-                    self.funcs[addr] = (e["name"], 3)
+                    if e.get("returns_value") is False:
+                        self.no_return.add(e["name"])
+                    self.funcs[addr] = (e["name"], e.get("nargs", 3) if e.get("extra") else 3)
                     # An import is called through its slot in the import table: while a handler is injected the slot points
                     # at a stand-in (run.py), so the call is seen at the stand-in and reported as a call to the slot.
                     self.handler_callees[addr] = {int(c.get("stub") or c["addr"], 16): (c["name"], c["nargs"], c.get("cleanup", 0)) for c in e["calls"]}
@@ -243,10 +247,17 @@ class Recorder:
             return (name, args[2])
         if name in ("Magic_PushEventContext", "Magic_PopEventContext"):
             return (name, m.r32(m.L_event_context_depth))
+        if name == "Crt_Memcpy":   # the size (exactly up to 64, then by magnitude), both alignments, and overlap
+            dst, src, n = args
+            return (name, n if n <= 64 else n.bit_length(), dst & 3, src & 3, dst > src and dst < src + n)
         if name.startswith("Ai_"):
             return self.ai_key(name, args)
         if name.startswith("Handler_"):   # one bucket per event: a handler does different things for different events
-            return (name, args[2])
+            if len(args) == 3:
+                return (name, args[2])
+            # a function that is not a card handler (tools/lift/ai_functions.txt): by whether the AI is thinking and by which
+            # small values (players, slots, flags) its first arguments hold
+            return (name, m.r32(m.L_is_ai_thinking), tuple(a if a < 4 else 4 for a in args[:4]))
         if name == "Magic_ScanCards":
             try:   # the event, how many cards are in the play order (0, 1, 2, 3 or more), and the nesting
                 n = 0
@@ -474,9 +485,11 @@ class Recorder:
              "description": "recorded from %s at virtual %.3fs" % (self.program, r["t"]),
              "source": "tools/difftest/record_vectors.py (emulator recording)",
              "args": [S32(x) for x in r["args"]], "stack_pointer": r["esp"],
-             "expected_return": 0 if r["name"] in VOID_FUNCTIONS else S32(eax),
+             "expected_return": 0 if r["name"] in VOID_FUNCTIONS or r["name"] in self.no_return else S32(eax),
              "memory_in": regions({**r["pad"], **r["reads"]}), "calls": calls,
              "memory_out_expected": regions(out), "memory_out_exhaustive": True}
+        if r["name"] in self.no_return:
+            v["return_bits"] = 0
         if self.lifted_handlers and not r["name"].startswith("Handler_"):
             v["lifted_handlers"] = True
             if "handler_esp" in r:

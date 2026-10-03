@@ -98,6 +98,7 @@ const Layout LAYOUT_MAGIC = {
         [FN_AI_PEEK_PLANNED_CHOICE] = 0x004ab3a9,
         [FN_AI_GET_LAND_COLOR_MASKS] = 0x004acb7f,
         [FN_SCAN_CARDS] = 0x00473f06,
+        [FN_CRT_MEMCPY] = 0x00000000, /* none: MAGIC.EXE imports memcpy from the runtime DLL */
     },
 };
 
@@ -190,6 +191,7 @@ const Layout LAYOUT_DUEL = {
         [FN_AI_PEEK_PLANNED_CHOICE] = 0x00430768,
         [FN_AI_GET_LAND_COLOR_MASKS] = 0x00431f41,
         [FN_SCAN_CARDS] = 0x0048c5a8,
+        [FN_CRT_MEMCPY] = 0x004d99b0,
     },
 };
 

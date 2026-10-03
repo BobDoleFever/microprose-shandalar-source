@@ -33,10 +33,17 @@ void lift_set_stack(uint32_t top);
 uint32_t lift_get_stack(void);
 
 /* Run the lifted function at `entry` on a frame already built at `esp`; 1 if there is such a function. */
-int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, uint32_t *ret);
+int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret);
+/* 1 while a lifted function's call goes out to the original (its frame is already built on the lifted stack), else 0: the
+ * host calls the original in place then, instead of building a frame of its own below. */
+extern int lift_inplace;
+/* The registers at the lifted call being made (EAX, ECX, EDX, EBX, EBP, ESI, EDI). */
+void lift_call_regs(uint32_t regs[7]);
 
 /* The generated function that stands for the original at `entry`, or NULL. */
 const LiftedFn *lift_find(uint32_t entry);
+/* Stop (or resume) running the lifted function at `entry` from native and lifted code; calls to it go to the original. */
+void lift_set_enabled(uint32_t entry, int on);
 
 /* Run the lifted function at `entry` as a call with these cdecl/stdcall arguments; 1 if there is such a function. */
 int lift_call_function(Vm *vm, uint32_t entry, int nargs, const uint32_t *args, uint32_t *ret);

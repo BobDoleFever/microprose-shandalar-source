@@ -18,6 +18,19 @@
 
 Mem *lift_mem;
 uint64_t lift_icount; /* instructions executed by lifted code, when built with -DLIFT_COUNT */
+LiftRegs lift_in, lift_out;
+int lift_inplace;
+
+void lift_call_regs(uint32_t regs[7])
+{
+    regs[0] = lift_out.eax;
+    regs[1] = lift_out.ecx;
+    regs[2] = lift_out.edx;
+    regs[3] = lift_out.ebx;
+    regs[4] = lift_out.ebp;
+    regs[5] = lift_out.esi;
+    regs[6] = lift_out.edi;
+}
 
 #ifdef LIFT_COVERAGE
 /* Which lifted instructions ran, appended to the file $FLAT_COV at exit (tools/lift/coverage.py reads it). */
@@ -66,11 +79,23 @@ uint32_t lift_get_stack(void)
     return stack_top;
 }
 
+/* Lifted functions the host does not stand in for (native_host.c host_set_enabled): they are not run from here, the call goes
+ * out to the original instead. */
+static unsigned char lifted_off[4096];
+
+void lift_set_enabled(uint32_t entry, int on)
+{
+    int i;
+    for (i = 0; i < LIFTED_COUNT && i < (int)sizeof(lifted_off); i++)
+        if (LIFTED[i].entry == entry)
+            lifted_off[i] = !on;
+}
+
 const LiftedFn *lift_find(uint32_t entry)
 {
     int i;
     for (i = 0; i < LIFTED_COUNT; i++)
-        if (LIFTED[i].entry == entry)
+        if (LIFTED[i].entry == entry && !(i < (int)sizeof(lifted_off) && lifted_off[i]))
             return &LIFTED[i];
     return NULL;
 }
@@ -93,7 +118,7 @@ void lift_bad_jump(uint32_t from)
 
 /* A call into the lifted function at `entry` on the frame the caller has already built at `esp` (a return address, then
  * the arguments): what a host does when the original program calls a function that has been lifted. */
-int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, uint32_t *ret)
+int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret)
 {
     const LiftedFn *f = lift_find(entry);
     uint32_t saved = stack_top;
@@ -102,6 +127,10 @@ int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, uint32_t *ret)
         return 0;
     lift_mem = vm->mem;
     stack_top = esp;
+    if (regs)
+        lift_in = (LiftRegs){regs[0], regs[1], regs[2], regs[3], regs[4], regs[5], regs[6]};
+    else
+        memset(&lift_in, 0, sizeof(lift_in));
     *ret = f->fn(esp);
     stack_top = saved;
     return 1;
@@ -124,6 +153,7 @@ int lift_call_function(Vm *vm, uint32_t entry, int nargs, const uint32_t *args, 
     for (i = 0; i < nargs; i++)
         mem_wr32(vm->mem, esp + 4u + 4u * (uint32_t)i, args[i]);
     stack_top = esp; /* anything the handler calls from here on uses the stack below the frame */
+    memset(&lift_in, 0, sizeof(lift_in));
     *ret = f->fn(esp);
     stack_top = saved;
     return 1;
@@ -133,6 +163,7 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
 {
     const CalleeRow *row = callee_row(target);
     uint32_t args[MAX_CALL_ARGS], ret = 0;
+    const LiftRegs rg = lift_out; /* the registers at the call: a nested call overwrites lift_out */
     int nargs = row ? row->nargs : 3; /* a call through the master table is a handler(player, slot, event) */
     int i;
 
@@ -147,11 +178,16 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
     if (bridge_mode == LIFT_CALLS_NATIVE) {
         int f;
         for (f = 0; f < FN_COUNT; f++)
-            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs) {
+            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs && !native_disabled[f]) {
                 /* a native function can run lifted code again (a query scans the cards): that code's frames go below this
                  * one's, not over the locals it is using */
                 uint32_t saved_top = stack_top;
                 stack_top = argp - 4u;
+                if (f == FN_CRT_MEMCPY) {   /* the prologue's saves of EBP, EDI and ESI, which stay on the stack below the call */
+                    mem_wr32(bridge_vm->mem, argp - 8u, rg.ebp);
+                    mem_wr32(bridge_vm->mem, argp - 12u, rg.edi);
+                    mem_wr32(bridge_vm->mem, argp - 16u, rg.esi);
+                }
                 ret = NATIVE_FUNCTIONS[f].run(bridge_vm, args);
                 stack_top = saved_top;
                 if (getenv("LIFT_TRACE")) {
@@ -166,6 +202,7 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
             const LiftedFn *lf = lift_find(target);
             uint32_t saved = stack_top;
             stack_top = argp - 4u;
+            lift_in = rg;
             ret = lf->fn(argp - 4u);
             stack_top = saved;
             return ret;
@@ -174,7 +211,10 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
     {   /* out to the Vm's hook: a guest function called from here gets its frame below this one's */
         uint32_t saved_top = stack_top;
         stack_top = argp - 4u;
+        lift_out = rg;
+        lift_inplace = 1;
         ret = vm_call_at(bridge_vm, CALLEE_FUNCTION, target, nargs, args);
+        lift_inplace = 0;
         stack_top = saved_top;
         return ret;
     }

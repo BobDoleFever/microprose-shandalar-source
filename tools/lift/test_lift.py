@@ -198,3 +198,50 @@ def test_native_layer_counts_a_read_of_undefined_memory_as_a_fault(tmp_path, nat
     v = vector("Handler_00007200", [3, 0, 0], 7, [{"callee": 0x1234, "name": "card_handler", "args": [3], "return": 7}])
     status, messages, _ = run(tmp_path, native_harness, v)
     assert status == "FAIL" and any("undefined" in m or "0x00008000" in m or "8000" in m for m in messages), messages
+
+
+# ---- what the lifter refuses and what it reports about a function ------------------------------------------------------
+
+
+def lift_bytes(code, name="T"):
+    """Lift `code` (placed at 0x9000) and return the lifter, so a test can look at what it noted about the function."""
+    lifter = Lifter()
+
+    def get(va, n):
+        if 0x9000 <= va < 0x9000 + len(code):
+            return code[va - 0x9000:va - 0x9000 + n] + b"\x90" * 64
+        raise Unsupported(f"0x{va:x} is not in the test image")
+    lifter.lift_function(get, 0x9000, name, frozenset())
+    return lifter
+
+
+def test_a_function_that_takes_a_register_argument_is_refused():
+    # mov eax, ecx; ret   (a __fastcall function: ECX holds its first argument, which lifted code does not have)
+    with pytest.raises(Unsupported, match="ecx on entry"):
+        lift_bytes(bytes.fromhex("89c8c3"))
+    # the same function after it has loaded ECX itself is fine: mov ecx,[esp+4]; mov eax,ecx; ret
+    lift_bytes(bytes.fromhex("8b4c2404" "89c8" "c3"))
+
+
+def test_saving_a_callee_save_register_is_not_a_use_of_it():
+    # push esi; mov esi,[esp+8]; mov eax,esi; pop esi; ret
+    lift_bytes(bytes.fromhex("56" "8b742408" "89f0" "5e" "c3"))
+    # reading a part of a register the function wrote part of is a use of what it wrote
+    # mov cl,[esp+4]; shl eax,cl would read EAX on entry, which is refused
+    with pytest.raises(Unsupported, match="eax on entry"):
+        lift_bytes(bytes.fromhex("8a4c2404" "d3e0" "c3"))
+
+
+def test_a_function_that_never_sets_eax_returns_no_value():
+    assert lift_bytes(bytes.fromhex("b801000000c3")).last_returns_value            # mov eax,1; ret
+    assert not lift_bytes(bytes.fromhex("c3")).last_returns_value                   # ret
+    # one path sets it and one does not: the value is not reliable
+    # cmp dword [esp+4],0; je +6; mov eax,1; ret; ret
+    assert not lift_bytes(bytes.fromhex("837c240400" "7406" "b801000000" "c3" "c3")).last_returns_value
+
+
+def test_arguments_are_counted_from_the_frame():
+    # push ebp; mov ebp,esp; mov eax,[ebp+0x10]; pop ebp; ret    reads the third argument
+    assert lift_bytes(bytes.fromhex("55" "89e5" "8b4510" "5d" "c3")).last_stack_arguments == 3
+    # no frame pointer: nothing to count
+    assert lift_bytes(bytes.fromhex("8b442404c3")).last_stack_arguments == 0

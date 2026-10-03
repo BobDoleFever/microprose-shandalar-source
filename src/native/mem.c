@@ -169,7 +169,12 @@ void mem_wr32(Mem *m, uint32_t addr, uint32_t v)
 void mem_copy(Mem *m, uint32_t dst, uint32_t src, size_t len)
 {
     size_t i;
-    uint8_t *tmp = malloc(len ? len : 1);
+    uint8_t *tmp;
+    if (m->ext_copy && len && m->ext_copy(m->ext_ctx, dst, src, (uint32_t)len)) {
+        written(m, dst, len);
+        return;
+    }
+    tmp = malloc(len ? len : 1);
     if (!tmp) {
         fprintf(stderr, "mem: out of memory\n");
         exit(2);

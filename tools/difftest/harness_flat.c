@@ -219,6 +219,8 @@ void lift_bad_jump(uint32_t from)
     longjmp(bail, 1);
 }
 
+LiftRegs lift_in, lift_out;   /* the flat harness has no registers to give: lifted code starts from zero */
+
 uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
 {
     const CalleeRow *row = NULL;

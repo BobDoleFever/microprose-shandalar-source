@@ -199,7 +199,7 @@ def test_layout_code_addresses_are_function_starts():
         # every FN_* entry and every remaining CALLEE_* of engine.h, in each program
         import record_vectors as rec  # noqa: PLC0415
         assert len(addrs) == len(rec.NATIVE_FUNCTIONS) + len(rec.CALLEES_INFO) - len(rec.DYNAMIC_CALLEES), len(addrs)
-        missing = {k: hex(a) for k, a in addrs.items() if a not in starts}
+        missing = {k: hex(a) for k, a in addrs.items() if a and a not in starts}   # 0: the program has no such function
         assert not missing, (program, missing)
 
 
@@ -218,3 +218,29 @@ def test_record_vectors_tables_match_native_code():
         assert set(callee_order) == callee_names, (program, "CALLEE_* mismatch", set(callee_order) ^ callee_names)
         assert set(entries) == set(fn_order), (program, "layout.c .entry vs engine.h NativeFn")
         assert set(callees) == set(callee_order) - rec.DYNAMIC_CALLEES - {"CALLEE_FUNCTION"}, (program, "layout.c .callee vs engine.h Callee")
+
+
+def test_memcpy_instruction_counts_are_what_the_original_spends(tmp_path):
+    """crt_memcpy_instructions (src/native/crt.c) against counts measured by running the original's memcpy, 0x004d99b0 of
+    DUEL.EXE, in the emulator: instructions plus one per `rep` iteration plus one for the iteration that ends it (what the
+    emulator counts). The measuring needs the game; these values are what it gave."""
+    cc = os.environ.get("CC") or "cc"
+    if not shutil.which(cc):
+        pytest.skip("no C compiler")
+    base = 0x110000
+    # (dst, src, n, instructions)
+    cases = [(base + 0x1000, base + 0x8000, 0, 21), (base + 0x1000, base + 0x8000, 1, 23), (base + 0x1000, base + 0x8000, 4, 22),
+             (base + 0x1001, base + 0x8000, 0, 19), (base + 0x1001, base + 0x8000, 12, 31), (base + 0x1001, base + 0x8000, 13, 37),
+             (base + 0x1003, base + 0x8000, 13, 34), (base + 0x1002, base + 0x8000, 17, 39), (base + 0x1000, base + 0x8000, 4000, 1021),
+             (base + 0x1001, base + 0x8000, 4000, 1034), (base + 0x1000, base + 0x8000, 0xb640, 11685),
+             (base + 0x4001, base + 0x4000, 12, 41), (base + 0x4004, base + 0x4000, 12, 34), (base + 0x4000, base + 0x4001, 12, 24)]
+    main = tmp_path / "main.c"
+    main.write_text('#include <stdio.h>\n#include <stdint.h>\nuint64_t crt_memcpy_instructions(uint32_t, uint32_t, uint32_t);\n'
+                    "int main(void) {\n" + "".join(f'    printf("%llu\\n", (unsigned long long)crt_memcpy_instructions({d}u, {s}u, {n}u));\n' for d, s, n, _ in cases)
+                    + "    return 0;\n}\n")
+    exe = tmp_path / "t"
+    proc = subprocess.run([cc, "-std=c99", "-O1", "-I", rv.NATIVE, "-o", str(exe), str(main)] + [p for p in rv.SOURCES if not p.endswith("harness.c")],
+                          capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stderr
+    got = [int(x) for x in subprocess.run([str(exe)], capture_output=True, text=True).stdout.split()]
+    assert got == [c[3] for c in cases]

@@ -32,6 +32,9 @@ typedef struct Mem {
     uint32_t (*ext_read)(void *ctx, uint32_t addr, int size);
     void (*ext_write)(void *ctx, uint32_t addr, int size, uint32_t value);
     void *ext_ctx;
+    /* Optional: copy `len` bytes inside the guest in one go (memmove semantics). Returns 0 when it cannot (the copy then goes
+     * through ext_read/ext_write). */
+    int (*ext_copy)(void *ctx, uint32_t dst, uint32_t src, uint32_t len);
 } Mem;
 
 void mem_init(Mem *m);
@@ -48,7 +51,7 @@ void mem_wr8(Mem *m, uint32_t addr, uint8_t v);
 void mem_wr16(Mem *m, uint32_t addr, uint16_t v);
 void mem_wr32(Mem *m, uint32_t addr, uint32_t v);
 
-/* memcpy inside the image (the original calls the C runtime's memcpy). */
+/* memmove inside the image (the original calls the C runtime's memcpy). */
 void mem_copy(Mem *m, uint32_t dst, uint32_t src, size_t len);
 
 #endif

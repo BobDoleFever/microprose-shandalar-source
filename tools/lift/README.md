@@ -19,7 +19,9 @@ Nothing generated here is committed. The lifted C is derived from the game's mac
 | `x86lift.py` | the lifter. Recursive-descent over the function's own instructions (the function index's sizes are sometimes short), one C statement block per instruction, eager flags, calls out through `lift_call`. Refuses (`Unsupported`) rather than guess: indirect jumps and calls, segment overrides, anything outside the integer subset |
 | `src/native/lift_rt.h` | what the lifted C compiles against: registers are locals, memory is `G` addressed through `lift_xl`, flag macros, `lift_idiv32` |
 | `src/native/lift_tables.h` | the shape of the generated tables (`LIFTED`, `LIFT_CALLEES`) |
-| `gen_handlers.py` | reads the handler pointers from the master card table, lifts each distinct handler, writes `handlers_gen.c` and `handler_spec.json` (per handler: size, instruction count, whether it lifted and why not, the exact functions it calls with argument counts and stack cleanup) |
+| `gen_handlers.py` | reads the handler pointers from the master card table, lifts each distinct handler (and, with `--extra-file`, the other functions of `ai_functions.txt`), writes `handlers_gen.c` and `handler_spec.json` (per function: size, instruction count, whether it lifted and why not, argument count, whether it returns a value, the exact functions it calls with argument counts and stack cleanup) |
+| `ai_functions.txt` | the functions that are not card handlers and run while the AI is thinking, found with the emulator's `--profile` (below) |
+| `compare_hosted.py` | runs the game on the original and with the lifted functions standing in, and compares every import call the guest makes (below) |
 | `make_inject_script.py` | builds the emulator script that runs each handler on demand with the events its own body tests |
 | `coverage.py` | how many of the lifted instructions the vectors executed |
 | `../difftest/harness_flat.c` | runs a lifted handler on a recorded vector (same line protocol as the native harness) |
@@ -27,7 +29,8 @@ Nothing generated here is committed. The lifted C is derived from the game's mac
 ## Running it
 
 ```
-python3 tools/lift/gen_handlers.py --program duel --exe sources/installed/Magic/Program/DUEL.EXE --out sources/generated/lift
+python3 tools/lift/gen_handlers.py --program duel --exe sources/installed/Magic/Program/DUEL.EXE --out sources/generated/lift \
+    --extra-file tools/lift/ai_functions.txt     # the AI search's functions too (below); leave it out for the handlers alone
 make -C tools/difftest flat
 
 # record: the game runs in the emulator; handlers are called on demand (see below)
@@ -79,17 +82,21 @@ point of lifting is that correctness does not wait for it.
   assumes cdecl, as card handlers are.
 * Callees are mocked, so a handler's behaviour is checked up to its calls. Each callee is a function in its own right
   and gets its own vectors.
+* What a function leaves below its stack frame is not compared: the recorder keeps the frame as the call found it and the
+  harness starts the lifted code with every register zero, so the values it pushes to save the caller's registers differ from
+  the original's. Code that reads an uninitialised local later sees the difference (the original game does: see the
+  hosting section). The hosted layer starts lifted code with the guest's real registers for that reason.
 * The injection reaches the states a one-card board and a handful of events produce. It is a sample of paths, not a
   proof, and the more situations are recorded the better (see Results for how much of the code that is).
 
 ## Results
 
-All 383 distinct handlers of DUEL.EXE's master card table:
+All 383 distinct handlers of DUEL.EXE's master card table (the figures below are from before the six `_sprintf` callers were refused; the vectors of the other 377 are unchanged):
 
 | | |
 |---|---|
-| lifted to C | **383 (all)**: 350 straight-line and loop code, 23 more with jump tables, 10 more with calls through the import table (`Sleep`, nine handlers) and the master card table (one handler) |
-| refused | none |
+| lifted to C | **377 of 383**: straight-line and loop code, jump tables, calls through the import table (`Sleep`, nine handlers) and the master card table (one handler) |
+| refused | 6: they call `_sprintf`, which takes a variable number of arguments, so a call out with the fixed count the function index gives would drop the formatted values (see below) |
 | first corpus | 7,323 vectors, events from each handler's own body, callees returning 0, 1 or 2: all match, and run 53% of the lifted instructions |
 | grown corpus | about 86,000 more vectors from `grow_coverage.py` (random events, a different result for each function the handler calls, the handler's own card in play, slot fields and other cards' zones filled with arbitrary values, and the globals the handler is gated on set to the values it tests for): all match |
 | instructions executed | 70,451 of 82,074 (**85.8%**); 141 handlers fully, every handler at least partly. Four of the nine `Sleep` handlers and the table-call handler have vectors that reach their call; the other five do not yet |
@@ -194,6 +201,106 @@ pieces so that one ends when the guest's instructions plus the owed ones reach t
 the original on the pilot duel: outermost calls 254,371 / 73,920 / 114,269 of the card query / scan / in-play test against
 254,055 / 72,431 / 99,496, 1,305,591 import calls against 1,305,773, and the same card slots, counts and event globals from
 85 s on. It takes 114 s of real time for 90 virtual seconds (the original, with nothing replaced, 88 s for 120).
+
+That agreement is statistical, not exact, and the match of the digests from 85 s on was partly luck: the clock is charged an
+average per call of a hand-written native function, the original's thread switches happen after a fixed count of instructions
+(`Machine.slice`, 200 million: the AI's two-second search is cut by that, because the clock does not move inside a slice), and
+a replaced function can only end a slice where it ends. Charging 6 ms (600,000 instructions) differently moves the cut by two
+trials, which changes the plan the AI commits, and from there the game. For a comparison that has to hold exactly, use the
+next section.
+
+### Exact hosting: the original's own timeline
+
+`--native-exact` does not owe the clock the instructions a replaced function would have run, it **runs** them: when the
+function returns, the guest first executes a counting loop (`jecxz`, `loop $`, `jmp edx` in a page of the stub area the code
+hook does not watch) as long as the original's code was. Unicorn then counts them like any others, the 200-million
+instruction slices end at the same count as the original's, and so everything the game does with its clock (what the search
+does in two seconds, which thread runs next, when a timer fires) is the original's. Lifted code counts the instructions it
+executes (one for one), so a lifted function is exact; `Crt_Memcpy` adds the cost of the copy it was asked for (it follows
+the original's branches: 959 of 980 measured calls agree exactly, the rest are a backwards copy from an unaligned end
+that uses EDX as the caller left it); a hand-written native function is charged its calibrated average and so is not exact
+(`compare_hosted.py` leaves those to the original unless asked). The loop runs the instructions at about the speed the emulator
+runs the original's, so an exact run takes about twice the original's real time (77 s against 142 s for the pilot duel, 105 s
+against 240 s for the red deck); `--native-costs` without `--native-exact` is the faster, approximate mode above (55 s).
+
+It took finding seven things to make the two runs the same, each of which showed as the first import call at which the
+hosted game did something else:
+
+* The emulator counts the trap a redirected instruction lands on, so every replaced call cost one more than its original,
+  and so does every call out to the original (it returns to a trap): 4 and 1 instructions are taken off the loop.
+* A stopped try (a function that turns out to need the guest, which is then run again on a thread) had counted what it
+  executed before it stopped. The counters are restored when the write-back is.
+* A lifted function calling `Sleep` called the import's slot address as if it were code; a call out through an import slot
+  now calls what the slot holds. The original sleeps for 6 ms there, and every later time was 6 ms off.
+* A function that calls out used to build the callee a frame of its own below the lifted one, 12 bytes lower than the
+  original's, so stack residue lined up differently. The call is now made in place on the frame the lifted code built, with
+  the return address slot restored afterwards as a `ret` leaves it, and with the lifted code's registers.
+* Lifted code started with every register zero, so what it pushed to save the caller's was zero where the original pushed
+  real values. `FUN_00440af9` reads an uninitialised local (`[ebp-4]`, tested for bit 0) that happened to hold
+  such a leftover (3 in the original, 0 hosted): it sent a message the hosted run did not, and the runs parted 85 s into the
+  duel. Lifted code is now entered with the guest's registers (`lift_in` in `lift_rt.h`), a lifted call passes its own
+  registers on (`lift_out`), and the guest's callee-saved registers are put back when a lifted function returns.
+* `Crt_Memcpy`, being native, leaves no saves of EBP, EDI and ESI on the stack; it writes them.
+* The AI search found one more: a card handler that calls `_sprintf` (above).
+
+```
+python3 tools/lift/compare_hosted.py --seconds 90 --script "$(cat script.txt)"
+```
+
+runs the script on the original and on the replaced functions (every lifted function, `Crt_Memcpy`) and compares a running
+hash of every import call (thread, function, caller) every 5,000 calls with the virtual time to the microsecond, the
+digests the script asks for and the totals. If they part it runs both again printing the calls in the first block that
+differs, and shows the first that is not the same. On the pilot duel (90 virtual seconds, 1,126,275 import calls) and on a
+game against the red AI deck (300 virtual seconds, 1,491,436 calls) **the two are identical, 225 and 298 blocks**, with 438
+lifted functions standing in (the 377 handlers and 61 others), about 380,000 replaced calls in the first 60 virtual seconds of the pilot.
+Debugging aids that found the above and stay in: `EMU_CALL_HASH=N` and `EMU_CALL_DETAIL=FROM:TO` (the hash and the detail
+`compare_hosted.py` uses), `--native-log ADDRS:FILE` (arguments and result of every call of functions, original or hosted),
+`EMU_PEEK=ADDR` (the dword at ESP each time the guest reaches `ADDR`: an uninitialised local) and `--watch ADDR:label`.
+
+### Functions that are not card handlers: the AI search
+
+The lifter does not care that a function is a card handler; `gen_handlers.py --extra-file tools/lift/ai_functions.txt` lifts
+the functions listed there as well (`--all` tries every function of the program's index: **1,247 of the 1,830 of DUEL.EXE
+lift**, the rest call a Win32 function with no signature here, or take their arguments in registers, or use string,
+floating-point or other instructions outside the subset). Those functions are verified exactly like the handlers (they are
+named `Handler_<address>` too, and the spec marks them `"extra"` with their own argument counts).
+
+Which functions to lift came from profiling the original:
+
+```
+python3 -m winemu.run --exe .../DUEL.EXE --seconds 90 --script "$(cat script.txt)" --profile prof.json --profile-gate 0x66aaf4
+```
+
+counts the guest's instructions per function of `duel/function_index.csv` (`--profile-gate` also counts apart while the dword is
+set: `0x66aaf4` is `g_IsAiThinking`; `--profile-callers ADDR,...` reports who calls a function and with what). On the pilot
+duel the AI's search ran 156 million instructions in 90 virtual seconds, and where they went was not where the AI's own
+functions are: **56% in the C runtime's `memcpy`** (the whole-game snapshot the search restores before every trial is 30
+copies, 46 KB in all; `Ai_BeginTrial` runs 2,500 times), 9% in the turn loop `FUN_00426c70` (15 KB, calls the UI),
+6% `Ai_EvaluateBoard`, 3% `Duel_UpdateBoardState`, and a tail of 75 smaller functions. The memcpy is native now
+(`src/native/crt.c`, below); 67 of the rest lift (`ai_functions.txt`), including `Ai_BeginTrial`, the save and restore of the
+game state, `Ai_EvaluateBoard`, `Ai_PenalizeCounterattack`, `Ai_ChooseCardToPlay`, `Ai_ChooseChainResponse`,
+`Duel_ChooseTarget` and the combat damage step. Not lifted: the turn loop (a Win32 call), `Duel_UpdateBoardState` and the
+function that draws (`SendMessageA`, indirect calls), `_memset` (`rep stosd`).
+
+628 vectors recorded from natural play of the pilot duel (nothing injected: these functions run as the game runs them) all
+match, for 65 functions. They run 39% of those functions' instructions: the vectors reach what one duel does. The stronger
+evidence is the next section.
+
+What lifting the wider set found, and fixed:
+
+* **Functions that take arguments in registers** (`__fastcall`, hand-written assembly): lifted code starts with every register
+  zero, so a function that reads ECX on entry would be silently mistranslated. `x86lift.py` now follows which registers are
+  written before they are read and refuses a function that reads one first (and a function that calls one: `lift_call`
+  passes stack arguments only). None of the 383 handlers is affected.
+* **Variadic callees.** A call out passes the argument count the function index gives, which for `_sprintf(buf, fmt, ...)` is
+  two. A lifted handler that formats a string would pass the format and none of the values, and the vectors cannot tell
+  (they record the call with two arguments and replay it). Six card handlers call `_sprintf`; they are now refused, and so is
+  any function that calls `_printf`, `_sscanf` or the others (`VARIADIC` in `gen_handlers.py`). None of the six ran in the
+  pilot duel or in any vector run that matched the original, which is why this went unseen.
+* Argument counts: a callee's count is now the most of the function index's, what its frame reads and what its `ret imm16`
+  pops (extra arguments are harmless, missing ones are not).
+* A function that never sets EAX returns what the caller left there; its vector says `"return_bits": 0` (not compared). The
+  lifter works out which functions these are (EAX is not written on every path to a `ret`).
 
 ## Growing the coverage
 
