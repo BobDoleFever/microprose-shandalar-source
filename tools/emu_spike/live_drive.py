@@ -10,6 +10,8 @@ is posted to it, so what the window would show can be saved as PNG and the run r
 Tokens (space separated, run in order):
     w:SECS         wait
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
+    btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
+    m:X,Y          move the mouse (hover)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
     sent:          pending cross-thread SendMessage calls
@@ -28,6 +30,7 @@ import threading
 import time
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pygame  # noqa: E402
 from PIL import Image  # noqa: E402
@@ -99,6 +102,26 @@ def helper(lv):
             post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
             time.sleep(0.12)
             post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "btn":                                  # btn:TEXT  click the visible button (or prompt window) whose title contains TEXT
+            from winemu import user32
+            want = arg.replace("_", " ").lower()
+            hit = None
+            for w in list(m.state.get("u32", {}).get("windows", {}).values()):
+                if w["visible"] and w["w"] > 0 and want in str(w["title"]).lower() and (str(w["cls"]).upper() == "BUTTON" or w["cls"] == "STATIC"):
+                    hit = w
+            if hit is None:
+                print("btn: nothing matches", arg, flush=True)
+            else:
+                x0, y0, x1, y1 = user32.abs_rect(m, hit)
+                x, y = (x0 + x1) // 2, (y0 + y1) // 2
+                post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+                time.sleep(0.3)
+                post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
+                time.sleep(0.12)
+                post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "m":                                    # m:X,Y  move the mouse (hover)
+            x, y = map(int, arg.split(","))
+            post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
         elif op == "k":
             press(arg)
         elif op == "n":

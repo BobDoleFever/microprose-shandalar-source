@@ -262,8 +262,8 @@ def main(argv=None):
         m.trace_filter = lambda n: bool(rx.search(n))
     crt.init_argv(m, m.exe_guest_path)
     if args.host_sound or args.live:
-        magsnd.install(m)
-        print("   [sound] MAGSND.DLL is the silent host version")
+        magsnd.install(m, audio=args.live and not os.environ.get("EMU_NO_AUDIO"))
+        print("   [sound] MAGSND.DLL runs on the host" + (" and plays the game's sounds" if args.live and not os.environ.get("EMU_NO_AUDIO") else " (silent)"))
     if args.accel or args.live:
         from . import accel  # noqa: PLC0415
         print(f"   [accel] {accel.install(m)} guest functions run as Python")
