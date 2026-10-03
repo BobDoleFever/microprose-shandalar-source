@@ -120,7 +120,11 @@ void lift_bad_jump(uint32_t from)
  * the arguments): what a host does when the original program calls a function that has been lifted. */
 int lift_run_at(Vm *vm, uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t *ret)
 {
-    const LiftedFn *f = lift_find(entry);
+    const LiftedFn *f = NULL;
+    int i;
+    for (i = 0; i < LIFTED_COUNT; i++) /* the host replaces this function: it runs whatever the enabled flags say about calls */
+        if (LIFTED[i].entry == entry)
+            f = &LIFTED[i];
     uint32_t saved = stack_top;
 
     if (!f)
@@ -175,10 +179,11 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
         args[i] = mem_rd32(bridge_vm->mem, argp + 4u * (uint32_t)i);
     *cleanup = row ? row->cleanup : 0;
 
-    if (bridge_mode == LIFT_CALLS_NATIVE) {
+    if (bridge_mode == LIFT_CALLS_NATIVE || bridge_mode == LIFT_CALLS_NATIVES_ONLY) {
         int f;
         for (f = 0; f < FN_COUNT; f++)
-            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs && !native_disabled[f]) {
+            if (bridge_vm->L->entry[f] == target && NATIVE_FUNCTIONS[f].nargs == nargs && !native_disabled[f] &&
+                (!native_exact_only || NATIVE_FUNCTIONS[f].self_charging)) {
                 /* a native function can run lifted code again (a query scans the cards): that code's frames go below this
                  * one's, not over the locals it is using */
                 uint32_t saved_top = stack_top;
@@ -188,6 +193,8 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
                     mem_wr32(bridge_vm->mem, argp - 12u, rg.edi);
                     mem_wr32(bridge_vm->mem, argp - 16u, rg.esi);
                 }
+                if (f == FN_CRT_MEMSET && args[2])   /* its prologue saves EDI (not for a length of 0) */
+                    mem_wr32(bridge_vm->mem, argp - 8u, rg.edi);
                 ret = NATIVE_FUNCTIONS[f].run(bridge_vm, args);
                 stack_top = saved_top;
                 if (getenv("LIFT_TRACE")) {
@@ -198,7 +205,7 @@ uint32_t lift_call(uint32_t target, uint32_t argp, uint32_t *cleanup)
                 }
                 return ret;
             }
-        if (lift_find(target)) {
+        if (bridge_mode == LIFT_CALLS_NATIVE && lift_find(target)) {
             const LiftedFn *lf = lift_find(target);
             uint32_t saved = stack_top;
             stack_top = argp - 4u;

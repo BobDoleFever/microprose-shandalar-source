@@ -46,6 +46,40 @@ uint64_t crt_memcpy_instructions(uint32_t dst, uint32_t src, uint32_t n)
     return c + 5 + 1 + 5 + ((n >> 2) + 1) + 1 + bwd_tail[n & 3];
 }
 
+/* The same for the runtime's memset (DUEL.EXE 0x004da190): bytes up to a dword boundary, `rep stosd`, the tail. */
+uint64_t crt_memset_instructions(uint32_t dst, uint32_t n)
+{
+    uint64_t c = 10; /* up to the length test */
+    uint32_t head, words, tail;
+
+    if (n == 0)
+        return 6;
+    if (n < 4)
+        return c + 4 * (uint64_t)n + 3;
+    c += 3; /* neg; and; je */
+    head = (0u - dst) & 3;
+    if (head)
+        c += 1 + 4 * (uint64_t)head;
+    c += 6 + 4; /* the byte replicated through EAX; the word count */
+    words = (n - head) >> 2;
+    tail = (n - head) & 3;
+    if (words)
+        c += (uint64_t)words + 1 + 2; /* rep stosd; test; je */
+    c += 4 * (uint64_t)tail + 3;
+    return c;
+}
+
+uint32_t Native_Crt_Memset(Vm *vm, uint32_t dst, uint32_t value, uint32_t n)
+{
+    uint32_t i;
+
+    NATIVE_ENTER(FN_CRT_MEMSET);
+    native_cost_extra += crt_memset_instructions(dst, n);
+    for (i = 0; i < n; i++)
+        mem_wr8(vm->mem, dst + i, (uint8_t)value);
+    return dst;
+}
+
 uint32_t Native_Crt_Memcpy(Vm *vm, uint32_t dst, uint32_t src, uint32_t n)
 {
     NATIVE_ENTER(FN_CRT_MEMCPY);

@@ -111,6 +111,7 @@ def main():
         handlers = []
     if args.all:
         extra += sorted(a for a in index if cfg["code"][0] <= a < cfg["code"][1])
+    extra += sorted(native_entries(args.program))   # every native function's machine code too: its lifted twin (host shadow mode, check_costs)
     extra = [a for a in dict.fromkeys(extra) if a not in handlers]
     handlers += extra
     spec, sources, callee_rows = [], [], {}

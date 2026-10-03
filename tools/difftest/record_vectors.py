@@ -83,12 +83,22 @@ NATIVE_FUNCTIONS = [
     ("FN_AI_GET_LAND_COLOR_MASKS", "Ai_GetLandColorMasks", 2),
     ("FN_SCAN_CARDS", "Magic_ScanCards", 1),
     ("FN_CRT_MEMCPY", "Crt_Memcpy", 3),
+    ("FN_AI_SAVE_GAME_STATE", "Ai_SaveGameState", 0),
+    ("FN_AI_RESTORE_GAME_STATE", "Ai_RestoreGameState", 0),
+    ("FN_AI_PUSH_BOARD_STATE", "Ai_PushBoardState", 0),
+    ("FN_AI_POP_BOARD_STATE", "Ai_PopBoardState", 0),
+    ("FN_AI_RESET_RANDOM_CURSOR", "Ai_ResetRandomCursor", 0),
+    ("FN_AI_BEGIN_TRIAL", "Ai_BeginTrial", 0),
+    ("FN_CRT_MEMSET", "Crt_Memset", 3),
+    ("FN_AI_EVALUATE_BOARD", "Ai_EvaluateBoard", 1),
+    ("FN_AI_PENALIZE_COUNTERATTACK", "Ai_PenalizeCounterattack", 2),
 ]
 # Functions that return nothing: EAX on return is whatever was in the register, so the vector records 0
 # (the harness does not compare a void function's return value).
 VOID_FUNCTIONS = {"Magic_PushEventContext", "Magic_PopEventContext", "Ai_RecordChoice", "Ai_ReplayChoice",
                   "Ai_CommitBestPlan", "Ai_ClearPlan", "Ai_PlanCursorBack", "Ai_GetLandColorMasks",
-                  "Magic_ScanCards"}
+                  "Magic_ScanCards", "Ai_SaveGameState", "Ai_RestoreGameState", "Ai_PushBoardState", "Ai_PopBoardState",
+                  "Ai_ResetRandomCursor", "Ai_BeginTrial"}
 # Callee label and argument count, in CALLEE_* enum order (src/native/card_query.c, spell_stack.c): the
 # functions the native code still calls through the hook because they are not native yet.
 CALLEES_INFO = [
@@ -99,6 +109,9 @@ CALLEES_INFO = [
     ("CALLEE_MARK_CARD", "mark_card", 3),
     ("CALLEE_AFTER_MARK", "after_mark", 0),
     ("CALLEE_FIND_FREE_SLOT", "find_free_slot", 2),
+    ("CALLEE_AI_ATTACK_CHECK", "ai_attack_check", 6),
+    ("CALLEE_AI_CARD_COST_CLASS", "ai_card_cost_class", 1),
+    ("CALLEE_AI_PREROLL_RANDOM", "ai_preroll_random", 0),
 ]
 # Callees with no fixed address (a card handler's address is read from the card's master record), so layout.c has no
 # entry for them. They are recognised at the call instruction inside the native function instead (Recorder.handler_sites).
@@ -134,6 +147,9 @@ class Recorder:
         self.funcs = {int(entries[fn], 16): (name, nargs) for fn, name, nargs in NATIVE_FUNCTIONS if fn in entries}
         self.callees = {int(callees[c], 16): (label, nargs) for c, label, nargs in CALLEES_INFO if c in callees}
         self.handler_sites = self.find_handler_sites(int(entries["FN_SCAN_CARDS"], 16), m.L_master_base + 0x10)
+        # Ai_PenalizeCounterattack also calls a card's handler through the master table (two sites, for the power and toughness
+        # bonuses of some cards)
+        self.handler_sites.update(self.find_handler_sites(int(entries["FN_AI_PENALIZE_COUNTERATTACK"], 16), m.L_master_base + 0x10, 2400))
         # Lifted card handlers (tools/lift): each is a recordable function whose callees are exactly the calls its own
         # machine code makes (the spec lists them), so the vector holds every call out of the handler, native or not.
         self.handler_callees = {}
@@ -205,10 +221,10 @@ class Recorder:
         for addr in self.funcs:
             self.uc.hook_add(UC_HOOK_CODE, self.on_entry, begin=addr, end=addr)
 
-    def find_handler_sites(self, entry, table):
+    def find_handler_sites(self, entry, table, size=1024):
         """The `call dword ptr [reg*4 + table]` instructions in the scan (FF 14 85 imm32: how it calls a card's handler):
         {address of the call: address it returns to}. The scan is small, so its bytes are searched from the entry on."""
-        code = bytes(self.uc.mem_read(entry, 1024))
+        code = bytes(self.uc.mem_read(entry, size))
         needle = b"\xff\x14\x85" + table.to_bytes(4, "little")
         sites, at = {}, code.find(needle)
         while at != -1:
@@ -247,6 +263,9 @@ class Recorder:
             return (name, args[2])
         if name in ("Magic_PushEventContext", "Magic_PopEventContext"):
             return (name, m.r32(m.L_event_context_depth))
+        if name == "Crt_Memset":   # the size (exactly up to 64, then by magnitude), the alignment and whether the byte is zero
+            dst, val, n = args
+            return (name, n if n <= 64 else n.bit_length(), dst & 3, (val & 0xff) == 0)
         if name == "Crt_Memcpy":   # the size (exactly up to 64, then by magnitude), both alignments, and overlap
             dst, src, n = args
             return (name, n if n <= 64 else n.bit_length(), dst & 3, src & 3, dst > src and dst < src + n)
@@ -288,6 +307,12 @@ class Recorder:
                 return (name, thinking, args[0], here == 99)
             if name == "Ai_PlanCursorBack":
                 return (name, min(cursor, 2))
+            if name == "Ai_BeginTrial":
+                return (name, thinking)
+            if name in ("Ai_EvaluateBoard", "Ai_PenalizeCounterattack"):
+                # who is evaluated, whether it is their turn, whether the search is running, and how many creatures there are
+                counts = tuple(min(r(m.L_player_card_count + 4 * q), 3) for q in (0, 1))
+                return (name, args[0], r(m.L_turn_player) == args[0], thinking, counts)
             if name == "Ai_GetPlanCursor":
                 return (name, min(cursor, 3))
             if name == "Ai_GetLandColorMasks":
@@ -535,7 +560,7 @@ def main():
             self.L_spell_stack_count = addr("spell_stack_count")
             self.L_event_context_depth = addr("event_context_depth")
             for field in ("ai_cursor", "ai_trial_choice", "ai_best_choice", "ai_plan_mode", "land_counts_x", "land_counts_y",
-                          "scan_order_player", "scan_depth", "master_base"):
+                          "scan_order_player", "scan_depth", "master_base", "player_card_count", "turn_player"):
                 setattr(self, "L_" + field, addr(field))
             self.recorder = Recorder(self, outdir, cap, program, addr("duel_mode_flags"))
 

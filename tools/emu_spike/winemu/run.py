@@ -225,6 +225,8 @@ def main(argv=None):
     ap.add_argument("--profile-callers", default="", help="with --profile: report who calls these functions (comma-separated hex addresses) and with what")
     ap.add_argument("--native-log", default="", metavar="ADDRS:FILE", help="write the arguments and result of every call of these functions (hex addresses, comma-separated) to FILE, in the original or hosted, to compare the two")
     ap.add_argument("--native-exact", action="store_true", help="with --native: instead of owing the clock the instructions the replaced functions would have run, run them (a counting loop): the slice ends where the original's would, so the run repeats the original's exactly (lifted code counts exactly; a hand-written native costs its calibrated average)")
+    ap.add_argument("--native-shadow", action="store_true", help="with --native-exact: run every native function that has a lifted twin both ways on every call, compare, and keep the twin's result (reports differences on stderr)")
+    ap.add_argument("--native-shadow-check", action="store_true", help="like --native-shadow, but lifted code may call any native function (the ones whose instruction count is only an average too): every native call is compared with its machine code, and the run is not exactly the original's")
     ap.add_argument("--native-only", default="", help="with --native: only these functions (comma-separated names)")
     ap.add_argument("--native-skip", default="", help="with --native: not these")
     ap.add_argument("--no-native-handlers", action="store_true", help="with --native: the native functions only, not the lifted handlers")
@@ -549,6 +551,8 @@ def main(argv=None):
         n = nh.install(only=set(filter(None, args.native_only.split(","))) or None,
                        skip=set(filter(None, args.native_skip.split(","))), handlers=not args.no_native_handlers)
         print(f"   [native] {n} functions of the original replaced by the native layer")
+        if args.native_shadow or args.native_shadow_check:
+            nh.shadow_mode(check=args.native_shadow_check)
     if args.native_log:
         from . import native_host  # noqa: PLC0415
         addrs, path = args.native_log.split(":", 1)
@@ -580,6 +584,10 @@ def main(argv=None):
         out = nh.finish_calibration()
         print("   [native] instructions per call: " + ", ".join(f"{k} {v:.1f}" for k, v in sorted(out.items()) if v))
         print(f"   [native] written to {args.native_calibrate}")
+    if nh and nh.shadow:
+        compared, differ, unchecked = nh.shadow_report()
+        print(f"   [shadow] {compared} calls of native functions compared with their machine code, {differ} differ; {unchecked} not compared (a call out to the guest: "
+              + ", ".join(f"{k} x{v}" for k, v in sorted(nh.escalated.items(), key=lambda kv: -kv[1])[:6]) + ")")
     if nh and nh.runs and os.environ.get("NATIVE_RUNS_FILE"):
         import json as _json  # noqa: PLC0415
         _json.dump(nh.runs, open(os.environ["NATIVE_RUNS_FILE"], "w"), indent=0, sort_keys=True)

@@ -34,10 +34,21 @@ CALL = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_uint32, ctypes.c_int, ctypes.P
 _current = threading.local()
 
 
-SELF_CHARGING = {"Crt_Memcpy"}
 # What the original's prologue leaves on the stack below the return address that the native function does not: the registers it
 # saves (push ebp; push edi; push esi). Later code can read those words as uninitialised locals, and the original game does.
-FRAME_RESIDUE = {"Crt_Memcpy": ("ebp", "edi", "esi")}
+FRAME_RESIDUE = {"Crt_Memcpy": ("ebp", "edi", "esi"), "Crt_Memset": ("edi",)}
+
+
+def exact_native_names(lib_path=None, shadow=False):
+    """The native functions that count their original's instructions exactly (they add to native_cost_extra themselves), and with
+    `shadow` those that have a lifted twin too (shadow mode keeps the twin's count). The others are charged an average."""
+    lib = ctypes.CDLL(lib_path or os.environ.get("NATIVE_LIB") or DEFAULT_LIB)
+    lib.host_native_name.restype = ctypes.c_char_p
+    lib.host_native_name.argtypes = [ctypes.c_int]
+    lib.host_native_self_charging.argtypes = [ctypes.c_int]
+    lib.host_native_has_twin.argtypes = [ctypes.c_int]
+    return [lib.host_native_name(i).decode() for i in range(lib.host_native_count())
+            if lib.host_native_self_charging(i) or (shadow and lib.host_native_has_twin(i))]
 
 
 class Worker(threading.Thread):
@@ -92,9 +103,10 @@ class NativeHost:
         lib.host_native_name.argtypes = [ctypes.c_int]
         lib.host_native_entry.restype = ctypes.c_uint32
         lib.host_native_entry.argtypes = [ctypes.c_int]
-        lib.host_set_enabled.argtypes = [ctypes.c_uint32, ctypes.c_int]
+        lib.host_set_enabled.argtypes = [ctypes.c_uint32, ctypes.c_int, ctypes.c_int]
         lib.host_native_nargs.argtypes = [ctypes.c_int]
         lib.host_native_ret_bits.argtypes = [ctypes.c_int]
+        lib.host_native_self_charging.argtypes = [ctypes.c_int]
         lib.host_native_run.restype = ctypes.c_uint32
         lib.host_native_run.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32]
         lib.host_counters.argtypes = [ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64)]
@@ -105,12 +117,17 @@ class NativeHost:
         lib.host_lifted_name.argtypes = [ctypes.c_int]
         lib.host_lifted_run.restype = ctypes.c_uint32
         lib.host_lifted_run.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
-        lib.host_native_try.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+        lib.host_native_try.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_uint32), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32),
+                                        ctypes.POINTER(ctypes.c_uint32)]
+        lib.host_native_has_twin.argtypes = [ctypes.c_int]
+        lib.host_set_shadow.argtypes = [ctypes.c_int]
+        lib.host_shadow_stats.argtypes = [ctypes.POINTER(ctypes.c_uint64)] * 3
         lib.host_lifted_try.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32)]
         self.escalated = {}   # name -> calls that had to be run again with a thread
         self.native_cost = None
         self.seconds = {"try": 0.0, "thread": 0.0}   # host time spent in each way of running a call (for tuning)
         self.replaced = set()   # entry addresses install() replaced
+        self.shadow = False     # see shadow()
         self.last_conts = 0
         self.cost_mode = None   # None, "owed" or "burn": see load_costs
         self.faults = 0
@@ -174,38 +191,59 @@ class NativeHost:
 
     def _native(self, fid, name, nargs, bits):
         lib = self.lib
+        from unicorn.x86_const import UC_X86_REG_ECX, UC_X86_REG_EDX, UC_X86_REG_EBX, UC_X86_REG_EBP, UC_X86_REG_ESI, UC_X86_REG_EDI  # noqa: PLC0415
+        regnames = (UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_EDX, UC_X86_REG_EBX, UC_X86_REG_EBP, UC_X86_REG_ESI, UC_X86_REG_EDI)
+        entry = lib.host_native_entry(fid)
 
         def handler(m, esp):
             args = [m.r32(esp + 4 + 4 * i) for i in range(nargs)]
             arr = (ctypes.c_uint32 * max(nargs, 1))(*args)
+            regs = (ctypes.c_uint32 * 7)(*(m.uc.reg_read(r) for r in regnames))
             self.runs[name] = self.runs.get(name, 0) + 1
             out = ctypes.c_uint32()
             charging = self.cost_mode is not None
             inner = self.charged_total if charging else 0.0
             t0 = time.perf_counter()
             before = self._counters() if charging else None
-            done = lib.host_native_try(fid, arr, esp, ctypes.byref(out)) == 0
+            done = lib.host_native_try(fid, arr, esp, regs, ctypes.byref(out)) == 0
             self.seconds["try"] += time.perf_counter() - t0
+            twin = self.shadow and lib.host_native_has_twin(fid)
             if done:
                 ret = out.value
             else:   # it needs the guest: put back what it wrote and run it again where it can wait for it
                 self.escalated[name] = self.escalated.get(name, 0) + 1
                 t0 = time.perf_counter()
                 before = self._counters() if charging else None
-                ret = yield from self._run_in_thread(lambda: lib.host_native_run(fid, arr, esp))
+                if twin:   # in shadow mode what runs is the original's machine code, not the native function
+                    ret = yield from self._run_in_thread(lambda: lib.host_lifted_run(entry, esp, regs))
+                    for r, v in zip(regnames[3:], regs[3:]):
+                        m.uc.reg_write(r, v)
+                else:
+                    ret = yield from self._run_in_thread(lambda: lib.host_native_run(fid, arr, esp))
                 conts = self.last_conts
                 self.seconds["thread"] += time.perf_counter() - t0
             if charging:
                 self.charge_since(before, inner, conts if not done else 0)
-            if name in FRAME_RESIDUE:
+            if name in FRAME_RESIDUE and not twin and not (name == "Crt_Memset" and args[2] == 0):
                 from unicorn.x86_const import UC_X86_REG_EBP, UC_X86_REG_EDI, UC_X86_REG_ESI  # noqa: PLC0415
-                regs = {"ebp": UC_X86_REG_EBP, "edi": UC_X86_REG_EDI, "esi": UC_X86_REG_ESI}
+                rn = {"ebp": UC_X86_REG_EBP, "edi": UC_X86_REG_EDI, "esi": UC_X86_REG_ESI}
                 for k, reg in enumerate(FRAME_RESIDUE[name]):
-                    m.w32(esp - 4 * (k + 1), m.uc.reg_read(regs[reg]))
-            if bits == 0:
+                    m.w32(esp - 4 * (k + 1), m.uc.reg_read(rn[reg]))
+            if bits == 0 and not twin:
                 return m.uc.reg_read(UC_X86_REG_EAX)   # a void function: EAX is whatever it was
             return ret & 0xFF if bits == 8 else ret
         return handler
+
+    def shadow_mode(self, check=False):
+        """Run every native function that has a lifted twin both ways on every call and compare (native_host.c, shadow mode); what the
+        guest keeps is the twin's result, so the run is the original's. Needs a library built with the twins (gen_handlers.py)."""
+        self.shadow = True
+        self.lib.host_set_shadow(2 if check else 1)
+
+    def shadow_report(self):
+        c = [ctypes.c_uint64() for _ in range(3)]
+        self.lib.host_shadow_stats(*[ctypes.byref(x) for x in c])
+        return c[0].value, c[1].value, c[2].value
 
     def log_calls(self, addrs, path, hosted=False, nargs=4):
         """Write the arguments and the result of every call of the functions at `addrs`, to compare a run on the original with
@@ -313,7 +351,7 @@ class NativeHost:
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
             entry = self.lib.host_native_entry(fid)
-            if not entry or name in SELF_CHARGING:
+            if not entry or self.lib.host_native_self_charging(fid):
                 continue
             lifter = Lifter()
             lifter.strict_tables = False
@@ -341,7 +379,7 @@ class NativeHost:
         import json  # noqa: PLC0415
         table = json.load(open(path))["instructions_per_call"] if path else {}
         # a function that adds its own cost as it runs (native_cost_extra: a copy costs what its size makes it) is not charged per call
-        self.native_cost = [0.0 if self.lib.host_native_name(i).decode() in SELF_CHARGING
+        self.native_cost = [0.0 if self.lib.host_native_self_charging(i)
                             else (table.get(self.lib.host_native_name(i).decode()) or 0.0) for i in range(self.lib.host_native_count())]
         self.cost_mode = "burn" if exact else "owed"
         self.m.charging = not exact   # "owed": slices are run in pieces; "burn": nothing special, the instructions really run
@@ -394,11 +432,11 @@ class NativeHost:
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
             if ((only is not None and name not in only) or name in skip) and self.lib.host_native_entry(fid):
-                self.lib.host_set_enabled(self.lib.host_native_entry(fid), 0)
+                self.lib.host_set_enabled(self.lib.host_native_entry(fid), 0, 0)
         for i in range(self.lib.host_lifted_count()):
             name = self.lib.host_lifted_name(i).decode()
             if (only is not None and name not in only) or name in skip or not handlers:
-                self.lib.host_set_enabled(self.lib.host_lifted_entry(i), 0)
+                self.lib.host_set_enabled(self.lib.host_lifted_entry(i), 0, 1)
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
             if (only is not None and name not in only) or name in skip:
@@ -416,6 +454,8 @@ class NativeHost:
                 if (only is not None and name not in only) or name in skip:
                     continue
                 entry = self.lib.host_lifted_entry(i)
+                if entry in self.replaced:   # a native function stands in for it (its lifted twin is for shadow mode)
+                    continue
                 self.replaced.add(entry)
                 self.m.add_intercept(entry, self._lifted(entry, name), self._cleanup(entry))
                 count += 1

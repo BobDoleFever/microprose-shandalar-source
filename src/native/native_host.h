@@ -32,11 +32,18 @@ const char *host_native_name(int id);
 uint32_t host_native_entry(int id);
 int host_native_nargs(int id);
 int host_native_ret_bits(int id);
+/* 1 if the function adds the instructions its original would have run to the cost counter itself (no per-call average to charge). */
+int host_native_self_charging(int id);
 uint32_t host_native_run(int id, const uint32_t *args, uint32_t sp);
 /* The same, without giving the call a thread of its own: if the function needs to call out to the guest it is stopped, every
  * write it made is undone, and 1 is returned (run it again with host_native_run); 0 means it finished and `*ret` is its
  * result. Most calls never call out, and this is much cheaper. */
-int host_native_try(int id, const uint32_t *args, uint32_t sp, uint32_t *ret);
+int host_native_try(int id, const uint32_t *args, uint32_t sp, const uint32_t *regs, uint32_t *ret);
+/* Shadow mode: a native function that has a lifted twin is run both ways, compared, and the twin's result kept (see native_host.c).
+ * `regs` (the guest's EAX, ECX, EDX, EBX, EBP, ESI, EDI) are what the twin starts with. */
+void host_set_shadow(int on);
+int host_native_has_twin(int id); /* 1 if the library has the function's lifted twin */
+void host_shadow_stats(uint64_t *compared, uint64_t *mismatches, uint64_t *unchecked);
 
 /* Lifted handlers (0 when the library was built without the generated code). */
 int host_lifted_count(void);
@@ -49,7 +56,7 @@ int host_lifted_try(uint32_t entry, uint32_t esp, const uint32_t *regs, uint32_t
 
 /* A function (native or lifted, by its entry address) the host does not replace in this run: native and lifted code that calls it
  * goes out to the original instead of running its own version. Everything is enabled until this says otherwise. */
-void host_set_enabled(uint32_t entry, int on);
+void host_set_enabled(uint32_t entry, int on, int lifted); /* lifted 0: the native function at `entry`, 1: its lifted twin or the lifted function */
 
 /* Work done so far: how often each native function was entered (nested calls included), and how many instructions lifted
  * code executed. `entries` has host_native_count() numbers. */

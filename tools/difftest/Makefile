@@ -6,7 +6,7 @@ CFLAGS ?= -std=c99 -O1 -g
 WARN = -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wno-sign-conversion
 NATIVE = ../../src/native
 SRCS = harness.c $(NATIVE)/mem.c $(NATIVE)/engine.c $(NATIVE)/layout.c $(NATIVE)/spell_stack.c \
-       $(NATIVE)/card_query.c $(NATIVE)/event_context.c $(NATIVE)/card_util.c $(NATIVE)/ai_plan.c $(NATIVE)/card_scan.c $(NATIVE)/crt.c
+       $(NATIVE)/card_query.c $(NATIVE)/event_context.c $(NATIVE)/card_util.c $(NATIVE)/ai_plan.c $(NATIVE)/card_scan.c $(NATIVE)/crt.c $(NATIVE)/ai_state.c $(NATIVE)/ai_eval.c
 HDRS = $(NATIVE)/mem.h $(NATIVE)/engine.h
 
 build/harness: $(SRCS) $(HDRS) | build
@@ -32,7 +32,7 @@ flat: harness_flat.c $(GEN)/handlers_gen.c $(NATIVE)/lift_rt.h $(NATIVE)/lift_ta
 BUILD ?= build
 lifted: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATIVE)/lift_bridge.h $(NATIVE)/lift_rt.h
 	mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen.o
+	$(CC) $(CFLAGS) -w -DLIFT_BACKEND_MEM -DLIFT_COUNT -I$(NATIVE) -I$(GEN) -c $(GEN)/handlers_gen.c -o $(BUILD)/handlers_gen.o
 	$(CC) $(CFLAGS) $(WARN) -DNATIVE_LIFTED -I$(NATIVE) -o $(BUILD)/harness-lifted $(SRCS) $(NATIVE)/lift_bridge.c $(BUILD)/handlers_gen.o
 
 # The same with instruction coverage of the lifted code (FLAT_COV=file, then tools/lift/coverage.py).
@@ -44,7 +44,7 @@ lifted-cov: $(GEN)/handlers_gen.c $(SRCS) $(HDRS) $(NATIVE)/lift_bridge.c $(NATI
 # The native layer as a shared library for the emulator to host (tools/emu_spike/winemu/native_host.py). With the generated
 # handlers when GEN has them, without otherwise.
 HOSTSRCS = $(NATIVE)/mem.c $(NATIVE)/engine.c $(NATIVE)/layout.c $(NATIVE)/spell_stack.c $(NATIVE)/card_query.c \
-           $(NATIVE)/event_context.c $(NATIVE)/card_util.c $(NATIVE)/ai_plan.c $(NATIVE)/card_scan.c $(NATIVE)/crt.c $(NATIVE)/native_host.c
+           $(NATIVE)/event_context.c $(NATIVE)/card_util.c $(NATIVE)/ai_plan.c $(NATIVE)/card_scan.c $(NATIVE)/crt.c $(NATIVE)/ai_state.c $(NATIVE)/ai_eval.c $(NATIVE)/native_host.c
 host: $(HOSTSRCS) | build
 	mkdir -p $(BUILD)
 	if [ -f $(GEN)/handlers_gen.c ]; then \
