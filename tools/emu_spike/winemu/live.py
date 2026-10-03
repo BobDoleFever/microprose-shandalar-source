@@ -99,6 +99,8 @@ class Live:
         self.compose = None
         self.next_frame = 0.0
         self.machine = None
+        self.hold_until = 0
+        self.fallbacks = 0                                       # slices ended by the unsafe asynchronous stop (see _ticker)
         self.samples = __import__("collections").Counter() if os.environ.get("LIVE_SAMPLE") else None
 
     # ---- emulator thread ---------------------------------------------------------------------------
@@ -126,11 +128,15 @@ class Live:
         """Deliver queued input to the game and publish a new frame if one is due. True if input was delivered."""
         got = False
         while True:
+            if self.hold_until > m.slices:                       # a button just went down: let the game's own thread see it
+                break
             try:
                 ev = self.events.get_nowait()
             except queue.Empty:
                 break
             got = True
+            if (ev[0] == "mouse" and ev[1] in ("down", "rdown")) or (ev[0] == "key" and ev[3] and not ev[5]):
+                self.hold_until = m.slices + self.PRESS_SLICES   # the game polls button and key states: they must stay down for a while
             if ev[0] == "mouse":
                 self.user32.inject_mouse(m, ev[1], ev[2], ev[3])
             elif ev[0] == "key":
@@ -208,6 +214,8 @@ class Live:
             self._close(m)
             worker.join(5)
         pygame.quit()
+        if os.environ.get("LIVE_STATS"):
+            print(f"[live] asynchronous fallback stops: {self.fallbacks}", flush=True)
         if "error" in result:
             raise result["error"]
         return result.get("code", 0)
@@ -217,19 +225,38 @@ class Live:
     # 
     SLICE = int(os.environ.get("LIVE_SLICE", "200000"))
     # A count makes Unicorn call a hook on every instruction, so the guest runs about 35 times slower than it could (40 MIPS
-    # against 1,400 here). Stopping the emulator from another thread instead (LIVE_TICK_MS=10, uc_emu_stop from a ticker)
-    # is fast but NOT safe in Unicorn 2.1.4: a guest running alone (DllMain at startup, no other thread to race with)
-    # ends with corrupted registers within seconds in about half of the runs, and Unicorn's own `timeout=` never fires. So
-    # it is off unless asked for (to measure how fast the game could go), and the default is counted slices.
-    TICK_MS = float(os.environ.get("LIVE_TICK_MS", "0"))
+    # against 1,400 here). So slices are ended another way: a ticker thread asks (m.yield_req) every TICK_MS and the
+    # machine ends the slice at its next import call, a clean place (inside the hook, with the call finished). A thread that
+    # makes no import call for FALLBACK_MS (a busy loop) is stopped from the ticker with uc_emu_stop. That asynchronous stop
+    # is only safe while the CPU is in guest code: landing inside an import hook it corrupted the guest in Unicorn 2.1.4
+    # (a lone DllMain thread ended with wrong registers within seconds in about half of the runs, when the ticker stopped it
+    # directly every 10 ms), and Unicorn's own `timeout=` never fires. LIVE_TICK_MS=0 goes back to counted slices.
+    TICK_MS = float(os.environ.get("LIVE_TICK_MS", "10"))
+    FALLBACK_MS = float(os.environ.get("LIVE_FALLBACK_MS", "100"))
+    # Slices a pressed mouse button or key is held before anything else is delivered. The game's own thread polls the button's
+    # state, and the window thread's messages (button down, button up) are handled by the main thread in one turn, so
+    # without this the thread that polls never sees the button down.
+    PRESS_SLICES = int(os.environ.get("LIVE_PRESS_SLICES", "6"))
 
     def _ticker(self, m, done):
+        """Ask the machine to end its slice every TICK_MS: it does so at the next import call, a clean place. Only a thread
+        that makes no import call for FALLBACK_MS (a busy loop) is stopped from here, the one unsafe way."""
+        asked = None
         while not done.is_set():
             time.sleep(self.TICK_MS / 1000)
-            try:
-                m.uc.emu_stop()
-            except Exception:                                    # noqa: BLE001  (not running: nothing to stop)
-                pass
+            if m.yield_req:                                      # the last request has not been taken
+                asked = asked or time.monotonic()
+                if time.monotonic() - asked >= self.FALLBACK_MS / 1000:
+                    asked = None
+                    self.fallbacks += 1
+                    m.yield_req = False
+                    try:
+                        m.uc.emu_stop()
+                    except Exception:                            # noqa: BLE001  (not running: nothing to stop)
+                        pass
+            else:
+                asked = None
+                m.yield_req = True
 
     def _close(self, m):
         """The window was closed: the game's next GetMessage sees WM_QUIT; a slice in progress is cut short."""

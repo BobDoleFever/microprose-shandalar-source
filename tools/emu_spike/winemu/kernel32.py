@@ -173,6 +173,9 @@ def load_library(m, a):
     if "." not in os.path.basename(name):
         name += ".dll"
     key = os.path.basename(name).lower()
+    if key in m.state.get("host_modules", {}):                       # a library the host provides (winemu/magsnd.py)
+        m.log(f"   LoadLibraryA({name!r}) -> host module")
+        return m.state["host_modules"][key]["base"]
     if key in m.modules:
         return m.modules[key]["base"]
     hp, ok = host_path(m.game_root, m.overlay_root, m.cwd, name if "\\" in name else m.cwd + "\\" + name)
@@ -193,6 +196,9 @@ def free_library(m, a):
 @k32("GetProcAddress", 2)
 def get_proc_address(m, a):
     name = m.cstr(a[1]).decode("latin-1") if a[1] > 0xFFFF else f"#{a[1]}"
+    for mod in m.state.get("host_modules", {}).values():
+        if mod["base"] == a[0]:
+            return mod["exports"].get(name, 0)
     for mod in m.modules.values():
         if mod["base"] == a[0]:
             addr = mod["exports"].get(name)

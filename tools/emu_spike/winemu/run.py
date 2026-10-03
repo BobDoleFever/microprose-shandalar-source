@@ -21,7 +21,7 @@ import time
 import numpy as np
 from PIL import Image
 
-from . import crt, gdi, kernel32, kernel32_rt, user32                                     # noqa: F401  (register handlers)
+from . import crt, gdi, kernel32, kernel32_rt, magsnd, user32                              # noqa: F401  (register handlers)
 from .machine import Machine
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -233,6 +233,7 @@ def main(argv=None):
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
     ap.add_argument("--live", action="store_true", help="show the game in a window and take mouse and keyboard from it (needs pygame-ce); runs until the window is closed, in real time")
     ap.add_argument("--accel", action="store_true", help="run a few hot pure guest functions as Python (winemu/accel.py): much faster startup, but not the instruction counts the exact comparisons need (implied by --live)")
+    ap.add_argument("--host-sound", action="store_true", help="run the game's sound library (MAGSND.DLL) on the host, silently: its DirectSound/mmio needs are not emulated, and the game then waits for a sound that never reports as finished (implied by --live)")
     ap.add_argument("--speed", type=float, default=1.0, help="with --live: game clock speed relative to real time")
     args = ap.parse_args(argv)
 
@@ -261,6 +262,9 @@ def main(argv=None):
         rx = re.compile(args.trace_only)
         m.trace_filter = lambda n: bool(rx.search(n))
     crt.init_argv(m, m.exe_guest_path)
+    if args.host_sound or args.live:
+        magsnd.install(m)
+        print("   [sound] MAGSND.DLL is the silent host version")
     if args.accel or args.live:
         from . import accel  # noqa: PLC0415
         print(f"   [accel] {accel.install(m)} guest functions run as Python")

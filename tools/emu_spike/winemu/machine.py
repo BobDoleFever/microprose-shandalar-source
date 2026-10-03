@@ -179,6 +179,8 @@ class Machine:
         self.next_tid = 1
         self.slice = 200_000_000                    # effectively cooperative: a thread runs until it blocks (the game's
                                                     # static C runtime is not thread-safe and relies on that)
+        self.slices = 0                             # scheduling slices run so far
+        self.yield_req = False                      # live.py: end the running slice at the next import call
         self.charging = False                       # native_host.py: slices are run in pieces so owed instructions count
         self.iat_slots = set()                      # addresses of import table slots: `call [slot]` goes to what the slot holds
         self.call_hash_every = int(os.environ.get("EMU_CALL_HASH", "0"))
@@ -495,6 +497,9 @@ class Machine:
             uc.emu_stop()
             return
         self._apply(res, esp, ret, 0 if cdecl else argc, address)
+        if self.yield_req and self.cur.state == "ready":        # live (live.py): the ticker asked for the end of the slice; here is a clean place for it
+            self.yield_req = False
+            uc.emu_stop()
 
     def add_intercept(self, addr, fn, cleanup=0):
         """Run `fn(machine, esp)` in place of the guest function that starts at `addr`. It returns the function's result,
@@ -658,6 +663,7 @@ class Machine:
                     self.vt = pace(self, nv) if pace else nv
                     continue
                 rr += 1
+                self.slices += 1
                 t = runnable[rr % len(runnable)]
                 t.state, t.wait = "ready", None
                 calls0 = self.calls
