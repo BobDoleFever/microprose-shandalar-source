@@ -653,7 +653,9 @@ class Machine:
                     nxt = self.state.get("next_host_event")
                     if nxt is not None:
                         wakes.append(nxt)
-                    self.vt = max(self.vt + 0.0005, min(wakes)) if wakes else self.vt + 0.001
+                    nv = max(self.vt + 0.0005, min(wakes)) if wakes else self.vt + 0.001
+                    pace = self.state.get("pace")                 # live (live.py): wait for the real clock instead of jumping
+                    self.vt = pace(self, nv) if pace else nv
                     continue
                 rr += 1
                 t = runnable[rr % len(runnable)]
@@ -706,8 +708,12 @@ class Machine:
                     break
                 # charge virtual time: a full slice if it ran to the limit, little if it blocked, plus calls
                 ran = (executed if self.charging else limit) if t.state == "ready" else 3000
+                vt_before = self.vt
                 self.vt += (ran + self.owed + 150 * (self.calls - calls0)) / self.ips
                 self.owed = 0
+                clock = self.state.get("clock")                   # live (live.py): the guest's clock is the real one
+                if clock:
+                    self.vt = clock(self, vt_before)
                 if t.state == "ready":
                     t.ctx = uc.context_save()
                 elif t.state == "blocked":
