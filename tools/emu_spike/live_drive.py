@@ -13,6 +13,7 @@ Tokens (space separated, run in order):
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
     sent:          pending cross-thread SendMessage calls
+    top:SECS       the imports called during SECS
     n:             print the counters of a few imports        win:   list the windows         rec:  the last imports called
     pal:           system palette and index statistics         thr:   thread states            r:A,B  read guest dwords (hex)
     p:SECS         histogram of where the guest is (needs LIVE_SAMPLE=1)
@@ -108,6 +109,12 @@ def helper(lv):
             for h, w in list(m.state.get("u32", {}).get("windows", {}).items()):
                 print(f"WIN 0x{h:x} {w['cls']!r} {w['title']!r} vis={int(w['visible'])} en={int(w.get('enabled', 1))} {w['x']},{w['y']} "
                       f"{w['w']}x{w['h']} parent=0x{w['parent']:x} tid={w.get('tid')}", flush=True)
+        elif op == "top":                                      # top:SECS  the imports called during SECS, most first
+            before = dict(m.counts)
+            n0, v0 = m.calls, m.vt
+            time.sleep(float(arg or 5))
+            diff = sorted(((v - before.get(k, 0), k) for k, v in dict(m.counts).items() if v > before.get(k, 0)), reverse=True)[:8]
+            print("TOP", m.calls - n0, "calls,", round(m.vt - v0, 2), "virtual s:", [(k[1], n) for n, k in diff], flush=True)
         elif op == "sent":
             st = m.state.get("u32", {})
             for r in list(st.get("sent", [])):
