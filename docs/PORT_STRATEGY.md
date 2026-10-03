@@ -168,14 +168,25 @@ layer, not hundreds of rewrites.
 
 **The game can be played now, in a window, on a Mac.** `python3 -m winemu.run --live` (from `tools/emu_spike`, with
 `pygame-ce` installed) runs the original MAGIC.EXE in the emulator and shows it in an SDL window with the mouse and
-keyboard connected: title screen, new game, difficulty, colour, visage, name, and on to the overworld map all work, and
-a game starts in about six seconds. The guest's clock follows the real one, and threads are switched every 200,000 instructions
-instead of every 200M, because the game's own thread busy-waits (the exact runs above keep their deterministic slices;
-`--live` is for playing, not for comparing). It starts quickly because
-`winemu/accel.py` runs the one function that made startup slow (a card-text keyword search that called `_strnicmp`
-870,000 times) as Python, checked against what the original returned for the same arguments. What is not there yet: sound,
-and the native layer for MAGIC.EXE (its duel engine is the same code as DUEL.EXE's at other addresses, so the AI's
-thinking runs at emulator speed until it is hosted there).
+keyboard connected. Driven with real input events it gets from the title screen (in about 8 s) through new game,
+difficulty, colour, visage and name (typed with Shift) to the overworld map (about 75 s, most of it the game's own loading
+dissolve), walks the map, enters a town (Buy Cards, Edit deck, Trade, Buy food, Leave), reaches a wizard's domain with the
+ante cards and the "Duel / Pay 40 gold" choice, and starts the duel: the board, the coin toss ("You won the coin toss. Play
+first / Draw first") and the start-of-duel dialog. Resume Game loads the autosave, a quick way back to a wizard's door. Getting there needed
+fixes in the Win32 layer, each found by looking at the live window: the guest clock follows the real one; `winemu/accel.py`
+runs the one function that made startup slow (a card-text keyword search that called `_strnicmp` 870,000 times) as Python,
+checked against what the original returned; `BitBlt` does the combining raster operations and `CreateBitmap` keeps 1-bpp
+bits (the game draws its HUD numbers as a mask AND and a glyph OR, which showed as black boxes); `SaveDC`/`RestoreDC` keep
+a state stack (the map view's origin and clip stayed on the screen DC and every later menu was clipped away); and the
+sound library `MAGSND.DLL` runs on the host (`winemu/magsnd.py`, silent): its DirectSound, `mmio` and AVIFile needs are
+not emulated, and the game then waits at the coin toss, in a loop that makes no calls, for a sound to report finished.
+Scheduling: the game's own thread busy-waits, so threads must be switched. A count makes Unicorn call a hook on every
+instruction (35 times slower), so a ticker thread asks for the end of the slice and the machine ends it at its next import
+call; only a thread that makes no import call for 100 ms is stopped asynchronously (stopping inside an import hook
+corrupted the guest). A pressed mouse button or key is held for a few slices so that the thread that polls it sees it.
+Not there yet: real sound, the duel dialogs drawn properly (they are a plain grey rendering without the ante cards), and the
+native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at emulator speed
+until it is hosted there). The exact runs above keep their deterministic slices; `--live` is for playing, not for comparing.
 
 ## Risks and open points
 
