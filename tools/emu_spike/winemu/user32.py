@@ -1231,6 +1231,26 @@ for _i, _c in enumerate("1234567890"):
     SCANCODES[ord(_c)] = 0x02 + _i
 
 
+def inject_key_event(m, vk, scancode, down, char=None, repeat=False):
+    """One half of a key press, as a keyboard sends it: WM_KEYDOWN (and WM_CHAR when it types something) or WM_KEYUP, with
+    the scan code in lParam; the key's state (GetKeyState, GetAsyncKeyState) follows. Live input (live.py) uses this; a
+    script's `key` (inject_key) is the pair at once."""
+    st = _st(m)
+    h = main_hwnd(m)
+    if not h:
+        return False
+    sc = (scancode & 0xFF) << 16
+    if down:
+        st["keys"][vk] = True
+        st["queue"].append((h, WM_KEYDOWN, vk, 1 | sc | (0x40000000 if repeat else 0)))
+        if char is not None:
+            st["queue"].append((h, WM_CHAR, char, 1 | sc | (0x40000000 if repeat else 0)))
+    else:
+        st["keys"][vk] = False
+        st["queue"].append((h, WM_KEYUP, vk, 0xC0000001 | sc))
+    return True
+
+
 def inject_key(m, vk, char=None):
     """A key press: WM_KEYDOWN (with its scan code), WM_CHAR if `char`, then WM_KEYUP."""
     st = _st(m)

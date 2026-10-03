@@ -231,6 +231,9 @@ def main(argv=None):
     ap.add_argument("--native-skip", default="", help="with --native: not these")
     ap.add_argument("--no-native-handlers", action="store_true", help="with --native: the native functions only, not the lifted handlers")
     ap.add_argument("--shot-every", type=float, default=0, help="also save screen_NNN.png every N seconds")
+    ap.add_argument("--live", action="store_true", help="show the game in a window and take mouse and keyboard from it (needs pygame-ce); runs until the window is closed, in real time")
+    ap.add_argument("--accel", action="store_true", help="run a few hot pure guest functions as Python (winemu/accel.py): much faster startup, but not the instruction counts the exact comparisons need (implied by --live)")
+    ap.add_argument("--speed", type=float, default=1.0, help="with --live: game clock speed relative to real time")
     args = ap.parse_args(argv)
 
     game_root = os.path.join(ROOT, "sources", "installed", "Magic")
@@ -258,6 +261,9 @@ def main(argv=None):
         rx = re.compile(args.trace_only)
         m.trace_filter = lambda n: bool(rx.search(n))
     crt.init_argv(m, m.exe_guest_path)
+    if args.accel or args.live:
+        from . import accel  # noqa: PLC0415
+        print(f"   [accel] {accel.install(m)} guest functions run as Python")
     t0 = time.time()
     tick = {"n": 0, "next": args.shot_every}
     actions = []
@@ -387,11 +393,11 @@ def main(argv=None):
             snap = bytes(mm.uc.mem_read(0x4F2000, 0x1D1000))
             placed = fuzz_board(mm, rng)
             pick = placed[rng.randrange(len(placed))]
-            args = [pick[0] if t == "p" else pick[1] if t == "s" else int(t, 0) for t in cmd[4:]]
+            call_args = [pick[0] if t == "p" else pick[1] if t == "s" else int(t, 0) for t in cmd[4:]]
             patched = patch_calls(mm, pending, None, k, rng, extra=(0x48AF80, 0x48C50B, 0x48B64F, 0x46E571, 0x46E793, 0x4D695B), skip=duel_native_entries())
             if os.environ.get("INJECT_FLUSH_TB"):
                 mm.uc.ctl_flush_tb()
-            th = mm.spawn(addr, args, "inject", one_shot=True)
+            th = mm.spawn(addr, call_args, "inject", one_shot=True)
             th.slice = 200_000
             actions.append((now + max(0.15, float(os.environ.get("INJECT_RESTORE", "0.08"))), ["_restore", snap, th, patched]))
             actions.sort(key=lambda a: a[0])
@@ -574,7 +580,15 @@ def main(argv=None):
         prof = Profile(m, gate=int(args.profile_gate, 16) if args.profile_gate else None)
         for a in filter(None, args.profile_callers.split(",")):
             prof.callers(int(a, 16))
-    code = m.run()
+    if args.live:
+        from .live import Live  # noqa: PLC0415
+        live = Live(speed=args.speed)
+        live.attach(m, compose)
+        inner = m.state["on_schedule"]
+        m.state["on_schedule"] = lambda mm: (inner(mm), live.on_schedule(mm))
+        code = live.run(m)
+    else:
+        code = m.run()
     m.flush_trace()
     if prof:
         print(prof.report())
