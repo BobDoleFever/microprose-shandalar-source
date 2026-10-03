@@ -14,6 +14,7 @@ Tokens (space separated, run in order):
     btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
     pass:TEXT[,SECS] press Done until the prompt bar shows TEXT
     auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
+    until:TEXT[,SECS] wait until a window or button with that title shows (prints how long it took)
     m:X,Y          move the mouse (hover)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
@@ -180,6 +181,18 @@ def helper(lv):
                 time.sleep(0.25)
             else:
                 print(f"PASS gave up waiting for {want!r}", flush=True)
+        elif op == "until":                                # until:TEXT[,SECS]  wait until a visible window or button whose title contains TEXT exists (underscores are spaces)
+            want, _, secs = arg.partition(",")
+            want = want.replace("_", " ").lower()
+            t1 = time.time()
+            end = t1 + float(secs or 180)
+            while time.time() < end:
+                if any(w["visible"] and want in str(w["title"]).lower() for w in list(m.state.get("u32", {}).get("windows", {}).values())):
+                    break
+                time.sleep(0.2)
+            print(f"UNTIL {want!r}: {'found' if time.time() < end else 'timed out'} after {time.time() - t1:.1f} s", flush=True)
+        elif op == "cpu":                                  # cpu:  print the process's CPU seconds and the wall clock so far (call twice to see an interval)
+            print(f"CPU {time.process_time():.1f} s cpu at {time.time() - t0:.1f} s wall", flush=True)
         elif op == "m":                                    # m:X,Y  move the mouse (hover)
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
@@ -199,6 +212,9 @@ def helper(lv):
             time.sleep(float(arg or 5))
             diff = sorted(((v - before.get(k, 0), k) for k, v in dict(m.counts).items() if v > before.get(k, 0)), reverse=True)[:8]
             print("TOP", m.calls - n0, "calls,", round(m.vt - v0, 2), "virtual s:", [(k[1], n) for n, k in diff], flush=True)
+        elif op == "imp":                                  # imp:  all import counts so far, top 15 (call again and subtract to see an interval)
+            top = sorted(m.counts.items(), key=lambda kv: -kv[1])[:15]
+            print("IMP", {k[1]: v for k, v in top}, flush=True)
         elif op == "sent":
             st = m.state.get("u32", {})
             for r in list(st.get("sent", [])):

@@ -86,6 +86,7 @@ def new_obj(m, obj):
     h = st["next"]
     st["next"] += 4
     st["objs"][h] = obj
+    st.setdefault("handle_of", {})[id(obj)] = h                # for _handle_of: the object's handle without a scan
     return h
 
 
@@ -551,7 +552,11 @@ def select_object(m, a):
 
 
 def _handle_of(m, o):
-    for h, v in _st(m)["objs"].items():
+    st = _st(m)
+    h = st.get("handle_of", {}).get(id(o), 0)
+    if h and st["objs"].get(h) is o:
+        return h
+    for h, v in st["objs"].items():                            # (an object that was not made by new_obj)
         if v is o:
             return h
     return 0
@@ -566,13 +571,15 @@ def _default_bitmap(m):
 
 @g32("DeleteObject", 1)
 def delete_object(m, a):
-    _st(m)["objs"].pop(a[0], None)
+    o = _st(m)["objs"].pop(a[0], None)
+    _st(m).get("handle_of", {}).pop(id(o), None)
     return 1
 
 
 @g32("DeleteDC", 1)
 def delete_dc(m, a):
-    _st(m)["objs"].pop(a[0], None)
+    o = _st(m)["objs"].pop(a[0], None)
+    _st(m).get("handle_of", {}).pop(id(o), None)
     return 1
 
 
