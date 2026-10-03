@@ -674,6 +674,7 @@ class Machine:
                     uc.reg_write(UC_X86_REG_ESP, t.retry[1])
                     t.retry = None
                 limit = t.slice or self.slice
+                ticked = self.state.get("ticker") and not t.slice
                 executed, faulted = 0, False
                 while True:
                     pc = uc.reg_read(UC_X86_REG_EIP)
@@ -682,7 +683,10 @@ class Machine:
                     # instructions plus the owed ones reach the limit, as the original's would have.
                     step = min(self.CHUNK, limit - executed) if self.charging else limit
                     try:
-                        uc.emu_start(pc, 0xFFFFFFFF, count=step)
+                        if ticked and not self.charging:        # live (live.py): no count, a ticker thread stops the slice:
+                            uc.emu_start(pc, 0xFFFFFFFF)            # a count makes Unicorn call a hook on every instruction (35x slower)
+                        else:
+                            uc.emu_start(pc, 0xFFFFFFFF, count=step)
                     except UcError as e:
                         eip = uc.reg_read(UC_X86_REG_EIP)
                         if t.name == "inject":   # a card handler run on demand (winemu/run.py) faulted: that call ends, the run goes on

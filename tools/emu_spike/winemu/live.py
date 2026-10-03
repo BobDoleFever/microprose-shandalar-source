@@ -2,7 +2,7 @@
 A live window for the emulated game: `python3 -m winemu.run --live`.
 
 The emulator runs on a worker thread and the window (pygame / SDL) on the main thread, as SDL requires. The two meet at
-two places only (and the window thread never calls into Unicorn):
+two places only (the one other call into Unicorn is the ticker thread's emu_stop, below):
   - input: the window's thread puts events in a queue; the emulator's thread turns them into the game's messages
     (user32.inject_mouse / inject_key) between scheduling slices, so the guest's state is only ever touched by one thread;
   - output: the emulator's thread composes the screen (run.compose) up to 30 times a second and hands over the latest frame.
@@ -99,6 +99,7 @@ class Live:
         self.compose = None
         self.next_frame = 0.0
         self.machine = None
+        self.samples = __import__("collections").Counter() if os.environ.get("LIVE_SAMPLE") else None
 
     # ---- emulator thread ---------------------------------------------------------------------------
     def attach(self, m, compose):
@@ -111,11 +112,15 @@ class Live:
         m.state["clock"] = lambda mm, before: max(before, self.pacer.now_vt())
         m.state["should_stop"] = lambda mm: self.closed
         m.slice = self.SLICE
+        m.state["ticker"] = self.TICK_MS > 0
         m.state["hard_stop"] = None
         m.state["virtual_limit"] = None
 
     def on_schedule(self, m):
         self._service(m)
+        if self.samples is not None:                                 # LIVE_SAMPLE=1: where the guest spends its time
+            from unicorn.x86_const import UC_X86_REG_EIP  # noqa: PLC0415
+            self.samples[m.uc.reg_read(UC_X86_REG_EIP)] += 1
 
     def _service(self, m):
         """Deliver queued input to the game and publish a new frame if one is due. True if input was delivered."""
@@ -143,6 +148,7 @@ class Live:
         """Run the machine on a worker thread and the window here until either ends. Returns the machine's exit code."""
         import pygame  # noqa: PLC0415
         result = {}
+        finished = threading.Event()
 
         def work():
             try:
@@ -151,6 +157,7 @@ class Live:
                 result["error"] = e
             finally:
                 result["done"] = True
+                finished.set()
 
         pygame.init()
         pygame.key.set_repeat(400, 40)
@@ -159,6 +166,8 @@ class Live:
         clock = pygame.time.Clock()
         worker = threading.Thread(target=work, name="emulator", daemon=True)
         worker.start()
+        if self.TICK_MS > 0:
+            threading.Thread(target=self._ticker, args=(m, finished), name="ticker", daemon=True).start()
         shown = 0
         held, repeating = {}, set()                               # keys down: what each sent, and which have already repeated
         while not self.closed and not result.get("done"):
@@ -205,8 +214,22 @@ class Live:
 
     # Instructions a thread runs before the others (and the window) get their turn. The game's own thread busy-waits, so
     # without this the window would wait for the 200M-instruction slice of the exact runs (some twenty seconds of host time).
-    # The emulator is only ever stopped by running out of instructions: Unicorn's stop-from-another-thread is not atomic.
+    # 
     SLICE = int(os.environ.get("LIVE_SLICE", "200000"))
+    # A count makes Unicorn call a hook on every instruction, so the guest runs about 35 times slower than it could (40 MIPS
+    # against 1,400 here). Stopping the emulator from another thread instead (LIVE_TICK_MS=10, uc_emu_stop from a ticker)
+    # is fast but NOT safe in Unicorn 2.1.4: a guest running alone (DllMain at startup, no other thread to race with)
+    # ends with corrupted registers within seconds in about half of the runs, and Unicorn's own `timeout=` never fires. So
+    # it is off unless asked for (to measure how fast the game could go), and the default is counted slices.
+    TICK_MS = float(os.environ.get("LIVE_TICK_MS", "0"))
+
+    def _ticker(self, m, done):
+        while not done.is_set():
+            time.sleep(self.TICK_MS / 1000)
+            try:
+                m.uc.emu_stop()
+            except Exception:                                    # noqa: BLE001  (not running: nothing to stop)
+                pass
 
     def _close(self, m):
         """The window was closed: the game's next GetMessage sees WM_QUIT; a slice in progress is cut short."""

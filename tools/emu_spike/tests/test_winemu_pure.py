@@ -117,3 +117,16 @@ class PathTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_combining_raster_operations_draw_a_glyph_over_a_picture():
+    """The game's bitmap-font glyphs: an AND with a mask, then an OR with the glyph. A glyph's black background must not show."""
+    import numpy as np
+    from winemu import gdi
+    picture = np.array([13, 14, 83, 84], np.uint8)
+    mask = np.array([255, 0, 0, 255], np.uint8)            # 0 where the glyph goes
+    glyph = np.array([0, 7, 9, 0], np.uint8)               # the glyph's colours, black elsewhere
+    out = gdi._ROPS[0xEE0086](glyph, gdi._ROPS[0x8800C6](mask, picture))
+    assert out.tolist() == [13, 7, 9, 84]
+    assert gdi._ROPS[0x660046](picture, picture).tolist() == [0, 0, 0, 0]          # XOR with itself
+    assert gdi._ROPS[0x330008](np.array([0, 255], np.uint8), picture[:2]).tolist() == [255, 0]

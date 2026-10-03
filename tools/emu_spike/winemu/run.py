@@ -614,7 +614,7 @@ def main(argv=None):
     Image.fromarray(compose(m)).save(shot)
     print(f"screen: {shot}")
     print("most-called imports:")
-    for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:(60 if args.all_counts else 12)]:
+    for (dll, name), n in sorted(m.counts.items(), key=lambda kv: -kv[1])[:(400 if args.all_counts else 12)]:
         print(f"  {n:8d}  {dll}!{name}")
     if args.dump_surfaces:
         for h, w in m.state.get("u32", {}).get("windows", {}).items():
