@@ -754,8 +754,32 @@ g32("LPtoDP", 3)(lambda m, a: 1)
 g32("GdiFlush", 0)(lambda m, a: 1)
 g32("GdiGetBatchLimit", 0)(lambda m, a: 1)
 g32("GdiSetBatchLimit", 1)(lambda m, a: 1)
-g32("RestoreDC", 2)(lambda m, a: 1)
-g32("SaveDC", 1)(lambda m, a: 1)
+_DC_STATE = ("bitmap", "palette", "textcolor", "bkcolor", "bkmode", "pen", "brush", "font", "org", "pos", "clip", "textalign")
+
+
+@g32("SaveDC", 1)
+def save_dc(m, a):
+    """Push the DC's attributes (selected objects, colours, origin, clip region) and return the new level."""
+    dc = dc_of(m, a[0])
+    if not dc:
+        return 0
+    dc.__dict__.setdefault("saved", []).append({k: getattr(dc, k) for k in _DC_STATE})
+    return len(dc.saved)
+
+
+@g32("RestoreDC", 2)
+def restore_dc(m, a):
+    """Pop saved states: level -1 is the last one saved, a positive level is that one (and every later one is dropped)."""
+    dc = dc_of(m, a[0])
+    stack = dc.__dict__.get("saved") if dc else None
+    n = _s32(a[1])
+    level = n if n > 0 else len(stack or ()) + n + 1
+    if not stack or not 1 <= level <= len(stack):
+        return 0
+    for k, v in stack[level - 1].items():
+        setattr(dc, k, v)
+    del stack[level - 1:]
+    return 1
 
 
 @g32("SetViewportOrgEx", 4)
