@@ -158,7 +158,16 @@ class Live:
 
         def work():
             try:
-                result["code"] = m.run()
+                if os.environ.get("LIVE_PROFILE"):                  # LIVE_PROFILE=1: where the emulator thread spends host time (printed at exit)
+                    import cProfile
+                    import pstats
+                    prof = cProfile.Profile()
+                    try:
+                        result["code"] = prof.runcall(m.run)
+                    finally:
+                        pstats.Stats(prof).sort_stats("tottime").print_stats(25)
+                else:
+                    result["code"] = m.run()
             except BaseException as e:                           # noqa: BLE001  (shown after the window closes)
                 result["error"] = e
             finally:

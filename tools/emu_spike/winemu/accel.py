@@ -6,7 +6,7 @@ instructions the guest runs).
 Each one is the function's machine code read and written as Python over the same arguments, and checked against what the
 original returned for the same arguments (tests/test_accel.py, from a recorded trace when the game's files are present).
 """
-from .machine import u32
+from .machine import Block, u32
 
 DECKDLL_FIND_WORD = 0x100327B1
 MAGIC_FIND_WORD = 0x004F4CE1          # the same function compiled into MAGIC.EXE (identical but for addresses)
@@ -45,6 +45,25 @@ def _find_word_native(m, esp):
     return u32(find_word(m.cstr(text), m.cstr(word), mode != 0))
 
 
+MAGIC_KEY_POLL = 0x00408089            # MAGIC.EXE: `return DAT_00516bdc != 0` -- the menu loops call it flat out, waiting for input
+
+
+def _key_poll_native(m, esp):
+    """The same function, but a loop that calls it 16 times without any other import call in between is waiting for input: it
+    sleeps 4 virtual ms (the machine then runs other threads, or sleeps for real when `--live` paces it). The original spins at
+    100% of a CPU; in the emulator that is a laptop's fan for nothing."""
+    st = m.state.setdefault("accel_poll", [0, -1])
+    if m.calls == st[1]:
+        st[0] += 1
+    else:
+        st[0] = 0
+    st[1] = m.calls
+    if st[0] >= 16:
+        st[0] = 0
+        return Block(until=m.vt + 0.004)
+    return 1 if m.r32(0x516BDC) else 0
+
+
 def install(m):
     """Replace the guest functions above (those whose module is loaded). Returns how many."""
     n = 0
@@ -53,5 +72,6 @@ def install(m):
         n += 1
     if m.exe_guest_path.lower().endswith("\\magic.exe"):
         m.add_intercept(MAGIC_FIND_WORD, _find_word_native)               # (870,000 calls when a new game's cards are set up)
-        n += 1
+        m.add_intercept(MAGIC_KEY_POLL, _key_poll_native)
+        n += 2
     return n
