@@ -172,7 +172,7 @@ keyboard connected. Driven with real input events it gets from the title screen 
 difficulty, colour, visage and name (typed with Shift) to the overworld map (about 75 s, most of it the game's own loading
 dissolve), walks the map, enters a town (Buy Cards, Edit deck, Trade, Buy food, Leave), reaches a wizard's domain with the
 ante cards and the "Duel / Pay 40 gold" choice, and starts the duel: the board, the coin toss ("You won the coin toss. Play
-first / Draw first") and the start-of-duel dialog. Resume Game loads the autosave, a quick way back to a wizard's door. Getting there needed
+first / Draw first"), the start-of-duel dialog, and the duel itself ("Main phase (before combat): cast spells, play land"). Resume Game loads the autosave, a quick way back to a wizard's door. Getting there needed
 fixes in the Win32 layer, each found by looking at the live window: the guest clock follows the real one; `winemu/accel.py`
 runs the one function that made startup slow (a card-text keyword search that called `_strnicmp` 870,000 times) as Python,
 checked against what the original returned; `BitBlt` does the combining raster operations and `CreateBitmap` keeps 1-bpp
@@ -183,7 +183,13 @@ not emulated, and the game then waits at the coin toss, in a loop that makes no 
 Scheduling: the game's own thread busy-waits, so threads must be switched. A count makes Unicorn call a hook on every
 instruction (35 times slower), so a ticker thread asks for the end of the slice and the machine ends it at its next import
 call; only a thread that makes no import call for 100 ms is stopped asynchronously (stopping inside an import hook
-corrupted the guest). A pressed mouse button or key is held for a few slices so that the thread that polls it sees it.
+corrupted the guest). A pressed mouse button or key is held for a few slices so that the thread that polls it sees it. And a thread is never
+scheduled away while its ESP is outside its own stack: the game's own assembly (the `MPS_CODE` section: its picture
+decompressor) switches to a private stack and keeps the old ESP in a global, and calls its read callback from there, so
+another thread running in the middle of it came back on the wrong stack (the start-of-duel dialog crashed in about half of
+the runs; none of 12 since). The game was written for coarse time slices; this keeps that assumption. `EMU_REGCHECK=1` reports an
+import or a guest callback that changes callee-saved registers, and `EMU_PROCTRACE=ADDR` shows the instructions of a
+guest callback that does.
 Not there yet: real sound, the duel dialogs drawn properly (they are a plain grey rendering without the ante cards), and the
 native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at emulator speed
 until it is hosted there). The exact runs above keep their deterministic slices; `--live` is for playing, not for comparing.

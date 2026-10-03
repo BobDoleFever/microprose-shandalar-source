@@ -575,7 +575,10 @@ def main(argv=None):
 
         def peek(uc, address, size, user):
             esp = uc.reg_read(UC_X86_REG_ESP)
-            print("   [peek %.6f] esp=%08x [esp]=%08x %s" % (m.vt, esp, m.r32(esp), " ".join("%08x" % m.r32(esp + 4 * i) for i in range(1, 4))))
+            from unicorn.x86_const import (UC_X86_REG_EAX, UC_X86_REG_EBP, UC_X86_REG_EBX, UC_X86_REG_ECX, UC_X86_REG_EDI,  # noqa: PLC0415
+                                           UC_X86_REG_EDX, UC_X86_REG_EIP, UC_X86_REG_ESI)
+            regs = " ".join("%s=%08x" % (n, uc.reg_read(r)) for n, r in (("eip", UC_X86_REG_EIP), ("eax", UC_X86_REG_EAX), ("ebx", UC_X86_REG_EBX), ("ecx", UC_X86_REG_ECX), ("edx", UC_X86_REG_EDX), ("esi", UC_X86_REG_ESI), ("edi", UC_X86_REG_EDI), ("ebp", UC_X86_REG_EBP)))
+            print("   [peek %.6f] t%s esp=%08x [esp]=%08x %s | %s" % (m.vt, m.cur.tid if m.cur else "?", esp, m.r32(esp), " ".join("%08x" % m.r32(esp + 4 * i) for i in range(1, 4)), regs))
         a = int(os.environ["EMU_PEEK"], 16)
         m.uc.hook_add(UC_HOOK_CODE, peek, begin=a, end=a)
     prof = None
