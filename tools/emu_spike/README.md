@@ -38,7 +38,7 @@ command file you append to while it runs (see its docstring). This is how the li
 | `EMU_SRAND=N` | every `srand` seeds with N (the game seeds from the clock) |
 | `EMU_REGCHECK=1` | report an import or a guest callback that changes EBP/EBX/ESI/EDI |
 | `EMU_PROCTRACE=ADDR[,ADDR]` | the last instructions of that guest callback if it changed them |
-| `EMU_PEEK=ADDR` | print all registers each time the guest reaches ADDR |
+| `EMU_PEEK=ADDR[,ADDR]` | print all registers each time the guest reaches ADDR |
 | `EMU_CALL_HASH=N`, `EMU_CALL_DETAIL=A:B` | running hash of the import calls (compare two runs), and the calls A..B in detail |
 | `GDI_DEBUG=1` | log mouse routing and blits |
 | `PALDBG=1` | log every `RealizePalette` (which DC, window class and palette handle) |
@@ -50,4 +50,4 @@ Do not read the guest's registers from another thread while it runs: it corrupts
 
 - Music tracks and the coin-toss movie (AVI) are not played; sound effects are (unheard by the author).
 - The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
-- Saving and loading games, the deck editor, trading, combat targeting dialogs have not been exercised.
+- The deck editor (the book icon on the map) opens and shows the deck; moving cards, the filters, Stats and saving a deck have not been exercised. Saving and loading games, trading and combat targeting dialogs have not been exercised either.

@@ -647,7 +647,7 @@ def main(argv=None):
         if nh is None:
             nh = native_host.NativeHost(m)
         nh.log_calls([int(a, 16) for a in addrs.split(",")], path, hosted=args.native)
-    if os.environ.get("EMU_PEEK"):   # EMU_PEEK=addr: print the dword at ESP each time the guest reaches `addr` (a local read before it is written)
+    if os.environ.get("EMU_PEEK"):   # EMU_PEEK=addr[,addr]: print the dword at ESP each time the guest reaches `addr` (a local read before it is written)
         from unicorn import UC_HOOK_CODE  # noqa: PLC0415
         from unicorn.x86_const import UC_X86_REG_ESP  # noqa: PLC0415
 
@@ -657,8 +657,8 @@ def main(argv=None):
                                            UC_X86_REG_EDX, UC_X86_REG_EIP, UC_X86_REG_ESI)
             regs = " ".join("%s=%08x" % (n, uc.reg_read(r)) for n, r in (("eip", UC_X86_REG_EIP), ("eax", UC_X86_REG_EAX), ("ebx", UC_X86_REG_EBX), ("ecx", UC_X86_REG_ECX), ("edx", UC_X86_REG_EDX), ("esi", UC_X86_REG_ESI), ("edi", UC_X86_REG_EDI), ("ebp", UC_X86_REG_EBP)))
             print("   [peek %.6f] t%s esp=%08x [esp]=%08x %s | %s" % (m.vt, m.cur.tid if m.cur else "?", esp, m.r32(esp), " ".join("%08x" % m.r32(esp + 4 * i) for i in range(1, 4)), regs))
-        a = int(os.environ["EMU_PEEK"], 16)
-        m.uc.hook_add(UC_HOOK_CODE, peek, begin=a, end=a)
+        for a in os.environ["EMU_PEEK"].split(","):
+            m.uc.hook_add(UC_HOOK_CODE, peek, begin=int(a, 16), end=int(a, 16))
     prof = None
     if args.profile:
         from .profile import Profile  # noqa: PLC0415

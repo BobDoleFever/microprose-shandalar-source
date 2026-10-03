@@ -514,14 +514,29 @@ def get_window_rect(m, a):
     return 1
 
 
+def _geometry_changed(m, win, old):
+    """MoveWindow / SetWindowPos end with WM_SIZE for a changed size and WM_MOVE for a changed position, as Windows sends them.
+    (The deck editor fills its card surface in the WM_SIZE of the surface.)"""
+    if not win["proc"]:
+        return
+    hwnd = win["hwnd"]
+    if (win["w"], win["h"]) != old[2:]:
+        cw, ch = client_size(win)
+        yield from send(m, hwnd, WM_SIZE, 0, (cw & 0xFFFF) | ((ch & 0xFFFF) << 16))
+    if (win["x"], win["y"]) != old[:2]:
+        yield from send(m, hwnd, WM_MOVE, 0, (win["x"] & 0xFFFF) | ((win["y"] & 0xFFFF) << 16))
+
+
 @u("MoveWindow", 6)
 def move_window(m, a):
     win = window(m, a[0])
     if win:
+        old = (win["x"], win["y"], win["w"], win["h"])
         win["x"], win["y"], win["w"], win["h"] = S32(a[1]), S32(a[2]), S32(a[3]), S32(a[4])
         _resize_surface(win)
         win["invalid"] = True
         mark_dirty(m)
+        yield from _geometry_changed(m, win, old)
     return 1
 
 
@@ -530,6 +545,7 @@ def set_window_pos(m, a):
     win = window(m, a[0])
     hwnd, after, x, y, cx, cy, flags = a
     if win:
+        old = (win["x"], win["y"], win["w"], win["h"])
         if not flags & 2:
             win["x"], win["y"] = S32(x), S32(y)
         if not flags & 1:
@@ -543,6 +559,7 @@ def set_window_pos(m, a):
             set_z(m, win, after)
         win["invalid"] = True
         mark_dirty(m)
+        yield from _geometry_changed(m, win, old)
     return 1
 
 
@@ -591,7 +608,7 @@ def map_window_points(m, a):
 
 @u("GetSystemMetrics", 1)
 def get_system_metrics(m, a):
-    return {0: SCREEN_W, 1: SCREEN_H, 4: 19, 5: 1, 6: 1, 7: 3, 8: 3, 15: 19, 32: 4, 33: 4, 3: 32, 2: 16, 28: 4, 29: 4,
+    return {0: SCREEN_W, 1: SCREEN_H, 4: 19, 5: 1, 6: 1, 7: 3, 8: 3, 15: 19, 32: 4, 33: 4, 3: 16, 2: 16, 28: 4, 29: 4,
             16: SCREEN_W, 17: SCREEN_H - 40, 75: 0}.get(a[0], 0)
 
 
@@ -685,7 +702,40 @@ def set_window_long(m, a):
 
 
 u("GetParent", 1)(lambda m, a: (window(m, a[0]) or {}).get("parent", 0))
-u("GetWindow", 2)(lambda m, a: 0)
+def _children_top_down(m, hwnd):
+    st = _st(m)
+    kids = [w for w in st["windows"].values() if w["parent"] == hwnd and w["hwnd"] != hwnd]
+    return sorted(kids, key=lambda w: -w["z"])
+
+
+@u("GetTopWindow", 1)
+def get_top_window(m, a):
+    kids = _children_top_down(m, a[0])
+    return kids[0]["hwnd"] if kids else 0
+
+
+@u("GetWindow", 2)
+def get_window(m, a):
+    """GW_HWNDFIRST 0 / LAST 1 / NEXT 2 / PREV 3 walk the siblings in stacking order (NEXT goes down, PREV up); GW_OWNER 4; GW_CHILD 5."""
+    win = window(m, a[0])
+    if not win:
+        return 0
+    cmd = a[1]
+    if cmd == 5:
+        kids = _children_top_down(m, a[0])
+        return kids[0]["hwnd"] if kids else 0
+    if cmd == 4:
+        return 0
+    order = _children_top_down(m, win["parent"])
+    if cmd == 0:
+        return order[0]["hwnd"]
+    if cmd == 1:
+        return order[-1]["hwnd"]
+    i = order.index(win)
+    j = i + 1 if cmd == 2 else i - 1
+    return order[j]["hwnd"] if 0 <= j < len(order) else 0
+
+
 u("GetDlgCtrlID", 1)(lambda m, a: (window(m, a[0]) or {}).get("id", 0))
 u("IsWindowVisible", 1)(lambda m, a: int(bool((window(m, a[0]) or {}).get("visible"))))
 u("IsIconic", 1)(lambda m, a: 0)
