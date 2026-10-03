@@ -100,6 +100,7 @@ class Live:
         self.next_frame = 0.0
         self.machine = None
         self.hold_until = 0
+        self.last_compose = 0.0
         self.fallbacks = 0                                       # slices ended by the unsafe asynchronous stop (see _ticker)
         self.samples = __import__("collections").Counter() if os.environ.get("LIVE_SAMPLE") else None
 
@@ -144,9 +145,15 @@ class Live:
         now = time.monotonic()
         if now >= self.next_frame:
             self.next_frame = now + 1.0 / self.fps
-            frame = self.compose(m)
-            with self.lock:
-                self.frame, self.frame_n = frame, self.frame_n + 1
+            u32 = m.state.get("u32", {})
+            # Composing the screen costs several milliseconds: only when something was drawn (the flag drawing sets), a window or
+            # dialog changed in a way that does not set it, or a quarter second has passed (so that nothing stays stale for long).
+            if got or u32.get("dirty") or self.frame is None or now - self.last_compose >= 0.25:
+                u32["dirty"] = False
+                frame = self.compose(m)
+                self.last_compose = now
+                with self.lock:
+                    self.frame, self.frame_n = frame, self.frame_n + 1
         return got
 
     # ---- window thread -----------------------------------------------------------------------------
