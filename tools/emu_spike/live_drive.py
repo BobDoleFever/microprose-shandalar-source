@@ -15,6 +15,8 @@ Tokens (space separated, run in order):
     pass:TEXT[,SECS] press Done until the prompt bar shows TEXT
     auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
     until:TEXT[,SECS] wait until a window or button with that title shows (prints how long it took)
+    play:SECS      a duel autopilot (coin toss, start dialog, play top card, discard, Done); stops when the duel window is gone
+    find:A,B / poke:ADDR,VALUE  look for a dword pair / write a dword in the data section (debugging aids)
     m:X,Y          move the mouse (hover)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
@@ -193,6 +195,81 @@ def helper(lv):
             print(f"UNTIL {want!r}: {'found' if time.time() < end else 'timed out'} after {time.time() - t1:.1f} s", flush=True)
         elif op == "cpu":                                  # cpu:  print the process's CPU seconds and the wall clock so far (call twice to see an interval)
             print(f"CPU {time.process_time():.1f} s cpu at {time.time() - t0:.1f} s wall", flush=True)
+        elif op == "play":                                 # play:SECS  a duel autopilot: answers the coin toss and start dialogs, plays the top card of the hand in each main phase, discards, presses Done; stops when the duel's window is gone
+            from winemu import user32
+            end = time.time() + float(arg or 600)
+            seen_duel, last_click, last_title, turn_played, dlg_seen = False, 0.0, None, False, time.time()
+            log = lambda msg: print(f"PLAY {time.time() - t0:7.1f}s {msg}", flush=True)       # noqa: E731
+
+            def click_at(x, y):
+                post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+                time.sleep(0.3)
+                post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
+                time.sleep(0.12)
+                post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+
+            def click_win(w):
+                x0, y0, x1, y1 = user32.abs_rect(m, w)
+                click_at((x0 + x1) // 2, (y0 + y1) // 2)
+            while time.time() < end:
+                wins = list(m.state.get("u32", {}).get("windows", {}).values())
+                duel = any(w["cls"] == "MAGICGAME_MainClass" and w["visible"] for w in wins)
+                seen_duel = seen_duel or duel
+                if seen_duel and not duel:
+                    log("the duel window is gone")
+                    break
+                if duel:
+                    ended_at = None
+                vis = [w for w in wins if w["visible"] and w["w"] > 0]
+                btn = lambda text: next((w for w in vis if str(w["cls"]).upper() == "BUTTON" and text in str(w["title"]).lower()), None)   # noqa: E731
+                tu = next((w for w in vis if w["cls"] == "MAGIC_TellUserClass"), None)
+                title = (tu["title"] if tu else "") or ""
+                if title != last_title:
+                    log(f"prompt {title!r}")
+                    last_title = title
+                    if title.startswith("Main phase (before"):
+                        turn_played = False
+                if time.time() - last_click < 2.5:
+                    time.sleep(0.25)
+                    continue
+                dlg = next((w for w in vis if w["cls"] == "#32770"), None)
+                if dlg is None:
+                    dlg_seen = time.time()
+                dlg_btn = next((w for w in vis if dlg is not None and str(w["cls"]).upper() == "BUTTON" and w["parent"] == dlg["hwnd"]), None)
+                pick = btn("play first") or btn("start the duel") or dlg_btn
+                if pick is not None:
+                    click_win(pick); last_click = time.time(); log(f"clicked {pick['title']!r}")
+                elif dlg is not None and dlg_btn is None and seen_duel and time.time() - dlg_seen > 5:
+                    click_win(dlg); last_click = time.time(); log("clicked inside a dialog with no buttons")
+                elif tu is not None and title.startswith("Select card to discard"):
+                    click_at(565, 395); last_click = time.time(); log("discard")
+                elif tu is not None and title.startswith("Main phase (before") and not turn_played:
+                    click_at(565, 405); turn_played = True; last_click = time.time(); log("played the top card")
+                elif tu is not None:
+                    b = next((x for x in vis if str(x["cls"]).upper() == "BUTTON" and x["parent"] == tu["hwnd"]), None)
+                    if b is not None:
+                        click_win(b); last_click = time.time()
+                time.sleep(0.25)
+            else:
+                log("time is up")
+        elif op == "find":                                 # find:A,B  addresses of a dword A with a dword B within 0x80 bytes after it (data section); host-side read of the mapped memory
+            a_, b_ = (int(x, 0) for x in arg.split(","))
+            hits = []
+            for base, size, host, buf in m.regions:
+                if not 0x516000 <= base + 0 < 0x800000 and not (base <= 0x516000 < base + size):
+                    continue
+                lo, hi = max(base, 0x516000), min(base + size, 0x715000)
+                data = bytes(buf[lo - base:hi - base])
+                for off in range(0, len(data) - 4, 4):
+                    if int.from_bytes(data[off:off + 4], "little") == a_:
+                        for k in range(1, 0x20):
+                            if off + 4 * k + 4 <= len(data) and int.from_bytes(data[off + 4 * k:off + 4 * k + 4], "little") == b_:
+                                hits.append((hex(lo + off), hex(lo + off + 4 * k)))
+            print("FIND", hits[:30], flush=True)
+        elif op == "poke":                                 # poke:ADDR,VALUE  write a dword into guest memory (a debugging aid: races with the emulator thread)
+            a_, v_ = (int(x, 0) for x in arg.split(","))
+            m.w32(a_, v_)
+            print("POKE", hex(a_), hex(v_), flush=True)
         elif op == "m":                                    # m:X,Y  move the mouse (hover)
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))

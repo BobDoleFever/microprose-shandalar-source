@@ -55,6 +55,29 @@ def set_class_long(m, a):
 
 
 # ---- window creation ----------------------------------------------------------------------------------------
+class ExtraBytes:
+    """A window's cbWndExtra bytes: addressed by byte offset, read and written as a byte, word or long, so the words and
+    longs a window class keeps (HorzList: a count word, an item pointer long, scroll words) do not overlap each other."""
+
+    def __init__(self, size=0):
+        self.b = bytearray(max(size, 0))
+
+    def get(self, off, default=0, size=4):
+        if off < 0 or off + size > len(self.b):
+            return default
+        return int.from_bytes(self.b[off:off + size], "little")
+
+    def __setitem__(self, off, val):
+        self.put(off, val, 4)
+
+    def put(self, off, val, size=4):
+        if off < 0:
+            return
+        if off + size > len(self.b):
+            self.b.extend(bytes(off + size - len(self.b)))
+        self.b[off:off + size] = (val & ((1 << (8 * size)) - 1)).to_bytes(size, "little")
+
+
 def new_window(m, cls, parent, style, exstyle, x, y, w, h, title, menu, param):
     st = _st(m)
     hwnd = st["next_hwnd"]
@@ -62,7 +85,7 @@ def new_window(m, cls, parent, style, exstyle, x, y, w, h, title, menu, param):
     c = st["classes"].get(cls.lower() if isinstance(cls, str) else cls)
     win = dict(hwnd=hwnd, cls=cls, proc=c["proc"] if c else 0, parent=parent, style=style, exstyle=exstyle,
                x=x, y=y, w=w, h=h, title=title, visible=False, enabled=True, id=menu if style & WS_CHILD else 0,
-               long={}, extra={}, invalid=True, surface=None, children=[], param=param, userdata=0,
+               long={}, extra=ExtraBytes(c["cbwnd"] if c else 0), invalid=True, surface=None, children=[], param=param, userdata=0,
                builtin=c is None, hinst=c["hinst"] if c else 0, tid=m.cur.tid if m.cur else 1)
     win["ownerdraw"] = c is None and str(cls).upper() == "BUTTON" and (style & 0xF) == 0xB      # BS_OWNERDRAW: the parent paints it (WM_DRAWITEM)
     st["zcount"] = st.get("zcount", 0) + 1
@@ -366,6 +389,9 @@ def create_window_ex(m, a):
     m.log(f"   CreateWindowEx(class={cname!r}, title={ttl!r}, style=0x{style:08x}, {w}x{h} at {x},{y}) -> hwnd 0x{hwnd:x}"
           + ("" if win["proc"] else "  [builtin control]"))
     if not win["proc"]:
+        win["visible"] = bool(style & WS_VISIBLE)                  # a built-in control created with WS_VISIBLE is shown from the start
+        win["invalid"] = True
+        mark_dirty(m)
         return hwnd
     cs = m.alloc(48)
     m.wr(cs, struct.pack("<12I", param, hinst, menu, parent, u32(h), u32(w), u32(y), u32(x), style, title, cls, exstyle))
@@ -380,6 +406,12 @@ def create_window_ex(m, a):
     if S32(r) == -1:
         destroy(m, hwnd)
         return 0
+    if style & WS_CHILD:
+        # CreateWindow ends by positioning the window, which DefWindowProc turns into WM_SIZE and WM_MOVE, visible or not. (Top-level windows
+        # get theirs in show(), where this emulator has always sent them.) A child that lays out its controls in WM_SIZE needs it.
+        cw, ch = client_size(win)
+        yield from send(m, hwnd, WM_SIZE, 0, (cw & 0xFFFF) | (ch << 16))
+        yield from send(m, hwnd, WM_MOVE, 0, (win["x"] & 0xFFFF) | ((win["y"] & 0xFFFF) << 16))
     if style & WS_VISIBLE:
         yield from show(m, hwnd, 1)
     return hwnd
@@ -619,6 +651,22 @@ def get_window_long(m, a):
     return win["extra"].get(idx, 0)
 
 
+@u("GetWindowWord", 2)
+def get_window_word(m, a):
+    win = window(m, a[0])
+    return win["extra"].get(S32(a[1]), 0, 2) if win else 0
+
+
+@u("SetWindowWord", 3)
+def set_window_word(m, a):
+    win = window(m, a[0])
+    if not win:
+        return 0
+    old = win["extra"].get(S32(a[1]), 0, 2)
+    win["extra"].put(S32(a[1]), a[2], 2)
+    return old
+
+
 @u("SetWindowLongA", 3)
 def set_window_long(m, a):
     win = window(m, a[0])
@@ -632,7 +680,7 @@ def set_window_long(m, a):
             win["builtin"] = False
         return u32(old)
     old = win["extra"].get(idx, 0)
-    win["extra"][idx] = a[2]
+    win["extra"].put(idx, a[2], 4)
     return old
 
 
@@ -1230,10 +1278,40 @@ def select_dialog_item(m, cid, index):
     return True
 
 
-u("SetScrollRange", 5)(lambda m, a: 1)
-u("SetScrollPos", 4)(lambda m, a: 0)
-u("GetScrollPos", 2)(lambda m, a: 0)
-u("GetScrollRange", 4)(lambda m, a: 1)
+def _scroll(win, bar):
+    return win.setdefault("scroll", {}).setdefault(bar & 3, [0, 0, 0])             # [min, max, pos]
+
+
+@u("SetScrollRange", 5)
+def set_scroll_range(m, a):
+    win = window(m, a[0])
+    if win:
+        sc = _scroll(win, a[1])
+        sc[0], sc[1] = S32(a[2]), S32(a[3])
+        sc[2] = min(max(sc[2], sc[0]), sc[1])
+    return 1
+
+
+@u("GetScrollRange", 4)
+def get_scroll_range(m, a):
+    win = window(m, a[0])
+    sc = _scroll(win, a[1]) if win else [0, 0, 0]
+    m.wr(a[2], struct.pack("<i", sc[0]))
+    m.wr(a[3], struct.pack("<i", sc[1]))
+    return 1
+
+
+@u("SetScrollPos", 4)
+def set_scroll_pos(m, a):
+    win = window(m, a[0])
+    if not win:
+        return 0
+    sc = _scroll(win, a[1])
+    old, sc[2] = sc[2], min(max(S32(a[2]), sc[0]), sc[1])
+    return old
+
+
+u("GetScrollPos", 2)(lambda m, a: _scroll(window(m, a[0]), a[1])[2] if window(m, a[0]) else 0)
 u("LoadBitmapA", 2)(lambda m, a: 0)
 # ---- popup menus ---------------------------------------------------------------------------------------------
 # A menu is ("menu", items); an item is a dict(id, text, flags, sub). The game's right-click menus (card actions, "Run to this
@@ -1460,7 +1538,7 @@ def window_at(m, x, y):
     best, best_key = 0, None
     for order, (h, w) in enumerate(st["windows"].items()):
         builtin_button = not w["proc"] and str(w["cls"]).upper() == "BUTTON" and w["w"] > 0 and w["enabled"]
-        if not w["visible"] or not (w["proc"] or builtin_button) or h == st.get("desktop_hwnd"):
+        if not w["visible"] or not (w["proc"] or w.get("dlgproc") or builtin_button) or h == st.get("desktop_hwnd"):
             continue
         anc, ok, popup = w, True, bool(w["style"] & WS_POPUP and not w["style"] & WS_CHILD)
         while anc["parent"] and anc["parent"] in st["windows"]:                 # every ancestor must be visible
