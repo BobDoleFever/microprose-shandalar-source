@@ -224,7 +224,9 @@ class Live:
             worker.join(5)
         pygame.quit()
         if os.environ.get("LIVE_STATS"):
-            print(f"[live] asynchronous fallback stops: {self.fallbacks}", flush=True)
+            mx = m.state.get("magsnd", {}).get("mixer")
+            print(f"[live] asynchronous fallback stops: {self.fallbacks}; sounds started: {mx.played if mx else 0}"
+                  f" ({'audio on' if mx and mx.backend else 'silent'})", flush=True)
         if "error" in result:
             raise result["error"]
         return result.get("code", 0)

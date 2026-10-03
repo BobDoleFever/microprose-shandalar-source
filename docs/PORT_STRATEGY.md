@@ -189,7 +189,7 @@ another thread running in the middle of it came back on the wrong stack (the sta
 the runs; none of 12 since). The game was written for coarse time slices; this keeps that assumption. `EMU_REGCHECK=1` reports an
 import or a guest callback that changes callee-saved registers, and `EMU_PROCTRACE=ADDR` shows the instructions of a
 guest callback that does.
-Not there yet: real sound, the duel dialogs drawn properly (they are a plain grey rendering without the ante cards), and the
+Sound plays: the host version of MAGSND.DLL loads the game's WAV files into numbered slots and plays them through pygame.mixer (volume, looping, play state; `EMU_NO_AUDIO=1` silences it); music tracks and the AVI coin toss do not. Not there yet: the duel dialogs drawn properly (they are a plain grey rendering without the ante cards), and the
 native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at emulator speed
 until it is hosted there). The exact runs above keep their deterministic slices; `--live` is for playing, not for comparing.
 
