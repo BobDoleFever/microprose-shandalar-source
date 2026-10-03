@@ -11,7 +11,7 @@ Win32, GDI, USER, KERNEL32 and the C runtime written in Python. Nothing from the
 
     python3 -m winemu.run --live            # a window; mouse and keyboard
 
-Title screen in about 8 s, a new game's overworld in about 75 s. **Resume Game** loads the autosave the game makes at a wizard's door
+Title screen in about 8 s, a new game's overworld in about 20 s. **Resume Game** loads the autosave the game makes at a wizard's door
 (click it at the title: about 45 s to the "Duel / Pay gold" choice), and a duel starts from there: coin toss, start-of-duel dialog,
 then the board; lands and phases (the bar under the board advances them) work. There is no sound (`winemu/magsnd.py` is a silent
 stand-in for the game's sound library), the dialogs are drawn plainly, and the AI thinks at emulator speed.
