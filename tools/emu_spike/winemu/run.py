@@ -89,12 +89,11 @@ def compose(m):
             x1, y1 = min(x + s.w, desk.shape[1]), min(y + s.h, desk.shape[0])
             if x1 > x0 and y1 > y0:
                 desk[y0:y1, x0:x1] = gdi.surface_rgb(m, s, x0 - x, y0 - y, x1 - x, y1 - y)
-        for c in win["children"]:
-            cw = wins.get(c)
-            if cw and cw["visible"]:
-                paint(cw, x, y)
+        for c in sorted((wins[c] for c in win["children"] if c in wins), key=lambda w: w["z"]):      # bottom to top
+            if c["visible"]:
+                paint(c, x, y)
 
-    for hwnd, win in wins.items():
+    for hwnd, win in sorted(wins.items(), key=lambda kv: kv[1]["z"]):
         if win["visible"] and not win["style"] & user32.WS_CHILD and hwnd != st.get("desktop_hwnd") \
                 and not win.get("dialog"):
             paint(win, 0, 0)
