@@ -20,6 +20,7 @@ Tokens (space separated, run in order):
     sent:          pending cross-thread SendMessage calls
     top:SECS       the imports called during SECS
     n:             print the counters of a few imports        win:   list the windows         rec:  the last imports called
+    dump:          save the window's indices / colours / the system palette as .npy
     pal:           system palette and index statistics         thr:   thread states            r:A,B  read guest dwords (hex)
     p:SECS         histogram of where the guest is (needs LIVE_SAMPLE=1)
 Other arguments are passed to winemu.run (for example --dump-windows, --break ...). Environment: EMU_SRAND=N fixes the game's random
@@ -218,6 +219,19 @@ def helper(lv):
                     gline = (g.gi_frame.f_lineno if g.gi_frame else 0) if g is not None else 0
                     what = f"in {call[1] if call else (('handler ' + gname + ':' + str(gline) + ' conts=' + str(len(t.conts))) if g is not None else 'a handler')} until={getattr(w, 'until', None)} ready={'yes' if getattr(w, 'ready', None) else 'no'}"
                 print("THR", t.tid, t.name, t.state, what, flush=True)
+        elif op == "dump":                                 # dump:  save the main window's palette indices, colours and the system palette as $OUT_*.npy
+            import numpy as np
+            from winemu import gdi, user32
+            sf = m.state["u32"]["windows"][user32.main_hwnd(m)]["surface"]
+            np.save(f"{OUT}_idx.npy", sf.idx)
+            np.save(f"{OUT}_rgb.npy", sf.rgb)
+            np.save(f"{OUT}_direct.npy", sf.direct)
+            np.save(f"{OUT}_pal.npy", np.array(gdi.system_lut(m)))
+            print("DUMP saved", f"{OUT}_*.npy", flush=True)
+        elif op == "tab":                                  # tab:ADDR  show 8 palette entries (4 bytes each: B G R flags) at a guest address, with a few from the middle
+            a0 = int(arg, 16)
+            ent = lambda i: tuple(m.rd(a0 + 4 * i, 4))          # noqa: E731
+            print("TAB", hex(a0), [ent(i) for i in (0, 1, 2, 3, 100, 179, 180, 189, 231, 255)], flush=True)
         elif op == "pal":
             import numpy as np
             from winemu import gdi, user32

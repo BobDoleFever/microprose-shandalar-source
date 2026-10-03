@@ -4,6 +4,7 @@ Screen model: the desktop is a truecolor surface (numpy RGB). A window has its o
 DC draws onto it. The game draws into 8-bit DIB sections itself (writing straight into emulated memory) and
 BitBlts them to the window; those blits convert indices to RGB through the DIB's colour table.
 """
+import os
 import struct
 
 import numpy as np
@@ -488,8 +489,22 @@ def select_palette(m, a):
 def realize_palette(m, a):
     dc = dc_of(m, a[0])
     if dc and dc.palette:
+        if os.environ.get("PALDBG"):
+            ph = _handle_of_pal(m, dc.palette)
+            w = None
+            if dc.kind == "window":
+                from . import user32
+                w = user32.window(m, dc.hwnd)
+            m.log(f"   [pal] RealizePalette dc=0x{a[0]:x} kind={dc.kind} hwnd=0x{dc.hwnd:x} cls={w and w['cls']!r} pal=0x{ph:x} thread={m.cur.tid}")
         _st(m)["system_palette"] = dc.palette              # shared list: AnimatePalette on it shows at once
         return len(dc.palette)
+    return 0
+
+
+def _handle_of_pal(m, entries):
+    for h, o in _st(m)["objs"].items():
+        if isinstance(o, tuple) and o and o[0] == "palette" and o[1] is entries:
+            return h
     return 0
 
 
