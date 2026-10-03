@@ -113,6 +113,7 @@ class Bitmap:
         self.palette = [(i, i, i) for i in range(256)]
         self.idxmap = None                        # DIB_PAL_COLORS: pixel value -> logical (= system) palette index
         self.idx = None                           # ddb: palette indices in system-palette space (the device format)
+        self.mono = None                          # 1-bpp ddb: bool (h, w); converted with the destination DC's colours when blitted
         if kind == "ddb":
             self.idx = np.zeros((h, w), np.uint8)
 
@@ -346,7 +347,7 @@ def put_indices(m, dc, x0, y0, idx):
     user32.mark_dirty(m)
 
 
-def dc_indices(m, dc, x0, y0, x1, y1):
+def dc_indices(m, dc, x0, y0, x1, y1, mono_dc=None):
     """Palette indices (system-palette space) of a rectangle of a DC's target; None when nothing is readable
     without a colour conversion (24-bit DIBs, which go through RGB)."""
     w, h = target_size(m, dc)
@@ -356,6 +357,8 @@ def dc_indices(m, dc, x0, y0, x1, y1):
     if dc.kind == "memory":
         b = dc.bitmap
         if b.kind == "ddb":
+            if b.mono is not None and mono_dc is not None:
+                return x0, y0, mono_indices(m, mono_dc, b, x0, y0, x1, y1)
             return x0, y0, b.idx[y0:y1, x0:x1]
         if b.bpp == 8:
             lut = b.idxmap if b.idxmap is not None else dib_to_system_lut(m, b.palette)
@@ -566,7 +569,29 @@ def create_compat_bitmap(m, a):
 
 @g32("CreateBitmap", 5)
 def create_bitmap(m, a):
-    return new_obj(m, Bitmap("ddb", max(a[0], 1), max(a[1], 1), a[3] or 1))
+    w, h = max(a[0], 1), max(a[1], 1)
+    b = Bitmap("ddb", w, h, a[3] or 1)
+    if (a[2] or 1) * (a[3] or 1) == 1:
+        b.mono = np.zeros((h, w), bool)
+        if a[4]:                                                  # scan lines are padded to 16 bits, most significant bit first
+            stride = ((w + 15) // 16) * 2
+            raw = np.frombuffer(m.rd(a[4], stride * h), np.uint8).reshape(h, stride)
+            b.mono = np.unpackbits(raw, axis=1)[:, :w].astype(bool)
+    return new_obj(m, b)
+
+
+def color_index(m, dc, c):
+    """The system-palette index a COLORREF stands for on this DC (a palette index as itself, an RGB value as its nearest entry)."""
+    if (c >> 24) & 0xFF == 1:
+        return c & 0xFF
+    return int(quantize(m, np.array([[colorref(m, dc, c)]], np.uint8))[0, 0])
+
+
+def mono_indices(m, dst, b, x0, y0, x1, y1):
+    """A 1-bpp bitmap's rectangle as indices, the way Windows converts one for a colour destination: 0 bits take the
+    destination DC's text colour and 1 bits its background colour."""
+    bit = b.mono[y0:y1, x0:x1]
+    return np.where(bit, np.uint8(color_index(m, dst, dst.bkcolor)), np.uint8(color_index(m, dst, dst.textcolor)))
 
 
 g32("SetBitmapDimensionEx", 4)(lambda m, a: 1)
@@ -807,7 +832,7 @@ def blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
         return True
     ax0, ay0 = sx + src.org[0], sy + src.org[1]
     ax1, ay1 = ax0 + abs(sw), ay0 + abs(sh)
-    cx0, cy0, idx = dc_indices(m, src, ax0, ay0, ax1, ay1)
+    cx0, cy0, idx = dc_indices(m, src, ax0, ay0, ax1, ay1, mono_dc=dst)
     if idx is None:
         return False
     if idx.size == 0:
@@ -850,6 +875,36 @@ def dib_to_dib_lut(src_pal, dst_pal):
     return out
 
 
+# Raster operations that combine the source with what is already there (the game draws its bitmap-font glyphs as an AND with
+# a mask and then an OR with the glyph, so that the glyph's black background stays out of the picture).
+_ROPS = {0x8800C6: lambda s, d: s & d,                 # SRCAND
+         0xEE0086: lambda s, d: s | d,                 # SRCPAINT
+         0x660046: lambda s, d: s ^ d,                 # SRCINVERT
+         0x440328: lambda s, d: s & ~d,                # SRCERASE
+         0x330008: lambda s, d: ~s,                    # NOTSRCCOPY
+         0x1100A6: lambda s, d: ~(s | d),              # NOTSRCERASE
+         0xBB0226: lambda s, d: ~s | d}                # MERGEPAINT
+
+
+def _rop_blit(m, dst, x, y, w, h, src, sx, sy, rop):
+    """BitBlt with a combining raster operation, on palette indices when both sides are readable as indices of the same
+    size (what an 8-bit display does) and on colours otherwise."""
+    f = _ROPS[rop]
+    if w <= 0 or h <= 0:
+        return 1
+    _, _, si = dc_indices(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h, mono_dc=dst)
+    _, _, di = dc_indices(m, dst, x + dst.org[0], y + dst.org[1], x + dst.org[0] + w, y + dst.org[1] + h)
+    if si is not None and di is not None and si.shape == di.shape == (h, w):
+        put_indices(m, dst, x + dst.org[0], y + dst.org[1], np.ascontiguousarray(f(si, di).astype(np.uint8)))
+        return 1
+    sp = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h)
+    dp = get_region(m, dst, x + dst.org[0], y + dst.org[1], x + dst.org[0] + w, y + dst.org[1] + h)
+    if sp is None or dp is None or sp.shape != dp.shape:
+        return 1
+    put_region(m, dst, x + dst.org[0], y + dst.org[1], np.ascontiguousarray(f(sp, dp).astype(np.uint8)))
+    return 1
+
+
 @g32("BitBlt", 9)
 def bitblt(m, a):
     hdst, x, y, w, h, hsrc, sx, sy, rop = a
@@ -867,6 +922,8 @@ def bitblt(m, a):
         return _pattern_fill(m, dst, x, y, w, h)
     if not src:
         return 0
+    if rop in _ROPS:
+        return _rop_blit(m, dst, x, y, w, h, src, sx, sy, rop)
     if rop not in (0xCC0020,):
         _st(m).setdefault("odd_rops", set()).add(rop)
     if m.state.get("gdi_debug") and dst.kind == "window":
