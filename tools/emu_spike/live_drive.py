@@ -9,8 +9,10 @@ is posted to it, so what the window would show can be saved as PNG and the run r
 
 Tokens (space separated, run in order):
     w:SECS         wait
+    rc:X,Y         right click
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
     btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
+    auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
     m:X,Y          move the mouse (hover)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
     s:NAME         save the frame the window shows as $OUT_NAME.png
@@ -102,6 +104,13 @@ def helper(lv):
             post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
             time.sleep(0.12)
             post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "rc":                                   # rc:X,Y  right click
+            x, y = map(int, arg.split(","))
+            post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+            time.sleep(0.3)
+            post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=3)
+            time.sleep(0.12)
+            post(pygame.MOUSEBUTTONUP, pos=(x, y), button=3)
         elif op == "btn":                                  # btn:TEXT  click the visible button (or prompt window) whose title contains TEXT
             from winemu import user32
             want = arg.replace("_", " ").lower()
@@ -119,6 +128,29 @@ def helper(lv):
                 post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
                 time.sleep(0.12)
                 post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "auto":                                 # auto:SECS  press the prompt bar's Done button whenever it shows, logging each prompt and how long it took
+            from winemu import user32
+            end = time.time() + float(arg or 120)
+            last, since = None, time.time()
+            while time.time() < end:
+                wins = list(m.state.get("u32", {}).get("windows", {}).values())
+                tu = next((w for w in wins if w["cls"] == "MAGIC_TellUserClass" and w["visible"]), None)
+                title = tu["title"] if tu else None
+                if title != last:
+                    print(f"AUTO {time.time() - t0:7.1f}s  +{time.time() - since:5.1f}s  prompt: {last!r} -> {title!r}", flush=True)
+                    last, since = title, time.time()
+                if tu is not None and time.time() - since > 2.0:
+                    btn = next((b for b in wins if str(b["cls"]).upper() == "BUTTON" and b["visible"] and b["w"] > 0 and b["parent"] == tu["hwnd"]), None)
+                    if btn is not None:
+                        x0, y0, x1, y1 = user32.abs_rect(m, btn)
+                        x, y = (x0 + x1) // 2, (y0 + y1) // 2
+                        post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+                        time.sleep(0.3)
+                        post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
+                        time.sleep(0.12)
+                        post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+                        since = time.time()
+                time.sleep(0.25)
         elif op == "m":                                    # m:X,Y  move the mouse (hover)
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))

@@ -476,7 +476,8 @@ def get_window_rect(m, a):
     win = window(m, a[0])
     if not win:
         return 0
-    _put_rect(m, a[1], win["x"], win["y"], win["x"] + win["w"], win["y"] + win["h"])
+    x0, y0, x1, y1 = abs_rect(m, win)                       # screen coordinates, as the real API gives
+    _put_rect(m, a[1], x0, y0, x1, y1)
     return 1
 
 
@@ -517,19 +518,42 @@ def adjust_window_rect(m, a):
     return 1
 
 
+def _origin(m, hwnd):
+    """Screen position of a window's client area (windows have no frame here); (0, 0) for NULL, the screen."""
+    win = window(m, hwnd) if hwnd else None
+    if win is None:
+        return 0, 0
+    x0, y0, _, _ = abs_rect(m, win)
+    return x0, y0
+
+
+def _shift_points(m, ptr, n, dx, dy):
+    for i in range(n):
+        x, y = struct.unpack("<ii", m.rd(ptr + 8 * i, 8))
+        m.wr(ptr + 8 * i, struct.pack("<ii", x + dx, y + dy))
+
+
 @u("ClientToScreen", 2)
 def client_to_screen(m, a):
+    ox, oy = _origin(m, a[0])
+    _shift_points(m, a[1], 1, ox, oy)
     return 1
 
 
 @u("ScreenToClient", 2)
 def screen_to_client(m, a):
+    ox, oy = _origin(m, a[0])
+    _shift_points(m, a[1], 1, -ox, -oy)
     return 1
 
 
 @u("MapWindowPoints", 4)
 def map_window_points(m, a):
-    return 0
+    """Points (or a RECT, n = 2) from one window's client coordinates to another's; NULL is the screen."""
+    fx, fy = _origin(m, a[0])
+    tx, ty = _origin(m, a[1])
+    _shift_points(m, a[2], a[3], fx - tx, fy - ty)
+    return ((fx - tx) & 0xFFFF) | (((fy - ty) & 0xFFFF) << 16)
 
 
 @u("GetSystemMetrics", 1)
@@ -922,24 +946,59 @@ def frame_rect(m, a):
 u("DrawFocusRect", 2)(lambda m, a: 1)
 
 
+DT_CENTER, DT_RIGHT, DT_VCENTER, DT_BOTTOM, DT_WORDBREAK, DT_SINGLELINE, DT_CALCRECT, DT_NOPREFIX = 1, 2, 4, 8, 0x10, 0x20, 0x400, 0x800
+
+
+def _wrap_lines(m, dc, text, width, wordbreak, single):
+    """Lines of `text` for DrawText (all widths in logical units): split at newlines unless single-line, and, with DT_WORDBREAK, at
+    spaces so that no line is wider than `width` (a word wider than the line gets its own line)."""
+    paras = [text] if single else text.replace("\r", "").split("\n")
+    lines = []
+    for para in paras:
+        if not wordbreak or single:
+            lines.append(para)
+            continue
+        cur = ""
+        for word in para.split(" "):
+            trial = word if not cur else cur + " " + word
+            if cur and text_size(m, dc, trial.encode("latin-1", "replace"))[0] > width:
+                lines.append(cur)
+                cur = word
+            else:
+                cur = trial
+        lines.append(cur)
+    return lines
+
+
 @u("DrawTextA", 5)
 def draw_text_a(m, a):
     dc = dc_of(m, a[0])
-    s = m.cstr(a[1]) if S32(a[2]) < 0 else m.rd(a[1], a[2])
+    raw = m.cstr(a[1]) if S32(a[2]) < 0 else m.rd(a[1], a[2])
     l, t, r, b = struct.unpack("<4i", m.rd(a[3], 16))
     fmt = a[4]
-    tw, th = text_size(m, dc, s)
-    x = l
-    if fmt & 1:
-        x = l + (r - l - tw) // 2
-    elif fmt & 2:
-        x = r - tw
-    y = t + ((b - t - th) // 2 if fmt & 4 else 0)
-    if not fmt & 0x400:                                         # DT_CALCRECT
-        draw_text(m, dc, x, y, s)
-    else:
-        m.wr(a[3], struct.pack("<4i", l, t, l + tw, t + th))
-    return th
+    text = raw.decode("latin-1")
+    if not fmt & DT_NOPREFIX:                                   # "&x" marks a mnemonic (underlined in a menu); "&&" is an ampersand
+        text = text.replace("&&", "\0").replace("&", "").replace("\0", "&")
+    single = bool(fmt & DT_SINGLELINE)
+    lines = _wrap_lines(m, dc, text, r - l, bool(fmt & DT_WORDBREAK), single)
+    sizes = [text_size(m, dc, ln.encode("latin-1", "replace")) for ln in lines]
+    lh = sizes[0][1] if sizes else 0
+    total_h = lh * len(lines)
+    widest = max([w for w, _ in sizes] + [0])
+    if fmt & DT_CALCRECT:
+        right = r if fmt & DT_WORDBREAK and not single else l + widest
+        m.wr(a[3], struct.pack("<4i", l, t, right, t + total_h))
+        return total_h
+    y = t
+    if single and fmt & DT_VCENTER:
+        y = t + (b - t - total_h) // 2
+    elif single and fmt & DT_BOTTOM:
+        y = b - total_h
+    for ln, (tw, _) in zip(lines, sizes):
+        x = l + (r - l - tw) // 2 if fmt & DT_CENTER else r - tw if fmt & DT_RIGHT else l
+        draw_text(m, dc, x, y, ln.encode("latin-1", "replace"), align=False)
+        y += lh
+    return total_h
 
 
 # ---- strings ---------------------------------------------------------------------------------------------------
@@ -1141,16 +1200,197 @@ u("SetScrollPos", 4)(lambda m, a: 0)
 u("GetScrollPos", 2)(lambda m, a: 0)
 u("GetScrollRange", 4)(lambda m, a: 1)
 u("LoadBitmapA", 2)(lambda m, a: 0)
+# ---- popup menus ---------------------------------------------------------------------------------------------
+# A menu is ("menu", items); an item is a dict(id, text, flags, sub). The game's right-click menus (card actions, "Run to this
+# phase", the graveyard views) are popups: TrackPopupMenu blocks the calling thread until the host picks an item or dismisses
+# the menu (the compositor draws it, inject_mouse / inject_key_event drive it).
+MF_GRAYED, MF_DISABLED, MF_CHECKED, MF_POPUP, MF_BYPOSITION, MF_SEPARATOR = 0x1, 0x2, 0x8, 0x10, 0x400, 0x800
+TPM_RETURNCMD, MENU_ITEM_H, MENU_SEP_H = 0x100, 18, 6
+WM_INITMENU, WM_INITMENUPOPUP, WM_MENUSELECT = 0x116, 0x117, 0x11F
+
+
+def _menu_items(m, h):
+    o = obj(m, h)
+    return o[1] if isinstance(o, tuple) and o and o[0] == "menu" else None
+
+
+def _find_item(items, key, flags):
+    """Index of the item a menu API names: by position (MF_BYPOSITION) or by command id."""
+    if flags & MF_BYPOSITION:
+        return key if 0 <= key < len(items) else None
+    return next((i for i, it in enumerate(items) if it["id"] == key and not it["flags"] & MF_POPUP), None)
+
+
+@u("AppendMenuA", 4)
+def append_menu(m, a):
+    items = _menu_items(m, a[0])
+    if items is None:
+        return 0
+    flags = a[1]
+    text = "" if flags & (MF_SEPARATOR | 0x100 | 0x4) or not a[3] else m.cstr(a[3]).decode("latin-1")
+    items.append(dict(id=a[2], text=text, flags=flags, sub=a[2] if flags & MF_POPUP else 0))
+    return 1
+
+
+@u("ModifyMenuA", 5)
+def modify_menu(m, a):
+    items = _menu_items(m, a[0])
+    i = _find_item(items, a[1], a[2]) if items is not None else None
+    if i is None:
+        return 0
+    flags = a[2]
+    text = "" if flags & (MF_SEPARATOR | 0x100 | 0x4) or not a[4] else m.cstr(a[4]).decode("latin-1")
+    items[i] = dict(id=a[3], text=text, flags=flags & ~MF_BYPOSITION, sub=a[3] if flags & MF_POPUP else 0)
+    return 1
+
+
+def _remove_menu(m, a):
+    items = _menu_items(m, a[0])
+    i = _find_item(items, a[1], a[2]) if items is not None else None
+    if i is None:
+        return 0
+    del items[i]
+    return 1
+
+
+u("DeleteMenu", 3)(_remove_menu)
+u("RemoveMenu", 3)(_remove_menu)
 u("CreatePopupMenu", 0)(lambda m, a: new_obj(m, ("menu", [])))
-u("AppendMenuA", 4)(lambda m, a: 1)
-u("ModifyMenuA", 5)(lambda m, a: 1)
-u("DeleteMenu", 3)(lambda m, a: 1)
-u("RemoveMenu", 3)(lambda m, a: 1)
 u("DestroyMenu", 1)(lambda m, a: 1)
-u("GetMenuItemCount", 1)(lambda m, a: 0)
-u("CheckMenuItem", 3)(lambda m, a: 0)
-u("EnableMenuItem", 3)(lambda m, a: 0)
-u("TrackPopupMenu", 7)(lambda m, a: 0)
+u("GetMenuItemCount", 1)(lambda m, a: len(_menu_items(m, a[0]) or ()) if _menu_items(m, a[0]) is not None else 0xFFFFFFFF)
+
+
+def _set_item_flag(m, a, mask, on_value):
+    items = _menu_items(m, a[0])
+    i = _find_item(items, a[1], a[2]) if items is not None else None
+    if i is None:
+        return 0xFFFFFFFF
+    before = items[i]["flags"] & mask
+    items[i]["flags"] = (items[i]["flags"] & ~mask) | (a[2] & mask)
+    return before
+
+
+u("CheckMenuItem", 3)(lambda m, a: _set_item_flag(m, a, MF_CHECKED, MF_CHECKED))
+u("EnableMenuItem", 3)(lambda m, a: _set_item_flag(m, a, MF_GRAYED | MF_DISABLED, MF_GRAYED))
+
+
+def popup_levels(m, popup):
+    """[(x, y, w, h, [(item, y0, y1)])] for each open level, in screen pixels (the compositor and the hit test share it)."""
+    out = []
+    for items, x, y in popup["levels"]:
+        w = max([len(it["text"].replace("\t", "    ")) for it in items] + [8]) * 7 + 40
+        h = 4 + sum(MENU_SEP_H if it["flags"] & MF_SEPARATOR else MENU_ITEM_H for it in items)
+        if x + w > SCREEN_W:                                    # a menu stays on the screen: shifted left, or above the point
+            x = max(SCREEN_W - w, 0)
+        if y + h > SCREEN_H:
+            y = max(y - h, 0) if y - h >= 0 else max(SCREEN_H - h, 0)
+        rows, cy = [], y + 2
+        for it in items:
+            hh = MENU_SEP_H if it["flags"] & MF_SEPARATOR else MENU_ITEM_H
+            rows.append((it, cy, cy + hh))
+            cy += hh
+        out.append((x, y, w, h, rows))
+    return out
+
+
+def popup_item_at(m, popup, x, y):
+    """(level index, item) under a screen point, or (None, None)."""
+    for li in range(len(popup["levels"]) - 1, -1, -1):
+        lx, ly, w, h, rows = popup_levels(m, popup)[li]
+        if lx <= x < lx + w and ly <= y < ly + h:
+            for it, y0, y1 in rows:
+                if y0 <= y < y1:
+                    return li, it
+            return li, None
+    return None, None
+
+
+def _popup_choose(m, popup, item):
+    """An item was picked: a command ends the menu, a submenu opens beside it, a grey or separator item does nothing."""
+    if item is None or item["flags"] & (MF_SEPARATOR | MF_GRAYED | MF_DISABLED):
+        return
+    if item["flags"] & MF_POPUP:
+        sub = _menu_items(m, item["sub"])
+        li, (lx, ly, w, h, rows) = len(popup["levels"]) - 1, popup_levels(m, popup)[-1]
+        row = next((r for r in rows if r[0] is item), None)
+        if sub is not None and row is not None:
+            popup["levels"].append((sub, lx + w - 2, row[1]))
+        return
+    popup["choice"], popup["done"] = item["id"], True
+
+
+def popup_mouse(m, kind, x, y):
+    """Host mouse input while a popup menu is open. Returns True (the event is the menu's)."""
+    st = _st(m)
+    popup = st["popup"]
+    li, item = popup_item_at(m, popup, x, y)
+    if kind == "move":
+        if popup["hover"] != item:
+            popup["hover"] = item
+            mark_dirty(m)
+    elif kind in ("down", "rdown"):
+        if li is None:                                          # a click outside dismisses the menu
+            popup["done"] = True
+        else:
+            del popup["levels"][li + 1:]                        # choosing in a level closes the levels opened from it
+            _popup_choose(m, popup, item)
+        if popup["done"]:
+            st["swallow_up"] = True                             # the release that follows the click that closed the menu is not the game's
+        mark_dirty(m)
+    return True
+
+
+def popup_key(m, vk, down):
+    st = _st(m)
+    popup = st["popup"]
+    if not down:
+        return True
+    if vk == 27:                                                # Escape
+        if len(popup["levels"]) > 1:
+            popup["levels"].pop()
+        else:
+            popup["done"] = True
+    elif vk in (38, 40):                                        # up / down: the next enabled item of the last level
+        items = popup["levels"][-1][0]
+        cand = [it for it in items if not it["flags"] & (MF_SEPARATOR | MF_GRAYED | MF_DISABLED)]
+        if cand:
+            cur = popup["hover"] if popup["hover"] in cand else None
+            i = (cand.index(cur) + (1 if vk == 40 else -1)) % len(cand) if cur is not None else (0 if vk == 40 else len(cand) - 1)
+            popup["hover"] = cand[i]
+    elif vk == 13 and popup["hover"] is not None:
+        _popup_choose(m, popup, popup["hover"])
+    mark_dirty(m)
+    return True
+
+
+@u("TrackPopupMenu", 7)
+def track_popup_menu(m, a):
+    """Show the menu at screen (x, y) and wait for the host: returns the chosen command (TPM_RETURNCMD) or 1 after posting it as a
+    WM_COMMAND to the window, and 0 if the menu was dismissed."""
+    items = _menu_items(m, a[0])
+    st = _st(m)
+    if items is None or st.get("popup"):
+        return 0
+    # Windows tells the owner the menu is about to open; the game fills its menus in at these (WM_INITMENU, WM_INITMENUPOPUP).
+    yield from send(m, a[5], WM_INITMENU, a[0], 0)
+    yield from send(m, a[5], WM_INITMENUPOPUP, a[0], 0)
+    if not items:
+        return 0
+    popup = dict(levels=[(items, S32(a[2]), S32(a[3]))], hover=None, done=False, choice=0, hwnd=a[5])
+    st["popup"] = popup
+    mark_dirty(m)
+    while not popup["done"]:
+        yield from process_sent(m)
+        yield Block(until=m.vt + 0.003)
+    st["popup"] = None
+    mark_dirty(m)
+    yield from send(m, a[5], WM_MENUSELECT, 0xFFFF0000, 0)           # the menu closed: the game empties it here
+    if not popup["choice"]:
+        return 0
+    if a[1] & TPM_RETURNCMD:
+        return popup["choice"]
+    st["queue"].append((a[5], WM_COMMAND, popup["choice"] & 0xFFFF, 0))
+    return 1
 
 
 # ---- host input injection ---------------------------------------------------------------------------------
@@ -1223,11 +1463,15 @@ def inject_mouse(m, kind, x, y):
     """kind: move | down | up | rdown | rup. (x, y) are screen pixels; the message goes to the window under the
     pointer (or the capturing window) with client coordinates."""
     st = _st(m)
+    st["cursor"] = (x, y)
+    if st.get("popup"):                                          # an open popup menu takes the mouse
+        return popup_mouse(m, kind, x, y)
+    if kind in ("up", "rup") and st.pop("swallow_up", False):
+        return True
     h = st["capture"] or window_at(m, x, y) or main_hwnd(m)
     if not h:
         return False
     x0, y0, _, _ = abs_rect(m, st["windows"][h])
-    st["cursor"] = (x, y)
     msg = {"move": WM_MOUSEMOVE, "down": WM_LBUTTONDOWN, "up": WM_LBUTTONUP, "rdown": WM_RBUTTONDOWN,
            "rup": WM_RBUTTONUP, "dbl": 0x203}[kind]
     keys = 1 if kind in ("down", "dbl") else 0
@@ -1275,6 +1519,8 @@ def inject_key_event(m, vk, scancode, down, char=None, repeat=False):
     the scan code in lParam; the key's state (GetKeyState, GetAsyncKeyState) follows. Live input (live.py) uses this; a
     script's `key` (inject_key) is the pair at once."""
     st = _st(m)
+    if st.get("popup"):
+        return popup_key(m, vk, down)
     h = main_hwnd(m)
     if not h:
         return False

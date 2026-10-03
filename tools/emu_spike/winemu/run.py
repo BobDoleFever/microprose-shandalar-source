@@ -97,7 +97,41 @@ def compose(m):
         if win["visible"] and not win["style"] & user32.WS_CHILD and hwnd != st.get("desktop_hwnd") \
                 and not win.get("dialog"):
             paint(win, 0, 0)
-    return draw_dialogs(m, desk)
+    return draw_popup(m, draw_dialogs(m, desk))
+
+
+def draw_popup(m, desk):
+    """The open popup menu (user32.track_popup_menu), if any, over the screen."""
+    popup = m.state.get("u32", {}).get("popup")
+    if not popup:
+        return desk
+    from PIL import ImageDraw, ImageFont
+    img = Image.fromarray(desk)
+    d = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 12)
+    except OSError:
+        font = ImageFont.load_default()
+    for x, y, w, h, rows in user32.popup_levels(m, popup):
+        d.rectangle([x, y, x + w - 1, y + h - 1], fill=(240, 240, 240), outline=(60, 60, 60))
+        for it, y0, y1 in rows:
+            if it["flags"] & user32.MF_SEPARATOR:
+                d.line([x + 3, (y0 + y1) // 2, x + w - 4, (y0 + y1) // 2], fill=(150, 150, 150))
+                continue
+            grey = bool(it["flags"] & (user32.MF_GRAYED | user32.MF_DISABLED))
+            hot = popup["hover"] is it and not grey
+            if hot:
+                d.rectangle([x + 2, y0, x + w - 3, y1 - 1], fill=(0, 0, 128))
+            colour = (255, 255, 255) if hot else (150, 150, 150) if grey else (0, 0, 0)
+            if it["flags"] & user32.MF_CHECKED:
+                d.text((x + 6, y0 + 2), "v", fill=colour, font=font)
+            label, _, accel = it["text"].replace("&", "").partition("\t")           # "Show ID tags<TAB>Ctrl+T": the shortcut sits at the right
+            d.text((x + 20, y0 + 2), label, fill=colour, font=font)
+            if accel:
+                d.text((x + w - 8 - int(font.getlength(accel)), y0 + 2), accel, fill=colour, font=font)
+            if it["flags"] & user32.MF_POPUP:
+                d.text((x + w - 12, y0 + 2), ">", fill=colour, font=font)
+    return np.asarray(img)
 
 
 def card_desc(m, args):

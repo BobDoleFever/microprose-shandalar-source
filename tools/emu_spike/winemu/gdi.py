@@ -235,7 +235,11 @@ class DC:
         self.pen = ("pen", (0, 0, 0), 1)
         self.brush = ("brush", (255, 255, 255))
         self.font = None
-        self.org = (0, 0)
+        self.org = (0, 0)                         # viewport origin (device)
+        self.wo = (0, 0)                          # window origin (logical)
+        self.wext, self.vext = (1, 1), (1, 1)     # window / viewport extents (MM_ISOTROPIC and MM_ANISOTROPIC scale by vext / wext)
+        self.sx = self.sy = 1.0                   # device pixels per logical unit
+        self.mm = 1                               # map mode (1 = MM_TEXT)
         self.pos = (0, 0)
         self.clip = None
         self.textalign = 0
@@ -744,17 +748,104 @@ _dc_setter("SetBkMode", "bkmode")
 _dc_setter("SetTextAlign", "textalign")
 g32("GetTextAlign", 1)(lambda m, a: (dc_of(m, a[0]).textalign if dc_of(m, a[0]) else 0))
 g32("SetROP2", 2)(lambda m, a: 13)
-g32("SetMapMode", 2)(lambda m, a: 1)
+def _rescale(dc):
+    """MM_ISOTROPIC and MM_ANISOTROPIC scale logical units by viewport extent / window extent; every other mode is 1:1 here."""
+    if dc.mm in (7, 8) and dc.wext[0] and dc.wext[1]:
+        dc.sx, dc.sy = dc.vext[0] / dc.wext[0], dc.vext[1] / dc.wext[1]
+        if dc.mm == 7:                                           # isotropic: one scale for both axes (the smaller, as Windows fits it)
+            dc.sx = dc.sy = min(abs(dc.sx), abs(dc.sy))
+    else:
+        dc.sx = dc.sy = 1.0
+
+
+@g32("SetMapMode", 2)
+def set_map_mode(m, a):
+    dc = dc_of(m, a[0])
+    if not dc:
+        return 0
+    old = dc.mm
+    dc.mm = a[1]
+    if a[1] not in (7, 8):
+        dc.wext = dc.vext = (1, 1)
+    _rescale(dc)
+    return old
+
+
+@g32("GetMapMode", 1)
+def get_map_mode(m, a):
+    dc = dc_of(m, a[0])
+    return dc.mm if dc else 0
+
+
+def _ext_setter(attr):
+    def fn(m, a):
+        dc = dc_of(m, a[0])
+        if not dc:
+            return 0
+        if a[3]:
+            m.w32(a[3], getattr(dc, attr)[0])
+            m.w32(a[3] + 4, getattr(dc, attr)[1])
+        if dc.mm in (7, 8):
+            setattr(dc, attr, (_s32(a[1]), _s32(a[2])))
+            _rescale(dc)
+        return 1
+    return fn
+
+
+g32("SetWindowExtEx", 4)(_ext_setter("wext"))
+g32("SetViewportExtEx", 4)(_ext_setter("vext"))
+
+
+@g32("SetWindowOrgEx", 4)
+def set_window_org(m, a):
+    dc = dc_of(m, a[0])
+    if not dc:
+        return 0
+    if a[3]:
+        m.w32(a[3], dc.wo[0])
+        m.w32(a[3] + 4, dc.wo[1])
+    dc.wo = (_s32(a[1]), _s32(a[2]))
+    return 1
+
+
+def lx(dc, x):
+    """Device x (relative to the viewport origin) of a logical x."""
+    return int(round((x - dc.wo[0]) * dc.sx))
+
+
+def ly(dc, y):
+    return int(round((y - dc.wo[1]) * dc.sy))
+
+
+def dev_rect(dc, x, y, w, h):
+    """(x, y, w, h) of a logical rectangle in device units, relative to the viewport origin."""
+    x0, y0 = lx(dc, x), ly(dc, y)
+    return x0, y0, lx(dc, x + w) - x0, ly(dc, y + h) - y0
+
+
+def _points_converter(to_device):
+    def fn(m, a):
+        dc = dc_of(m, a[0])
+        if not dc:
+            return 0
+        for i in range(a[2]):
+            x, y = struct.unpack("<ii", m.rd(a[1] + 8 * i, 8))
+            if to_device:
+                x, y = lx(dc, x) + dc.org[0], ly(dc, y) + dc.org[1]
+            else:
+                x, y = int(round((x - dc.org[0]) / dc.sx)) + dc.wo[0], int(round((y - dc.org[1]) / dc.sy)) + dc.wo[1]
+            m.wr(a[1] + 8 * i, struct.pack("<ii", x, y))
+        return 1
+    return fn
+
+
+g32("LPtoDP", 3)(_points_converter(True))
+g32("DPtoLP", 3)(_points_converter(False))
 g32("SetStretchBltMode", 2)(lambda m, a: 1)
-g32("SetWindowExtEx", 4)(lambda m, a: 1)
-g32("SetViewportExtEx", 4)(lambda m, a: 1)
-g32("SetWindowOrgEx", 4)(lambda m, a: 1)
-g32("DPtoLP", 3)(lambda m, a: 1)
-g32("LPtoDP", 3)(lambda m, a: 1)
 g32("GdiFlush", 0)(lambda m, a: 1)
 g32("GdiGetBatchLimit", 0)(lambda m, a: 1)
 g32("GdiSetBatchLimit", 1)(lambda m, a: 1)
-_DC_STATE = ("bitmap", "palette", "textcolor", "bkcolor", "bkmode", "pen", "brush", "font", "org", "pos", "clip", "textalign")
+_DC_STATE = ("bitmap", "palette", "textcolor", "bkcolor", "bkmode", "pen", "brush", "font", "org", "wo", "wext", "vext", "sx", "sy", "mm", "pos", "clip", "textalign")
 
 
 @g32("SaveDC", 1)
@@ -815,7 +906,7 @@ def intersect_clip_rect(m, a):
     dc = dc_of(m, a[0])
     if dc:
         x0, y0, x1, y1 = [struct.unpack("<i", struct.pack("<I", v))[0] for v in a[1:5]]
-        x0, y0, x1, y1 = x0 + dc.org[0], y0 + dc.org[1], x1 + dc.org[0], y1 + dc.org[1]
+        x0, y0, x1, y1 = lx(dc, x0) + dc.org[0], ly(dc, y0) + dc.org[1], lx(dc, x1) + dc.org[0], ly(dc, y1) + dc.org[1]
         if dc.clip:
             x0, y0, x1, y1 = max(x0, dc.clip[0]), max(y0, dc.clip[1]), min(x1, dc.clip[2]), min(y1, dc.clip[3])
         dc.clip = (x0, y0, max(x1, x0), max(y1, y0))
@@ -910,22 +1001,67 @@ _ROPS = {0x8800C6: lambda s, d: s & d,                 # SRCAND
          0xBB0226: lambda s, d: ~s | d}                # MERGEPAINT
 
 
-def _rop_blit(m, dst, x, y, w, h, src, sx, sy, rop):
-    """BitBlt with a combining raster operation, on palette indices when both sides are readable as indices of the same
-    size (what an 8-bit display does) and on colours otherwise."""
+def _nearest(arr, w, h):
+    """An (h0, w0[, 3]) array stretched to (h, w) by nearest neighbour; negative sizes flip."""
+    h0, w0 = arr.shape[:2]
+    ys = np.minimum((np.arange(abs(h)) * h0) // max(abs(h), 1), h0 - 1)
+    xs = np.minimum((np.arange(abs(w)) * w0) // max(abs(w), 1), w0 - 1)
+    out = arr[ys][:, xs]
+    return out[::-1] if h < 0 else out
+
+
+def _rop_blit(m, dst, x, y, w, h, src, sx, sy, sw, sh, rop):
+    """Blit with a combining raster operation (device units, relative to the viewport origins): on palette indices when both sides
+    are readable as indices (what an 8-bit display does) and on colours otherwise. The source is stretched to the destination."""
     f = _ROPS[rop]
-    if w <= 0 or h <= 0:
+    if w == 0 or h == 0 or sw == 0 or sh == 0:
         return 1
-    _, _, si = dc_indices(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h, mono_dc=dst)
-    _, _, di = dc_indices(m, dst, x + dst.org[0], y + dst.org[1], x + dst.org[0] + w, y + dst.org[1] + h)
-    if si is not None and di is not None and si.shape == di.shape == (h, w):
-        put_indices(m, dst, x + dst.org[0], y + dst.org[1], np.ascontiguousarray(f(si, di).astype(np.uint8)))
+    X, Y = x + dst.org[0], y + dst.org[1]
+    _, _, si = dc_indices(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + abs(sw), sy + src.org[1] + abs(sh), mono_dc=dst)
+    _, _, di = dc_indices(m, dst, X, Y, X + abs(w), Y + abs(h))
+    if si is not None and di is not None and si.size and si.shape == (abs(sh), abs(sw)) and di.shape == (abs(h), abs(w)):
+        si = _nearest(si, w, h) if (abs(sw), abs(sh)) != (abs(w), abs(h)) else si
+        put_indices(m, dst, X, Y, np.ascontiguousarray(f(si, di).astype(np.uint8)))
         return 1
-    sp = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h)
-    dp = get_region(m, dst, x + dst.org[0], y + dst.org[1], x + dst.org[0] + w, y + dst.org[1] + h)
-    if sp is None or dp is None or sp.shape != dp.shape:
+    sp = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + abs(sw), sy + src.org[1] + abs(sh))
+    dp = get_region(m, dst, X, Y, X + abs(w), Y + abs(h))
+    if sp is None or dp is None:
         return 1
-    put_region(m, dst, x + dst.org[0], y + dst.org[1], np.ascontiguousarray(f(sp, dp).astype(np.uint8)))
+    if sp.shape[:2] != dp.shape[:2]:
+        sp = _nearest(sp, w, h)
+    if sp.shape != dp.shape:
+        return 1
+    put_region(m, dst, X, Y, np.ascontiguousarray(f(sp, dp).astype(np.uint8)))
+    return 1
+
+
+def _blit(m, dst, src, x, y, w, h, sx, sy, sw, sh, rop):
+    """BitBlt / StretchBlt in logical units: the destination rectangle is mapped by the destination DC, the source rectangle by the
+    source DC (so a DC with a scaled mapping stretches), then copied or combined with the raster operation."""
+    X, Y, W, H = dev_rect(dst, x, y, w, h)
+    if rop == 0x000042:
+        _rop_fill(m, dst, X, Y, W, H, (0, 0, 0))
+        return 1
+    if rop == 0xFF0062:
+        _rop_fill(m, dst, X, Y, W, H, (255, 255, 255))
+        return 1
+    if rop == 0xF00021:
+        return _pattern_fill(m, dst, X, Y, W, H)
+    if not src:
+        return 0
+    SX, SY, SW, SH = dev_rect(src, sx, sy, sw, sh)
+    if rop in _ROPS:
+        return _rop_blit(m, dst, X, Y, W, H, src, SX, SY, SW, SH, rop)
+    if rop != 0xCC0020:
+        _st(m).setdefault("odd_rops", set()).add(rop)
+    if blit_indices(m, dst, X, Y, W, H, src, SX, SY, SW, SH):
+        return 1
+    px = get_region(m, src, SX + src.org[0], SY + src.org[1], SX + src.org[0] + abs(SW), SY + src.org[1] + abs(SH))
+    if px is None or W == 0 or H == 0:
+        return 1
+    if px.shape[:2] != (abs(H), abs(W)):
+        px = _nearest(px, W, H)
+    put_region(m, dst, X + dst.org[0], Y + dst.org[1], np.ascontiguousarray(px))
     return 1
 
 
@@ -936,32 +1072,7 @@ def bitblt(m, a):
     x, y, w, h, sx, sy = map(_s32, (x, y, w, h, sx, sy))
     if not dst:
         return 0
-    if rop == 0x000042:
-        _rop_fill(m, dst, x, y, w, h, (0, 0, 0))
-        return 1
-    if rop == 0xFF0062:
-        _rop_fill(m, dst, x, y, w, h, (255, 255, 255))
-        return 1
-    if rop == 0xF00021:
-        return _pattern_fill(m, dst, x, y, w, h)
-    if not src:
-        return 0
-    if rop in _ROPS:
-        return _rop_blit(m, dst, x, y, w, h, src, sx, sy, rop)
-    if rop not in (0xCC0020,):
-        _st(m).setdefault("odd_rops", set()).add(rop)
-    if m.state.get("gdi_debug") and dst.kind == "window" and src.bitmap is not None:
-        sb = src.bitmap
-        _, _, ii = dc_indices(m, src, sx, sy, sx + w, sy + h)
-        m.log(f"   [gdi] BitBlt win 0x{dst.hwnd:x} {w}x{h} <- {sb.kind} {sb.w}x{sb.h} bpp{sb.bpp} "
-              f"idxmap={sb.idxmap is not None} nonzero={int((ii != 0).sum()) if ii is not None else None}")
-    if blit_indices(m, dst, x, y, w, h, src, sx, sy, w, h):
-        return 1
-    px = get_region(m, src, sx + src.org[0], sy + src.org[1], sx + src.org[0] + w, sy + src.org[1] + h)
-    if px is None:
-        return 1
-    put_region(m, dst, x + dst.org[0], y + dst.org[1], px)
-    return 1
+    return _blit(m, dst, src, x, y, w, h, sx, sy, w, h, rop)
 
 
 @g32("StretchBlt", 11)
@@ -969,16 +1080,9 @@ def stretchblt(m, a):
     hdst, x, y, w, h, hsrc, sx, sy, sw, sh, rop = a
     dst, src = dc_of(m, hdst), dc_of(m, hsrc)
     x, y, w, h, sx, sy, sw, sh = map(_s32, (x, y, w, h, sx, sy, sw, sh))
-    if not dst or not src:
+    if not dst:
         return 0
-    if blit_indices(m, dst, x, y, w, h, src, sx, sy, sw, sh):
-        return 1
-    px = get_region(m, src, sx, sy, sx + abs(sw), sy + abs(sh))
-    if px is None or abs(w) == 0 or abs(h) == 0:
-        return 1
-    img = Image.fromarray(px).resize((abs(w), abs(h)), Image.NEAREST)
-    put_region(m, dst, x + dst.org[0], y + dst.org[1], np.asarray(img))
-    return 1
+    return _blit(m, dst, src, x, y, w, h, sx, sy, sw, sh, rop)
 
 
 def _pattern_fill(m, dc, x, y, w, h):
@@ -989,7 +1093,9 @@ def _pattern_fill(m, dc, x, y, w, h):
 
 
 def fill_rect(m, dc, x0, y0, x1, y1, color):
-    put_region(m, dc, x0 + dc.org[0], y0 + dc.org[1], np.full((max(y1 - y0, 0), max(x1 - x0, 0), 3), color, np.uint8))
+    """Fill the logical rectangle (x0, y0)-(x1, y1) with a colour."""
+    X, Y, W, H = dev_rect(dc, x0, y0, x1 - x0, y1 - y0)
+    put_region(m, dc, X + dc.org[0], Y + dc.org[1], np.full((max(H, 0), max(W, 0), 3), color, np.uint8))
 
 
 def _draw(m, dc, x0, y0, x1, y1, painter):
@@ -1004,12 +1110,20 @@ def _draw(m, dc, x0, y0, x1, y1, painter):
     put_region(m, dc, x0, y0, np.asarray(img))
 
 
+def _dev_box(dc, a):
+    """The (left, top, right, bottom) of a shape call's logical arguments a[1:5] as device pixels."""
+    l, t, r, b = map(_s32, a[1:5])
+    x0, x1 = sorted((lx(dc, l) + dc.org[0], lx(dc, r) + dc.org[0]))
+    y0, y1 = sorted((ly(dc, t) + dc.org[1], ly(dc, b) + dc.org[1]))
+    return x0, y0, x1, y1
+
+
 @g32("Rectangle", 5)
 def rectangle(m, a):
     dc = dc_of(m, a[0])
-    x0, y0, x1, y1 = [v + o for v, o in zip(map(_s32, a[1:5]), (dc.org[0], dc.org[1], dc.org[0], dc.org[1]))]
+    x0, y0, x1, y1 = _dev_box(dc, a)
     fill, pen = dc.brush[1], dc.pen[1]
-    _draw(m, dc, x0, y0, x1 + 1, y1 + 1, lambda d, ox, oy: d.rectangle([x0 - ox, y0 - oy, x1 - 1 - ox, y1 - 1 - oy],
+    _draw(m, dc, x0, y0, x1 + 1, y1 + 1, lambda d, ox, oy: d.rectangle([x0 - ox, y0 - oy, max(x1 - 1, x0) - ox, max(y1 - 1, y0) - oy],
                                                                         fill=tuple(fill) if fill else None,
                                                                         outline=tuple(pen) if pen else None))
     return 1
@@ -1018,10 +1132,10 @@ def rectangle(m, a):
 @g32("RoundRect", 7)
 def roundrect(m, a):
     dc = dc_of(m, a[0])
-    x0, y0, x1, y1 = [v + o for v, o in zip(map(_s32, a[1:5]), (dc.org[0], dc.org[1], dc.org[0], dc.org[1]))]
+    x0, y0, x1, y1 = _dev_box(dc, a)
     fill, pen = dc.brush[1], dc.pen[1]
     _draw(m, dc, x0, y0, x1 + 1, y1 + 1, lambda d, ox, oy: d.rounded_rectangle(
-        [x0 - ox, y0 - oy, x1 - 1 - ox, y1 - 1 - oy], radius=max(min(a[5], a[6]) // 2, 1),
+        [x0 - ox, y0 - oy, max(x1 - 1, x0) - ox, max(y1 - 1, y0) - oy], radius=max(int(min(a[5], a[6]) * dc.sx) // 2, 1),
         fill=tuple(fill) if fill else None, outline=tuple(pen) if pen else None))
     return 1
 
@@ -1029,9 +1143,9 @@ def roundrect(m, a):
 @g32("Ellipse", 5)
 def ellipse(m, a):
     dc = dc_of(m, a[0])
-    x0, y0, x1, y1 = [v + o for v, o in zip(map(_s32, a[1:5]), (dc.org[0], dc.org[1], dc.org[0], dc.org[1]))]
+    x0, y0, x1, y1 = _dev_box(dc, a)
     fill, pen = dc.brush[1], dc.pen[1]
-    _draw(m, dc, x0, y0, x1 + 1, y1 + 1, lambda d, ox, oy: d.ellipse([x0 - ox, y0 - oy, x1 - 1 - ox, y1 - 1 - oy],
+    _draw(m, dc, x0, y0, x1 + 1, y1 + 1, lambda d, ox, oy: d.ellipse([x0 - ox, y0 - oy, max(x1 - 1, x0) - ox, max(y1 - 1, y0) - oy],
                                                                        fill=tuple(fill) if fill else None,
                                                                        outline=tuple(pen) if pen else None))
     return 1
@@ -1055,6 +1169,7 @@ def line_to(m, a):
     pen = dc.pen[1]
     if pen:
         ox, oy = dc.org
+        x0, y0, x1, y1 = lx(dc, x0), ly(dc, y0), lx(dc, x1), ly(dc, y1)
         _draw(m, dc, min(x0, x1) + ox, min(y0, y1) + oy, max(x0, x1) + ox + 1, max(y0, y1) + oy + 1,
               lambda d, px, py: d.line([x0 + ox - px, y0 + oy - py, x1 + ox - px, y1 + oy - py], fill=tuple(pen),
                                        width=dc.pen[2] if len(dc.pen) > 2 else 1))
@@ -1064,7 +1179,7 @@ def line_to(m, a):
 @g32("SetPixel", 4)
 def set_pixel(m, a):
     dc = dc_of(m, a[0])
-    x, y = _s32(a[1]) + dc.org[0], _s32(a[2]) + dc.org[1]
+    x, y = lx(dc, _s32(a[1])) + dc.org[0], ly(dc, _s32(a[2])) + dc.org[1]
     c = a[3]
     if (c >> 24) & 0xFF == 0x01:                                       # PALETTEINDEX: the index itself
         if dc.kind == "window":
@@ -1083,8 +1198,8 @@ g32("SetPixelV", 4)(lambda m, a: set_pixel(m, a) and 1)
 @g32("GetPixel", 3)
 def get_pixel(m, a):
     dc = dc_of(m, a[0])
-    px = get_region(m, dc, _s32(a[1]) + dc.org[0], _s32(a[2]) + dc.org[1], _s32(a[1]) + dc.org[0] + 1,
-                    _s32(a[2]) + dc.org[1] + 1)
+    gx, gy = lx(dc, _s32(a[1])) + dc.org[0], ly(dc, _s32(a[2])) + dc.org[1]
+    px = get_region(m, dc, gx, gy, gx + 1, gy + 1)
     if px is None:
         return 0xFFFFFFFF
     r, g, b = px[0, 0]
@@ -1092,10 +1207,11 @@ def get_pixel(m, a):
 
 
 # ---- text ----------------------------------------------------------------------------------------------------
-def _pil_font(m, font):
+def _pil_font(m, font, scale=1.0):
     st = _st(m)
     face, size, weight = (font[1], font[2], font[3]) if font else ("Arial", 13, 400)
-    key = (face, size, weight >= 600)
+    size = size * scale
+    key = (face, round(size, 2), weight >= 600)
     if key not in st["font_cache"]:
         f = None
         for path in ("/System/Library/Fonts/Supplemental/Arial Bold.ttf" if weight >= 600 else
@@ -1118,19 +1234,21 @@ def text_size(m, dc, s):
     return int(f.getlength(s.decode("latin-1"))), int(dc.font[2]) if dc.font else 13
 
 
-def draw_text(m, dc, x, y, s):
+def draw_text(m, dc, x, y, s, align=True):
+    """Draw `s` with its reference point at logical (x, y); `align`: honour the DC's text alignment (TextOut does, DrawText does not)."""
     if not s:
         return
-    f = _pil_font(m, dc.font)
+    f = _pil_font(m, dc.font, dc.sy)                  # the font height is in logical units: scaled like everything else
     tw, th = text_size(m, dc, s)
+    tw, th = int(tw * dc.sx), int(th * dc.sy)
     fg = colorref(m, dc, dc.textcolor)
     ox, oy = dc.org
-    x0, y0 = x + ox, y + oy
-    if dc.textalign & 6 == 6:
+    x0, y0 = lx(dc, x) + ox, ly(dc, y) + oy
+    if align and dc.textalign & 6 == 6:
         x0 -= tw // 2
-    elif dc.textalign & 6 == 2:
+    elif align and dc.textalign & 6 == 2:
         x0 -= tw
-    if dc.textalign & 24 == 8:
+    if align and dc.textalign & 24 == 8:
         y0 -= th
     def paint(d, px, py):
         if dc.bkmode == 2:
