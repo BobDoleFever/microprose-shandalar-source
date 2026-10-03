@@ -169,8 +169,7 @@ layer, not hundreds of rewrites.
 **The game can be played now, in a window, on a Mac.** `python3 -m winemu.run --live` (from `tools/emu_spike`, with
 `pygame-ce` installed) runs the original MAGIC.EXE in the emulator and shows it in an SDL window with the mouse and
 keyboard connected. Driven with real input events it gets from the title screen (in about 8 s) through new game,
-difficulty, colour, visage and name (typed with Shift) to the overworld map (about 75 s, most of it the game's own loading
-dissolve), walks the map, enters a town (Buy Cards, Edit deck, Trade, Buy food, Leave), reaches a wizard's domain with the
+difficulty, colour, visage and name (typed with Shift) to the overworld map (about 20 s), walks the map, enters a town (Buy Cards, Edit deck, Trade, Buy food, Leave), reaches a wizard's domain with the
 ante cards and the "Duel / Pay 40 gold" choice, and starts the duel: the board, the coin toss ("You won the coin toss. Play
 first / Draw first"), the start-of-duel dialog, and the duel itself ("Main phase (before combat): cast spells, play land"). Resume Game loads the autosave, a quick way back to a wizard's door. Getting there needed
 fixes in the Win32 layer, each found by looking at the live window: the guest clock follows the real one; `winemu/accel.py`

@@ -9,6 +9,7 @@ original returned for the same arguments (tests/test_accel.py, from a recorded t
 from .machine import u32
 
 DECKDLL_FIND_WORD = 0x100327B1
+MAGIC_FIND_WORD = 0x004F4CE1          # the same function compiled into MAGIC.EXE (identical but for addresses)
 
 
 def find_word(text: bytes, word: bytes, case_sensitive: bool) -> int:
@@ -49,5 +50,8 @@ def install(m):
     n = 0
     if "deckdll.dll" in m.modules:
         m.add_intercept(DECKDLL_FIND_WORD, _find_word_native)             # cdecl: the caller pops its arguments
+        n += 1
+    if m.exe_guest_path.lower().endswith("\\magic.exe"):
+        m.add_intercept(MAGIC_FIND_WORD, _find_word_native)               # (870,000 calls when a new game's cards are set up)
         n += 1
     return n
