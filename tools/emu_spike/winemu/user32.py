@@ -800,7 +800,7 @@ def _next_message(m, remove, hwnd_filter=0):
             tm["next"] = t + max(tm["delay"], 1)
             return (hwnd, WM_TIMER, tid, tm["proc"])
     for hwnd, win in st["windows"].items():
-        if win["invalid"] and win["visible"] and win["proc"] and win.get("tid") == m.cur.tid:
+        if win["invalid"] and win["visible"] and (win["proc"] or win.get("dlgproc")) and win.get("tid") == m.cur.tid:
             if remove:
                 win["invalid"] = False
             return (hwnd, WM_PAINT, 0, 0)
