@@ -12,6 +12,7 @@ Tokens (space separated, run in order):
     rc:X,Y         right click
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
     btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
+    pass:TEXT[,SECS] press Done until the prompt bar shows TEXT
     auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
     m:X,Y          move the mouse (hover)
     k:NAME         press a key (pygame name; enter, esc, space, tab, a..z, 1..0; shift+b for a capital)
@@ -151,6 +152,33 @@ def helper(lv):
                         post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
                         since = time.time()
                 time.sleep(0.25)
+        elif op == "pass":                                 # pass:TEXT[,SECS]  press Done until the prompt bar shows TEXT (underscores are spaces)
+            from winemu import user32
+            want, _, secs = arg.partition(",")
+            want = want.replace("_", " ").lower()
+            end = time.time() + float(secs or 120)
+            last_click = 0.0
+            while time.time() < end:
+                wins = list(m.state.get("u32", {}).get("windows", {}).values())
+                tu = next((w for w in wins if w["cls"] == "MAGIC_TellUserClass" and w["visible"]), None)
+                title = (tu["title"] if tu else "") or ""
+                if want in title.lower():
+                    print(f"PASS reached {title!r} at {time.time() - t0:.1f}s", flush=True)
+                    break
+                if tu is not None and time.time() - last_click > 2.5:
+                    btn = next((b for b in wins if str(b["cls"]).upper() == "BUTTON" and b["visible"] and b["w"] > 0 and b["parent"] == tu["hwnd"]), None)
+                    if btn is not None:
+                        x0, y0, x1, y1 = user32.abs_rect(m, btn)
+                        x, y = (x0 + x1) // 2, (y0 + y1) // 2
+                        post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+                        time.sleep(0.3)
+                        post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
+                        time.sleep(0.12)
+                        post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+                        last_click = time.time()
+                time.sleep(0.25)
+            else:
+                print(f"PASS gave up waiting for {want!r}", flush=True)
         elif op == "m":                                    # m:X,Y  move the mouse (hover)
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
