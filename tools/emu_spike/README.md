@@ -42,13 +42,12 @@ command file you append to while it runs (see its docstring). This is how the li
 | `EMU_CALL_HASH=N`, `EMU_CALL_DETAIL=A:B` | running hash of the import calls (compare two runs), and the calls A..B in detail |
 | `GDI_DEBUG=1` | log mouse routing and blits |
 | `PALDBG=1` | log every `RealizePalette` (which DC, window class and palette handle) |
+| `PAL_LEGACY=1` | let any DC's `RealizePalette` set the system palette (the old rule) |
 
 Do not read the guest's registers from another thread while it runs: it corrupts it (use Python-side state only).
 
 ## Known defects (what a player will see)
 
-- **The shop screens' backgrounds (Buy Cards) are speckled with wrong colours**: the layout, text and cards are right, the textured
-  background has noise in it. The palette is the same as on the working screens (checked), so it is the picture's indices; not found yet.
 - Music tracks and the coin-toss movie (AVI) are not played; sound effects are (unheard by the author).
 - The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
 - Saving and loading games, the deck editor, trading, combat targeting dialogs have not been exercised.

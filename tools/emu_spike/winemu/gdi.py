@@ -496,9 +496,18 @@ def realize_palette(m, a):
                 from . import user32
                 w = user32.window(m, dc.hwnd)
             m.log(f"   [pal] RealizePalette dc=0x{a[0]:x} kind={dc.kind} hwnd=0x{dc.hwnd:x} cls={w and w['cls']!r} pal=0x{ph:x} thread={m.cur.tid}")
-        _st(m)["system_palette"] = dc.palette              # shared list: AnimatePalette on it shows at once
+        # Only the application's own windows set the hardware palette. A memory DC, or the desktop's (GetDC(NULL), which the game uses to
+        # draw card art with a palette of its own), realizes in the background: Windows maps it onto the colours already there.
+        if os.environ.get("PAL_LEGACY") or dc.kind == "window" and not _is_desktop(m, dc.hwnd) or "system_palette_set" not in _st(m):
+            _st(m)["system_palette"] = dc.palette          # shared list: AnimatePalette on it shows at once
+            _st(m)["system_palette_set"] = True
         return len(dc.palette)
     return 0
+
+
+def _is_desktop(m, hwnd):
+    from . import user32
+    return hwnd == user32._st(m).get("desktop_hwnd")
 
 
 def _handle_of_pal(m, entries):
@@ -1069,13 +1078,22 @@ def _blit(m, dst, src, x, y, w, h, sx, sy, sw, sh, rop):
         return _rop_blit(m, dst, X, Y, W, H, src, SX, SY, SW, SH, rop)
     if rop != 0xCC0020:
         _st(m).setdefault("odd_rops", set()).add(rop)
-    if blit_indices(m, dst, X, Y, W, H, src, SX, SY, SW, SH):
+    shrinking = abs(W) < abs(SW) or abs(H) < abs(SH)
+    if not shrinking and blit_indices(m, dst, X, Y, W, H, src, SX, SY, SW, SH):
         return 1
     px = get_region(m, src, SX + src.org[0], SY + src.org[1], SX + src.org[0] + abs(SW), SY + src.org[1] + abs(SH))
     if px is None or W == 0 or H == 0:
         return 1
     if px.shape[:2] != (abs(H), abs(W)):
-        px = _nearest(px, W, H)
+        if shrinking and px.shape[0] and px.shape[1]:
+            # The game asks for HALFTONE stretching (SetStretchBltMode 3): shrinking averages the source pixels. Picking one of them
+            # (nearest) turns a dithered area, such as a card's parchment, into noise.
+            img = Image.fromarray(px).resize((abs(W), abs(H)), Image.BOX)
+            px = np.asarray(img)
+            if W < 0 or H < 0:
+                px = px[::-1 if H < 0 else 1, ::-1 if W < 0 else 1]
+        else:
+            px = _nearest(px, W, H)
     put_region(m, dst, X + dst.org[0], Y + dst.org[1], np.ascontiguousarray(px))
     return 1
 
