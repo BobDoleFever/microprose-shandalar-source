@@ -1022,7 +1022,7 @@ def draw_text_a(m, a):
     widest = max([w for w, _ in sizes] + [0])
     if fmt & DT_CALCRECT:
         right = r if fmt & DT_WORDBREAK and not single else l + widest
-        m.wr(a[3], struct.pack("<4i", l, t, right, t + total_h))
+        m.wr(a[3], struct.pack("<4i", *(S32(v & 0xFFFFFFFF) for v in (l, t, right, t + total_h))))   # (a RECT of 0x7fffffff wraps as it does in C)
         return total_h
     y = t
     if single and fmt & DT_VCENTER:
