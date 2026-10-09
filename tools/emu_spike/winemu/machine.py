@@ -359,6 +359,7 @@ class Machine:
             for sym in pe.DIRECTORY_ENTRY_EXPORT.symbols:
                 key = sym.name.decode() if sym.name else f"#{sym.ordinal}"
                 mod["exports"][key] = base + sym.address
+                mod["exports"][f"#{sym.ordinal}"] = base + sym.address                  # a named export is also found by ordinal (GetProcAddress(h, 3))
         mod["entry"] = base + pe.OPTIONAL_HEADER.AddressOfEntryPoint
         return mod
 

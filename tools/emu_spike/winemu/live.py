@@ -142,6 +142,16 @@ class Live:
             got = True
             if (ev[0] == "mouse" and ev[1] in ("down", "rdown")) or (ev[0] == "key" and ev[3] and not ev[5]):
                 self.hold_until = m.slices + self.PRESS_SLICES   # the game polls button and key states: they must stay down for a while
+            if ev[0] == "call":                                      # a debugging aid (live_drive call:): run a guest function on a new thread
+                args = []
+                for a in ev[2]:
+                    if isinstance(a, str):
+                        ptr = m.alloc(len(a) + 1)
+                        m.put_cstr(ptr, a.encode("latin-1"))
+                        a = ptr
+                    args.append(a)
+                m.spawn(ev[1], args, "call", one_shot=True)
+                continue
             if ev[0] == "mouse":
                 self.user32.inject_mouse(m, ev[1], ev[2], ev[3])
             elif ev[0] == "key":

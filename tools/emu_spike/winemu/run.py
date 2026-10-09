@@ -347,6 +347,7 @@ def main(argv=None):
     crt.init_argv(m, m.exe_guest_path)
     if args.host_sound or args.live:
         magsnd.install(m, audio=args.live and not os.environ.get("EMU_NO_AUDIO"))
+        movie.install_magvid(m)
         print("   [sound] MAGSND.DLL runs on the host" + (" and plays the game's sounds" if args.live and not os.environ.get("EMU_NO_AUDIO") else " (silent)"))
     if args.accel or args.live:
         from . import accel  # noqa: PLC0415
