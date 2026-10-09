@@ -49,6 +49,7 @@ command file you append to while it runs (see its docstring). This is how the li
 | `EMU_PROCTRACE=ADDR[,ADDR]` | the last instructions of that guest callback if it changed them |
 | `EMU_PEEK=ADDR[,ADDR]` | print all registers each time the guest reaches ADDR |
 | `EMU_CALL_HASH=N`, `EMU_CALL_DETAIL=A:B` | running hash of the import calls (compare two runs), and the calls A..B in detail |
+| `MAGSND_LOG=1`, `MAGVID_LOG=1` | log what the game loads and plays through the host sound and video libraries |
 | `GDI_DEBUG=1` | log mouse routing and blits |
 | `PALDBG=1` | log every `RealizePalette` (which DC, window class and palette handle) |
 | `PAL_LEGACY=1` | let any DC's `RealizePalette` set the system palette (the old rule) |
@@ -57,7 +58,7 @@ Do not read the guest's registers from another thread while it runs: it corrupts
 
 ## Known defects (what a player will see)
 
-- The ending movie (`MTGEND.AVI`, shown after winning the game) has not been tried: the game plays it with `MAGVID.DLL`, which is not hosted. Sound, music and the coin-toss movie play but are unheard by the author: they were checked in the logs, not by ear.
+- The ending movie (`MTGEND.AVI`, after winning the game) plays: `MAGVID.DLL` is hosted (`winemu/movie.py`), and the movie is Indeo 4, which is decoded by `ffmpeg` if it is installed (without it the movie is skipped). It was run by calling the game's player directly (`live_drive.py call:`), not by winning the game. Sound, music and the movies play but are unheard by the author: they were checked in the logs and frames, not by ear. The wizards' animation clips on the CD (`StatWin/*.AVI`) were not seen to be asked for in a duel.
 - The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
 - The deck editor (the book icon on the map, or "Edit deck/Sell cards" in a village) opens, shows the deck, moves cards between deck and collection on a double click, filters by colour or type, shows Stats, and Exit returns to the map. Saving a named deck (Deck1-3 buttons, the right-click menu's save and load), the Deck1-3 saves and cancelling a target prompt have not been exercised.
 - Quests and the overworld screens work: a village's Begin a Quest offers a quest (accept it and the scroll shows it with a day counter, the button becomes Speak to Wise Man), walking to a tower asks a trivia question and pays a card, the world map, City Info (cities visited, mana stones, cards for trade), the wizard sheet and its journal open and close. Completing a quest (defeating its monster) was not tried.

@@ -400,3 +400,35 @@ def test_msvideo1_blocks_decode_one_two_and_eight_colours_and_skips():
     q = pix[:, 12:16]
     assert (q[0:2, 0:2] == 1).all() and (q[0:2, 2:4] == 3).all()                         # set bits: the quadrant's first colour
     assert (q[2:4, 0:2] == 6).all() and (q[2:4, 2:4] == 8).all()                         # clear bits: its second
+
+
+def test_magvid_status_is_one_while_a_movie_plays_and_zero_when_it_is_over():
+    # STATWIN's play_video loops `while (VidStatus(slot))`; the movie follows the guest clock and ends by itself
+    import numpy as np
+    from winemu import movie
+    from winemu.gdi import Surface
+
+    class Clip:
+        w, h, fps = 4, 4, 10.0
+        frames = list(range(5))                                                           # half a second
+        def frame(self, i):
+            return np.full((4, 4, 3), i, np.uint8)
+        def pcm16_stereo(self):
+            return None
+
+    class M:
+        vt = 100.0
+        def __init__(self):
+            self.state = {"u32": {"windows": {}, "queue": [], "dirty": False}, "magsnd": {}}
+    m = M()
+    win = dict(hwnd=0x40, parent=0, surface=Surface(4, 4), movie=dict(avi=Clip(), t0=None, playing=False, channel=None, shown=-1))
+    m.state["u32"]["windows"][0x40] = win
+    m.state["magvid"] = {"slots": {0: 0x40}}
+    assert movie._vid_status(m, [0]) == 0                                                # loaded, not started
+    movie._play_avi(m, [0])
+    assert movie._vid_status(m, [0]) == 1
+    m.vt = 100.35
+    assert movie._vid_status(m, [0]) == 1 and win["movie"]["shown"] == 3
+    m.vt = 100.6
+    assert movie._vid_status(m, [0]) == 0 and win["movie"]["shown"] == 4                 # over: the last picture stays
+    assert movie._vid_status(m, [7]) == 2 and movie._vid_status(m, [1]) == 0              # a bad handle, an empty slot

@@ -12,6 +12,7 @@ Tokens (space separated, run in order):
     rc:X,Y         right click
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
     dc:X,Y         double click
+    call:ADDR,ARG,..  run the guest function at ADDR (hex) on a new thread; ARG: a number, or s=text (a string in guest memory)
     btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
     pass:TEXT[,SECS] press Done until the prompt bar shows TEXT
     auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
@@ -110,6 +111,9 @@ def helper(lv):
             post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
             time.sleep(0.12)
             post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "call":                                 # call:ADDR,ARG,... run a guest function (cdecl/stdcall alike) on a new thread; ARG is a number (0x.. ok) or s=text for a string
+            parts = arg.split(",")
+            lv.events.put(("call", int(parts[0], 16), [a[2:] if a.startswith("s=") else int(a, 0) for a in parts[1:]]))
         elif op == "dc":                                   # dc:X,Y  double click
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
