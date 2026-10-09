@@ -11,6 +11,7 @@ Tokens (space separated, run in order):
     w:SECS         wait
     rc:X,Y         right click
     c:X,Y          click (mouse move, 0.3 s, button down 0.12 s, up)
+    dc:X,Y         double click
     btn:TEXT       click the visible button whose title contains TEXT (underscores are spaces)
     pass:TEXT[,SECS] press Done until the prompt bar shows TEXT
     auto:SECS      press the prompt bar's Done button whenever it shows, logging each prompt (a duel autopilot for soak tests)
@@ -109,6 +110,15 @@ def helper(lv):
             post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
             time.sleep(0.12)
             post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+        elif op == "dc":                                   # dc:X,Y  double click
+            x, y = map(int, arg.split(","))
+            post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
+            time.sleep(0.3)
+            for _ in range(2):
+                post(pygame.MOUSEBUTTONDOWN, pos=(x, y), button=1)
+                time.sleep(0.08)
+                post(pygame.MOUSEBUTTONUP, pos=(x, y), button=1)
+                time.sleep(0.08)
         elif op == "rc":                                   # rc:X,Y  right click
             x, y = map(int, arg.split(","))
             post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))

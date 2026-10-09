@@ -179,6 +179,9 @@ def send_local(m, hwnd, msg, wp, lp):
         r = yield Cont(win["dlgproc"], [hwnd, msg, wp, lp])
         if r:
             return win.get("msgresult", 1) if msg != WM_INITDIALOG else 1
+        if msg == WM_PAINT:                                   # the dialog's own default: begin the paint, so WM_ERASEBKGND reaches the procedure
+            r = yield from default_window_proc(m, hwnd, msg, wp, lp)
+            return r
         return default_proc(m, win, msg, wp, lp)
     if win["proc"]:
         r = yield Cont(win["proc"], [hwnd, msg, wp, lp])
@@ -856,7 +859,7 @@ def post_message(m, a):
 
 @u("PostQuitMessage", 1)
 def post_quit(m, a):
-    _st(m)["quit"] = a[0]
+    m.cur.quit = a[0]                                    # WM_QUIT belongs to the calling thread's queue (the deck editor's thread must not end the game)
     return 0
 
 
@@ -952,10 +955,12 @@ def peek_message(m, a):
     if hook:
         hook(m)
     st = _st(m)
-    if st["quit"] is not None:
-        _write_msg(m, a[0], (0, WM_QUIT, st["quit"], 0))
+    q = st["quit"] if st["quit"] is not None else getattr(m.cur, "quit", None)
+    if q is not None:
+        _write_msg(m, a[0], (0, WM_QUIT, q, 0))
         if a[4] & 1:
             st["quit"] = None
+            m.cur.quit = None
         return 1
     msg = _next_message(m, bool(a[4] & 1), a[1])
     if msg is None:
@@ -984,8 +989,10 @@ def get_message(m, a):
         hook(m)
     if st["quit"] is None and m.state.get("should_stop") and m.state["should_stop"](m):
         st["quit"] = 0
-    if st["quit"] is not None:
-        _write_msg(m, a[0], (0, WM_QUIT, st["quit"], 0))
+    q = st["quit"] if st["quit"] is not None else getattr(m.cur, "quit", None)
+    if q is not None:
+        _write_msg(m, a[0], (0, WM_QUIT, q, 0))
+        m.cur.quit = None                                # the loop ends; a later loop on this thread starts clean
         return 0
     msg = _next_message(m, True, a[1])
     if msg is not None:
@@ -1634,11 +1641,19 @@ def inject_mouse(m, kind, x, y):
     h = st["capture"] or window_at(m, x, y) or main_hwnd(m)
     if not h:
         return False
+    if kind == "down":                                           # a second press at the same spot within the double-click time is
+        now, last = kernel32.now_ms(m), st.get("last_down")      # WM_LBUTTONDBLCLK, for windows whose class asks for it (CS_DBLCLKS)
+        st["last_down"] = (now, x, y, h)
+        cls = st["classes"].get(str(st["windows"][h]["cls"]).lower())
+        if last and last[3] == h and now - last[0] <= 500 and abs(x - last[1]) <= 4 and abs(y - last[2]) <= 4 \
+                and cls and cls["style"] & 8:
+            kind = "dbl"
+            st["last_down"] = None
     x0, y0, _, _ = abs_rect(m, st["windows"][h])
     msg = {"move": WM_MOUSEMOVE, "down": WM_LBUTTONDOWN, "up": WM_LBUTTONUP, "rdown": WM_RBUTTONDOWN,
            "rup": WM_RBUTTONUP, "dbl": 0x203}[kind]
     keys = 1 if kind in ("down", "dbl") else 0
-    st["keys"][1] = kind == "down" or (kind == "move" and st["keys"].get(1, False))
+    st["keys"][1] = kind in ("down", "dbl") or (kind == "move" and st["keys"].get(1, False))
     lx, ly = x - x0, y - y0
     tw = st["windows"][h]
     if not tw["proc"] and str(tw["cls"]).upper() == "BUTTON":          # a built-in push button: click = WM_COMMAND
@@ -1686,6 +1701,12 @@ def inject_key_event(m, vk, scancode, down, char=None, repeat=False):
     st = _st(m)
     if st.get("popup"):
         return popup_key(m, vk, down)
+    if st.get("dialogs") and vk in (0x1B, 0x0D):             # the dialog manager: Esc is IDCANCEL, Enter is IDOK, sent to the open dialog
+        if down and not repeat:
+            hdlg = st["dialogs"][-1]
+            cid = 2 if vk == 0x1B else 1
+            st["queue"].append((hdlg, WM_COMMAND, cid, dlg_item(m, hdlg, cid)))
+        return True
     h = main_hwnd(m)
     if not h:
         return False
