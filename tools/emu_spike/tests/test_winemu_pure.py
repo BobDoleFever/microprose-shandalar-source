@@ -314,3 +314,47 @@ def test_get_top_window_and_get_window_walk_the_children_top_down():
     assert [gw(a["hwnd"], 3), gw(b["hwnd"], 3), gw(c["hwnd"], 3)] == [b["hwnd"], c["hwnd"], 0]    # PREV goes up
     assert (gw(b["hwnd"], 0), gw(b["hwnd"], 1)) == (c["hwnd"], a["hwnd"])                        # FIRST is the top, LAST the bottom
     assert top(a["hwnd"]) == 0                                                                  # no children
+
+
+def test_escape_and_enter_go_to_the_open_dialog_as_idcancel_and_idok():
+    from winemu import user32
+
+    class M:
+        state = {}
+        cur = None
+    m = M()
+    st = user32._st(m)
+    st.update(windows={}, zcount=0, next_hwnd=0x100, classes={}, dialogs=[], queue=[], keys={})
+    dlg = user32.new_window(m, "#32770", 0, 0, 0, 0, 0, 10, 10, "", 0, 0)
+    ok = user32.new_window(m, "BUTTON", dlg["hwnd"], 0, 0, 0, 0, 1, 1, "OK", 1, 0)
+    cancel = user32.new_window(m, "BUTTON", dlg["hwnd"], 0, 0, 0, 0, 1, 1, "Cancel", 2, 0)
+    ok["id"], cancel["id"] = 1, 2
+    st["dialogs"].append(dlg["hwnd"])
+    assert user32.inject_key_event(m, 0x1B, 1, True)
+    assert user32.inject_key_event(m, 0x1B, 1, False)                                  # the release sends nothing
+    assert user32.inject_key_event(m, 0x0D, 0x1C, True)
+    assert st["queue"] == [(dlg["hwnd"], user32.WM_COMMAND, 2, cancel["hwnd"]),
+                           (dlg["hwnd"], user32.WM_COMMAND, 1, ok["hwnd"])]
+
+
+def test_a_second_press_at_the_same_spot_is_a_double_click_only_for_cs_dblclks_classes(monkeypatch):
+    from winemu import user32
+    monkeypatch.setattr(user32.kernel32, "now_ms", lambda m: 1000)
+
+    class M:
+        state = {}
+        cur = None
+    m = M()
+    st = user32._st(m)
+    st.update(windows={}, zcount=0, next_hwnd=0x100, classes={}, queue=[], keys={}, capture=0, cursor=(0, 0), hover=None)
+    for name, style in (("dbl", 8), ("plain", 0)):
+        st["classes"][name] = dict(style=style, proc=0x1000, cbwnd=0, hinst=0, cursor=0, bg=0, name=name, extra=0)
+    for cls, x0 in (("dbl", 0), ("plain", 100)):
+        user32.new_window(m, cls, 0, 0, 0, x0, 0, 50, 50, "", 0, 0)["visible"] = True
+    for x, expect in ((10, 0x203), (110, 0x201)):
+        st["queue"].clear()
+        st["last_down"] = None
+        user32.inject_mouse(m, "down", x, 10)
+        user32.inject_mouse(m, "up", x, 10)
+        user32.inject_mouse(m, "down", x, 10)
+        assert [q[1] for q in st["queue"]][-1] == expect
