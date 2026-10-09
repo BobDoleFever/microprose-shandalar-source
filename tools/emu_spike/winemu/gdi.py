@@ -949,7 +949,7 @@ def offset_viewport_org(m, a):
 def select_clip_rgn(m, a):
     dc, r = dc_of(m, a[0]), obj(m, a[1])
     if dc:
-        dc.clip = tuple(r[1]) if r and r[0] == "region" else None
+        dc.clip = tuple(r[1]) if isinstance(r, tuple) and r and r[0] == "region" else None
     return 2
 
 
@@ -963,6 +963,20 @@ def intersect_clip_rect(m, a):
             x0, y0, x1, y1 = max(x0, dc.clip[0]), max(y0, dc.clip[1]), min(x1, dc.clip[2]), min(y1, dc.clip[3])
         dc.clip = (x0, y0, max(x1, x0), max(y1, y0))
     return 2
+
+
+@g32("CreateRectRgn", 4)
+def create_rect_rgn(m, a):
+    return new_obj(m, ("region", [struct.unpack("<i", struct.pack("<I", v))[0] for v in a[:4]]))      # a list: SetRectRgn changes it
+
+
+@g32("SetRectRgn", 5)
+def set_rect_rgn(m, a):
+    r = obj(m, a[0])
+    if isinstance(r, tuple) and r and r[0] == "region" and isinstance(r[1], list):
+        r[1][:] = [struct.unpack("<i", struct.pack("<I", v))[0] for v in a[1:5]]
+        return 1
+    return 0
 
 
 @g32("CreateRectRgnIndirect", 1)

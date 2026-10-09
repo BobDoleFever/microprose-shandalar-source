@@ -358,3 +358,25 @@ def test_a_second_press_at_the_same_spot_is_a_double_click_only_for_cs_dblclks_c
         user32.inject_mouse(m, "up", x, 10)
         user32.inject_mouse(m, "down", x, 10)
         assert [q[1] for q in st["queue"]][-1] == expect
+
+
+def test_rect_regions_are_created_changed_and_clip_a_dc():
+    # the deck editor clips each card with a CreateRectRgn region it then re-sets with SetRectRgn
+    import struct
+    from winemu import gdi
+
+    class M:
+        state = {}
+        cur = None
+    m = M()
+    gdi._st(m).update(objs={}, next=0x1000)
+    h = gdi.create_rect_rgn(m, [0, 0, 10, 20])
+    assert h and gdi.set_rect_rgn(m, [h, 1, 2, 30, 40]) == 1
+    dc_h, dc = gdi.new_dc(m, "mem")
+    gdi.select_clip_rgn(m, [dc_h, h])
+    assert dc.clip == (1, 2, 30, 40)
+    gdi.select_clip_rgn(m, [dc_h, 0])                                                  # NULL region (handle 0): no clip, and no crash
+    assert dc.clip is None
+    gdi.select_clip_rgn(m, [dc_h, dc_h])                                               # a handle that is not a region
+    assert dc.clip is None
+    assert gdi.set_rect_rgn(m, [dc_h, 0, 0, 1, 1]) == 0
