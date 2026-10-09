@@ -474,4 +474,3 @@ api("advapi32.dll", "RegCloseKey", 1)(lambda m, a: 0)
 api("shell32.dll", "SHAppBarMessage", 2)(lambda m, a: 0)
 api("comctl32.dll", "#17", 0)(lambda m, a: 0)              # InitCommonControls
 api("comdlg32.dll", "GetSaveFileNameA", 1)(lambda m, a: 0)
-api("msvfw32.dll", "MCIWndCreateA", 4)(lambda m, a: 0)

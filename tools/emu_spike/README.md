@@ -13,11 +13,20 @@ Win32, GDI, USER, KERNEL32 and the C runtime written in Python. Nothing from the
 
 Title screen in about 8 s, a new game's overworld in about 20 s. **Resume Game** loads the autosave the game makes at a wizard's door
 (click it at the title: about 45 s to the "Duel / Pay gold" choice), and a duel starts from there: coin toss, start-of-duel dialog,
-then the board; lands and phases (the bar under the board advances them) work, right-click a card for its menu ("View in full card" shows it in the left panel). The sound effects play (`winemu/magsnd.py` is a host version of the game's sound library on pygame.mixer; `EMU_NO_AUDIO=1` mutes; music tracks and the coin-toss movie are not there), the dialogs are drawn plainly, and the AI thinks at emulator speed.
+then the board; lands and phases (the bar under the board advances them) work, right-click a card for its menu ("View in full card" shows it in the left panel). The sound effects, the coin-toss movie (`winemu/movie.py`: the AVI decoded on the host, with its sound) and the music play (`winemu/magsnd.py` is a host version of the game's sound library on pygame.mixer; `EMU_NO_AUDIO=1` mutes; the music is on the game CD, which the install does not copy: run `python3 install_cd_music.py` once, see below), the dialogs are drawn plainly, and the AI thinks at emulator speed.
 
 `--live` implies `--accel` (the card-text keyword search as Python, `winemu/accel.py`) and `--host-sound`. Environment:
 `LIVE_TICK_MS` (default 10; 0 = counted slices, 35 times slower but the simplest), `LIVE_FALLBACK_MS`, `LIVE_PRESS_SLICES`, `LIVE_STATS=1`.
 See `winemu/live.py` for how slices, the clock and input work, and `docs/PORT_STRATEGY.md` for why.
+
+### Music
+
+The game plays its music from the CD (`sound\locmus0.wav` ... the duel tune, the castle themes), not from the install. Copy it once from your disc image:
+
+    python3 install_cd_music.py            # reads the .iso in sources/Magic_The_Gathering_ISO (macOS mounts it read only)
+    python3 install_cd_music.py /Volumes/MTG   # or a mounted CD / any folder with a Sound folder
+
+The files go to `sources/emu_overlay/Program/Sound` (git-ignored). `MAGSND_LOG=1` logs what the game loads and plays.
 
 ## Without a screen
 
@@ -48,7 +57,7 @@ Do not read the guest's registers from another thread while it runs: it corrupts
 
 ## Known defects (what a player will see)
 
-- Music tracks and the coin-toss movie (AVI) are not played; sound effects are (unheard by the author).
+- The ending movie (`MTGEND.AVI`, shown after winning the game) has not been tried: the game plays it with `MAGVID.DLL`, which is not hosted. Sound, music and the coin-toss movie play but are unheard by the author: they were checked in the logs, not by ear.
 - The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
 - The deck editor (the book icon on the map, or "Edit deck/Sell cards" in a village) opens, shows the deck, moves cards between deck and collection on a double click, filters by colour or type, shows Stats, and Exit returns to the map. Saving a named deck (Deck1-3 buttons, the right-click menu's save and load), the Deck1-3 saves and cancelling a target prompt have not been exercised.
 - Quests and the overworld screens work: a village's Begin a Quest offers a quest (accept it and the scroll shows it with a day counter, the button becomes Speak to Wise Man), walking to a tower asks a trivia question and pays a card, the world map, City Info (cities visited, mana stones, cards for trade), the wizard sheet and its journal open and close. Completing a quest (defeating its monster) was not tried.

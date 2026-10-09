@@ -237,6 +237,9 @@ def default_proc(m, win, msg, wp, lp):
         destroy(m, win["hwnd"])
         return 0
     cls = str(win.get("cls", "")).upper()
+    if cls == "MCIWNDCLASS":                                   # a movie window (movie.py)
+        from . import movie  # noqa: PLC0415
+        return movie.message(m, win, msg, wp, lp)
     if cls in ("BUTTON", "STATIC", "EDIT", "COMBOBOX", "LISTBOX", "SCROLLBAR"):
         return control_message(m, win, cls, msg, wp, lp)
     if cls == "#32770":                                        # a dialog with no procedure result
@@ -424,6 +427,9 @@ def destroy(m, hwnd):
     st = _st(m)
     win = st["windows"].pop(hwnd, None)
     if win:
+        if win.get("movie"):
+            from . import movie  # noqa: PLC0415
+            movie.release(m, win)
         for c in list(win["children"]):
             destroy(m, c)
     return 1
@@ -1595,7 +1601,7 @@ def window_at(m, x, y):
     best, best_key = 0, None
     for order, (h, w) in enumerate(st["windows"].items()):
         builtin_button = not w["proc"] and str(w["cls"]).upper() == "BUTTON" and w["w"] > 0 and w["enabled"]
-        if not w["visible"] or not (w["proc"] or w.get("dlgproc") or builtin_button) or h == st.get("desktop_hwnd"):
+        if not w["visible"] or not (w["proc"] or w.get("dlgproc") or w.get("movie") or builtin_button) or h == st.get("desktop_hwnd"):
             continue
         anc, ok, popup = w, True, bool(w["style"] & WS_POPUP and not w["style"] & WS_CHILD)
         while anc["parent"] and anc["parent"] in st["windows"]:                 # every ancestor must be visible
@@ -1667,6 +1673,11 @@ def inject_mouse(m, kind, x, y):
             if m.state.get("gdi_debug"):
                 m.log(f"   [input] button 0x{h:x} id {tw['id']} clicked -> WM_COMMAND to 0x{tw['parent']:x}")
         return True
+    if kind in ("down", "dbl", "rdown") and not tw["proc"] and tw["style"] & WS_CHILD and tw["parent"] in st["windows"] \
+            and str(tw["cls"]).upper() not in ("STATIC",):
+        px0, py0, _, _ = abs_rect(m, st["windows"][tw["parent"]])                  # a click on a built-in child (a movie window, an edit box) is
+        st["queue"].append((tw["parent"], 0x210, (msg & 0xFFFF) | ((tw["id"] & 0xFFFF) << 16),          # reported to its parent: WM_PARENTNOTIFY
+                            (((y - py0) & 0xFFFF) << 16) | ((x - px0) & 0xFFFF)))
     if m.state.get("gdi_debug"):
         w = st["windows"][h]
         m.log(f"   [input] {kind} at {x},{y} -> 0x{h:x} {w['cls']!r} {w['title']!r} client {lx},{ly} tid={w.get('tid')}")
