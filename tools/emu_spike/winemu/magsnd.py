@@ -16,6 +16,7 @@ opts = 8 dwords: [0] volume 0..400, [1] pitch in Hz, [2] pan, [7] flags (bit 0: 
 
 `install(m)` makes LoadLibraryA("magsnd.dll") return this module and GetProcAddress give out its functions by ordinal.
 """
+import os
 import struct
 
 from .machine import REG
@@ -144,12 +145,16 @@ def _load(m, a):                                               # LoadSnd(path, i
     path = _guest_file(m, a[0]) if a[0] else None
     if path is None:
         return 1
+    if os.environ.get("MAGSND_LOG"):
+        m.log(f"   [magsnd] LoadSnd slot {a[1]} <- {path}")
     _mixer(m).load(a[1], path)
     return 0
 
 
 def _play(m, a):                                               # PlaySnd(id, opts)
     vol, loop = _opts(m, a[1])
+    if os.environ.get("MAGSND_LOG"):
+        m.log(f"   [magsnd] PlaySnd slot {a[0]} volume {vol:.2f} loop {loop}")
     _mixer(m).play(a[0], vol, loop)
     return 0
 

@@ -380,3 +380,23 @@ def test_rect_regions_are_created_changed_and_clip_a_dc():
     gdi.select_clip_rgn(m, [dc_h, dc_h])                                               # a handle that is not a region
     assert dc.clip is None
     assert gdi.set_rect_rgn(m, [dc_h, 0, 0, 1, 1]) == 0
+
+
+def test_msvideo1_blocks_decode_one_two_and_eight_colours_and_skips():
+    import struct
+    import numpy as np
+    from winemu.movie import decode_msvc16
+    w, h = 16, 4                                                                       # four 4x4 blocks in one block row
+    pix = np.full((h, w), 0x7FFF, np.uint16)
+    one = struct.pack("<H", 0x8000 | 0x1234)                                            # byte_b >= 0x80: one colour (bit 15 ignored)
+    two = struct.pack("<HHH", 0x00F0, 0x0011, 0x0022)                                   # flags 0x00F0: bits 4..7 set (second pixel row)
+    eight = struct.pack("<HHH", 0x00FF, 0x8001, 2) + struct.pack("<6H", 3, 4, 5, 6, 7, 8)       # flags, then 8 colours (the first has bit 15 set)
+    skip = struct.pack("<H", 0x8400 + 1)                                                # skip this block only
+    decode_msvc16(one + two + skip + eight, w, h, pix)
+    assert (pix[:, 0:4] == 0x1234).all()                                                # block 0
+    blk = pix[:, 4:8]
+    assert (blk[1] == 0x0011).all() and (blk[0] == 0x0022).all() and (blk[3] == 0x0022).all()   # set bits take colour 0
+    assert (pix[:, 8:12] == 0x7FFF).all()                                               # skipped: unchanged
+    q = pix[:, 12:16]
+    assert (q[0:2, 0:2] == 1).all() and (q[0:2, 2:4] == 3).all()                         # set bits: the quadrant's first colour
+    assert (q[2:4, 0:2] == 6).all() and (q[2:4, 2:4] == 8).all()                         # clear bits: its second

@@ -21,7 +21,7 @@ import time
 import numpy as np
 from PIL import Image
 
-from . import crt, gdi, kernel32, kernel32_rt, magsnd, user32                              # noqa: F401  (register handlers)
+from . import crt, gdi, kernel32, kernel32_rt, magsnd, movie, user32                              # noqa: F401  (register handlers)
 from .machine import Machine
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -58,7 +58,11 @@ def draw_dialogs(m, desk):
             cx0, cy0, cx1, cy1 = x0 + cw["x"], y0 + cw["y"], x0 + cw["x"] + cw["w"], y0 + cw["y"] + cw["h"]
             cls = str(cw["cls"]).upper()
             text = cw["title"]
-            if cls == "BUTTON":
+            if cw.get("movie"):                                                       # a playing movie (coin toss)
+                frame = gdi.surface_rgb(m, cw["surface"])
+                img.paste(Image.fromarray(frame), (cx0, cy0))
+                d = ImageDraw.Draw(img)
+            elif cls == "BUTTON":
                 style = cw["style"] & 0xF
                 if style in (2, 3, 4, 5, 6, 9):                                       # radio / check boxes
                     d.ellipse([cx0, cy0 + 1, cx0 + 9, cy0 + 10], outline=(0, 0, 0), fill=(255, 255, 255))
@@ -86,11 +90,12 @@ def compose(m):
     st = m.state.get("u32", {})
     desk = np.zeros((gdi.SCREEN_H, gdi.SCREEN_W, 3), np.uint8)
     wins = st.get("windows", {})
+    movie.tick(m)
 
     def paint(win, ox, oy):
         s = win["surface"]
         x, y = ox + win["x"], oy + win["y"]
-        if s is not None and (win["proc"] or win.get("ownerdraw")):
+        if s is not None and (win["proc"] or win.get("ownerdraw") or win.get("movie")):
             x0, y0 = max(x, 0), max(y, 0)
             x1, y1 = min(x + s.w, desk.shape[1]), min(y + s.h, desk.shape[0])
             if x1 > x0 and y1 > y0:
