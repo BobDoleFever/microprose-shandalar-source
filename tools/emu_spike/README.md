@@ -50,4 +50,4 @@ Do not read the guest's registers from another thread while it runs: it corrupts
 
 - Music tracks and the coin-toss movie (AVI) are not played; sound effects are (unheard by the author).
 - The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
-- The deck editor (the book icon on the map, or "Edit deck/Sell cards" in a village) opens, shows the deck, the Stats window and the right-click menus work, Exit returns to the map. Moving cards between deck and collection (double-click), the filters and saving a deck have not been seen working. Saving and loading games, trading and combat targeting dialogs have not been exercised either.
+- The deck editor (the book icon on the map, or "Edit deck/Sell cards" in a village) opens, shows the deck, moves cards between deck and collection on a double click, filters by colour or type, shows Stats, and Exit returns to the map. Saving a named deck (Deck1-3 buttons, the right-click menu's save and load) has not been exercised, nor have saving and loading games, trading and combat targeting dialogs.
