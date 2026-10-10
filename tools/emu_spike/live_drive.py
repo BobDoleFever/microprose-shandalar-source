@@ -215,6 +215,7 @@ def helper(lv):
             seen_duel, last_click, last_title, turn_played, dlg_seen = False, 0.0, None, False, time.time()
             log = lambda msg: print(f"PLAY {time.time() - t0:7.1f}s {msg}", flush=True)       # noqa: E731
             smart, turn_no = op == "duel", 0
+            bucket, prev_snap, prev_title, last_t = {}, __import__("collections").Counter(), "x", time.time()
 
             def click_at(x, y):
                 post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
@@ -248,10 +249,20 @@ def helper(lv):
                     ended_at = None
                     if smart and seen_duel and time.time() - last_click > 0.4:
                         ap.watch_life()
+                if smart and lv.samples is not None:                   # LIVE_SAMPLE=1: where the guest runs while the prompt bar is empty (the AI's turn) and while it is not
+                    snap = __import__("collections").Counter({k[1]: v for k, v in dict(m.counts).items()})
+                    cls = "idle" if prev_title else "ai"
+                    bucket.setdefault(cls, __import__("collections").Counter()).update(snap - prev_snap)
+                    bucket.setdefault(cls + "_secs", __import__("collections").Counter())["real"] += time.time() - last_t
+                    last_t = time.time()
+                    prev_snap = snap
+                    for _t, name, ret in list(m.recent)[-40:]:              # who calls the imports the AI's turn is made of
+                        bucket.setdefault(cls + "_callers", __import__("collections").Counter())[(name, hex(ret))] += 1
                 vis = [w for w in wins if w["visible"] and w["w"] > 0]
                 btn = lambda text: next((w for w in vis if str(w["cls"]).upper() == "BUTTON" and text in str(w["title"]).lower()), None)   # noqa: E731
                 tu = next((w for w in vis if w["cls"] == "MAGIC_TellUserClass"), None)
                 title = (tu["title"] if tu else "") or ""
+                prev_title = title
                 if title != last_title:
                     log(f"prompt {title!r}")
                     last_title = title
@@ -285,6 +296,8 @@ def helper(lv):
                 time.sleep(0.25)
             else:
                 log("time is up")
+            for cls, cnt in bucket.items():
+                print("SAMPLES", cls, sum(cnt.values()), cnt.most_common(14), flush=True)
         elif op == "texts":                                # texts:  the text each visible window of the duel last wrote (class, title, then x,y: text)
             for h, w in list(m.state.get("u32", {}).get("windows", {}).items()):
                 if w.get("texts") and w["visible"]:

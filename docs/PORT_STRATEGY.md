@@ -205,8 +205,10 @@ of it came back on the wrong stack. `PostQuitMessage` is per thread (the deck ed
 `EMU_REGCHECK=1` reports an import or a guest callback that changes callee-saved registers, and `EMU_PROCTRACE=ADDR` shows
 the instructions of a guest callback that does.
 
-Not there yet: the native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at
-emulator speed, about 15 s a turn, until it is hosted there). The exact runs above keep their deterministic slices; `--live` is
+Not there yet: the native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses). A measurement in
+a live duel says what that would buy: the opponent's turn (15-30 s) is mostly import calls, each a Python handler, not
+guest instructions: 60% were `GetWindowLongA` from the board's window scan (now a Python stand-in), the rest `rand`,
+critical sections and messages from the AI search and the UI. The exact runs above keep their deterministic slices; `--live` is
 for playing, not for comparing.
 
 ## Risks and open points

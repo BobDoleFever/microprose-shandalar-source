@@ -89,7 +89,7 @@ Over about 45 minutes of soak play (four runs, walking, towers and duels) there 
 
 ## Known defects (what a player will see)
 
-- The AI's turn takes about 15 s: MAGIC.EXE's duel engine is not yet hosted on the native layer.
+- The opponent's turn takes 15-30 s. Measured in a live duel (`LIVE_SAMPLE=1` with `live_drive.py duel:`, which prints the import calls made while the prompt bar is empty): the opponent's turn is millions of import calls, not guest computation: 60% were `GetWindowLongA` from the board's message handler scanning its card windows (now replaced by a Python stand-in, `accel.py`), the rest `rand` and `Enter/LeaveCriticalSection` from the AI's search, `SendMessageA` and drawing. So the work left is the search's imports (which a native layer for MAGIC.EXE would make plain C), not only the lifted search functions.
 - Sound, music and both movies are checked in the logs and frames, not by ear. The wizards' animation clips on the CD (`StatWin/*.AVI`) were never asked for in a duel. The ending movie was run by calling the game's player directly (`live_drive.py call:`), not by winning the game.
 - The dialogs are drawn plainly (a grey panel) when the game does not paint them itself.
 - Not tried: the stand-alone deck builder's New/Load/Save deck menu, instants held for combat and X spells (the autopilot does not cast them), trading with another wizard.
