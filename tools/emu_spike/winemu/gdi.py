@@ -1352,6 +1352,10 @@ def draw_text(m, dc, x, y, s, align=True):
         x0 -= tw
     if align and dc.textalign & 24 == 8:
         y0 -= th
+    if dc.kind == "window" and dc.hwnd:                          # what the game wrote on a window, for a script that reads the screen (live_drive's autopilot)
+        win = m.state.get("u32", {}).get("windows", {}).get(dc.hwnd)
+        if win is not None:
+            win.setdefault("texts", {})[(x0, y0)] = (s.decode("latin-1"), tuple(int(c) for c in fg))
     def paint(d, px, py):
         if dc.bkmode == 2:
             d.rectangle([x0 - px, y0 - py, x0 + tw - px, y0 + th - py], fill=tuple(colorref(m, dc, dc.bkcolor)))

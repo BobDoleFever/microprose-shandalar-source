@@ -1055,6 +1055,7 @@ def begin_paint(m, a):
     m.wr(a[1], struct.pack("<IIiiiiII", h, 1, 0, 0, cw, ch, 0, 0) + b"\0" * 32)
     if win:
         win["invalid"] = False
+        win["texts"] = {}                                        # the text on a window is what its latest paint wrote (gdi.draw_text keeps it)
         if win.get("erase", True):                               # the update region was marked for erasing
             win["erase"] = False
             yield from send(m, a[0], WM_ERASEBKGND, h, 0)

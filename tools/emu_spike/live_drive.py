@@ -209,11 +209,12 @@ def helper(lv):
             print(f"UNTIL {want!r}: {'found' if time.time() < end else 'timed out'} after {time.time() - t1:.1f} s", flush=True)
         elif op == "cpu":                                  # cpu:  print the process's CPU seconds and the wall clock so far (call twice to see an interval)
             print(f"CPU {time.process_time():.1f} s cpu at {time.time() - t0:.1f} s wall", flush=True)
-        elif op == "play":                                 # play:SECS  a duel autopilot: answers the coin toss and start dialogs, plays the top card of the hand in each main phase, discards, presses Done; stops when the duel's window is gone
+        elif op in ("play", "duel"):                       # duel:SECS is play: with the real autopilot (autoplay.py); play:SECS  a duel autopilot: answers the coin toss and start dialogs, plays the top card of the hand in each main phase, discards, presses Done; stops when the duel's window is gone
             from winemu import user32
             end = time.time() + float(arg or 600)
             seen_duel, last_click, last_title, turn_played, dlg_seen = False, 0.0, None, False, time.time()
             log = lambda msg: print(f"PLAY {time.time() - t0:7.1f}s {msg}", flush=True)       # noqa: E731
+            smart, turn_no = op == "duel", 0
 
             def click_at(x, y):
                 post(pygame.MOUSEMOTION, pos=(x, y), rel=(0, 0), buttons=(0, 0, 0))
@@ -225,15 +226,28 @@ def helper(lv):
             def click_win(w):
                 x0, y0, x1, y1 = user32.abs_rect(m, w)
                 click_at((x0 + x1) // 2, (y0 + y1) // 2)
+            if smart:
+                import autoplay
+                def shot(name):
+                    with lv.lock:
+                        f = lv.frame
+                    Image.fromarray(f).save(f"{OUT}_{name}_{int(time.time() - t0)}.png")
+                ap = autoplay.Autoplay(m, click_at, log, shot=shot)
             while time.time() < end:
                 wins = list(m.state.get("u32", {}).get("windows", {}).values())
                 duel = any(w["cls"] == "MAGICGAME_MainClass" and w["visible"] for w in wins)
                 seen_duel = seen_duel or duel
                 if seen_duel and not duel:
                     log("the duel window is gone")
+                    if smart:
+                        shot("end")
+                        me, them = ap.last_life
+                        log(f"RESULT {'WON' if them <= 0 < me else 'LOST' if me <= 0 < them else 'unknown'} (last seen life: me {me}, them {them})")
                     break
                 if duel:
                     ended_at = None
+                    if smart and seen_duel and time.time() - last_click > 0.4:
+                        ap.watch_life()
                 vis = [w for w in wins if w["visible"] and w["w"] > 0]
                 btn = lambda text: next((w for w in vis if str(w["cls"]).upper() == "BUTTON" and text in str(w["title"]).lower()), None)   # noqa: E731
                 tu = next((w for w in vis if w["cls"] == "MAGIC_TellUserClass"), None)
@@ -243,6 +257,9 @@ def helper(lv):
                     last_title = title
                     if title.startswith("Main phase (before"):
                         turn_played = False
+                        turn_no += 1
+                    if smart and title:
+                        ap.new_prompt(title)
                 if time.time() - last_click < 2.5:
                     time.sleep(0.25)
                     continue
@@ -257,7 +274,9 @@ def helper(lv):
                     click_win(dlg); last_click = time.time(); log("clicked inside a dialog with no buttons")
                 elif tu is not None and title.startswith("Select card to discard"):
                     click_at(565, 395); last_click = time.time(); log("discard")
-                elif tu is not None and title.startswith("Main phase (before") and not turn_played:
+                elif smart and tu is not None and ap.step(title, turn_no):
+                    last_click = time.time()
+                elif tu is not None and title.startswith("Main phase (before") and not turn_played and not smart:
                     click_at(565, 405); turn_played = True; last_click = time.time(); log("played the top card")
                 elif tu is not None:
                     b = next((x for x in vis if str(x["cls"]).upper() == "BUTTON" and x["parent"] == tu["hwnd"]), None)
@@ -266,6 +285,28 @@ def helper(lv):
                 time.sleep(0.25)
             else:
                 log("time is up")
+        elif op == "texts":                                # texts:  the text each visible window of the duel last wrote (class, title, then x,y: text)
+            for h, w in list(m.state.get("u32", {}).get("windows", {}).items()):
+                if w.get("texts") and w["visible"]:
+                    print(f"TEXTS 0x{h:x} {w['cls']!r} {w['title']!r} at {w['x']},{w['y']}: " + " | ".join(f"{x},{y}:{t[0]!r}" for (x, y), t in sorted(w["texts"].items(), key=lambda kv: (kv[0][1], kv[0][0]))[:40]), flush=True)
+        elif op == "hand":                                 # hand:  the duel's card windows with rectangle, text and the slot's flag words
+            from winemu import duelview, user32 as u32m
+            for c in duelview.cards(m):
+                w = m.state["u32"]["windows"][c["h"]]
+                x0, y0, x1, y1 = u32m.abs_rect(m, w)
+                base = duelview.slot_addr(c["player"], c["slot"])
+                print(f"HAND p{c['player']} s{c['slot']:2d} {w['title']!r} in {c['parent']!r} rect {x0},{y0},{x1},{y1} texts {[t[0] for _, t in sorted(w.get('texts', {}).items(), key=lambda kv: (kv[0][1], kv[0][0]))][:3]} "
+                      f"cid={c['cid']:#x} flags={c['flags']:#x} tap={m.r32(base + 0xEC):#x} sick={m.r32(base + 0xF0):#x} pt={m.r32(base + 0xC):#x}", flush=True)
+        elif op == "cards":                                # cards:  every card window in the duel, with the raw record dwords (for finding fields)
+            from winemu import duelview
+            for c in duelview.cards(m):
+                print("   master", bytes(m.rd(duelview.TYPE_TABLE + c["cid"] * duelview.TYPE_SIZE, 0x34)).hex(" "), flush=True)
+                rec, typ, slot = duelview.dump(m, c)
+                print(f"CARD p{c['player']} s{c['slot']:2d} {c['name']!r} in {c['parent']!r} type=0x{c['mtype']:x} flags=0x{c['flags']:x} cid={c['cid']:#x} extra={bytes(m.state['u32']['windows'][c['h']]['extra'].b).hex()}", flush=True)
+                if arg == "raw":
+                    print("   rec ", " ".join(f"{v:x}" for v in rec), flush=True)
+                    print("   typ ", " ".join(f"{v:x}" for v in typ), flush=True)
+                    print("   slot", " ".join(f"{v:x}" for v in slot[:64]), flush=True)
         elif op == "find":                                 # find:A,B  addresses of a dword A with a dword B within 0x80 bytes after it (data section); host-side read of the mapped memory
             a_, b_ = (int(x, 0) for x in arg.split(","))
             hits = []

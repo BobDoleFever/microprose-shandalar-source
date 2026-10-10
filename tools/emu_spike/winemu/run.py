@@ -321,7 +321,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     game_root = os.path.join(ROOT, "sources", "installed", "Magic")
-    overlay = os.path.join(ROOT, "sources", "emu_overlay")
+    overlay = os.environ.get("EMU_OVERLAY") or os.path.join(ROOT, "sources", "emu_overlay")      # EMU_OVERLAY=DIR: another place for the files the game writes (saves), for runs side by side
     os.makedirs(overlay, exist_ok=True)
     os.makedirs(args.shots, exist_ok=True)
     m = Machine(args.exe, game_root, overlay, log=(lambda *_: None) if args.quiet else print)
