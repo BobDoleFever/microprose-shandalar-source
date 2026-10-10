@@ -71,6 +71,24 @@ Do not read the guest's registers from another thread while it runs: it corrupts
 
 Over about 45 minutes of soak play (four runs, walking, towers and duels) there were no emulator errors and memory stayed near 610 MB.
 
+## The native layer on MAGIC.EXE (Phase B)
+
+The native functions (`src/native`: spell stack, card queries, event contexts, the AI search's state and evaluation) now run in
+the game you play, MAGIC.EXE, not only in DUEL.EXE: `src/native/layout.c` has MAGIC's addresses, `native_host.py` picks the layout
+from the executable, and 28 of the 30 functions are replaced (`Crt_Memcpy` and `Crt_Memset` are imports in MAGIC.EXE). Build the
+library from MAGIC's own machine code (these lifted twins are what the natives are checked against; the generated C is git-ignored):
+
+    python3 tools/lift/gen_handlers.py --program magic --exe sources/installed/Magic/Program/MAGIC.EXE --out sources/generated/lift_magic --no-handlers
+    make -C tools/difftest host GEN=../../sources/generated/lift_magic BUILD=build_magic
+
+    python3 live_drive.py --native ...          # or: python3 -m winemu.run --live --native
+
+Checked: a scripted run (resume, duel, pass turns through the opponent's first turn) with `--native --native-exact --native-shadow-check`
+ran every native call both ways: 378,999 calls compared against the lifted machine code of MAGIC.EXE, 0 differ, no memory faults (the
+calls that call out to the guest are not compared, as in DUEL.EXE). 29 of the 30 functions have a MAGIC twin; `Magic_QueryCardAttribute`
+has none (a jump table the lifter cannot bound). A live duel with `--native` ran 144,000 native calls and the autopilot won it. Not
+shown: that it makes the opponent's turn shorter, and exact timing on MAGIC (the exact cost model is DUEL's: MAGIC copies through an import).
+
 ## Playing tips
 
 - The quest and tower text menus take the keyboard: Down moves the highlight, Enter chooses (a click on a line sometimes does not).
