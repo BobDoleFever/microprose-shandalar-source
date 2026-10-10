@@ -64,6 +64,22 @@ def _key_poll_native(m, esp):
     return 1 if m.r32(0x516BDC) else 0
 
 
+MAGIC_CARD_WINDOW_IS = 0x0046BB29      # MAGIC.EXE FUN_0046bb29(hwnd, int *key): the window's longs 0 and 4 (player, slot) equal key[0], key[1]
+
+
+def _card_window_is_native(m, esp):
+    """The same function without its two GetWindowLongA imports. The board's message handler (Pic_Subsystem_0044bad4) scans its card
+    windows with it on every message, and during the opponent's turn that was 60% of all import calls (1.9 million in 77 s)."""
+    hwnd, key = m.r32(esp + 4), m.r32(esp + 8)
+    if not hwnd or not key:
+        return 0
+    win = m.state.get("u32", {}).get("windows", {}).get(hwnd)
+    extra = win["extra"] if win else None
+    a = extra.get(m.r32(0x5150F4), 0) if extra is not None else 0
+    b = extra.get(m.r32(0x5150F8), 0) if extra is not None else 0
+    return 1 if m.r32(key) == a and m.r32(key + 4) == b else 0
+
+
 def install(m):
     """Replace the guest functions above (those whose module is loaded). Returns how many."""
     n = 0
@@ -73,5 +89,6 @@ def install(m):
     if m.exe_guest_path.lower().endswith("\\magic.exe"):
         m.add_intercept(MAGIC_FIND_WORD, _find_word_native)               # (870,000 calls when a new game's cards are set up)
         m.add_intercept(MAGIC_KEY_POLL, _key_poll_native)
-        n += 2
+        m.add_intercept(MAGIC_CARD_WINDOW_IS, _card_window_is_native)
+        n += 3
     return n

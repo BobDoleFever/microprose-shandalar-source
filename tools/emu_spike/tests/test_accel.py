@@ -44,3 +44,28 @@ def test_find_word_against_original():
         assert accel.find_word(text, word, mode != 0) == int(m.group(2)), (text, word, mode)
         checked += 1
     assert checked > 100
+
+
+def test_card_window_match_compares_the_windows_two_longs_with_the_key():
+    # MAGIC.EXE FUN_0046bb29(hwnd, key): GetWindowLong(hwnd, [0x5150f4]) == key[0] && GetWindowLong(hwnd, [0x5150f8]) == key[1]
+    from winemu.user32 import ExtraBytes
+
+    class M:
+        def __init__(self):
+            self.mem = {0x5150F4: 0, 0x5150F8: 4, 0x9000: 1, 0x9004: 7, 0x9100: 1, 0x9104: 8, 0x8000: 0x40}
+            win = {"extra": ExtraBytes(8)}
+            win["extra"].put(0, 1)
+            win["extra"].put(4, 7)
+            self.state = {"u32": {"windows": {0x40: win}}}
+
+        def r32(self, a):
+            return self.mem.get(a, 0)
+    m = M()
+
+    def call(hwnd, key):
+        m.mem[0x8004], m.mem[0x8008] = hwnd, key                                        # esp = 0x8000: [esp+4], [esp+8]
+        return accel._card_window_is_native(m, 0x8000)
+    assert call(0x40, 0x9000) == 1                                                       # (1, 7) matches
+    assert call(0x40, 0x9100) == 0                                                       # (1, 8) does not
+    assert call(0, 0x9000) == 0 and call(0x40, 0) == 0                                   # a null window or key: 0, as the original
+    assert call(0x44, 0x9000) == 0                                                       # no such window: GetWindowLong gives 0, 0 != (1, 7)
