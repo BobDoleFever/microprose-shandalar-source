@@ -25,6 +25,7 @@ from unicorn.x86_const import UC_X86_REG_EAX
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 DEFAULT_LIB = os.path.join(ROOT, "tools", "difftest", "build", "libnative_host.dylib")
+MAGIC_LIB = os.path.join(ROOT, "tools", "difftest", "build_magic", "libnative_host.dylib")      # make -C tools/difftest host GEN=../../sources/generated/lift_magic BUILD=build_magic
 
 RD = ctypes.CFUNCTYPE(ctypes.c_uint32, ctypes.c_void_p, ctypes.c_uint32, ctypes.c_int)
 WR = ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32)
@@ -92,7 +93,7 @@ class NativeCall:
 class NativeHost:
     def __init__(self, machine, lib_path=None):
         self.m = machine
-        path = lib_path or os.environ.get("NATIVE_LIB") or DEFAULT_LIB
+        path = lib_path or os.environ.get("NATIVE_LIB") or (MAGIC_LIB if machine.exe_guest_path.lower().endswith("\\magic.exe") else DEFAULT_LIB)
         if not os.path.exists(path):
             sys.exit(f"native library not found: {path} (make -C tools/difftest host)")
         self.lib = ctypes.CDLL(path)
@@ -153,7 +154,9 @@ class NativeHost:
             return c.resp.get()
 
         self._cb = (RD(read), WR(write), CALL(call))   # keep the callbacks alive
-        if lib.host_init(b"DUEL", *self._cb) != 0:
+        program = b"MAGIC" if self.m.exe_guest_path.lower().endswith("\\magic.exe") else b"DUEL"      # the layout (addresses) of the program being run
+        self.program = program.decode()
+        if lib.host_init(program, *self._cb) != 0:
             sys.exit("native_host: host_init failed")
         lib.host_add_region.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p]
         for base, size, host, _buf in self.m.regions:   # the guest's memory is host memory: no callback per access
@@ -425,6 +428,17 @@ class NativeHost:
                 continue
             self.m.uc.hook_add(UC_HOOK_CODE, (lambda *x: None) if mode == "nop" else hit, begin=a, end=a)
 
+    def _lifted_fits(self, entry):
+        """Whether a lifted function belongs to the program being run. The generated handlers are one program's machine code at its
+        addresses: for MAGIC.EXE the library is built from `gen_handlers.py --program magic --no-handlers`, whose lifted functions are
+        the native functions' twins, so a lifted function there must be a native function's entry (a library built for DUEL.EXE is
+        refused rather than run on the wrong program)."""
+        if self.program == "DUEL":
+            return True
+        if not hasattr(self, "_native_entries"):
+            self._native_entries = {self.lib.host_native_entry(f) for f in range(self.lib.host_native_count())} - {0}
+        return entry in self._native_entries
+
     def install(self, only=None, skip=(), handlers=True):
         """Intercept the original's native functions (and lifted handlers). `only` (a set of names) restricts it."""
         count = 0
@@ -435,7 +449,7 @@ class NativeHost:
                 self.lib.host_set_enabled(self.lib.host_native_entry(fid), 0, 0)
         for i in range(self.lib.host_lifted_count()):
             name = self.lib.host_lifted_name(i).decode()
-            if (only is not None and name not in only) or name in skip or not handlers:
+            if (only is not None and name not in only) or name in skip or not handlers or not self._lifted_fits(self.lib.host_lifted_entry(i)):
                 self.lib.host_set_enabled(self.lib.host_lifted_entry(i), 0, 1)
         for fid in range(self.lib.host_native_count()):
             name = self.lib.host_native_name(fid).decode()
@@ -454,6 +468,8 @@ class NativeHost:
                 if (only is not None and name not in only) or name in skip:
                     continue
                 entry = self.lib.host_lifted_entry(i)
+                if not self._lifted_fits(entry):
+                    continue
                 if entry in self.replaced:   # a native function stands in for it (its lifted twin is for shadow mode)
                     continue
                 self.replaced.add(entry)

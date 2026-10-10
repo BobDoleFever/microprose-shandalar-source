@@ -25,7 +25,7 @@ sys.path.insert(0, HERE)
 from x86lift import Lifter, Unsupported  # noqa: E402
 
 # Imports a handler may call, as (argument count, bytes the callee pops). Anything else is refused.
-KNOWN_IMPORTS = {"Sleep": (1, 4)}
+KNOWN_IMPORTS = {"Sleep": (1, 4), "_assert": (3, 0), "_itoa": (3, 0)}      # the last two: the C runtime DLL's (cdecl), which MAGIC.EXE imports where DUEL.EXE carries its own copies
 STUB_BASE = 0x006C5800   # where winemu/run.py `inject` puts a stand-in for each import while it injects: free space after the
 STUB_STRIDE = 0x20       # last section's code, in a page the executable maps
 
