@@ -32,6 +32,29 @@ def norm(s):
     return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
+def classify(card):
+    """(role, damage) of a card from its type and rules text. Roles: creature; burn (damage to a creature: damage N); buff (an aura that
+    helps the creature it is on); curse (an aura or spell that hurts the other side's creature or its controller); other (not played)."""
+    t, text = card["type"], card["text"]
+    if t.startswith("Summon") or (t == "Artifact" and card["power"] > 0):
+        return "creature", 0
+    body = " ".join(text.split())
+    if t in ("Instant", "Sorcery", "Interrupt"):
+        m = re.search(r"deals (\d+) damage to target creature", body)
+        if m and "x" not in body.lower().split("damage")[0][-12:].split():
+            return "burn", int(m.group(1))
+        if re.search(r"(destroy|bury|remove) target (non-?\w+,? )*creature", body.lower()):
+            return "burn", 99
+        return "other", 0
+    if t.startswith("Enchant") and "target creature" in body.lower() or t.startswith("Enchant") and "enchanted creature" in body.lower():
+        low = body.lower()
+        if "controller" in low or re.search(r"(gets|gains?) -|cannot attack|can't attack|cannot block|can't block|deals \d+ damage to target creature's", low):
+            return "curse", 0
+        if re.search(r"(gets|gains?) \+|gains? (flying|first strike|trample|banding|regenerat)|has (flying|first strike)", low):
+            return "buff", 0
+    return "other", 0
+
+
 class Facts:
     """name -> dict(type, cost {colour: n, 'any': n}, power, toughness, flying) from INFO.CSV, with prefix lookup for short names."""
 
@@ -57,6 +80,7 @@ class Facts:
                 card = dict(name=row["Card Name"].strip(), type=(row.get("Type") or "").strip(), cost=cost,
                             power=num(row.get("Pow")), toughness=num(row.get("Tuff")), cmc=sum(cost.values()),
                             flying="flying" in text, text=text)
+                card["role"], card["damage"] = classify(card)
                 if (row.get("ID") or "").strip().isdigit():
                     self.by_id[int(row["ID"])] = card
                 for key in (norm(row["Card Name"]), norm(row.get("Short Name") or "")):
@@ -190,29 +214,72 @@ class Autoplay:
                 time.sleep(1.5)
                 cards = self.cards()
                 hand = self.hand(cards)
-        spells = [c for c in hand if (self.is_creature(c) or (c["fact"] and c["fact"]["type"] == "Artifact" and c["fact"]["power"] == 0
-                                                             and c["fact"]["cmc"] > 0 and False)) and (turn, c["name"]) not in self.failed]
-        spells.sort(key=lambda c: -c["fact"]["cmc"])
+        spells = [c for c in hand if c["fact"] and c["fact"]["role"] != "other" and (turn, c["name"]) not in self.failed]
+        spells.sort(key=lambda c: (c["fact"]["role"] != "creature", -c["fact"]["cmc"]))             # creatures first, then the bigger spells
         for s in spells:
             cards = self.cards()
+            target = None
+            if s["fact"]["role"] != "creature":
+                target = self.pick_target(s, cards)
+                if target is None:
+                    continue
             lands = [c for c in self.mine(cards) if self.is_land(c) and not c["tapped"] and c["name"].lower() in LANDS]
             plan = self.pay_plan(s["fact"], lands)
             if plan is None:
                 continue
             hand_before = len(self.hand(cards))
-            self.log(f"cast {s['name']} (cost {s['fact']['cmc']}) tapping {[l['name'] for l in plan]}")
+            self.log(f"cast {s['name']} ({s['fact']['role']}, cost {s['fact']['cmc']})"
+                     + (f" on {target['name']}" if target else "") + f" tapping {[l['name'] for l in plan]}")
             for land in plan:
                 self.click_card(land, dy=40)
                 time.sleep(0.8)
             now = {c["slot"]: c for c in self.hand(self.cards())}
-            target = next((c for c in now.values() if c["cid"] == s["cid"]), None)
-            if target is not None:
-                self.click_card(target)
+            spell = next((c for c in now.values() if c["cid"] == s["cid"]), None)
+            if spell is not None:
+                self.click_card(spell)
                 time.sleep(2.0)
+            if target is not None:
+                self.aim(s, target)
             if len(self.hand(self.cards())) >= hand_before:
                 self.failed.add((turn, s["name"]))
                 self.log(f"{s['name']} did not leave the hand")
         self.cast_done = True
+
+    def pick_target(self, s, cards):
+        """The creature a spell is for, or None if there is nothing worth it."""
+        role, dmg = s["fact"]["role"], s["fact"]["damage"]
+        mine = [c for c in self.mine(cards) if self.is_creature(c)]
+        theirs = [c for c in self.theirs(cards) if self.is_creature(c) and c["fact"]]
+        if role == "burn":
+            kill = [c for c in theirs if c["fact"]["toughness"] <= dmg]
+            return max(kill, key=lambda c: c["fact"]["cmc"], default=None) if kill and max(c["fact"]["cmc"] for c in kill) >= s["fact"]["cmc"] - 1 else None
+        if role == "buff":
+            return max(mine, key=lambda c: (c["fact"]["power"], c["fact"]["toughness"]), default=None)
+        if role == "curse":
+            return max(theirs, key=lambda c: c["fact"]["power"], default=None)
+        return None
+
+    def aim(self, s, target):
+        """After a spell asks for a target ('Select target creature.'), click it; cancel if the prompt is something else."""
+        for _ in range(6):
+            time.sleep(0.8)
+            p = self.prompt()
+            title = (p["title"] if p else "") or ""
+            if title.startswith("Select target creature") or title.startswith("Select target"):
+                break
+        else:
+            return
+        if not title.startswith("Select target creature"):
+            self.log(f"{s['name']} wants {title!r}: cancelled")
+            btn = next((w for w in self.windows() if str(w["cls"]).upper() == "BUTTON" and w["visible"] and p and w["parent"] == p["hwnd"]), None)
+            if btn:
+                x0, y0, x1, y1 = user32.abs_rect(self.m, btn)
+                self.click_at((x0 + x1) // 2, (y0 + y1) // 2)
+            return
+        t = self.cards_by_slot(target["player"], target["slot"])
+        if t is not None:
+            self.click_card(t, dy=40)
+            time.sleep(2.0)
 
     # ---- combat -------------------------------------------------------------------------------------------
     def attack(self):
