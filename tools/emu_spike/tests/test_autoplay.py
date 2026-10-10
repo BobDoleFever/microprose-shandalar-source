@@ -84,3 +84,26 @@ def test_targets_are_my_best_creature_for_a_buff_and_their_best_killable_one_for
     assert ap.pick_target(bolt, cards)["name"] == "Giant"                              # the one it can kill that costs the most
     assert ap.pick_target(weak, cards)["name"] == "Rats"
     assert ap.pick_target(bolt, mine) is None                                          # nothing of theirs to hit
+
+
+def test_mana_creatures_pay_for_spells_after_the_lands(ap):
+    def src(name, tapped=False):
+        return dict(name=name, tapped=tapped, slot=0)
+    elves, forest, mountain = src("Llanowar Elves"), src("Forest"), src("Mountain")
+    plan = ap.pay_plan(card("Gypsies", cost="010002"), [elves, forest, mountain])        # G + 2 generic
+    assert plan[0] is forest or plan[0] is elves                                          # the G comes from a green source
+    assert len(plan) == 3
+    plan = ap.pay_plan(card("Ogre", cost="000003"), [elves, forest, mountain])           # generic only: lands first, the Elves stay home
+    assert elves not in plan[:2]
+    assert ap.pay_plan(card("Fire", cost="000200"), [elves, forest, mountain]) is None  # RR: the Elves make green
+
+
+def test_best_set_spends_the_most_mana_and_prefers_creatures(ap):
+    f = lambda name, cost, role="creature": dict(name=name, fact=dict(card(name, cost=cost), role=role))     # noqa: E731
+    lands = [dict(name="Mountain", tapped=False, slot=i) for i in range(4)]
+    one, two, four = f("One", "000001"), f("Two", "000002"), f("Four", "000004")
+    chosen = ap.best_set([(one, None), (two, None), (four, None)], lands)
+    assert sorted(c["name"] for c, _ in chosen) == ["Four"]                               # 4 mana of 4, rather than 3 for One + Two
+    chosen = ap.best_set([(one, None), (two, None)], lands[:3])
+    assert sorted(c["name"] for c, _ in chosen) == ["One", "Two"]
+    assert ap.best_set([(four, None)], lands[:3]) == []

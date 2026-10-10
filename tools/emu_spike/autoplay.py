@@ -25,6 +25,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 INFO = os.path.join(ROOT, "sources", "installed", "Magic", "Program", "INFO.CSV")
 MASTER = os.path.join(ROOT, "sources", "installed", "Magic", "Program", "MASTER.CSV")           # the rules text, for the abilities
 LANDS = {"plains": "W", "island": "U", "swamp": "B", "mountain": "R", "forest": "G"}
+MANA_CREATURES = {"llanowar elves": "G", "sisters of the flame": "R", "fyndhorn elves": "G"}          # creatures that tap for one mana of a colour
 COLOURS = "BGRWU"                                                  # the order of the first five digits of a card's mana cost in INFO.CSV
 
 
@@ -180,21 +181,53 @@ class Autoplay:
         self.click_at((x0 + x1) // 2, (y0 + 4) if dy is None else (y0 + dy))
 
     # ---- main phase ---------------------------------------------------------------------------------------
-    def pay_plan(self, fact, lands):
-        """The untapped basic lands to tap for a card, or None if they cannot pay for it."""
+    @staticmethod
+    def source_colour(c):
+        n = c["name"].lower()
+        return LANDS.get(n) or MANA_CREATURES.get(n)
+
+    def pay_plan(self, fact, sources):
+        """The untapped mana sources (basic lands, then mana creatures) to tap for a card, or None if they cannot pay for it. Lands are
+        preferred for the generic part so that the creatures stay untapped."""
         need = {c: fact["cost"][c] for c in COLOURS}
-        free = list(lands)
+        free = sorted(sources, key=lambda c: c["name"].lower() not in LANDS)                  # lands first
         chosen = []
         for col in COLOURS:
             for _ in range(need[col]):
-                land = next((l for l in free if LANDS.get(l["name"].lower()) == col), None)
-                if land is None:
+                src = next((l for l in free if self.source_colour(l) == col), None)
+                if src is None:
                     return None
-                free.remove(land)
-                chosen.append(land)
+                free.remove(src)
+                chosen.append(src)
         if len(free) < fact["cost"]["any"]:
             return None
         return chosen + free[:fact["cost"]["any"]]
+
+    def mana_sources(self, cards):
+        mine = self.mine(cards)
+        out = [c for c in mine if self.is_land(c) and not c["tapped"] and c["name"].lower() in LANDS]
+        out += [c for c in mine if c["name"].lower() in MANA_CREATURES and not c["tapped"] and c["slot"] in self.seen_before]
+        return out
+
+    def best_set(self, spells, sources):
+        """The subset of `spells` (each (spell, target)) that uses the most mana, creatures preferred on a tie, paid from `sources` in turn."""
+        best, best_key = [], (0, 0)
+        n = len(spells)
+        for mask in range(1, 1 << n):
+            pick = [spells[i] for i in range(n) if mask >> i & 1]
+            free, ok = list(sources), True
+            for sp, _ in sorted(pick, key=lambda x: -sum(1 for c in COLOURS if x[0]["fact"]["cost"][c])):
+                plan = self.pay_plan(sp["fact"], free)
+                if plan is None:
+                    ok = False
+                    break
+                for src in plan:
+                    free.remove(src)
+            if ok:
+                key = (sum(sp["fact"]["cmc"] for sp, _ in pick), sum(1 for sp, _ in pick if sp["fact"]["role"] == "creature"))
+                if key > best_key:
+                    best, best_key = pick, key
+        return best
 
     def main_phase(self, turn):
         m = self.m
@@ -214,17 +247,20 @@ class Autoplay:
                 time.sleep(1.5)
                 cards = self.cards()
                 hand = self.hand(cards)
-        spells = [c for c in hand if c["fact"] and c["fact"]["role"] != "other" and (turn, c["name"]) not in self.failed]
-        spells.sort(key=lambda c: (c["fact"]["role"] != "creature", -c["fact"]["cmc"]))             # creatures first, then the bigger spells
-        for s in spells:
-            cards = self.cards()
+        cands = []
+        for c in hand:
+            if not c["fact"] or c["fact"]["role"] == "other" or (turn, c["name"]) in self.failed:
+                continue
             target = None
-            if s["fact"]["role"] != "creature":
-                target = self.pick_target(s, cards)
+            if c["fact"]["role"] != "creature":
+                target = self.pick_target(c, cards)
                 if target is None:
                     continue
-            lands = [c for c in self.mine(cards) if self.is_land(c) and not c["tapped"] and c["name"].lower() in LANDS]
-            plan = self.pay_plan(s["fact"], lands)
+            cands.append((c, target))
+        cands = cands[:8]
+        for s, target in self.best_set(cands, self.mana_sources(cards)):
+            cards = self.cards()
+            plan = self.pay_plan(s["fact"], self.mana_sources(cards))
             if plan is None:
                 continue
             hand_before = len(self.hand(cards))
@@ -240,6 +276,7 @@ class Autoplay:
                 time.sleep(2.0)
             if target is not None:
                 self.aim(s, target)
+            time.sleep(1.0)
             if len(self.hand(self.cards())) >= hand_before:
                 self.failed.add((turn, s["name"]))
                 self.log(f"{s['name']} did not leave the hand")
@@ -324,9 +361,11 @@ class Autoplay:
         attackers = [a for a in attackers if a["fact"]]
         incoming = sum(a["fact"]["power"] for a in attackers)
         life = self.m.r32(0x6A3F7C)
-        lethal = life <= incoming
+        lethal = life - incoming <= 2                              # chump blocks when the damage would leave me nearly dead
         used = set()
         for a in sorted(attackers, key=lambda a: -a["fact"]["power"]):
+            if a["fact"]["power"] <= 0:
+                continue
             best = None
             for b in mine:
                 if b["slot"] in used or (a["fact"]["flying"] and not b["fact"]["flying"]):
@@ -336,19 +375,16 @@ class Autoplay:
                 score = (2 if survives and kills else 1 if survives else 1 if kills and b["fact"]["cmc"] <= a["fact"]["cmc"] else 0)
                 if lethal and score == 0:
                     score = 0.5
-                if score and (best is None or score > best[0]):
-                    best = (score, b)
+                if score and (best is None or (score, -b["fact"]["cmc"]) > (best[0], -best[1]["fact"]["cmc"])):
+                    best = (score, b)                                # the better block; on a tie the cheaper creature
             if best:
                 b = best[1]
                 used.add(b["slot"])
                 self.log(f"block {a['name']} with {b['name']}")
                 self.click_card(b, dy=40)
                 time.sleep(1.5)
-                self.shot("block1")
-                self.log("attacker rect " + str(self.cards_by_slot(a["player"], a["slot"])["rect"]))
                 self.click_card(self.cards_by_slot(a["player"], a["slot"]), dy=40)
                 time.sleep(1.5)
-                self.shot("block2")
 
     def assign_damage(self, title):
         """'X: Assign damage to blockers, N points left': click a blocker for each point (the panel lists the blockers on top)."""
