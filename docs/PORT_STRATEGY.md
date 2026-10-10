@@ -149,6 +149,12 @@ than that machine needed.
 3. **Phase C.** Replace the UI and the Win32 dependence last, when there are enough native pieces that the
    emulator is only running leftovers.
 
+**Where this stands.** Phase A is done as far as playing goes: the whole game runs from the original executables and the
+sections below list what has been played. Phase B is under way: the lifted card handlers and the AI search functions run
+hosted and match the original call for call (`compare_hosted.py`), but the engine around them is still the original's, in the
+emulator. Phase C (replacing the UI and the Win32 layer) has not been started; the Python Win32 layer written for Phase A is
+the thing it would replace.
+
 The naming work (`SYMBOL_VERIFICATION.md`) carries on, now prioritised by what Phase B replaces first, not by
 alphabet.
 
@@ -168,30 +174,40 @@ layer, not hundreds of rewrites.
 
 **The game can be played now, in a window, on a Mac.** `python3 -m winemu.run --live` (from `tools/emu_spike`, with
 `pygame-ce` installed) runs the original MAGIC.EXE in the emulator and shows it in an SDL window with the mouse and
-keyboard connected. Driven with real input events it gets from the title screen (in about 8 s) through new game,
-difficulty, colour, visage and name (typed with Shift) to the overworld map (about 20 s), walks the map, enters a town (Buy Cards, Edit deck, Trade, Buy food, Leave), reaches a wizard's domain with the
-ante cards and the "Duel / Pay 40 gold" choice, and starts the duel: the board, the coin toss ("You won the coin toss. Play
-first / Draw first"), the start-of-duel dialog, and the duel itself ("Main phase (before combat): cast spells, play land"). Resume Game loads the autosave, a quick way back to a wizard's door. Getting there needed
-fixes in the Win32 layer, each found by looking at the live window: the guest clock follows the real one; `winemu/accel.py`
-runs the one function that made startup slow (a card-text keyword search that called `_strnicmp` 870,000 times) as Python,
-checked against what the original returned; `BitBlt` does the combining raster operations and `CreateBitmap` keeps 1-bpp
-bits (the game draws its HUD numbers as a mask AND and a glyph OR, which showed as black boxes); `SaveDC`/`RestoreDC` keep
-a state stack (the map view's origin and clip stayed on the screen DC and every later menu was clipped away); and the
-sound library `MAGSND.DLL` runs on the host (`winemu/magsnd.py`, silent): its DirectSound, `mmio` and AVIFile needs are
-not emulated, and the game then waits at the coin toss, in a loop that makes no calls, for a sound to report finished.
+keyboard connected. What has been played through in it: the title, a new game and Resume Game, the overworld (villages,
+shops, the deck editor with its three deck slots, towers and their tolls, the map, quests: one delivery quest was completed),
+duels from the coin toss (with its AVI movie) through casting, combat and targeted spells to game over and the ante, saving and
+loading games, the music and sound effects, and the ending movie. `tools/emu_spike/README.md` lists what works, the playing tips
+and the known defects; a soak of four 45-minute runs of walking, towers and duels had no emulator errors. A duel
+autopilot (`live_drive.py duel:`, `autoplay.py`) plays whole duels through real mouse events; it is what makes long and
+parallel runs possible, and it won about one duel in four against the tower wizards.
+
+How it got there (each found by looking at the live window): the guest clock follows the real one; `winemu/accel.py` runs
+the one function that made startup slow (a card-text keyword search that called `_strnicmp` 870,000 times) as Python, checked
+against what the original returned; `BitBlt` does the combining raster operations and `CreateBitmap` keeps 1-bpp bits;
+`SaveDC`/`RestoreDC` keep a state stack; GDI map modes, `DrawText` wrapping, the game's own TrueType fonts with text
+measurement that follows the mapping's scale, a palette rule that lets only application windows set the system palette,
+owner-draw buttons, dialogs that get `WM_PAINT` and `WM_ERASEBKGND`, popup menus with the game's `WM_INITMENU` protocol, and
+window extra bytes by offset, scroll ranges, `GetWindow` and `WM_SIZE` from `MoveWindow` (the deck editor needed these). The
+sound library `MAGSND.DLL` and the video library `MAGVID.DLL` run on the host (`winemu/magsnd.py`, `winemu/movie.py`): their
+DirectSound, `mmio` and AVIFile needs are not emulated, and without them the game waits at the coin toss, in a loop that
+makes no calls, for a sound to report finished. The coin-toss movie (Microsoft Video 1) is decoded in Python, checked
+bit-exact against ffmpeg; the ending movie (Indeo 4) goes through ffmpeg. The music is on the game CD, which the install
+does not copy: `tools/emu_spike/install_cd_music.py` copies it from your disc image.
+
 Scheduling: the game's own thread busy-waits, so threads must be switched. A count makes Unicorn call a hook on every
 instruction (35 times slower), so a ticker thread asks for the end of the slice and the machine ends it at its next import
 call; only a thread that makes no import call for 100 ms is stopped asynchronously (stopping inside an import hook
-corrupted the guest). A pressed mouse button or key is held for a few slices so that the thread that polls it sees it. And a thread is never
-scheduled away while its ESP is outside its own stack: the game's own assembly (the `MPS_CODE` section: its picture
-decompressor) switches to a private stack and keeps the old ESP in a global, and calls its read callback from there, so
-another thread running in the middle of it came back on the wrong stack (the start-of-duel dialog crashed in about half of
-the runs; none of 12 since). The game was written for coarse time slices; this keeps that assumption. `EMU_REGCHECK=1` reports an
-import or a guest callback that changes callee-saved registers, and `EMU_PROCTRACE=ADDR` shows the instructions of a
-guest callback that does.
-Sound plays: the host version of MAGSND.DLL loads the game's WAV files into numbered slots and plays them through pygame.mixer (volume, looping, play state; `EMU_NO_AUDIO=1` silences it); music tracks and the AVI coin toss do not. Right-click menus work (the game's popup menus: card actions, "View in full card", "Run to this phase"; `TrackPopupMenu` with the game's own WM_INITMENU / WM_MENUSELECT protocol, drawn and driven by the host), and the full-size card view and the card text are right since GDI map modes (the card is drawn in a 200x300 isotropic space), `DrawText` word-wrapping and window-coordinate mapping (`ClientToScreen`, `GetWindowRect` in screen coordinates) are implemented. Not there yet: the duel dialogs drawn properly (they are a plain grey rendering without the ante cards), and the
-native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at emulator speed
-until it is hosted there). The exact runs above keep their deterministic slices; `--live` is for playing, not for comparing.
+corrupted the guest). A pressed mouse button or key is held for a few slices so that the thread that polls it sees it. A
+thread is never scheduled away while its ESP is outside its own stack: the game's own assembly (the `MPS_CODE` section: its
+picture decompressor) switches to a private stack and keeps the old ESP in a global, so another thread running in the middle
+of it came back on the wrong stack. `PostQuitMessage` is per thread (the deck editor's thread quitting used to end the game).
+`EMU_REGCHECK=1` reports an import or a guest callback that changes callee-saved registers, and `EMU_PROCTRACE=ADDR` shows
+the instructions of a guest callback that does.
+
+Not there yet: the native layer for MAGIC.EXE (its duel engine is DUEL.EXE's code at other addresses, so the AI thinks at
+emulator speed, about 15 s a turn, until it is hosted there). The exact runs above keep their deterministic slices; `--live` is
+for playing, not for comparing.
 
 ## Risks and open points
 
@@ -201,7 +217,7 @@ until it is hosted there). The exact runs above keep their deterministic slices;
   realisation, `timeSetEvent` timing) are found by running it; the QEMU oracle stays the reference for those.
 - **Only x86.** This avoids needing Wine. On x86 machines Wine already runs the game; this path is for
   Apple Silicon, mobile, consoles and the long term.
-- **What was not tested:** speed under a full duel, anything past game start-up, `DUEL.EXE`.
+- **What was not tested:** the audio by ear; the wizards' animation clips; playing the game through to a real win; `DUEL.EXE` on its own.
 
 ## Try it
 
